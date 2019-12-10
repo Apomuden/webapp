@@ -1,7 +1,7 @@
 import { SideNavInterface } from "../../interfaces/side-nav.type";
 export const ROUTES: SideNavInterface[] = [
   {
-    path: "",
+    path: "/dashboard/default",
     title: "Dashboard",
     iconType: "nzIcon",
     iconTheme: "outline",
@@ -58,14 +58,14 @@ export const ROUTES: SideNavInterface[] = [
     ]
   },
   {
-    path: "",
+    path: "/user-management",
     title: "User Management",
     iconType: "nzIcon",
     iconTheme: "outline",
     icon: "appstore",
     submenu: [
       {
-        path: "",
+        path: "/user-management/create-user",
         title: "Create User",
         iconType: "",
         icon: "",
@@ -73,7 +73,7 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: "",
+        path: "/user-management",
         title: "View Users",
         iconType: "",
         icon: "",
@@ -81,7 +81,7 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: "",
+        path: "/user-management/roles",
         title: "Roles",
         iconType: "",
         icon: "",
