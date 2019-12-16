@@ -1,18 +1,460 @@
 <nz-steps [nzCurrent]="current">
-  <nz-step nzTitle="Finished"></nz-step>
-  <nz-step nzTitle="In Progress"></nz-step>
-  <nz-step nzTitle="Waiting"></nz-step>
+  <nz-step nzTitle="Staff Type"></nz-step>
+  <nz-step nzTitle="Bio Data"></nz-step>
+  <nz-step nzTitle="Contact Info"></nz-step>
+  <nz-step nzTitle="In case of Emergency"></nz-step>
+  <nz-step nzTitle="Role and Department Assignment"></nz-step>
+  <nz-step nzTitle="Other Details"></nz-step>
+  <nz-step nzTitle="Review"></nz-step>
 </nz-steps>
 
-<div class="steps-content">{{ index }}</div>
+<div class="steps-content">
+  <div *ngIf="current == 0">
+    <div nz-row>
+      <nz-select
+        nz-col
+        nzSpan="6"
+        style="min-width: 200px;"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select a staff type"
+        [(ngModel)]="staffType"
+      >
+        <nz-option
+          nzLabel="National Service"
+          nzValue="national service"
+        ></nz-option>
+        <nz-option nzLabel="NABCO" nzValue="nabco"></nz-option>
+        <nz-option nzLabel="Perminent" nzValue="perminent"></nz-option>
+        <nz-option nzLabel="Added Staff" nzValue="added staff"></nz-option>
+        <nz-option nzLabel="Volunteer" nzValue="volunteer"></nz-option>
+        <nz-option nzLabel="Other" nzValue="other"></nz-option>
+      </nz-select>
+    </div>
+  </div>
+
+  <div *ngIf="current == 1">
+    <div nz-row>
+      <nz-select
+        nz-col
+        nzSpan="6"
+        style="min-width: 200px;"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select a title"
+        [(ngModel)]="title"
+      >
+        <nz-option nzLabel="Mr." nzValue="mr"></nz-option>
+        <nz-option nzLabel="Mrs." nzValue="mrs"></nz-option>
+        <nz-option nzLabel="Miss." nzValue="miss"></nz-option>
+        <nz-option nzLabel="Master" nzValue="master"></nz-option>
+        <nz-option nzLabel="Madam" nzValue="madam"></nz-option>
+        <nz-option nzLabel="Other" nzValue="other"></nz-option>
+      </nz-select>
+    </div>
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="4">
+        <input nz-input placeholder="First name" [(ngModel)]="firstName" />
+      </div>
+
+      <div nz-col nzSpan="4">
+        <input nz-input placeholder="Middle name" [(ngModel)]="middleName" />
+      </div>
+
+      <div nz-col nzSpan="4">
+        <input nz-input placeholder="Last name" [(ngModel)]="lastName" />
+      </div>
+    </div>
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="3">
+        <nz-date-picker
+          [(ngModel)]="dateOfBirth"
+          (ngModelChange)="onBirthDateChange($event)"
+          nzPlaceHolder="Select Birthdate"
+        ></nz-date-picker>
+      </div>
+      <div nz-col nzSpan="3">
+        <nz-select
+          style="width: 100%;"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Gender"
+          [(ngModel)]="gender"
+        >
+          <nz-option nzLabel="Male" nzValue="male"></nz-option>
+          <nz-option nzLabel="Female" nzValue="female"></nz-option>
+          <nz-option nzLabel="Other" nzValue="other"></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="3">
+        <nz-select
+          style="width: 100%;"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Marital Status"
+          [(ngModel)]="maritalStatus"
+        >
+          <nz-option nzLabel="Single" nzValue="single"></nz-option>
+          <nz-option nzLabel="Married" nzValue="married"></nz-option>
+          <nz-option nzLabel="Divorced" nzValue="divorced"></nz-option>
+          <nz-option nzLabel="Widow" nzValue="widow"></nz-option>
+          <nz-option nzLabel="Other" nzValue="other"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="6">
+        <input nz-input placeholder="Profession" [(ngModel)]="profession" />
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <nz-select
+        nz-col
+        nzSpan="6"
+        style="min-width: 200px;"
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Select a Educational Level"
+        [(ngModel)]="educationalLevel"
+      >
+        <nz-option nzLabel="SHS" nzValue="shs"></nz-option>
+        <nz-option nzLabel="JHS" nzValue="jhs"></nz-option>
+        <nz-option nzLabel="Primary" nzValue="primary"></nz-option>
+        <nz-option nzLabel="None" nzValue="none"></nz-option>
+        <nz-option nzLabel="O-Level" nzValue="olevel"></nz-option>
+        <nz-option nzLabel="A-Level" nzValue="alevel"></nz-option>
+        <nz-option nzLabel="Tertiary" nzValue="tertiary"></nz-option>
+        <nz-option nzLabel="Masters" nzValue="masters"></nz-option>
+        <nz-option nzLabel="Others" nzValue="others"></nz-option>
+      </nz-select>
+    </div>
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="6">
+        <input nz-input placeholder="Residence" [(ngModel)]="residence" />
+      </div>
+    </div>
+  </div>
+  <div *ngIf="current == 2">
+    <nz-input-group>
+      <div nz-col nzSpan="5">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Country Code"
+          style="width:100%;"
+          [(ngModel)]="phone.countryCode"
+          [nzLoading]="loading | async"
+        >
+          <nz-option
+            *ngFor="let country of countries"
+            [nzValue]="country.call_code"
+            [nzLabel]="country.name + '  ' + country.call_code"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Phone"
+          nz-input
+          [(ngModel)]="phone.number"
+        />
+      </div>
+    </nz-input-group>
+
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <input type="email" placeholder="Email" nz-input [(ngModel)]="email" />
+      </div>
+    </div>
+  </div>
+  <div *ngIf="current == 3">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          placeholder="Full name"
+          nz-input
+          [(ngModel)]="emergencyContactFullname"
+        />
+      </div>
+    </div>
+    <br />
+    <nz-input-group>
+      <div nz-col nzSpan="5">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Country Code"
+          style="width:100%;"
+          [(ngModel)]="emergencyPhoneOne.countryCode"
+          [nzLoading]="countriesloading | async"
+        >
+          <nz-option
+            *ngFor="let country of countries"
+            [nzValue]="country.call_code"
+            [nzLabel]="country.name + '  ' + country.call_code"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Phone One"
+          nz-input
+          [(ngModel)]="emergencyPhoneOne.number"
+        />
+      </div>
+    </nz-input-group>
+    <br />
+    <nz-input-group>
+      <div nz-col nzSpan="5">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Country Code"
+          style="width:100%;"
+          [(ngModel)]="emergencyPhoneTwo.countryCode"
+          [nzLoading]="countriesloading | async"
+        >
+          <nz-option
+            *ngFor="let country of countries"
+            [nzValue]="country.call_code"
+            [nzLabel]="country.name + '  ' + country.call_code"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Phone Two"
+          nz-input
+          [(ngModel)]="emergencyPhoneTwo.number"
+        />
+      </div>
+    </nz-input-group>
+  </div>
+  <div *ngIf="current == 4">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <nz-select
+        nzShowSearch
+        nzAllowClear
+        nzPlaceHolder="Role"
+        style="width:100%;"
+        [(ngModel)]="role"
+        [nzLoading]="rolesloading | async"
+      >
+        <nz-option
+          *ngFor="let role of roles"
+          [nzValue]="role.value"
+          [nzLabel]="role.name"
+        ></nz-option>
+      </nz-select>
+  
+      </div>
+    </div>
+    <br/>
+    <div nz-row>
+      <div nz-col nzSpan="8">
+    
+    <nz-select
+      nzShowSearch
+      nzAllowClear
+      nzPlaceHolder="Department"
+      style="width:100%;"
+      [(ngModel)]="department"
+      [nzLoading]="departmentsloading | async"
+    >
+      <nz-option
+        *ngFor="let department of departments"
+        [nzValue]="department.name"
+        [nzLabel]="department.name"
+      ></nz-option>
+    </nz-select>
+    </div>
+    </div>
+  </div>
+  <div *ngIf="current == 5">
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan=8>
+        <nz-select
+      nzShowSearch
+      nzAllowClear
+      nzPlaceHolder="Bank Name"
+      style="width:100%;"
+      [(ngModel)]="bankName"
+      [nzLoading]="banksloading | async"
+    >
+      <nz-option
+        *ngFor="let bank of banks"
+        [nzValue]="bank.name"
+        [nzLabel]="bank.name"
+      ></nz-option>
+    </nz-select>
+      
+    </div>
+    <div nz-col nzSpan="8">
+      <input
+        type="text"
+        style="text-align: left;"
+        placeholder="Bank Branch"
+        nz-input
+        [(ngModel)]="bankBranch"
+      />
+    </div>
+    <div nz-col nzSpan="8">
+      <input
+        type="text"
+        style="text-align: left;"
+        placeholder="Account Number"
+        nz-input
+        [(ngModel)]="accountNumber"
+      />
+    </div>
+</div>
+<br/>
+<div nz-row nzGutter="10">
+  <div nz-col nzSpan="8">
+    <input
+      type="text"
+      style="text-align: left;"
+      placeholder="Professional Pin"
+      nz-input
+      [(ngModel)]="pin"
+    />
+  </div>
+  <div nz-col nzSpan="4" style="text-align: left;">
+      <nz-date-picker
+      style="min-width: 400px;"
+        [(ngModel)]="expiryDate"
+        (ngModelChange)="onExpiryDateChange($event)"
+        nzPlaceHolder="Expiry Date"
+      ></nz-date-picker>
+  </div>
+  <div nz-col nzSpan="4" style="text-align:left">
+    <nz-date-picker
+    style="min-width: 400px;"
+      [(ngModel)]="appointmentDate"
+      (ngModelChange)="onAppointmentDateChange($event)"
+      nzPlaceHolder="Appointment Date"
+    ></nz-date-picker>
+</div>
+</div>
+<br/>
+<div nz-row nzGutter="10">
+  <div nz-col nzSpan="4">
+    <input
+      type="text"
+      style="text-align: left;"
+      placeholder="Salary"
+      nz-input
+      [(ngModel)]="salary"
+    />
+  </div>
+  <div nz-col nzSpan="4">
+    <input
+      type="text"
+      style="text-align: left;"
+      placeholder="SNNIT Number"
+      nz-input
+      [(ngModel)]="snnitNumber"
+    />
+  </div>
+  <div nz-col nzSpan="4">
+    <input
+      type="text"
+      style="text-align: left;"
+      placeholder="TIN Number"
+      nz-input
+      [(ngModel)]="tinNumber"
+    />
+  </div>
+  <div nz-col nzSpan="4">
+    <input
+      type="text"
+      style="text-align: left;"
+      placeholder="3rd Party Contribution"
+      nz-input
+      [(ngModel)]="thirdPartyContribution"
+    />
+  </div>
+  <div nz-col nzSpan="4">
+    <input
+      type="text"
+      style="text-align: left;"
+      placeholder="Tax on Salary"
+      nz-input
+      [(ngModel)]="taxOnSalary"
+    />
+  </div>
+  <div nz-col nzSpan="4">
+    <input
+      type="text"
+      style="text-align: left;"
+      placeholder="User name"
+      nz-input
+      [(ngModel)]="username"
+    />
+  </div>
+</div>
+<br/>
+<div nz-row>
+  <div nz-col nzSpan=4>
+    <nz-select
+  nzShowSearch
+  nzAllowClear
+  nzPlaceHolder="Signatory"
+  style="width:100%;"
+  [(ngModel)]="signatory"
+>
+  <nz-option
+    nzValue="doctor"
+    nzLabel="Doctor"
+
+  ></nz-option>
+  <nz-option
+    nzValue="nurse"
+    nzLabel="Nurse"
+
+  ></nz-option>
+  <nz-option
+    nzValue="other"
+    nzLabel="Other"
+
+  ></nz-option>
+</nz-select>
+</div>
+</div>
+<div nz-row>
+  <div nz-col nzSpan="8">
+    <!-- Work on signature pad -->
+    <!-- work on documents -->
+    In the pipeline
+  </div>
+</div>
+
+
+  </div>
+  <div *ngIf="current == 6">In The pipeline</div>
+</div>
 <div class="steps-action">
   <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
     <span>Previous</span>
   </button>
-  <button nz-button nzType="default" (click)="next()" *ngIf="current < 2">
+  <button nz-button nzType="default" (click)="next()" *ngIf="current < 6">
     <span>Next</span>
   </button>
-  <button nz-button nzType="primary" (click)="done()" *ngIf="current === 2">
+  <button nz-button nzType="primary" (click)="done()" *ngIf="current === 6">
     <span>Done</span>
   </button>
 </div>

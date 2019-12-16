@@ -12,5 +12,6 @@ export const CommonLayout_ROUTES: Routes = [
       import("../../user-management/user-management.module").then(
         m => m.UserManagementModule
       )
-  }
+  },
+  { path: 'setup', loadChildren: () => import('../../setups/setups.module').then(m => m.SetupsModule) }
 ];

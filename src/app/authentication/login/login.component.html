@@ -36,6 +36,14 @@
       <div class="container h-100">
         <div class="row no-gutters h-100 align-items-center">
           <div class="col-md-8 col-lg-7 col-xl-6 mx-auto">
+            <nz-alert
+              *ngIf="error"
+              nzType="error"
+              nzCloseable
+              nzMessage="{{ error }}"
+              class="m-b-30"
+            >
+            </nz-alert>
             <h2>Sign In</h2>
             <p class="m-b-30">Enter your credential to get access</p>
             <form
@@ -62,8 +70,9 @@
                       loginForm.get('userName').dirty &&
                       loginForm.get('userName').errors
                     "
-                    >Please input your username!</nz-form-explain
                   >
+                    Please input your username!
+                  </nz-form-explain>
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
@@ -111,12 +120,16 @@
                       nz-button
                       class="login-form-button"
                       [nzType]="'primary'"
+                      type="submit"
                     >
                       Sign In
                     </button>
                   </div>
                 </nz-form-control>
               </nz-form-item>
+              <div *ngIf="isLoading" id="login-spinner">
+                <nz-spin nzSimple nzTip="Loading..."></nz-spin>
+              </div>
             </form>
             <ng-template #prefixUser><i nz-icon nzType="user"></i></ng-template>
             <ng-template #prefixLock><i nz-icon nzType="lock"></i></ng-template>
