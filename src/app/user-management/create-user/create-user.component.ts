@@ -1,6 +1,6 @@
 import { BehaviorSubject } from 'rxjs';
 import { SetupService } from './../../shared/services/setup.service';
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { first } from 'rxjs/operators';
 
 
@@ -104,7 +104,6 @@ export class CreateUserComponent implements OnInit {
         console.log("data",data);
         this.countriesloading.next(false);
         this.countries = data.data;
-
     },
     error=>{
       this.countriesloading.next(false);

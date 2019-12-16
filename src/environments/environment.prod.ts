@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  apiBaseUrl: "https://test-api.ssisgh.com/v1"
 };

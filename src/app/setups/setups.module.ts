@@ -1,3 +1,5 @@
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
+import { SharedModule } from './../shared/shared.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -9,7 +11,9 @@ import { SetupsComponent } from './setups.component';
   declarations: [SetupsComponent],
   imports: [
     CommonModule,
-    SetupsRoutingModule
+    SetupsRoutingModule,
+    SharedModule,
+    GooglePlaceModule
   ]
 })
 export class SetupsModule { }

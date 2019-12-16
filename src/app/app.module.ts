@@ -1,4 +1,4 @@
-import { SignaturePad } from 'angular2-signaturepad/signature-pad';
+
 import { JwtInterceptor } from './shared/interceptor/token.interceptor';
 import { NoticeService } from "./shared/services/notice.service";
 import { AuthenticationService } from "./shared/services/authentication.service";
@@ -15,6 +15,7 @@ import {
 import { registerLocaleData } from "@angular/common";
 import en from "@angular/common/locales/en";
 
+
 import { AppRoutingModule } from "./app-routing.module";
 import { TemplateModule } from "./shared/template/template.module";
 import { SharedModule } from "./shared/shared.module";
@@ -26,7 +27,7 @@ import { FullLayoutComponent } from "./layouts/full-layout/full-layout.component
 import { NgChartjsModule } from "ng-chartjs";
 import { ThemeConstantService } from "./shared/services/theme-constant.service";
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import {SignaturePadModule} from 'angular2-signaturepad';
+
 
 
 registerLocaleData(en);
@@ -41,9 +42,9 @@ registerLocaleData(en);
     TemplateModule,
     SharedModule,
     NzAlertModule,
-    NgChartjsModule,
-    SignaturePadModule
+    NgChartjsModule
   ],
+
   providers: [
     {
       provide: NZ_I18N,
