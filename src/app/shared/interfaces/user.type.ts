@@ -1,6 +1,40 @@
 export interface User {
-    id: number;
-    username: string;
-    password: string;
-    token?: string;
+  id: number;
+  username: string;
+  password: string;
+  token?: string;
+  details?: {
+    title?: string;
+    staff_id?: string;
+    username?: string;
+    surname?: string;
+    middlename?: string;
+    firstname?: string;
+    dob?: string;
+    gender?: string;
+    country_name?: string;
+    country_id?: number;
+    region_name?: string;
+    region_id?: number;
+    hometown_name?: string;
+    hometown_id?: number;
+    marital?: string;
+    department_name?: string;
+    department_id?: number;
+    staff_category_name?: string;
+    staff_category_id?: number;
+    staff_type_name?: string;
+    staff_type_id?: number;
+    profession_name?: string;
+    profession_id?: number;
+    staff_specialty_name?: string;
+    staff_specialty_id?: number;
+    role_name?: string;
+    role_id?: number;
+    educational_level_name?: string;
+    active_cell?: number;
+    email?: string;
+    photo?: string;
+    status?: string;
+  };
 }

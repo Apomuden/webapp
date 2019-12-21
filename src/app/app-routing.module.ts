@@ -23,7 +23,6 @@ const appRoutes: Routes = [
     component: FullLayoutComponent,
     children: FullLayout_ROUTES
   }
-
 ];
 
 @NgModule({

@@ -1,3 +1,4 @@
+import { AuthGuard } from "./../shared/guard/auth.guard";
 import { CreateUserComponent } from "./create-user/create-user.component";
 import { UserProfileComponent } from "./user-profile/user-profile.component";
 import { NgModule } from "@angular/core";
@@ -9,6 +10,7 @@ const routes: Routes = [
   {
     path: "",
     component: UserManagementComponent,
+    canActivate: [AuthGuard],
     data: {
       title: "User Management "
     }
@@ -16,6 +18,7 @@ const routes: Routes = [
   {
     path: "profile",
     component: UserProfileComponent,
+    canActivate: [AuthGuard],
     data: {
       title: "User Profile "
     }
@@ -23,6 +26,7 @@ const routes: Routes = [
   {
     path: "create-user",
     component: CreateUserComponent,
+    canActivate: [AuthGuard],
     data: {
       title: "Create User"
     }

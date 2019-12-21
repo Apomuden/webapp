@@ -9,6 +9,55 @@ export const ROUTES: SideNavInterface[] = [
     submenu: []
   },
   {
+    path: "/facility-management",
+    title: "Facility Management",
+    iconType: "nzIcon",
+    iconTheme: "outline",
+    icon: "home",
+    submenu: []
+  },
+  {
+    path: "/setup",
+    title: "Setups",
+    iconType: "nzIcon",
+    iconTheme: "outline",
+    icon: "setting",
+    submenu: []
+  },
+  {
+    path: "/user-management",
+    title: "User Management",
+    iconType: "nzIcon",
+    iconTheme: "outline",
+    icon: "team",
+    submenu: [
+      {
+        path: "/user-management/create-user",
+        title: "Create User",
+        iconType: "",
+        icon: "",
+        iconTheme: "",
+        submenu: []
+      },
+      {
+        path: "/user-management",
+        title: "View Users",
+        iconType: "",
+        icon: "",
+        iconTheme: "",
+        submenu: []
+      },
+      {
+        path: "/user-management/roles",
+        title: "Roles",
+        iconType: "",
+        icon: "",
+        iconTheme: "",
+        submenu: []
+      }
+    ]
+  },
+  {
     path: "",
     title: "Records",
     iconType: "nzIcon",
@@ -56,54 +105,15 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       }
     ]
-  },
-  {
-    path: "/user-management",
-    title: "User Management",
-    iconType: "nzIcon",
-    iconTheme: "outline",
-    icon: "appstore",
-    submenu: [
-      {
-        path: "/user-management/create-user",
-        title: "Create User",
-        iconType: "",
-        icon: "",
-        iconTheme: "",
-        submenu: []
-      },
-      {
-        path: "/user-management",
-        title: "View Users",
-        iconType: "",
-        icon: "",
-        iconTheme: "",
-        submenu: []
-      },
-      {
-        path: "/user-management/roles",
-        title: "Roles",
-        iconType: "",
-        icon: "",
-        iconTheme: "",
-        submenu: []
-      }
-    ]
-  },
-  {
-    path: "",
-    title: "Settings",
-    iconType: "nzIcon",
-    iconTheme: "outline",
-    icon: "setting",
-    submenu: []
-  },
-  {
-    path:"/setup",
-    title:"Setup",
-    iconType: "nzIcon",
-    iconTheme: "outline",
-    icon: "setting",
-    submenu: []
   }
+
+  // ,
+  // {
+  //   path: "",
+  //   title: "Settings",
+  //   iconType: "nzIcon",
+  //   iconTheme: "outline",
+  //   icon: "setting",
+  //   submenu: []
+  // }
 ];

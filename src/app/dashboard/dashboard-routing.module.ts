@@ -18,6 +18,7 @@ const routes: Routes = [
   {
     path: "with-breadcrumb",
     component: WithBreadcrumbDashboardComponent,
+    canActivate: [AuthGuard],
     data: {
       title: "With Breadcrumb "
     }

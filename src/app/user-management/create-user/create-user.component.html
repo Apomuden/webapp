@@ -65,6 +65,15 @@
       <div nz-col nzSpan="4">
         <input nz-input placeholder="Last name" [(ngModel)]="lastName" />
       </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="User name"
+          nz-input
+          [(ngModel)]="username"
+        />
+      </div>
     </div>
     <br />
     <div nz-row nzGutter="10">
@@ -148,7 +157,7 @@
           nzPlaceHolder="Country Code"
           style="width:100%;"
           [(ngModel)]="phone.countryCode"
-          [nzLoading]="loading | async"
+          [nzLoading]="countriesloading | async"
         >
           <nz-option
             *ngFor="let country of countries"
@@ -397,15 +406,7 @@
       [(ngModel)]="taxOnSalary"
     />
   </div>
-  <div nz-col nzSpan="4">
-    <input
-      type="text"
-      style="text-align: left;"
-      placeholder="User name"
-      nz-input
-      [(ngModel)]="username"
-    />
-  </div>
+  
 </div>
 <br/>
 <div nz-row>

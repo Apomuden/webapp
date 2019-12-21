@@ -1,0 +1,73 @@
+<div nz-row nzGutter="10">
+  <nz-col nzSpan="12">
+    <nz-card>
+      <nz-list
+        style="min-height: 350px;"
+        [nzDataSource]="list"
+        [nzItemLayout]="'horizontal'"
+        [nzLoading]="initLoading"
+        [nzRenderItem]="item"
+        [nzLoadMore]="loadMore"
+      >
+        <ng-template #item let-item>
+          <nz-list-item
+            [nzActions]="item.loading ? [] : [editAction, moreAction]"
+          >
+            <nz-skeleton
+              [nzActive]="true"
+              [nzTitle]="false"
+              [nzLoading]="item.loading"
+            >
+              <ng-template #editAction
+                ><a (click)="edit(item)">edit</a></ng-template
+              >
+              <ng-template #moreAction
+                ><nz-switch [(ngModel)]="item.isActivated"></nz-switch
+              ></ng-template>
+              <nz-list-item-meta [nzTitle]="nzTitle">
+                <ng-template #nzTitle>
+                  <a href="https://ng.ant.design">{{ item.name }}</a>
+                </ng-template>
+              </nz-list-item-meta>
+            </nz-skeleton>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+    </nz-card>
+  </nz-col>
+  <nz-col nzSpan="8">
+    <nz-card>
+      <h5>Create Specialty</h5>
+      <form (ngSubmit)="submitForm()">
+        <div *ngIf="error">{{ error }}</div>
+        <nz-row>
+          <nz-form-control [nzSpan]="24">
+            <input
+              type="text"
+              nz-input
+              [(ngModel)]="specialty"
+              name="name"
+              placeholder="Input specialty name"
+            />
+          </nz-form-control>
+        </nz-row>
+        <nz-row>
+          <nz-form-control
+            nzSpan="24"
+            style="text-align: right;"
+            class="m-t-10"
+          >
+            <button
+              nz-button
+              nzType="primary"
+              type="submit"
+              [nzLoading]="isCreatingSpecialty | async"
+            >
+              Submit
+            </button>
+          </nz-form-control>
+        </nz-row>
+      </form>
+    </nz-card>
+  </nz-col>
+</div>

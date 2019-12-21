@@ -1,105 +1,110 @@
-import { SetupService } from './../shared/services/setup.service';
-import { BehaviorSubject } from 'rxjs';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { first } from 'rxjs/operators';
-import { GooglePlaceDirective} from "ngx-google-places-autocomplete";
-import { Address} from "ngx-google-places-autocomplete/objects/address";
+import { Router } from "@angular/router";
+import { Component, OnInit, ViewChild } from "@angular/core";
 
 @Component({
-  selector: 'app-setups',
-  templateUrl: './setups.component.html',
-  styleUrls: ['./setups.component.css']
+  selector: "app-setups",
+  templateUrl: "./setups.component.html",
+  styleUrls: ["./setups.component.css"]
 })
 export class SetupsComponent implements OnInit {
+  selectedSetup = "departments";
+  routerLink = "departments";
+  // createOrEditMode = 0; //0 for create 1 for edit
 
-  @ViewChild("placesRef", {static:false}) placesRef : GooglePlaceDirective;
-
-        public handleAddressChange(address: Address) {
-        // Do some stuff
-        console.log(address);
+  onSetupChanged() {
+    switch (this.selectedSetup) {
+      case "departments":
+        this.routerLink = "departments";
+        break;
+      case "fundingtypes":
+        this.routerLink = "funding-types";
+        break;
+      case "paymentchannels":
+        this.routerLink = "payment-channels";
+        break;
+      case "sponsorshiptypes":
+        this.routerLink = "sponsorship-types";
+        break;
+      case "paymentstyles":
+        this.routerLink = "payment-styles";
+        break;
+      case "billingsystems":
+        this.routerLink = "billing-systems";
+        break;
+      case "billingcycles":
+        this.routerLink = "billing-cycles";
+        break;
+      case "hospitalservices":
+        this.routerLink = "hospital-services";
+        break;
+      case "servicecategories":
+        this.routerLink = "service-categories";
+        break;
+      case "stafftypes":
+        this.routerLink = "staff-types";
+        break;
+      case "professions":
+        this.routerLink = "professions";
+        break;
+      case "staffcategories":
+        this.routerLink = "staff-categories";
+        break;
+      case "servicesubcategories":
+        this.routerLink = "service-subcategories";
+        break;
+      case "languages":
+        this.routerLink = "languages";
+        break;
+      case "banks":
+        this.routerLink = "banks";
+        break;
+      case "bankbranches":
+        this.routerLink = "bank-branches";
+        break;
+      case "idtypes":
+        this.routerLink = "id-types";
+        break;
+      case "educationallevels":
+        this.routerLink = "education-levels";
+        break;
+      case "agegroups":
+        this.routerLink = "age-groups";
+        break;
+      case "titles":
+        this.routerLink = "titles";
+        break;
+      case "relationships":
+        this.routerLink = "relationships";
+        break;
+      case "towns":
+        this.routerLink = "towns";
+        break;
+      case "religions":
+        this.routerLink = "religions";
+        break;
+      case "facilities":
+        this.routerLink = "facilities";
+        break;
+      case "accreditations":
+        this.routerLink = "accreditations";
+        break;
+      case "countries":
+        this.routerLink = "countries";
+        break;
+      case "companies":
+        this.routerLink = "companies";
+        break;
+      case "specialties":
+        this.routerLink = "specialties";
+        break;
     }
 
-  registrationNumber="";
-  registeringBodyName="";
-  tinOrPinNumber="";
-  adminLocation="";
-  adminUsername="";
-  adminEmail="";
-  firstName="";
-  middleName="";
-  lastName="";
-  countries=[];
-  countriesloading = new BehaviorSubject(false);
-  current=0;
-  registrationDate=null;
-  expiryDate=null;
-  dateOfBirth=null;
-  name="";
-  address="";
-  hospitalPhoneOne={
-    countryCode:"+233",
-    number:""
+    this.router.navigate(["setup/" + this.routerLink]);
+    console.log(this.routerLink);
   }
-  hospitalPhoneTwo={
-    countryCode:"+233",
-    number:""
-  }
-  adminPhoneOne={
-    countryCode:"+233",
-    number:""
-  }
-  adminPhoneTwo={
-    countryCode:"+233",
-    number:""
-  }
-  nextOfKingPhone={
-    countryCode:"+233",
-    number:""
-  }
-  nextOfKingName="";
-  relationship=null;
-  facilityType=null;
-
-
-
-  pre(): void {
-    this.current -= 1;
-  }
-
-  next(): void {
-    this.current += 1;
-  }
-
-  done(): void {
-    console.log("done");
-  }
-
-  onRegistrationDateChange(result: Date): void {
-    this.registrationDate=result;
-  }
-  onExpiryDateChange(result:Date):void{
-    this.expiryDate=result;
-  }
-
-  onBirthDateChange(result:Date):void{
-    this.dateOfBirth =result;
-  }
-  constructor(private setup:SetupService) { }
+  constructor(private router: Router) {}
 
   ngOnInit() {
-
-    this.countriesloading.next(true);
-    this.setup.getCountries().pipe(first()).subscribe(
-      data=>{
-        console.log("data",data);
-        this.countries=data.data;
-        this.countriesloading.next(false);
-      },
-      error=>{
-        console.log("error",error)
-        this.countriesloading.next(false);
-      }
-    );
+    this.router.navigate(["setup/departments"]);
   }
-
 }
