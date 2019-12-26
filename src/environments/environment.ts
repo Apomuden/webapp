@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: "https://test-api.ssisgh.com/v1",
-  googleMapsAPI: "AIzaSyC-P6dBykvMWesgweulDaPJzzXgnqlgm-g"
+  googleMapsAPI: "AIzaSyDGgnzrvzXBT4VA_pBvIXB398kXIBmvqdQ"
 };
 
 /*
