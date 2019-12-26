@@ -2,25 +2,37 @@ import { map } from "rxjs/operators";
 import { environment } from "./../../../environments/environment";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+
 const COUNTRIES_API_URL = environment.apiBaseUrl + "/setups/countries";
 const ROLES_API_URL = environment.apiBaseUrl + "/auth/roles";
 const DEPARTMENTS_API_URL = environment.apiBaseUrl + "/setups/departments";
+const PROFESSIONS_API_URL = environment.apiBaseUrl + "/setups/professions";
+const BANK_BRANCH_API_URL = environment.apiBaseUrl + "/setups/bankbranches";
+const SERVICE_SUB_CATEGORIES_API_URL =
+  environment.apiBaseUrl + "/setups/servicesubcategories";
 const PAYMENTS_CHANNEL_API_URL =
   environment.apiBaseUrl + "/setups/paymentchannels";
 const BANKS_API_URL = environment.apiBaseUrl + "/setups/banks";
+const EDUCATIONAL_LEVEL_API_URL =
+  environment.apiBaseUrl + "/setups/educationallevels";
+const ID_TYPE_API_URL = environment.apiBaseUrl + "/setups/idtypes";
 const SPONSORSHIP_TYPE_API_URL =
   environment.apiBaseUrl + "/setups/sponsorshiptypes";
 const PAYMENT_STYLE_API_URL = environment.apiBaseUrl + "/setups/paymentstyles";
 const BILLING_CYCLE_API_URL = environment.apiBaseUrl + "/setups/billingcycles";
+const AGE_GROUP_API_URL = environment.apiBaseUrl + "/setups/agegroups";
 const BILLING_SYSTEM_API_URL =
   environment.apiBaseUrl + "/setups/billingsystems";
 const HOSPITAL_SERVICE_API_URL =
   environment.apiBaseUrl + "/setups/hospitalservices";
 
 const LANGUAGE_API_URL = environment.apiBaseUrl + "/setups/languages";
+const STAFF_TYPE_API_URL = environment.apiBaseUrl + "/setups/stafftypes";
 const SPECIALITY_API_URL = environment.apiBaseUrl + "/setups/specialties";
 const RELATIONSHIP_API_URL = environment.apiBaseUrl + "/setups/relationships";
 const RELIGION_API_URL = environment.apiBaseUrl + "/setups/religions";
+const SERVICE_CATEGORY_API_URL =
+  environment.apiBaseUrl + "/setups/servicecategories";
 const FUNDING_TYPE_API_URL = environment.apiBaseUrl + "/setups/fundingtypes";
 const STAFF_CATEGORY_API_URL =
   environment.apiBaseUrl + "/setups/staffcategories";
@@ -44,6 +56,14 @@ export class SetupService {
   private specialities;
   private billingCycles;
   private fundingTypes;
+  private serviceCategories;
+  private staffTypes;
+  private professions;
+  private serviceSubCategories;
+  private bankBranches;
+  private idTypes;
+  private educationalLevels;
+  private ageGroups;
 
   constructor(private http: HttpClient) {}
 
@@ -128,6 +148,140 @@ export class SetupService {
           }
         }
         return this.fundingTypes;
+      })
+    );
+  }
+
+  /**
+   * Service Category routes
+   */
+  createServiceCategory(name: string, hospitalService: string) {
+    return this.http
+      .post<any>(SERVICE_CATEGORY_API_URL, {
+        name,
+        hospital_service_id: hospitalService
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+  getServiceCategories() {
+    return this.http.get<any>(SERVICE_CATEGORY_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.serviceCategories = res;
+          for (let i = 0; i < this.serviceCategories.data.length; i++) {
+            this.serviceCategories.data[i].isActivated =
+              this.serviceCategories.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.serviceCategories;
+      })
+    );
+  }
+
+  /**
+   * Service Sub Category routes
+   */
+  createServiceSubcategory(name: string, serviceCategory: string) {
+    return this.http
+      .post<any>(SERVICE_SUB_CATEGORIES_API_URL, {
+        name,
+        service_category_id: serviceCategory
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+  getServiceSubcategories() {
+    return this.http.get<any>(SERVICE_SUB_CATEGORIES_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.serviceSubCategories = res;
+          for (let i = 0; i < this.serviceSubCategories.data.length; i++) {
+            this.serviceSubCategories.data[i].isActivated =
+              this.serviceSubCategories.data[i].status == "ACTIVE"
+                ? true
+                : false;
+          }
+        }
+        return this.serviceSubCategories;
+      })
+    );
+  }
+
+  /**
+   * Service Category routes
+   */
+  createProfession(name: string, staffCategory: string) {
+    return this.http
+      .post<any>(PROFESSIONS_API_URL, {
+        name,
+        staff_category_id: staffCategory
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+  getProfessions() {
+    return this.http.get<any>(PROFESSIONS_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.professions = res;
+          for (let i = 0; i < this.professions.data.length; i++) {
+            this.professions.data[i].isActivated =
+              this.professions.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.professions;
+      })
+    );
+  }
+
+  /**
+   * Staff Type routes
+   */
+  createStaffType(name: string, validityDays: string) {
+    return this.http
+      .post<any>(STAFF_TYPE_API_URL, {
+        name,
+        validity_days: validityDays
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+  getStaffTypes() {
+    return this.http.get<any>(STAFF_TYPE_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.staffTypes = res;
+          for (let i = 0; i < this.staffTypes.data.length; i++) {
+            this.staffTypes.data[i].isActivated =
+              this.staffTypes.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.staffTypes;
       })
     );
   }
@@ -495,6 +649,22 @@ export class SetupService {
     );
   }
 
+  /**
+   * Bank routes
+   */
+  createBank(name: string, shortCode: string, email: string, phone: string) {
+    return this.http
+      .post<any>(BANKS_API_URL, { name, sort_code: shortCode, email, phone })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
   getBanks() {
     return this.http.get<any>(BANKS_API_URL).pipe(
       map(res => {
@@ -504,5 +674,128 @@ export class SetupService {
         return this.banks;
       })
     );
+  }
+
+  /**
+   * Bank Branch routes
+   */
+  createBankBranch(
+    name: string,
+    shortCode: string,
+    bank: string,
+    email: string,
+    phone: string
+  ) {
+    return this.http
+      .post<any>(BANK_BRANCH_API_URL, {
+        name,
+        sort_code: shortCode,
+        bank_id: bank,
+        email,
+        phone
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getBankBranches() {
+    return this.http.get<any>(BANK_BRANCH_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.bankBranches = res;
+        }
+        return this.bankBranches;
+      })
+    );
+  }
+
+  createIdType(name: string) {
+    return this.http
+      .post<any>(ID_TYPE_API_URL, { name })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getIdTypes() {
+    return this.http.get<any>(ID_TYPE_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.idTypes = res;
+          for (let i = 0; i < this.idTypes.data.length; i++) {
+            this.idTypes.data[i].isActivated =
+              this.idTypes.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.idTypes;
+      })
+    );
+  }
+
+  getEducationalLevels() {
+    return this.http.get<any>(EDUCATIONAL_LEVEL_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.educationalLevels = res;
+          for (let i = 0; i < this.educationalLevels.data.length; i++) {
+            this.educationalLevels.data[i].isActivated =
+              this.educationalLevels.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.educationalLevels;
+      })
+    );
+  }
+
+  createEducationalLevel(name: string) {
+    return this.http
+      .post<any>(EDUCATIONAL_LEVEL_API_URL, { name })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getAgeGroups() {
+    return this.http.get<any>(AGE_GROUP_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.ageGroups = res;
+          for (let i = 0; i < this.ageGroups.data.length; i++) {
+            this.ageGroups.data[i].isActivated =
+              this.ageGroups.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.ageGroups;
+      })
+    );
+  }
+
+  createAgeGroup(name: string, minAge: string) {
+    return this.http
+      .post<any>(AGE_GROUP_API_URL, { name, min_age: minAge })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
   }
 }

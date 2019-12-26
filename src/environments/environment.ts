@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  apiBaseUrl: "https://test-api.ssisgh.com/v1"
+  apiBaseUrl: "https://test-api.ssisgh.com/v1",
+  googleMapsAPI: "AIzaSyC-P6dBykvMWesgweulDaPJzzXgnqlgm-g"
 };
 
 /*
