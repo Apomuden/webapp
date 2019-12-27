@@ -7,7 +7,13 @@ const COUNTRIES_API_URL = environment.apiBaseUrl + "/setups/countries";
 const ROLES_API_URL = environment.apiBaseUrl + "/auth/roles";
 const DEPARTMENTS_API_URL = environment.apiBaseUrl + "/setups/departments";
 const PROFESSIONS_API_URL = environment.apiBaseUrl + "/setups/professions";
+const TOWN_API_URL = environment.apiBaseUrl + "/setups/towns";
 const BANK_BRANCH_API_URL = environment.apiBaseUrl + "/setups/bankbranches";
+const TITLE_API_URL = environment.apiBaseUrl + "/setups/titles";
+const REGION_API_URL = environment.apiBaseUrl + "/setups/regions";
+const FACILITY_API_URL = environment.apiBaseUrl + "/setups/hospital";
+const REGIONS_BY_COUNTRY_ID_API_URL =
+  environment.apiBaseUrl + "/setups/countries/";
 const SERVICE_SUB_CATEGORIES_API_URL =
   environment.apiBaseUrl + "/setups/servicesubcategories";
 const PAYMENTS_CHANNEL_API_URL =
@@ -27,6 +33,7 @@ const HOSPITAL_SERVICE_API_URL =
   environment.apiBaseUrl + "/setups/hospitalservices";
 
 const LANGUAGE_API_URL = environment.apiBaseUrl + "/setups/languages";
+const DISTRICT_API_URL = environment.apiBaseUrl + "/setups/districts";
 const STAFF_TYPE_API_URL = environment.apiBaseUrl + "/setups/stafftypes";
 const SPECIALITY_API_URL = environment.apiBaseUrl + "/setups/specialties";
 const RELATIONSHIP_API_URL = environment.apiBaseUrl + "/setups/relationships";
@@ -64,6 +71,12 @@ export class SetupService {
   private idTypes;
   private educationalLevels;
   private ageGroups;
+  private titles;
+  private regions;
+  private districts;
+  private regionsByCountry;
+  private towns;
+  private facilities;
 
   constructor(private http: HttpClient) {}
 
@@ -74,6 +87,19 @@ export class SetupService {
           this.countries = res;
         }
         return this.countries;
+      })
+    );
+  }
+  getRegionsByCountryApi(countryId: String) {
+    return REGIONS_BY_COUNTRY_ID_API_URL + countryId + "/regions";
+  }
+  getRegionsByCountryId(countryId: string) {
+    return this.http.get<any>(this.getRegionsByCountryApi(countryId)).pipe(
+      map(res => {
+        if (res) {
+          this.regionsByCountry = res;
+        }
+        return this.regionsByCountry;
       })
     );
   }
@@ -447,6 +473,38 @@ export class SetupService {
   }
 
   /**
+   * Languages routes
+   */
+  createTown(name: string, district: string) {
+    return this.http
+      .post<any>(TOWN_API_URL, { name, district_id: district })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getTowns() {
+    return this.http.get<any>(TOWN_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.towns = res;
+          console.log(res);
+          for (let i = 0; i < this.towns.data.length; i++) {
+            this.towns.data[i].isActivated =
+              this.towns.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.towns;
+      })
+    );
+  }
+
+  /**
    * Relationship routes
    */
   createRelationship(name: string) {
@@ -786,9 +844,13 @@ export class SetupService {
     );
   }
 
-  createAgeGroup(name: string, minAge: string) {
+  createAgeGroup(name: string, minAge: string, maxAge: string) {
     return this.http
-      .post<any>(AGE_GROUP_API_URL, { name, min_age: minAge })
+      .post<any>(AGE_GROUP_API_URL, {
+        name,
+        min_age: parseInt(minAge),
+        max_age: parseInt(maxAge)
+      })
       .pipe(
         map(res => {
           if (res) {
@@ -797,5 +859,150 @@ export class SetupService {
           return false;
         })
       );
+  }
+
+  getTitles() {
+    return this.http.get<any>(TITLE_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.titles = res;
+          for (let i = 0; i < this.titles.data.length; i++) {
+            this.titles.data[i].isActivated =
+              this.titles.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.titles;
+      })
+    );
+  }
+
+  createTitle(name: string, gender: string) {
+    return this.http
+      .post<any>(TITLE_API_URL, {
+        name,
+        gender
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getRegions() {
+    return this.http.get<any>(REGION_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.regions = res;
+          for (let i = 0; i < this.regions.data.length; i++) {
+            this.regions.data[i].isActivated =
+              this.regions.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.regions;
+      })
+    );
+  }
+
+  createDistrict(name: string, region: string) {
+    return this.http
+      .post<any>(DISTRICT_API_URL, {
+        name,
+        region_id: region
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getDistricts() {
+    return this.http.get<any>(DISTRICT_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.districts = res;
+          for (let i = 0; i < this.districts.data.length; i++) {
+            this.districts.data[i].isActivated =
+              this.districts.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.districts;
+      })
+    );
+  }
+
+  createFacility(
+    name: string,
+    staffIDPrefix: string,
+    staffIdSeperator: string,
+    folderIdPrefix: string,
+    folderIdSeperator: string,
+    digitsAfterStaffPrefix: string,
+    digitsAfterFolderPrefix: string,
+    yearDigits: string,
+    allowedFolderType: string,
+    allowedInstallmentType: string,
+    activeCell: string,
+    alternateCell: string,
+    email1: string,
+    email2: string,
+    postalAddress: string,
+    physicalAddress: string,
+    country: string,
+    region: string,
+    googleAddress: string
+  ) {
+    return this.http
+      .post<any>(FACILITY_API_URL, {
+        name,
+        staff_id_prefix: staffIDPrefix,
+        staff_id_seperator: staffIdSeperator,
+        folder_id_prefix: folderIdPrefix,
+        folder_id_seperator: folderIdSeperator,
+        digits_after_staff_prefix: parseInt(digitsAfterStaffPrefix),
+        digits_after_folder_prefix: parseInt(digitsAfterFolderPrefix),
+        year_digits: parseInt(yearDigits),
+        allowed_folder_type: allowedFolderType.toString(),
+        allowed_installment_type: allowedInstallmentType.toString(),
+        active_cell: activeCell,
+        alternate_cell: alternateCell,
+        email1: email1,
+        email2: email2,
+        postal_address: postalAddress,
+        physical_address: physicalAddress,
+        country_id: country,
+        region_id: region,
+        gps_location: googleAddress
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getFacilities() {
+    return this.http.get<any>(FACILITY_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.facilities = res;
+          for (let i = 0; i < this.facilities.data.length; i++) {
+            this.facilities.data[i].isActivated =
+              this.facilities.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.facilities;
+      })
+    );
   }
 }

@@ -18,6 +18,7 @@ export class AgeGroupSetupComponent implements OnInit {
   error = "";
   name = "";
   minAge = "";
+  maxAge = "";
   componentLabel = "age group";
 
   submitForm(): void {
@@ -25,14 +26,16 @@ export class AgeGroupSetupComponent implements OnInit {
       this.name == null ||
       this.name == "" ||
       this.minAge == null ||
-      this.minAge == ""
+      this.minAge == "" ||
+      this.maxAge == null ||
+      this.maxAge == ""
     ) {
       this.error = `All fields are required!`;
     } else {
       this.error = "";
       this.isCreatingAgeGroup.next(true);
       this.setup
-        .createAgeGroup(this.name, this.minAge)
+        .createAgeGroup(this.name, this.minAge, this.maxAge)
         .pipe(first())
         .subscribe(
           success => {
@@ -45,6 +48,7 @@ export class AgeGroupSetupComponent implements OnInit {
               this.getAgeGroups();
               this.name = "";
               this.minAge = "";
+              this.maxAge = "";
             } else {
               this.notification.blank(
                 "Error",

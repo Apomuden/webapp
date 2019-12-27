@@ -1,1 +1,111 @@
-<p>district-setup works!</p>
+<div nz-row nzGutter="10">
+  <nz-col nzSpan="12">
+    <nz-card>
+      <nz-list
+        style="min-height: 350px;"
+        [nzDataSource]="list"
+        [nzItemLayout]="'horizontal'"
+        [nzLoading]="initLoading"
+        [nzRenderItem]="item"
+      >
+        <ng-template #item let-item>
+          <nz-list-item
+            [nzActions]="item.loading ? [] : [editAction, moreAction]"
+          >
+            <nz-skeleton
+              [nzActive]="true"
+              [nzTitle]="false"
+              [nzLoading]="item.loading"
+            >
+              <ng-template #editAction><a>edit</a></ng-template>
+              <ng-template #moreAction
+                ><nz-switch [(ngModel)]="item.isActivated"></nz-switch
+              ></ng-template>
+              <nz-list-item-meta [nzTitle]="nzTitle">
+                <ng-template #nzTitle>
+                  <a>{{ item.name }}</a>
+                </ng-template>
+              </nz-list-item-meta>
+            </nz-skeleton>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+    </nz-card>
+  </nz-col>
+  <nz-col nzSpan="8">
+    <nz-card>
+      <h5>Create District</h5>
+      <form (ngSubmit)="submitForm()">
+        <div *ngIf="error">{{ error }}</div>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input
+              type="text"
+              nz-input
+              [(ngModel)]="name"
+              name="name"
+              placeholder="Input district name"
+            />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Country"
+              style="width:100%;"
+              [(ngModel)]="country"
+              name="country"
+              (ngModelChange)="getRegionsByCountryId(country)"
+              [nzLoading]="countriesLoading | async"
+            >
+              <nz-option
+                *ngFor="let country of countries"
+                selected="country.name == 'Ghana'"
+                [nzValue]="country.id"
+                [nzLabel]="country.name"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Region"
+              style="width:100%;"
+              [(ngModel)]="region"
+              name="region"
+              [nzLoading]="regionsLoading | async"
+            >
+              <nz-option
+                *ngFor="let region of regions"
+                [nzValue]="region.id"
+                [nzLabel]="region.name"
+              ></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+
+        <nz-row>
+          <nz-form-control
+            nzSpan="24"
+            style="text-align: right;"
+            class="m-t-10"
+          >
+            <button
+              nz-button
+              nzType="primary"
+              type="submit"
+              [nzLoading]="isCreatingDistrict | async"
+            >
+              Submit
+            </button>
+          </nz-form-control>
+        </nz-row>
+      </form>
+    </nz-card>
+  </nz-col>
+</div>

@@ -25,6 +25,9 @@ export class SetupsComponent implements OnInit {
       case "sponsorshiptypes":
         this.routerLink = "sponsorship-types";
         break;
+      case "districts":
+        this.routerLink = "districts";
+        break;
       case "paymentstyles":
         this.routerLink = "payment-styles";
         break;
