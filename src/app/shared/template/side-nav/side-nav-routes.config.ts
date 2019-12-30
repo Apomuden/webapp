@@ -54,6 +54,30 @@ export const ROUTES: SideNavInterface[] = [
         icon: "",
         iconTheme: "",
         submenu: []
+      },
+      {
+        path: "/user-management/permissions",
+        title: "Permissions",
+        iconType: "",
+        icon: "",
+        iconTheme: "",
+        submenu: []
+      },
+      {
+        path: "/user-management/modules",
+        title: "Modules",
+        iconType: "",
+        icon: "",
+        iconTheme: "",
+        submenu: []
+      },
+      {
+        path: "/user-management/components",
+        title: "Components",
+        iconType: "",
+        icon: "",
+        iconTheme: "",
+        submenu: []
       }
     ]
   },

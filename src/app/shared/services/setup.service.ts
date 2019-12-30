@@ -10,6 +10,8 @@ const PROFESSIONS_API_URL = environment.apiBaseUrl + "/setups/professions";
 const TOWN_API_URL = environment.apiBaseUrl + "/setups/towns";
 const BANK_BRANCH_API_URL = environment.apiBaseUrl + "/setups/bankbranches";
 const TITLE_API_URL = environment.apiBaseUrl + "/setups/titles";
+const ACCREDITATION_API_URL = environment.apiBaseUrl + "/setups/accreditations";
+const COMPANY_API_URL = environment.apiBaseUrl + "/setups/companies";
 const REGION_API_URL = environment.apiBaseUrl + "/setups/regions";
 const FACILITY_API_URL = environment.apiBaseUrl + "/setups/hospital";
 const REGIONS_BY_COUNTRY_ID_API_URL =
@@ -77,6 +79,8 @@ export class SetupService {
   private regionsByCountry;
   private towns;
   private facilities;
+  private companies;
+  private accreditations;
 
   constructor(private http: HttpClient) {}
 
@@ -377,6 +381,50 @@ export class SetupService {
   }
 
   /**
+   * Accreditations routes
+   */
+  createAccreditation(
+    reg_body: string,
+    reg_no: string,
+    reg_date: string,
+    tin: string,
+    expiry_date: string
+  ) {
+    return this.http
+      .post<any>(ACCREDITATION_API_URL, {
+        reg_body,
+        reg_no,
+        reg_date,
+        tin,
+        expiry_date
+      })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getAccreditations() {
+    return this.http.get<any>(ACCREDITATION_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.accreditations = res;
+          console.log(res);
+          for (let i = 0; i < this.accreditations.data.length; i++) {
+            this.accreditations.data[i].isActivated =
+              this.accreditations.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.accreditations;
+      })
+    );
+  }
+
+  /**
    * Billing System routes
    */
   createBillingSystem(name: string) {
@@ -404,6 +452,38 @@ export class SetupService {
           }
         }
         return this.billingSystems;
+      })
+    );
+  }
+
+  /**
+   * Company routes
+   */
+  createCompany(name: string, phone: string, email: string, gps_location) {
+    return this.http
+      .post<any>(COMPANY_API_URL, { name, phone, email, gps_location })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  getCompanies() {
+    return this.http.get<any>(COMPANY_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.companies = res;
+          console.log(res);
+          for (let i = 0; i < this.companies.data.length; i++) {
+            this.companies.data[i].isActivated =
+              this.companies.data[i].status == "ACTIVE" ? true : false;
+          }
+        }
+        return this.companies;
       })
     );
   }

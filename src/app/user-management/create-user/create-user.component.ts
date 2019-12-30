@@ -1,7 +1,7 @@
 import { BehaviorSubject } from "rxjs";
 import { SetupService } from "./../../shared/services/setup.service";
 import { Component, OnInit } from "@angular/core";
-import { first } from "rxjs/operators";
+import { first, retry } from "rxjs/operators";
 
 @Component({
   selector: "app-create-user",
@@ -13,11 +13,17 @@ export class CreateUserComponent implements OnInit {
   departmentsloading = new BehaviorSubject(false);
   rolesloading = new BehaviorSubject(false);
   banksloading = new BehaviorSubject(false);
+  staffTypesLoading = new BehaviorSubject(false);
+  titlesLoading = new BehaviorSubject(false);
+  educationalLevelsLoading = new BehaviorSubject(false);
 
   countries = [];
   departments = [];
   roles = [];
   banks = [];
+  educationalLevels = [];
+  staffTypes = [];
+  titles = [];
   countryCode = null;
   current = 0;
   staffType = null;
@@ -116,6 +122,38 @@ export class CreateUserComponent implements OnInit {
         error => {
           this.rolesloading.next(false);
           console.log("error", error);
+        }
+      );
+
+    this.staffTypesLoading.next(true);
+    this.setup
+      .getStaffTypes()
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.staffTypesLoading.next(false);
+          this.staffTypes = data.data;
+        },
+        err => {
+          retry(3);
+          this.staffTypesLoading.next(false);
+          console.log(err);
+        }
+      );
+
+    this.titlesLoading.next(true);
+    this.setup
+      .getTitles()
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.titlesLoading.next(false);
+          this.titles = data.data;
+        },
+        err => {
+          retry(3);
+          this.titlesLoading.next(false);
+          console.log(err);
         }
       );
 

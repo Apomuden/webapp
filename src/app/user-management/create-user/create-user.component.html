@@ -17,18 +17,15 @@
         style="min-width: 200px;"
         nzShowSearch
         nzAllowClear
+        [nzLoading]="staffTypesLoading | async"
         nzPlaceHolder="Select a staff type"
         [(ngModel)]="staffType"
       >
         <nz-option
-          nzLabel="National Service"
-          nzValue="national service"
+          *ngFor="let staffType of staffTypes"
+          [nzLabel]="staffType.name"
+          [nzValue]="staffType.id"
         ></nz-option>
-        <nz-option nzLabel="NABCO" nzValue="nabco"></nz-option>
-        <nz-option nzLabel="Perminent" nzValue="perminent"></nz-option>
-        <nz-option nzLabel="Added Staff" nzValue="added staff"></nz-option>
-        <nz-option nzLabel="Volunteer" nzValue="volunteer"></nz-option>
-        <nz-option nzLabel="Other" nzValue="other"></nz-option>
       </nz-select>
     </div>
   </div>
@@ -41,15 +38,15 @@
         style="min-width: 200px;"
         nzShowSearch
         nzAllowClear
+        [nzLoading]="titlesLoading | async"
         nzPlaceHolder="Select a title"
         [(ngModel)]="title"
       >
-        <nz-option nzLabel="Mr." nzValue="mr"></nz-option>
-        <nz-option nzLabel="Mrs." nzValue="mrs"></nz-option>
-        <nz-option nzLabel="Miss." nzValue="miss"></nz-option>
-        <nz-option nzLabel="Master" nzValue="master"></nz-option>
-        <nz-option nzLabel="Madam" nzValue="madam"></nz-option>
-        <nz-option nzLabel="Other" nzValue="other"></nz-option>
+        <nz-option
+          *ngFor="let title of titles"
+          [nzLabel]="title.name"
+          [nzValue]="title.id"
+        ></nz-option>
       </nz-select>
     </div>
     <br />
@@ -127,18 +124,11 @@
         style="min-width: 200px;"
         nzShowSearch
         nzAllowClear
+        [nzLoading]="educationalLevelsLoading | async"
         nzPlaceHolder="Select a Educational Level"
         [(ngModel)]="educationalLevel"
       >
-        <nz-option nzLabel="SHS" nzValue="shs"></nz-option>
-        <nz-option nzLabel="JHS" nzValue="jhs"></nz-option>
-        <nz-option nzLabel="Primary" nzValue="primary"></nz-option>
-        <nz-option nzLabel="None" nzValue="none"></nz-option>
-        <nz-option nzLabel="O-Level" nzValue="olevel"></nz-option>
-        <nz-option nzLabel="A-Level" nzValue="alevel"></nz-option>
-        <nz-option nzLabel="Tertiary" nzValue="tertiary"></nz-option>
-        <nz-option nzLabel="Masters" nzValue="masters"></nz-option>
-        <nz-option nzLabel="Others" nzValue="others"></nz-option>
+        <nz-option *ngFor="let level of educationalLevels" [nzLabel]="level.name" [nzValue]="level.id"></nz-option>
       </nz-select>
     </div>
     <br />
@@ -256,195 +246,177 @@
     <div nz-row>
       <div nz-col nzSpan="8">
         <nz-select
-        nzShowSearch
-        nzAllowClear
-        nzPlaceHolder="Role"
-        style="width:100%;"
-        [(ngModel)]="role"
-        [nzLoading]="rolesloading | async"
-      >
-        <nz-option
-          *ngFor="let role of roles"
-          [nzValue]="role.value"
-          [nzLabel]="role.name"
-        ></nz-option>
-      </nz-select>
-  
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Role"
+          style="width:100%;"
+          [(ngModel)]="role"
+          [nzLoading]="rolesloading | async"
+        >
+          <nz-option
+            *ngFor="let role of roles"
+            [nzValue]="role.value"
+            [nzLabel]="role.name"
+          ></nz-option>
+        </nz-select>
       </div>
     </div>
-    <br/>
+    <br />
     <div nz-row>
       <div nz-col nzSpan="8">
-    
-    <nz-select
-      nzShowSearch
-      nzAllowClear
-      nzPlaceHolder="Department"
-      style="width:100%;"
-      [(ngModel)]="department"
-      [nzLoading]="departmentsloading | async"
-    >
-      <nz-option
-        *ngFor="let department of departments"
-        [nzValue]="department.name"
-        [nzLabel]="department.name"
-      ></nz-option>
-    </nz-select>
-    </div>
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Department"
+          style="width:100%;"
+          [(ngModel)]="department"
+          [nzLoading]="departmentsloading | async"
+        >
+          <nz-option
+            *ngFor="let department of departments"
+            [nzValue]="department.name"
+            [nzLabel]="department.name"
+          ></nz-option>
+        </nz-select>
+      </div>
     </div>
   </div>
   <div *ngIf="current == 5">
     <div nz-row nzGutter="10">
-      <div nz-col nzSpan=8>
+      <div nz-col nzSpan="8">
         <nz-select
-      nzShowSearch
-      nzAllowClear
-      nzPlaceHolder="Bank Name"
-      style="width:100%;"
-      [(ngModel)]="bankName"
-      [nzLoading]="banksloading | async"
-    >
-      <nz-option
-        *ngFor="let bank of banks"
-        [nzValue]="bank.name"
-        [nzLabel]="bank.name"
-      ></nz-option>
-    </nz-select>
-      
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Bank Name"
+          style="width:100%;"
+          [(ngModel)]="bankName"
+          [nzLoading]="banksloading | async"
+        >
+          <nz-option
+            *ngFor="let bank of banks"
+            [nzValue]="bank.name"
+            [nzLabel]="bank.name"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Bank Branch"
+          nz-input
+          [(ngModel)]="bankBranch"
+        />
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Account Number"
+          nz-input
+          [(ngModel)]="accountNumber"
+        />
+      </div>
     </div>
-    <div nz-col nzSpan="8">
-      <input
-        type="text"
-        style="text-align: left;"
-        placeholder="Bank Branch"
-        nz-input
-        [(ngModel)]="bankBranch"
-      />
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Professional Pin"
+          nz-input
+          [(ngModel)]="pin"
+        />
+      </div>
+      <div nz-col nzSpan="4" style="text-align: left;">
+        <nz-date-picker
+          style="min-width: 400px;"
+          [(ngModel)]="expiryDate"
+          (ngModelChange)="onExpiryDateChange($event)"
+          nzPlaceHolder="Expiry Date"
+        ></nz-date-picker>
+      </div>
+      <div nz-col nzSpan="4" style="text-align:left">
+        <nz-date-picker
+          style="min-width: 400px;"
+          [(ngModel)]="appointmentDate"
+          (ngModelChange)="onAppointmentDateChange($event)"
+          nzPlaceHolder="Appointment Date"
+        ></nz-date-picker>
+      </div>
     </div>
-    <div nz-col nzSpan="8">
-      <input
-        type="text"
-        style="text-align: left;"
-        placeholder="Account Number"
-        nz-input
-        [(ngModel)]="accountNumber"
-      />
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Salary"
+          nz-input
+          [(ngModel)]="salary"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="SNNIT Number"
+          nz-input
+          [(ngModel)]="snnitNumber"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="TIN Number"
+          nz-input
+          [(ngModel)]="tinNumber"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="3rd Party Contribution"
+          nz-input
+          [(ngModel)]="thirdPartyContribution"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Tax on Salary"
+          nz-input
+          [(ngModel)]="taxOnSalary"
+        />
+      </div>
     </div>
-</div>
-<br/>
-<div nz-row nzGutter="10">
-  <div nz-col nzSpan="8">
-    <input
-      type="text"
-      style="text-align: left;"
-      placeholder="Professional Pin"
-      nz-input
-      [(ngModel)]="pin"
-    />
-  </div>
-  <div nz-col nzSpan="4" style="text-align: left;">
-      <nz-date-picker
-      style="min-width: 400px;"
-        [(ngModel)]="expiryDate"
-        (ngModelChange)="onExpiryDateChange($event)"
-        nzPlaceHolder="Expiry Date"
-      ></nz-date-picker>
-  </div>
-  <div nz-col nzSpan="4" style="text-align:left">
-    <nz-date-picker
-    style="min-width: 400px;"
-      [(ngModel)]="appointmentDate"
-      (ngModelChange)="onAppointmentDateChange($event)"
-      nzPlaceHolder="Appointment Date"
-    ></nz-date-picker>
-</div>
-</div>
-<br/>
-<div nz-row nzGutter="10">
-  <div nz-col nzSpan="4">
-    <input
-      type="text"
-      style="text-align: left;"
-      placeholder="Salary"
-      nz-input
-      [(ngModel)]="salary"
-    />
-  </div>
-  <div nz-col nzSpan="4">
-    <input
-      type="text"
-      style="text-align: left;"
-      placeholder="SNNIT Number"
-      nz-input
-      [(ngModel)]="snnitNumber"
-    />
-  </div>
-  <div nz-col nzSpan="4">
-    <input
-      type="text"
-      style="text-align: left;"
-      placeholder="TIN Number"
-      nz-input
-      [(ngModel)]="tinNumber"
-    />
-  </div>
-  <div nz-col nzSpan="4">
-    <input
-      type="text"
-      style="text-align: left;"
-      placeholder="3rd Party Contribution"
-      nz-input
-      [(ngModel)]="thirdPartyContribution"
-    />
-  </div>
-  <div nz-col nzSpan="4">
-    <input
-      type="text"
-      style="text-align: left;"
-      placeholder="Tax on Salary"
-      nz-input
-      [(ngModel)]="taxOnSalary"
-    />
-  </div>
-  
-</div>
-<br/>
-<div nz-row>
-  <div nz-col nzSpan=4>
-    <nz-select
-  nzShowSearch
-  nzAllowClear
-  nzPlaceHolder="Signatory"
-  style="width:100%;"
-  [(ngModel)]="signatory"
->
-  <nz-option
-    nzValue="doctor"
-    nzLabel="Doctor"
-
-  ></nz-option>
-  <nz-option
-    nzValue="nurse"
-    nzLabel="Nurse"
-
-  ></nz-option>
-  <nz-option
-    nzValue="other"
-    nzLabel="Other"
-
-  ></nz-option>
-</nz-select>
-</div>
-</div>
-<div nz-row>
-  <div nz-col nzSpan="8">
-    <!-- Work on signature pad -->
-    <!-- work on documents -->
-    In the pipeline
-  </div>
-</div>
-
-
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="4">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Signatory"
+          style="width:100%;"
+          [(ngModel)]="signatory"
+        >
+          <nz-option nzValue="doctor" nzLabel="Doctor"></nz-option>
+          <nz-option nzValue="nurse" nzLabel="Nurse"></nz-option>
+          <nz-option nzValue="other" nzLabel="Other"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <!-- Work on signature pad -->
+        <!-- work on documents -->
+        In the pipeline
+      </div>
+    </div>
   </div>
   <div *ngIf="current == 6">In The pipeline</div>
 </div>
