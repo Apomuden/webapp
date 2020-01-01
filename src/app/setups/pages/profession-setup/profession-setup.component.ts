@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-profession-setup",
-  templateUrl: "./profession-setup.component.html",
-  styleUrls: ["./profession-setup.component.css"]
+  selector: 'app-profession-setup',
+  templateUrl: './profession-setup.component.html',
+  styleUrls: ['./profession-setup.component.css']
 })
 export class ProfessionSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -17,25 +17,25 @@ export class ProfessionSetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
+  error = '';
+  name = '';
 
   staffCategory = null;
 
   staffCategories = null;
 
-  componentLabel = "profession";
+  componentLabel = 'profession';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.staffCategory == null ||
-      this.staffCategory == ""
+      this.staffCategory === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingProfession.next(true);
       this.setup
         .createProfession(this.name, this.staffCategory)
@@ -45,14 +45,14 @@ export class ProfessionSetupComponent implements OnInit {
             this.isCreatingProfession.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getProfessions();
-              this.name = "";
+              this.name = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -60,7 +60,7 @@ export class ProfessionSetupComponent implements OnInit {
           error => {
             this.isCreatingProfession.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-payment-style-setup",
-  templateUrl: "./payment-style-setup.component.html",
-  styleUrls: ["./payment-style-setup.component.css"]
+  selector: 'app-payment-style-setup',
+  templateUrl: './payment-style-setup.component.html',
+  styleUrls: ['./payment-style-setup.component.css']
 })
 export class PaymentStyleSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,14 +15,14 @@ export class PaymentStyleSetupComponent implements OnInit {
   isCreatingPaymentStyle = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  paymentStyle = "";
+  error = '';
+  paymentStyle = '';
 
   submitForm(): void {
-    if (this.paymentStyle == null || this.paymentStyle == "") {
-      this.error = "Please enter payment style name";
+    if (this.paymentStyle == null || this.paymentStyle === '') {
+      this.error = 'Please enter payment style name';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingPaymentStyle.next(true);
       this.setup
         .createPaymentStyle(this.paymentStyle)
@@ -32,21 +32,21 @@ export class PaymentStyleSetupComponent implements OnInit {
             this.isCreatingPaymentStyle.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
-                "Successfully created payment style"
+                'Success',
+                'Successfully created payment style'
               );
               this.getPaymentStyles();
-              this.paymentStyle = "";
+              this.paymentStyle = '';
             } else {
               this.notification.blank(
-                "Error",
-                "Could not create payment style"
+                'Error',
+                'Could not create payment style'
               );
             }
           },
           error => {
             this.isCreatingPaymentStyle.next(false);
-            this.notification.blank("Error", "Could not create payment style");
+            this.notification.blank('Error', 'Could not create payment style');
           }
         );
     }

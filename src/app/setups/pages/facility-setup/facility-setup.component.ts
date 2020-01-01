@@ -1,17 +1,22 @@
-import { first } from "rxjs/operators";
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { GooglePlaceDirective } from "ngx-google-places-autocomplete";
-import { Address } from "ngx-google-places-autocomplete/objects/address";
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { first } from 'rxjs/operators';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-facility-setup",
-  templateUrl: "./facility-setup.component.html",
-  styleUrls: ["./facility-setup.component.css"]
+  selector: 'app-facility-setup',
+  templateUrl: './facility-setup.component.html',
+  styleUrls: ['./facility-setup.component.css']
 })
 export class FacilitySetupComponent implements OnInit {
+
+  constructor(
+    private setup: SetupService,
+    private notification: NzNotificationService
+  ) {}
   initLoading = true; // bug
   loadingMore = false;
   isCreatingFacility = new BehaviorSubject(false);
@@ -19,78 +24,76 @@ export class FacilitySetupComponent implements OnInit {
   countriesLoading = new BehaviorSubject(false);
   googleAddress = null;
 
-  @ViewChild("placesRef", { static: false }) placesRef: GooglePlaceDirective;
-  public handleAddressChange(address: Address) {
-    this.googleAddress = address.url;
-  }
+  @ViewChild('placesRef', { static: false }) placesRef: GooglePlaceDirective;
 
   data = [];
   list = [];
-  error = "";
-  name = "";
-  staffIDPrefix = "";
-  staffIdSeperator = "";
-  folderIdPrefix = "";
-  folderIdSeperator = "";
-  digitsAfterStaffPrefix = "";
-  digitsAfterFolderPrefix = "";
-  yearDigits = "";
+  error = '';
+  name = '';
+  staffIDPrefix = '';
+  staffIdSeperator = '';
+  folderIdPrefix = '';
+  folderIdSeperator = '';
+  digitsAfterStaffPrefix: number;
+  digitsAfterFolderPrefix: number;
+  yearDigits: number;
   allowedFolderType = null;
   allowedInstallmentType = null;
-  activeCell = "";
-  alternateCell = "";
-  email1 = "";
-  email2 = "";
-  postalAddress = "";
-  physicalAddress = "";
+  activeCell = '';
+  alternateCell = '';
+  email1 = '';
+  email2 = '';
+  postalAddress = '';
+  physicalAddress = '';
   region = null;
   country = null;
 
   regions = null;
   countries = null;
 
-  componentLabel = "facility";
+  componentLabel = 'facility';
+  public handleAddressChange(address: Address) {
+    this.googleAddress = address.url;
+  }
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.region == null ||
-      this.region == "" ||
+      this.region === '' ||
       this.staffIDPrefix == null ||
-      this.staffIDPrefix == "" ||
+      this.staffIDPrefix === '' ||
       this.staffIdSeperator == null ||
-      this.staffIdSeperator == "" ||
+      this.staffIdSeperator === '' ||
       this.folderIdPrefix == null ||
-      this.folderIdPrefix == "" ||
+      this.folderIdPrefix === '' ||
       this.folderIdSeperator == null ||
-      this.folderIdSeperator == "" ||
+      this.folderIdSeperator === '' ||
       this.digitsAfterStaffPrefix == null ||
-      this.digitsAfterStaffPrefix == "" ||
       this.yearDigits == null ||
-      this.yearDigits == "" ||
       this.allowedFolderType == null ||
-      this.allowedFolderType == "" ||
+      this.allowedFolderType === '' ||
       this.allowedInstallmentType == null ||
-      this.allowedInstallmentType == "" ||
+      this.allowedInstallmentType === '' ||
       this.activeCell == null ||
-      this.activeCell == "" ||
+      this.activeCell === '' ||
       this.email1 == null ||
-      this.email1 == "" ||
+      this.email1 === '' ||
       this.postalAddress == null ||
-      this.postalAddress == "" ||
+      this.postalAddress === '' ||
       this.physicalAddress == null ||
-      this.physicalAddress == "" ||
+      this.physicalAddress === '' ||
       this.region == null ||
-      this.region == "" ||
+      this.region === '' ||
       this.country == null ||
-      this.country == "" ||
+      this.country === '' ||
       this.googleAddress == null ||
-      this.googleAddress == ""
+      this.googleAddress === ''
     ) {
-      this.error = "Please fill all required fields!";
+      this.error = 'Please fill all required fields!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingFacility.next(true);
       this.setup
         .createFacility(
@@ -120,16 +123,16 @@ export class FacilitySetupComponent implements OnInit {
             this.isCreatingFacility.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getFacilities();
-              this.name = "";
+              this.name = '';
               this.country = null;
               this.region = null;
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -137,18 +140,13 @@ export class FacilitySetupComponent implements OnInit {
           error => {
             this.isCreatingFacility.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }
         );
     }
   }
-
-  constructor(
-    private setup: SetupService,
-    private notification: NzNotificationService
-  ) {}
 
   getFacilities() {
     this.setup
@@ -177,7 +175,7 @@ export class FacilitySetupComponent implements OnInit {
           this.regionsLoading.next(false);
           this.regions = data.data;
           this.region = null;
-          console.log("regions by country id", this.regions);
+          console.log('regions by country id', this.regions);
         },
         error => {
           this.regionsLoading.next(false);
@@ -195,7 +193,7 @@ export class FacilitySetupComponent implements OnInit {
           this.countriesLoading.next(false);
           this.countries = data.data;
           this.region = null;
-          console.log("countries", this.countries);
+          console.log('countries', this.countries);
         },
         error => {
           this.countriesLoading.next(false);

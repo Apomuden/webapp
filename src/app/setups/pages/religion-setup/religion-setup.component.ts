@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-religion-setup",
-  templateUrl: "./religion-setup.component.html",
-  styleUrls: ["./religion-setup.component.css"]
+  selector: 'app-religion-setup',
+  templateUrl: './religion-setup.component.html',
+  styleUrls: ['./religion-setup.component.css']
 })
 export class ReligionSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class ReligionSetupComponent implements OnInit {
   isCreatingReligion = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  religion = "";
-  componentLabel = "religion";
+  error = '';
+  religion = '';
+  componentLabel = 'religion';
 
   submitForm(): void {
-    if (this.religion == null || this.religion == "") {
+    if (this.religion == null || this.religion === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingReligion.next(true);
       this.setup
         .createReligion(this.religion)
@@ -33,14 +33,14 @@ export class ReligionSetupComponent implements OnInit {
             this.isCreatingReligion.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getReligions();
-              this.religion = "";
+              this.religion = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class ReligionSetupComponent implements OnInit {
           error => {
             this.isCreatingReligion.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

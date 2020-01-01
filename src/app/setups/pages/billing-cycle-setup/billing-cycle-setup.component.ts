@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { NzNotificationService } from "ng-zorro-antd";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { SetupService } from './../../../shared/services/setup.service';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-billing-cycle-setup",
-  templateUrl: "./billing-cycle-setup.component.html",
-  styleUrls: ["./billing-cycle-setup.component.css"]
+  selector: 'app-billing-cycle-setup',
+  templateUrl: './billing-cycle-setup.component.html',
+  styleUrls: ['./billing-cycle-setup.component.css']
 })
 export class BillingCycleSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,21 +15,21 @@ export class BillingCycleSetupComponent implements OnInit {
   isCreatingBillingCycle = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  name = "";
-  status = "ACTIVE";
-  componentLabel = "billing cycle";
+  error = '';
+  name = '';
+  status = 'ACTIVE';
+  componentLabel = 'billing cycle';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.status == null ||
-      this.status == ""
+      this.status === ''
     ) {
       this.error = `All fields are required`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingBillingCycle.next(true);
       this.setup
         .createBillingCycle(this.name, this.status)
@@ -39,14 +39,14 @@ export class BillingCycleSetupComponent implements OnInit {
             this.isCreatingBillingCycle.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getBillingCycles();
-              this.name = "";
+              this.name = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -54,7 +54,7 @@ export class BillingCycleSetupComponent implements OnInit {
           error => {
             this.isCreatingBillingCycle.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

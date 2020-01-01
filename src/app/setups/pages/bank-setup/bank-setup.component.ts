@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-bank-setup",
-  templateUrl: "./bank-setup.component.html",
-  styleUrls: ["./bank-setup.component.css"]
+  selector: 'app-bank-setup',
+  templateUrl: './bank-setup.component.html',
+  styleUrls: ['./bank-setup.component.css']
 })
 export class BankSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -16,28 +16,28 @@ export class BankSetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
-  sortCode = "";
-  email = "";
-  phone = "";
+  error = '';
+  name = '';
+  sortCode = '';
+  email = '';
+  phone = '';
 
-  componentLabel = "bank";
+  componentLabel = 'bank';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.sortCode == null ||
-      this.sortCode == "" ||
+      this.sortCode === '' ||
       this.email == null ||
-      this.email == "" ||
+      this.email === '' ||
       this.phone == null ||
-      this.phone == ""
+      this.phone === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingBank.next(true);
       this.setup
         .createBank(this.name, this.sortCode, this.email, this.phone)
@@ -47,17 +47,17 @@ export class BankSetupComponent implements OnInit {
             this.isCreatingBank.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getBanks();
-              this.name = "";
-              this.sortCode = "";
-              this.email = "";
-              this.phone = "";
+              this.name = '';
+              this.sortCode = '';
+              this.email = '';
+              this.phone = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -65,7 +65,7 @@ export class BankSetupComponent implements OnInit {
           error => {
             this.isCreatingBank.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

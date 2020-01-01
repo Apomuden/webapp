@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { NzNotificationService } from "ng-zorro-antd";
-import { BehaviorSubject } from "rxjs";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-billing-system-setup",
-  templateUrl: "./billing-system-setup.component.html",
-  styleUrls: ["./billing-system-setup.component.css"]
+  selector: 'app-billing-system-setup',
+  templateUrl: './billing-system-setup.component.html',
+  styleUrls: ['./billing-system-setup.component.css']
 })
 export class BillingSystemSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class BillingSystemSetupComponent implements OnInit {
   isCreatingBillingSystem = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  billingSystem = "";
-  componentLabel = "billing system";
+  error = '';
+  billingSystem = '';
+  componentLabel = 'billing system';
 
   submitForm(): void {
-    if (this.billingSystem == null || this.billingSystem == "") {
+    if (this.billingSystem == null || this.billingSystem === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingBillingSystem.next(true);
       this.setup
         .createBillingSystem(this.billingSystem)
@@ -33,14 +33,14 @@ export class BillingSystemSetupComponent implements OnInit {
             this.isCreatingBillingSystem.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getBillingSystems();
-              this.billingSystem = "";
+              this.billingSystem = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class BillingSystemSetupComponent implements OnInit {
           error => {
             this.isCreatingBillingSystem.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

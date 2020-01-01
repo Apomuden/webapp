@@ -1,13 +1,13 @@
-import { BehaviorSubject } from "rxjs";
-import { first } from "rxjs/operators";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { Component, OnInit } from "@angular/core";
-import { NzNotificationService } from "ng-zorro-antd";
+import { BehaviorSubject } from 'rxjs';
+import { first } from 'rxjs/operators';
+import { SetupService } from './../../../shared/services/setup.service';
+import { Component, OnInit } from '@angular/core';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-payment-channel-setup",
-  templateUrl: "./payment-channel-setup.component.html",
-  styleUrls: ["./payment-channel-setup.component.css"]
+  selector: 'app-payment-channel-setup',
+  templateUrl: './payment-channel-setup.component.html',
+  styleUrls: ['./payment-channel-setup.component.css']
 })
 export class PaymentChannelSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,14 +15,14 @@ export class PaymentChannelSetupComponent implements OnInit {
   isCreatingInputChannel = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  paymentChannel = "";
+  error = '';
+  paymentChannel = '';
 
   submitForm(): void {
-    if (this.paymentChannel == null || this.paymentChannel == "") {
-      this.error = "Please enter a payment channel name";
+    if (this.paymentChannel == null || this.paymentChannel === '') {
+      this.error = 'Please enter a payment channel name';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingInputChannel.next(true);
       this.setup
         .createPaymentChannel(this.paymentChannel)
@@ -32,23 +32,23 @@ export class PaymentChannelSetupComponent implements OnInit {
             this.isCreatingInputChannel.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
-                "Successfully created payment channel"
+                'Success',
+                'Successfully created payment channel'
               );
               this.getPaymentChannels();
-              this.paymentChannel = "";
+              this.paymentChannel = '';
             } else {
               this.notification.blank(
-                "Error",
-                "Could not create payment channel"
+                'Error',
+                'Could not create payment channel'
               );
             }
           },
           error => {
             this.isCreatingInputChannel.next(false);
             this.notification.blank(
-              "Error",
-              "Could not create payment channel"
+              'Error',
+              'Could not create payment channel'
             );
           }
         );
