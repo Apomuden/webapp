@@ -1,17 +1,17 @@
-import { Component } from "@angular/core";
-import { ROUTES } from "./side-nav-routes.config";
-import { ThemeConstantService } from "../../services/theme-constant.service";
+import { Component } from '@angular/core';
+import { ROUTES } from './side-nav-routes.config';
+import { ThemeConstantService } from '../../services/theme-constant.service';
 
 @Component({
-  selector: "app-sidenav",
-  templateUrl: "./side-nav.component.html"
+  selector: 'app-sidenav',
+  templateUrl: './side-nav.component.html'
 })
 export class SideNavComponent {
   public menuItems: any[];
   isFolded: boolean;
   isSideNavDark: boolean;
-  username: string = "N/A";
-  profession: string = "N/A";
+  username = 'N/A';
+  profession = 'N/A';
 
   constructor(private themeService: ThemeConstantService) {}
 

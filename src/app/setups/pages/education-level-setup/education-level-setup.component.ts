@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-education-level-setup",
-  templateUrl: "./education-level-setup.component.html",
-  styleUrls: ["./education-level-setup.component.css"]
+  selector: 'app-education-level-setup',
+  templateUrl: './education-level-setup.component.html',
+  styleUrls: ['./education-level-setup.component.css']
 })
 export class EducationLevelSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class EducationLevelSetupComponent implements OnInit {
   isCreatingEducationalLevel = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  educationalLevel = "";
-  componentLabel = "educational level";
+  error = '';
+  educationalLevel = '';
+  componentLabel = 'educational level';
 
   submitForm(): void {
-    if (this.educationalLevel == null || this.educationalLevel == "") {
+    if (this.educationalLevel == null || this.educationalLevel === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingEducationalLevel.next(true);
       this.setup
         .createEducationalLevel(this.educationalLevel)
@@ -33,14 +33,14 @@ export class EducationLevelSetupComponent implements OnInit {
             this.isCreatingEducationalLevel.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getEducationalLevels();
-              this.educationalLevel = "";
+              this.educationalLevel = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class EducationLevelSetupComponent implements OnInit {
           error => {
             this.isCreatingEducationalLevel.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

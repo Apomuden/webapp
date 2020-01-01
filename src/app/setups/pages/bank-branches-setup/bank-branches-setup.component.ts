@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-bank-branches-setup",
-  templateUrl: "./bank-branches-setup.component.html",
-  styleUrls: ["./bank-branches-setup.component.css"]
+  selector: 'app-bank-branches-setup',
+  templateUrl: './bank-branches-setup.component.html',
+  styleUrls: ['./bank-branches-setup.component.css']
 })
 export class BankBranchesSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -17,32 +17,32 @@ export class BankBranchesSetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
-  sortCode = "";
-  email = "";
-  phone = "";
+  error = '';
+  name = '';
+  sortCode = '';
+  email = '';
+  phone = '';
   bank = null;
   banks = null;
 
-  componentLabel = "bank branch";
+  componentLabel = 'bank branch';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.bank == null ||
-      this.bank == "" ||
+      this.bank === '' ||
       this.phone == null ||
-      this.phone == "" ||
+      this.phone === '' ||
       this.email == null ||
-      this.email == "" ||
+      this.email === '' ||
       this.sortCode == null ||
-      this.sortCode == ""
+      this.sortCode === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingBankBranch.next(true);
       this.setup
         .createBankBranch(
@@ -58,20 +58,20 @@ export class BankBranchesSetupComponent implements OnInit {
             this.isCreatingBankBranch.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getBankBranches();
-              this.name = "";
-              this.error = "";
-              this.name = "";
-              this.sortCode = "";
-              this.email = "";
-              this.phone = "";
+              this.name = '';
+              this.error = '';
+              this.name = '';
+              this.sortCode = '';
+              this.email = '';
+              this.phone = '';
               this.bank = null;
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -79,7 +79,7 @@ export class BankBranchesSetupComponent implements OnInit {
           error => {
             this.isCreatingBankBranch.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

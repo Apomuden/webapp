@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-funding-type-setup",
-  templateUrl: "./funding-type-setup.component.html",
-  styleUrls: ["./funding-type-setup.component.css"]
+  selector: 'app-funding-type-setup',
+  templateUrl: './funding-type-setup.component.html',
+  styleUrls: ['./funding-type-setup.component.css']
 })
 export class FundingTypeSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -20,8 +20,8 @@ export class FundingTypeSetupComponent implements OnInit {
   sponsorshipTypesLoading = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  name = "";
+  error = '';
+  name = '';
 
   billingCycle = null;
   paymentStyle = null;
@@ -33,27 +33,27 @@ export class FundingTypeSetupComponent implements OnInit {
   paymentStyles = null;
   paymentChannels = null;
   billingSystems = null;
-  sponsorshipTypes = "";
-  componentLabel = "funding type";
+  sponsorshipTypes = '';
+  componentLabel = 'funding type';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.billingCycle == null ||
-      this.billingCycle == "" ||
+      this.billingCycle === '' ||
       this.billingSystem == null ||
-      this.billingSystem == "" ||
+      this.billingSystem === '' ||
       this.paymentStyle == null ||
-      this.paymentStyle == "" ||
+      this.paymentStyle === '' ||
       this.paymentChannel == null ||
-      this.paymentChannel == "" ||
+      this.paymentChannel === '' ||
       this.sponsorshipType == null ||
-      this.sponsorshipType == ""
+      this.sponsorshipType === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingFundingType.next(true);
       this.setup
         .createFundingType(
@@ -70,14 +70,14 @@ export class FundingTypeSetupComponent implements OnInit {
             this.isCreatingFundingType.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getFundingTypes();
-              this.name = "";
+              this.name = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -85,7 +85,7 @@ export class FundingTypeSetupComponent implements OnInit {
           error => {
             this.isCreatingFundingType.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

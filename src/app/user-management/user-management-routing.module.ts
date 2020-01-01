@@ -1,71 +1,71 @@
-import { RolesComponent } from "./roles/roles.component";
-import { ModulesComponent } from "./modules/modules.component";
-import { PermissionsComponent } from "./permissions/permissions.component";
-import { SystemComponentsComponent } from "./system-components/system-components.component";
-import { AuthGuard } from "./../shared/guard/auth.guard";
-import { CreateUserComponent } from "./create-user/create-user.component";
-import { UserProfileComponent } from "./user-profile/user-profile.component";
-import { NgModule } from "@angular/core";
-import { Routes, RouterModule } from "@angular/router";
+import { RolesComponent } from './roles/roles.component';
+import { ModulesComponent } from './modules/modules.component';
+import { PermissionsComponent } from './permissions/permissions.component';
+import { SystemComponentsComponent } from './system-components/system-components.component';
+import { AuthGuard } from './../shared/guard/auth.guard';
+import { CreateUserComponent } from './create-user/create-user.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import { NgModule } from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
 
-import { UserManagementComponent } from "./user-management.component";
+import { UserManagementComponent } from './user-management.component';
 
 const routes: Routes = [
   {
-    path: "",
+    path: '',
     component: UserManagementComponent,
     canActivate: [AuthGuard],
     data: {
-      title: "User Management "
+      title: 'User Management '
     }
   },
   {
-    path: "profile",
+    path: 'profile',
     component: UserProfileComponent,
     canActivate: [AuthGuard],
     data: {
-      title: "User Profile "
+      title: 'User Profile '
     }
   },
   {
-    path: "create-user",
+    path: 'create-user',
     component: CreateUserComponent,
     canActivate: [AuthGuard],
     data: {
-      title: "Create User"
+      title: 'Create User'
     }
   },
 
   {
-    path: "roles",
+    path: 'roles',
     component: RolesComponent,
     canActivate: [AuthGuard],
     data: {
-      title: "Manage Roles"
+      title: 'Manage Roles'
     }
   },
   {
-    path: "modules",
+    path: 'modules',
     component: ModulesComponent,
     canActivate: [AuthGuard],
     data: {
-      title: "Manage Modules"
+      title: 'Manage Modules'
     }
   },
   {
-    path: "components",
+    path: 'components',
     component: SystemComponentsComponent,
     canActivate: [AuthGuard],
     data: {
-      title: "Manage Components"
+      title: 'Manage Components'
     }
   },
   {
-    path: "permissions",
+    path: 'permissions',
     component: PermissionsComponent,
     canActivate: [AuthGuard],
     data: {
-      title: "Manage Permissions"
+      title: 'Manage Permissions'
     }
   }
 ];

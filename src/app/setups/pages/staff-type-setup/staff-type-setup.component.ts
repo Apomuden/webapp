@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-staff-type-setup",
-  templateUrl: "./staff-type-setup.component.html",
-  styleUrls: ["./staff-type-setup.component.css"]
+  selector: 'app-staff-type-setup',
+  templateUrl: './staff-type-setup.component.html',
+  styleUrls: ['./staff-type-setup.component.css']
 })
 export class StaffTypeSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -16,22 +16,22 @@ export class StaffTypeSetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
-  validityDays = "";
+  error = '';
+  name = '';
+  validityDays = '';
 
-  componentLabel = "staff type";
+  componentLabel = 'staff type';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.validityDays == null ||
-      this.validityDays == ""
+      this.validityDays === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingStaffType.next(true);
       this.setup
         .createStaffType(this.name, this.validityDays)
@@ -41,14 +41,14 @@ export class StaffTypeSetupComponent implements OnInit {
             this.isCreatingStaffType.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getStaffTypes();
-              this.name = "";
+              this.name = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -56,7 +56,7 @@ export class StaffTypeSetupComponent implements OnInit {
           error => {
             this.isCreatingStaffType.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

@@ -1,10 +1,10 @@
-import { Routes } from "@angular/router";
+import { Routes } from '@angular/router';
 
 export const FullLayout_ROUTES: Routes = [
   {
-    path: "authentication",
+    path: 'authentication',
     loadChildren: () =>
-      import("../../authentication/authentication.module").then(
+      import('../../authentication/authentication.module').then(
         m => m.AuthenticationModule
       )
   }

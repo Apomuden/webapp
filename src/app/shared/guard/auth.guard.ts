@@ -1,25 +1,25 @@
-import { Injectable } from "@angular/core";
-import jwt_decode from "jwt-decode";
+import { Injectable } from '@angular/core';
+import jwt_decode from 'jwt-decode';
 import {
   Router,
   ActivatedRouteSnapshot,
   CanActivate,
   RouterStateSnapshot
-} from "@angular/router";
+} from '@angular/router';
 
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser) {
-      let current_time = new Date().getTime() / 1000;
+      const current_time = new Date().getTime() / 1000;
       console.log(currentUser.exp, current_time > currentUser.exp);
       if (current_time > currentUser.exp) {
-        this.router.navigate(["authentication/login"], {
+        this.router.navigate(['authentication/login'], {
           queryParams: { returnUrl: state.url }
         });
         return false;
@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
 
       return true;
     }
-    this.router.navigate(["authentication/login"], {
+    this.router.navigate(['authentication/login'], {
       queryParams: { returnUrl: state.url }
     });
     return false;

@@ -1,52 +1,52 @@
-import { map } from "rxjs/operators";
-import { environment } from "./../../../environments/environment";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
+import { map } from 'rxjs/operators';
+import { environment } from './../../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 
-const COUNTRIES_API_URL = environment.apiBaseUrl + "/setups/countries";
-const ROLES_API_URL = environment.apiBaseUrl + "/auth/roles";
-const DEPARTMENTS_API_URL = environment.apiBaseUrl + "/setups/departments";
-const PROFESSIONS_API_URL = environment.apiBaseUrl + "/setups/professions";
-const TOWN_API_URL = environment.apiBaseUrl + "/setups/towns";
-const BANK_BRANCH_API_URL = environment.apiBaseUrl + "/setups/bankbranches";
-const TITLE_API_URL = environment.apiBaseUrl + "/setups/titles";
-const ACCREDITATION_API_URL = environment.apiBaseUrl + "/setups/accreditations";
-const COMPANY_API_URL = environment.apiBaseUrl + "/setups/companies";
-const REGION_API_URL = environment.apiBaseUrl + "/setups/regions";
-const FACILITY_API_URL = environment.apiBaseUrl + "/setups/hospital";
+const COUNTRIES_API_URL = environment.apiBaseUrl + '/setups/countries';
+const ROLES_API_URL = environment.apiBaseUrl + '/auth/roles';
+const DEPARTMENTS_API_URL = environment.apiBaseUrl + '/setups/departments';
+const PROFESSIONS_API_URL = environment.apiBaseUrl + '/setups/professions';
+const TOWN_API_URL = environment.apiBaseUrl + '/setups/towns';
+const BANK_BRANCH_API_URL = environment.apiBaseUrl + '/setups/bankbranches';
+const TITLE_API_URL = environment.apiBaseUrl + '/setups/titles';
+const ACCREDITATION_API_URL = environment.apiBaseUrl + '/setups/accreditations';
+const COMPANY_API_URL = environment.apiBaseUrl + '/setups/companies';
+const REGION_API_URL = environment.apiBaseUrl + '/setups/regions';
+const FACILITY_API_URL = environment.apiBaseUrl + '/setups/hospital';
 const REGIONS_BY_COUNTRY_ID_API_URL =
-  environment.apiBaseUrl + "/setups/countries/";
+  environment.apiBaseUrl + '/setups/countries/';
 const SERVICE_SUB_CATEGORIES_API_URL =
-  environment.apiBaseUrl + "/setups/servicesubcategories";
+  environment.apiBaseUrl + '/setups/servicesubcategories';
 const PAYMENTS_CHANNEL_API_URL =
-  environment.apiBaseUrl + "/setups/paymentchannels";
-const BANKS_API_URL = environment.apiBaseUrl + "/setups/banks";
+  environment.apiBaseUrl + '/setups/paymentchannels';
+const BANKS_API_URL = environment.apiBaseUrl + '/setups/banks';
 const EDUCATIONAL_LEVEL_API_URL =
-  environment.apiBaseUrl + "/setups/educationallevels";
-const ID_TYPE_API_URL = environment.apiBaseUrl + "/setups/idtypes";
+  environment.apiBaseUrl + '/setups/educationallevels';
+const ID_TYPE_API_URL = environment.apiBaseUrl + '/setups/idtypes';
 const SPONSORSHIP_TYPE_API_URL =
-  environment.apiBaseUrl + "/setups/sponsorshiptypes";
-const PAYMENT_STYLE_API_URL = environment.apiBaseUrl + "/setups/paymentstyles";
-const BILLING_CYCLE_API_URL = environment.apiBaseUrl + "/setups/billingcycles";
-const AGE_GROUP_API_URL = environment.apiBaseUrl + "/setups/agegroups";
+  environment.apiBaseUrl + '/setups/sponsorshiptypes';
+const PAYMENT_STYLE_API_URL = environment.apiBaseUrl + '/setups/paymentstyles';
+const BILLING_CYCLE_API_URL = environment.apiBaseUrl + '/setups/billingcycles';
+const AGE_GROUP_API_URL = environment.apiBaseUrl + '/setups/agegroups';
 const BILLING_SYSTEM_API_URL =
-  environment.apiBaseUrl + "/setups/billingsystems";
+  environment.apiBaseUrl + '/setups/billingsystems';
 const HOSPITAL_SERVICE_API_URL =
-  environment.apiBaseUrl + "/setups/hospitalservices";
+  environment.apiBaseUrl + '/setups/hospitalservices';
 
-const LANGUAGE_API_URL = environment.apiBaseUrl + "/setups/languages";
-const DISTRICT_API_URL = environment.apiBaseUrl + "/setups/districts";
-const STAFF_TYPE_API_URL = environment.apiBaseUrl + "/setups/stafftypes";
-const SPECIALITY_API_URL = environment.apiBaseUrl + "/setups/specialties";
-const RELATIONSHIP_API_URL = environment.apiBaseUrl + "/setups/relationships";
-const RELIGION_API_URL = environment.apiBaseUrl + "/setups/religions";
+const LANGUAGE_API_URL = environment.apiBaseUrl + '/setups/languages';
+const DISTRICT_API_URL = environment.apiBaseUrl + '/setups/districts';
+const STAFF_TYPE_API_URL = environment.apiBaseUrl + '/setups/stafftypes';
+const SPECIALITY_API_URL = environment.apiBaseUrl + '/setups/specialties';
+const RELATIONSHIP_API_URL = environment.apiBaseUrl + '/setups/relationships';
+const RELIGION_API_URL = environment.apiBaseUrl + '/setups/religions';
 const SERVICE_CATEGORY_API_URL =
-  environment.apiBaseUrl + "/setups/servicecategories";
-const FUNDING_TYPE_API_URL = environment.apiBaseUrl + "/setups/fundingtypes";
+  environment.apiBaseUrl + '/setups/servicecategories';
+const FUNDING_TYPE_API_URL = environment.apiBaseUrl + '/setups/fundingtypes';
 const STAFF_CATEGORY_API_URL =
-  environment.apiBaseUrl + "/setups/staffcategories";
+  environment.apiBaseUrl + '/setups/staffcategories';
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class SetupService {
   private countries;
@@ -82,7 +82,7 @@ export class SetupService {
   private companies;
   private accreditations;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getCountries() {
     return this.http.get<any>(COUNTRIES_API_URL).pipe(
@@ -95,7 +95,7 @@ export class SetupService {
     );
   }
   getRegionsByCountryApi(countryId: String) {
-    return REGIONS_BY_COUNTRY_ID_API_URL + countryId + "/regions";
+    return REGIONS_BY_COUNTRY_ID_API_URL + countryId + '/regions';
   }
   getRegionsByCountryId(countryId: string) {
     return this.http.get<any>(this.getRegionsByCountryApi(countryId)).pipe(
@@ -130,7 +130,7 @@ export class SetupService {
           this.departments = res;
           for (let i = 0; i < this.departments.data.length; i++) {
             this.departments.data[i].isActivated =
-              this.departments.data[i].status == "ACTIVE" ? true : false;
+              this.departments.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.departments;
@@ -174,7 +174,7 @@ export class SetupService {
           this.fundingTypes = res;
           for (let i = 0; i < this.fundingTypes.data.length; i++) {
             this.fundingTypes.data[i].isActivated =
-              this.fundingTypes.data[i].status == "ACTIVE" ? true : false;
+              this.fundingTypes.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.fundingTypes;
@@ -207,7 +207,7 @@ export class SetupService {
           this.serviceCategories = res;
           for (let i = 0; i < this.serviceCategories.data.length; i++) {
             this.serviceCategories.data[i].isActivated =
-              this.serviceCategories.data[i].status == "ACTIVE" ? true : false;
+              this.serviceCategories.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.serviceCategories;
@@ -240,7 +240,7 @@ export class SetupService {
           this.serviceSubCategories = res;
           for (let i = 0; i < this.serviceSubCategories.data.length; i++) {
             this.serviceSubCategories.data[i].isActivated =
-              this.serviceSubCategories.data[i].status == "ACTIVE"
+              this.serviceSubCategories.data[i].status === 'ACTIVE'
                 ? true
                 : false;
           }
@@ -275,7 +275,7 @@ export class SetupService {
           this.professions = res;
           for (let i = 0; i < this.professions.data.length; i++) {
             this.professions.data[i].isActivated =
-              this.professions.data[i].status == "ACTIVE" ? true : false;
+              this.professions.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.professions;
@@ -308,7 +308,7 @@ export class SetupService {
           this.staffTypes = res;
           for (let i = 0; i < this.staffTypes.data.length; i++) {
             this.staffTypes.data[i].isActivated =
-              this.staffTypes.data[i].status == "ACTIVE" ? true : false;
+              this.staffTypes.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.staffTypes;
@@ -340,7 +340,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.paymentChannels.data.length; i++) {
             this.paymentChannels.data[i].isActivated =
-              this.paymentChannels.data[i].status == "ACTIVE" ? true : false;
+              this.paymentChannels.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.paymentChannels;
@@ -372,7 +372,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.billingCycles.data.length; i++) {
             this.billingCycles.data[i].isActivated =
-              this.billingCycles.data[i].status == "ACTIVE" ? true : false;
+              this.billingCycles.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.billingCycles;
@@ -416,7 +416,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.accreditations.data.length; i++) {
             this.accreditations.data[i].isActivated =
-              this.accreditations.data[i].status == "ACTIVE" ? true : false;
+              this.accreditations.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.accreditations;
@@ -448,7 +448,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.billingSystems.data.length; i++) {
             this.billingSystems.data[i].isActivated =
-              this.billingSystems.data[i].status == "ACTIVE" ? true : false;
+              this.billingSystems.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.billingSystems;
@@ -480,7 +480,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.companies.data.length; i++) {
             this.companies.data[i].isActivated =
-              this.companies.data[i].status == "ACTIVE" ? true : false;
+              this.companies.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.companies;
@@ -512,7 +512,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.hospitalServices.data.length; i++) {
             this.hospitalServices.data[i].isActivated =
-              this.hospitalServices.data[i].status == "ACTIVE" ? true : false;
+              this.hospitalServices.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.hospitalServices;
@@ -544,7 +544,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.languages.data.length; i++) {
             this.languages.data[i].isActivated =
-              this.languages.data[i].status == "ACTIVE" ? true : false;
+              this.languages.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.languages;
@@ -576,7 +576,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.towns.data.length; i++) {
             this.towns.data[i].isActivated =
-              this.towns.data[i].status == "ACTIVE" ? true : false;
+              this.towns.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.towns;
@@ -608,7 +608,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.relationships.data.length; i++) {
             this.relationships.data[i].isActivated =
-              this.relationships.data[i].status == "ACTIVE" ? true : false;
+              this.relationships.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.relationships;
@@ -640,7 +640,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.specialities.data.length; i++) {
             this.specialities.data[i].isActivated =
-              this.specialities.data[i].status == "ACTIVE" ? true : false;
+              this.specialities.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.specialities;
@@ -672,7 +672,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.religions.data.length; i++) {
             this.religions.data[i].isActivated =
-              this.religions.data[i].status == "ACTIVE" ? true : false;
+              this.religions.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.religions;
@@ -704,7 +704,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.staffCategories.data.length; i++) {
             this.staffCategories.data[i].isActivated =
-              this.staffCategories.data[i].status == "ACTIVE" ? true : false;
+              this.staffCategories.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.staffCategories;
@@ -736,7 +736,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.paymentStyle.data.length; i++) {
             this.paymentStyle.data[i].isActivated =
-              this.paymentStyle.data[i].status == "ACTIVE" ? true : false;
+              this.paymentStyle.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.paymentStyle;
@@ -768,7 +768,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.sponsorshipTypes.data.length; i++) {
             this.sponsorshipTypes.data[i].isActivated =
-              this.sponsorshipTypes.data[i].status == "ACTIVE" ? true : false;
+              this.sponsorshipTypes.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.sponsorshipTypes;
@@ -873,7 +873,7 @@ export class SetupService {
           this.idTypes = res;
           for (let i = 0; i < this.idTypes.data.length; i++) {
             this.idTypes.data[i].isActivated =
-              this.idTypes.data[i].status == "ACTIVE" ? true : false;
+              this.idTypes.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.idTypes;
@@ -888,7 +888,7 @@ export class SetupService {
           this.educationalLevels = res;
           for (let i = 0; i < this.educationalLevels.data.length; i++) {
             this.educationalLevels.data[i].isActivated =
-              this.educationalLevels.data[i].status == "ACTIVE" ? true : false;
+              this.educationalLevels.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.educationalLevels;
@@ -916,7 +916,7 @@ export class SetupService {
           this.ageGroups = res;
           for (let i = 0; i < this.ageGroups.data.length; i++) {
             this.ageGroups.data[i].isActivated =
-              this.ageGroups.data[i].status == "ACTIVE" ? true : false;
+              this.ageGroups.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.ageGroups;
@@ -924,12 +924,12 @@ export class SetupService {
     );
   }
 
-  createAgeGroup(name: string, minAge: string, maxAge: string) {
+  createAgeGroup(name: string, minAge: number, maxAge: number) {
     return this.http
       .post<any>(AGE_GROUP_API_URL, {
         name,
-        min_age: parseInt(minAge),
-        max_age: parseInt(maxAge)
+        min_age: minAge,
+        max_age: maxAge
       })
       .pipe(
         map(res => {
@@ -948,7 +948,7 @@ export class SetupService {
           this.titles = res;
           for (let i = 0; i < this.titles.data.length; i++) {
             this.titles.data[i].isActivated =
-              this.titles.data[i].status == "ACTIVE" ? true : false;
+              this.titles.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.titles;
@@ -979,7 +979,7 @@ export class SetupService {
           this.regions = res;
           for (let i = 0; i < this.regions.data.length; i++) {
             this.regions.data[i].isActivated =
-              this.regions.data[i].status == "ACTIVE" ? true : false;
+              this.regions.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.regions;
@@ -1010,7 +1010,7 @@ export class SetupService {
           this.districts = res;
           for (let i = 0; i < this.districts.data.length; i++) {
             this.districts.data[i].isActivated =
-              this.districts.data[i].status == "ACTIVE" ? true : false;
+              this.districts.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.districts;
@@ -1024,9 +1024,9 @@ export class SetupService {
     staffIdSeperator: string,
     folderIdPrefix: string,
     folderIdSeperator: string,
-    digitsAfterStaffPrefix: string,
-    digitsAfterFolderPrefix: string,
-    yearDigits: string,
+    digitsAfterStaffPrefix: number,
+    digitsAfterFolderPrefix: number,
+    yearDigits: number,
     allowedFolderType: string,
     allowedInstallmentType: string,
     activeCell: string,
@@ -1046,9 +1046,9 @@ export class SetupService {
         staff_id_seperator: staffIdSeperator,
         folder_id_prefix: folderIdPrefix,
         folder_id_seperator: folderIdSeperator,
-        digits_after_staff_prefix: parseInt(digitsAfterStaffPrefix),
-        digits_after_folder_prefix: parseInt(digitsAfterFolderPrefix),
-        year_digits: parseInt(yearDigits),
+        digits_after_staff_prefix: digitsAfterStaffPrefix,
+        digits_after_folder_prefix: digitsAfterFolderPrefix,
+        year_digits: yearDigits,
         allowed_folder_type: allowedFolderType.toString(),
         allowed_installment_type: allowedInstallmentType.toString(),
         active_cell: activeCell,
@@ -1078,7 +1078,7 @@ export class SetupService {
           this.facilities = res;
           for (let i = 0; i < this.facilities.data.length; i++) {
             this.facilities.data[i].isActivated =
-              this.facilities.data[i].status == "ACTIVE" ? true : false;
+              this.facilities.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.facilities;

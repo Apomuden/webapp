@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-relationship-setup",
-  templateUrl: "./relationship-setup.component.html",
-  styleUrls: ["./relationship-setup.component.css"]
+  selector: 'app-relationship-setup',
+  templateUrl: './relationship-setup.component.html',
+  styleUrls: ['./relationship-setup.component.css']
 })
 export class RelationshipSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class RelationshipSetupComponent implements OnInit {
   isCreatingRelationship = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  relationship = "";
-  componentLabel = "relationship";
+  error = '';
+  relationship = '';
+  componentLabel = 'relationship';
 
   submitForm(): void {
-    if (this.relationship == null || this.relationship == "") {
+    if (this.relationship == null || this.relationship === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingRelationship.next(true);
       this.setup
         .createRelationship(this.relationship)
@@ -33,14 +33,14 @@ export class RelationshipSetupComponent implements OnInit {
             this.isCreatingRelationship.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getRelationships();
-              this.relationship = "";
+              this.relationship = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class RelationshipSetupComponent implements OnInit {
           error => {
             this.isCreatingRelationship.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }
