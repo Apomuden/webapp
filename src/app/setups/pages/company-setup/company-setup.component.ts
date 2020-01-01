@@ -36,13 +36,13 @@ export class CompanySetupComponent implements OnInit {
 
   submitForm(): void {
     if (
-      this.name === null ||
+      this.name == null ||
       this.name === '' ||
-      this.email === null ||
+      this.email == null ||
       this.email === '' ||
-      this.googleAddress === null ||
+      this.googleAddress == null ||
       this.googleAddress === '' ||
-      this.phone === null ||
+      this.phone == null ||
       this.phone === ''
     ) {
       this.error = `All fields are required!`;

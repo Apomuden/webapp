@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-age-group-setup",
-  templateUrl: "./age-group-setup.component.html",
-  styleUrls: ["./age-group-setup.component.css"]
+  selector: 'app-age-group-setup',
+  templateUrl: './age-group-setup.component.html',
+  styleUrls: ['./age-group-setup.component.css']
 })
 export class AgeGroupSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,24 +15,22 @@ export class AgeGroupSetupComponent implements OnInit {
   isCreatingAgeGroup = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  name = "";
-  minAge = "";
-  maxAge = "";
-  componentLabel = "age group";
+  error = '';
+  name = '';
+  minAge: number;
+  maxAge: number;
+  componentLabel = 'age group';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.minAge == null ||
-      this.minAge == "" ||
-      this.maxAge == null ||
-      this.maxAge == ""
+      this.maxAge == null
     ) {
       this.error = `All fields are required!`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingAgeGroup.next(true);
       this.setup
         .createAgeGroup(this.name, this.minAge, this.maxAge)
@@ -42,16 +40,16 @@ export class AgeGroupSetupComponent implements OnInit {
             this.isCreatingAgeGroup.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getAgeGroups();
-              this.name = "";
-              this.minAge = "";
-              this.maxAge = "";
+              this.name = '';
+              this.minAge = null;
+              this.maxAge = null;
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -59,7 +57,7 @@ export class AgeGroupSetupComponent implements OnInit {
           error => {
             this.isCreatingAgeGroup.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

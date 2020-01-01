@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-service-subcategory-setup",
-  templateUrl: "./service-subcategory-setup.component.html",
-  styleUrls: ["./service-subcategory-setup.component.css"]
+  selector: 'app-service-subcategory-setup',
+  templateUrl: './service-subcategory-setup.component.html',
+  styleUrls: ['./service-subcategory-setup.component.css']
 })
 export class ServiceSubcategorySetupComponent implements OnInit {
   initLoading = true; // bug
@@ -17,25 +17,25 @@ export class ServiceSubcategorySetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
+  error = '';
+  name = '';
 
   serviceCategory = null;
 
   serviceCategories = null;
 
-  componentLabel = "service subcategory";
+  componentLabel = 'service subcategory';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.serviceCategory == null ||
-      this.serviceCategory == ""
+      this.serviceCategory === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingServiceSubcategory.next(true);
       this.setup
         .createServiceSubcategory(this.name, this.serviceCategory)
@@ -45,14 +45,14 @@ export class ServiceSubcategorySetupComponent implements OnInit {
             this.isCreatingServiceSubcategory.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getServiceSubcategories();
-              this.name = "";
+              this.name = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -60,7 +60,7 @@ export class ServiceSubcategorySetupComponent implements OnInit {
           error => {
             this.isCreatingServiceSubcategory.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

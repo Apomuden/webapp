@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-accreditation-setup",
-  templateUrl: "./accreditation-setup.component.html",
-  styleUrls: ["./accreditation-setup.component.css"]
+  selector: 'app-accreditation-setup',
+  templateUrl: './accreditation-setup.component.html',
+  styleUrls: ['./accreditation-setup.component.css']
 })
 export class AccreditationSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,30 +15,30 @@ export class AccreditationSetupComponent implements OnInit {
   isCreatingAccreditation = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  regBody = "";
-  regNumber = "";
-  tin = "";
+  error = '';
+  regBody = '';
+  regNumber = '';
+  tin = '';
   expDate = null;
   registrationDate = null;
-  componentLabel = "accreditation";
+  componentLabel = 'accreditation';
 
   submitForm(): void {
     if (
-      this.regBody === null ||
-      this.regBody === "" ||
-      this.tin === null ||
-      this.tin === "" ||
-      this.registrationDate === null ||
-      this.registrationDate === "" ||
-      this.expDate === null ||
-      this.expDate === "" ||
-      this.regNumber === null ||
-      this.regNumber === ""
+      this.regBody == null ||
+      this.regBody === '' ||
+      this.tin == null ||
+      this.tin === '' ||
+      this.registrationDate == null ||
+      this.registrationDate === '' ||
+      this.expDate == null ||
+      this.expDate === '' ||
+      this.regNumber == null ||
+      this.regNumber === ''
     ) {
       this.error = `All fields are required!`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingAccreditation.next(true);
       this.setup
         .createAccreditation(
@@ -54,18 +54,18 @@ export class AccreditationSetupComponent implements OnInit {
             this.isCreatingAccreditation.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getAccreditations();
-              this.tin = "";
-              this.regBody = "";
-              this.regNumber = "";
+              this.tin = '';
+              this.regBody = '';
+              this.regNumber = '';
               this.expDate = null;
               this.registrationDate = null;
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -73,7 +73,7 @@ export class AccreditationSetupComponent implements OnInit {
           error => {
             this.isCreatingAccreditation.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

@@ -19,7 +19,7 @@ export class DepartmentSetupComponent implements OnInit {
   department = '';
 
   submitForm(): void {
-    if (this.department == null || this.department == '') {
+    if (this.department == null || this.department === '') {
       this.error = 'Please enter a department';
     } else {
       this.isCreatingDepartment.next(true);

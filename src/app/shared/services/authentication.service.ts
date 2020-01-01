@@ -1,15 +1,15 @@
-import { Router } from "@angular/router";
-import { environment } from "./../../../environments/environment";
-import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
-import { BehaviorSubject, Observable } from "rxjs";
-import { map } from "rxjs/operators";
+import { Router } from '@angular/router';
+import { environment } from './../../../environments/environment';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-import { User } from "../interfaces/user.type";
-import jwt_decode from "jwt-decode";
+import { User } from '../interfaces/user.type';
+import jwt_decode from 'jwt-decode';
 
-const USER_AUTH_API_URL = environment.apiBaseUrl + "/auth/login";
-const LOGOUT_API = environment.apiBaseUrl + "/auth/logout";
+const USER_AUTH_API_URL = environment.apiBaseUrl + '/auth/login';
+const LOGOUT_API = environment.apiBaseUrl + '/auth/logout';
 
 @Injectable()
 export class AuthenticationService {
@@ -19,7 +19,7 @@ export class AuthenticationService {
 
   constructor(private http: HttpClient, private router: Router) {
     this.currentUserSubject = new BehaviorSubject<User>(
-      JSON.parse(localStorage.getItem("currentUser"))
+      JSON.parse(localStorage.getItem('currentUser'))
     );
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -34,12 +34,12 @@ export class AuthenticationService {
       .pipe(
         map(res => {
           if (res && res.data.access_token) {
-            console.log("result", res);
+            console.log('result', res);
             this.decodedUser = jwt_decode(res.data.access_token);
             this.decodedUser.token = res.data.access_token;
             this.decodedUser.details = res.data.profile;
             localStorage.setItem(
-              "currentUser",
+              'currentUser',
               JSON.stringify(this.decodedUser)
             );
 
@@ -57,9 +57,9 @@ export class AuthenticationService {
         map(res => {
           if (res) {
             console.log(res);
-            localStorage.removeItem("currentUser");
+            localStorage.removeItem('currentUser');
             this.currentUserSubject.next(null);
-            this.router.navigate(["authentication/login"]);
+            this.router.navigate(['authentication/login']);
           }
         })
       )

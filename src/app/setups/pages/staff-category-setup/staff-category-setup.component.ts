@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-staff-category-setup",
-  templateUrl: "./staff-category-setup.component.html",
-  styleUrls: ["./staff-category-setup.component.css"]
+  selector: 'app-staff-category-setup',
+  templateUrl: './staff-category-setup.component.html',
+  styleUrls: ['./staff-category-setup.component.css']
 })
 export class StaffCategorySetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class StaffCategorySetupComponent implements OnInit {
   isCreatingStaffCategory = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  staffCategory = "";
-  componentLabel = "staff category";
+  error = '';
+  staffCategory = '';
+  componentLabel = 'staff category';
 
   submitForm(): void {
-    if (this.staffCategory == null || this.staffCategory == "") {
+    if (this.staffCategory == null || this.staffCategory === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingStaffCategory.next(true);
       this.setup
         .createStaffCategory(this.staffCategory)
@@ -33,14 +33,14 @@ export class StaffCategorySetupComponent implements OnInit {
             this.isCreatingStaffCategory.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getStaffCategories();
-              this.staffCategory = "";
+              this.staffCategory = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class StaffCategorySetupComponent implements OnInit {
           error => {
             this.isCreatingStaffCategory.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

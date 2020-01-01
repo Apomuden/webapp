@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-title-setup",
-  templateUrl: "./title-setup.component.html",
-  styleUrls: ["./title-setup.component.css"]
+  selector: 'app-title-setup',
+  templateUrl: './title-setup.component.html',
+  styleUrls: ['./title-setup.component.css']
 })
 export class TitleSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -16,23 +16,23 @@ export class TitleSetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
+  error = '';
+  name = '';
 
   gender = null;
 
-  componentLabel = "title";
+  componentLabel = 'title';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.gender == null ||
-      this.gender == ""
+      this.gender === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingTitle.next(true);
       this.setup
         .createTitle(this.name, this.gender)
@@ -42,14 +42,14 @@ export class TitleSetupComponent implements OnInit {
             this.isCreatingTitle.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getTitles();
-              this.name = "";
+              this.name = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -57,7 +57,7 @@ export class TitleSetupComponent implements OnInit {
           error => {
             this.isCreatingTitle.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

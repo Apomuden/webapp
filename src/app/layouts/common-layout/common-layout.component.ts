@@ -1,14 +1,14 @@
-import { AuthGuard } from "./../../shared/guard/auth.guard";
-import { Component } from "@angular/core";
-import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
-import { Observable } from "rxjs";
-import { distinctUntilChanged, filter, map, startWith } from "rxjs/operators";
-import { IBreadcrumb } from "../../shared/interfaces/breadcrumb.type";
-import { ThemeConstantService } from "../../shared/services/theme-constant.service";
+import { AuthGuard } from './../../shared/guard/auth.guard';
+import { Component } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { distinctUntilChanged, filter, map, startWith } from 'rxjs/operators';
+import { IBreadcrumb } from '../../shared/interfaces/breadcrumb.type';
+import { ThemeConstantService } from '../../shared/services/theme-constant.service';
 
 @Component({
-  selector: "app-common-layout",
-  templateUrl: "./common-layout.component.html"
+  selector: 'app-common-layout',
+  templateUrl: './common-layout.component.html'
 })
 export class CommonLayoutComponent {
   breadcrumbs$: Observable<IBreadcrumb[]>;
@@ -33,9 +33,9 @@ export class CommonLayoutComponent {
               child = child.firstChild;
             } else if (
               child.snapshot.data &&
-              child.snapshot.data["headerDisplay"]
+              child.snapshot.data['headerDisplay']
             ) {
-              return child.snapshot.data["headerDisplay"];
+              return child.snapshot.data['headerDisplay'];
             } else {
               return null;
             }
@@ -50,7 +50,7 @@ export class CommonLayoutComponent {
 
   ngOnInit() {
     this.breadcrumbs$ = this.router.events.pipe(
-      startWith(new NavigationEnd(0, "/", "/")),
+      startWith(new NavigationEnd(0, '/', '/')),
       filter(event => event instanceof NavigationEnd),
       distinctUntilChanged(),
       map(data => this.buildBreadCrumb(this.activatedRoute.root))
@@ -71,24 +71,24 @@ export class CommonLayoutComponent {
 
   private buildBreadCrumb(
     route: ActivatedRoute,
-    url: string = "",
+    url: string = '',
     breadcrumbs: IBreadcrumb[] = []
   ): IBreadcrumb[] {
-    let label = "",
-      path = "/",
-      display = null;
+    let label = '',
+      path = '/';
+      const display = null;
 
     if (route.routeConfig) {
       if (route.routeConfig.data) {
-        label = route.routeConfig.data["title"];
+        label = route.routeConfig.data['title'];
         path += route.routeConfig.path;
       }
     } else {
-      label = "Dashboard";
-      path += "dashboard";
+      label = 'Dashboard';
+      path += 'dashboard';
     }
 
-    const nextUrl = path && path !== "/dashboard" ? `${url}${path}` : url;
+    const nextUrl = path && path !== '/dashboard' ? `${url}${path}` : url;
     const breadcrumb = <IBreadcrumb>{
       label: label,
       url: nextUrl
