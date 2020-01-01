@@ -544,7 +544,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.languages.data.length; i++) {
             this.languages.data[i].isActivated =
-              this.languages.data[i].status == 'ACTIVE' ? true : false;
+              this.languages.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.languages;
@@ -576,7 +576,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.towns.data.length; i++) {
             this.towns.data[i].isActivated =
-              this.towns.data[i].status == 'ACTIVE' ? true : false;
+              this.towns.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.towns;
@@ -608,7 +608,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.relationships.data.length; i++) {
             this.relationships.data[i].isActivated =
-              this.relationships.data[i].status == 'ACTIVE' ? true : false;
+              this.relationships.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.relationships;
@@ -640,7 +640,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.specialities.data.length; i++) {
             this.specialities.data[i].isActivated =
-              this.specialities.data[i].status == 'ACTIVE' ? true : false;
+              this.specialities.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.specialities;
@@ -672,7 +672,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.religions.data.length; i++) {
             this.religions.data[i].isActivated =
-              this.religions.data[i].status == 'ACTIVE' ? true : false;
+              this.religions.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.religions;
@@ -704,7 +704,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.staffCategories.data.length; i++) {
             this.staffCategories.data[i].isActivated =
-              this.staffCategories.data[i].status == 'ACTIVE' ? true : false;
+              this.staffCategories.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.staffCategories;
@@ -736,7 +736,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.paymentStyle.data.length; i++) {
             this.paymentStyle.data[i].isActivated =
-              this.paymentStyle.data[i].status == 'ACTIVE' ? true : false;
+              this.paymentStyle.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.paymentStyle;
@@ -768,7 +768,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.sponsorshipTypes.data.length; i++) {
             this.sponsorshipTypes.data[i].isActivated =
-              this.sponsorshipTypes.data[i].status == 'ACTIVE' ? true : false;
+              this.sponsorshipTypes.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.sponsorshipTypes;
@@ -873,7 +873,7 @@ export class SetupService {
           this.idTypes = res;
           for (let i = 0; i < this.idTypes.data.length; i++) {
             this.idTypes.data[i].isActivated =
-              this.idTypes.data[i].status == 'ACTIVE' ? true : false;
+              this.idTypes.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.idTypes;
@@ -888,7 +888,7 @@ export class SetupService {
           this.educationalLevels = res;
           for (let i = 0; i < this.educationalLevels.data.length; i++) {
             this.educationalLevels.data[i].isActivated =
-              this.educationalLevels.data[i].status == 'ACTIVE' ? true : false;
+              this.educationalLevels.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.educationalLevels;
@@ -916,7 +916,7 @@ export class SetupService {
           this.ageGroups = res;
           for (let i = 0; i < this.ageGroups.data.length; i++) {
             this.ageGroups.data[i].isActivated =
-              this.ageGroups.data[i].status == 'ACTIVE' ? true : false;
+              this.ageGroups.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.ageGroups;
@@ -924,12 +924,12 @@ export class SetupService {
     );
   }
 
-  createAgeGroup(name: string, minAge: string, maxAge: string) {
+  createAgeGroup(name: string, minAge: number, maxAge: number) {
     return this.http
       .post<any>(AGE_GROUP_API_URL, {
         name,
-        min_age: parseInt(minAge),
-        max_age: parseInt(maxAge)
+        min_age: minAge,
+        max_age: maxAge
       })
       .pipe(
         map(res => {
@@ -948,7 +948,7 @@ export class SetupService {
           this.titles = res;
           for (let i = 0; i < this.titles.data.length; i++) {
             this.titles.data[i].isActivated =
-              this.titles.data[i].status == 'ACTIVE' ? true : false;
+              this.titles.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.titles;
@@ -979,7 +979,7 @@ export class SetupService {
           this.regions = res;
           for (let i = 0; i < this.regions.data.length; i++) {
             this.regions.data[i].isActivated =
-              this.regions.data[i].status == 'ACTIVE' ? true : false;
+              this.regions.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.regions;
@@ -1010,7 +1010,7 @@ export class SetupService {
           this.districts = res;
           for (let i = 0; i < this.districts.data.length; i++) {
             this.districts.data[i].isActivated =
-              this.districts.data[i].status == 'ACTIVE' ? true : false;
+              this.districts.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.districts;
@@ -1024,9 +1024,9 @@ export class SetupService {
     staffIdSeperator: string,
     folderIdPrefix: string,
     folderIdSeperator: string,
-    digitsAfterStaffPrefix: string,
-    digitsAfterFolderPrefix: string,
-    yearDigits: string,
+    digitsAfterStaffPrefix: number,
+    digitsAfterFolderPrefix: number,
+    yearDigits: number,
     allowedFolderType: string,
     allowedInstallmentType: string,
     activeCell: string,
@@ -1046,9 +1046,9 @@ export class SetupService {
         staff_id_seperator: staffIdSeperator,
         folder_id_prefix: folderIdPrefix,
         folder_id_seperator: folderIdSeperator,
-        digits_after_staff_prefix: parseInt(digitsAfterStaffPrefix),
-        digits_after_folder_prefix: parseInt(digitsAfterFolderPrefix),
-        year_digits: parseInt(yearDigits),
+        digits_after_staff_prefix: digitsAfterStaffPrefix,
+        digits_after_folder_prefix: digitsAfterFolderPrefix,
+        year_digits: yearDigits,
         allowed_folder_type: allowedFolderType.toString(),
         allowed_installment_type: allowedInstallmentType.toString(),
         active_cell: activeCell,
@@ -1078,7 +1078,7 @@ export class SetupService {
           this.facilities = res;
           for (let i = 0; i < this.facilities.data.length; i++) {
             this.facilities.data[i].isActivated =
-              this.facilities.data[i].status == 'ACTIVE' ? true : false;
+              this.facilities.data[i].status === 'ACTIVE' ? true : false;
           }
         }
         return this.facilities;

@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-district-setup",
-  templateUrl: "./district-setup.component.html",
-  styleUrls: ["./district-setup.component.css"]
+  selector: 'app-district-setup',
+  templateUrl: './district-setup.component.html',
+  styleUrls: ['./district-setup.component.css']
 })
 export class DistrictSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -18,8 +18,8 @@ export class DistrictSetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
+  error = '';
+  name = '';
 
   region = null;
   country = null;
@@ -27,18 +27,18 @@ export class DistrictSetupComponent implements OnInit {
   regions = null;
   countries = null;
 
-  componentLabel = "district";
+  componentLabel = 'district';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.region == null ||
-      this.region == ""
+      this.region === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingDistrict.next(true);
       this.setup
         .createDistrict(this.name, this.region)
@@ -48,16 +48,16 @@ export class DistrictSetupComponent implements OnInit {
             this.isCreatingDistrict.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getDistricts();
-              this.name = "";
+              this.name = '';
               this.country = null;
               this.region = null;
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -65,7 +65,7 @@ export class DistrictSetupComponent implements OnInit {
           error => {
             this.isCreatingDistrict.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }
@@ -105,7 +105,7 @@ export class DistrictSetupComponent implements OnInit {
           this.regionsLoading.next(false);
           this.regions = data.data;
           this.region = null;
-          console.log("regions by country id", this.regions);
+          console.log('regions by country id', this.regions);
         },
         error => {
           this.regionsLoading.next(false);
@@ -123,7 +123,7 @@ export class DistrictSetupComponent implements OnInit {
           this.countriesLoading.next(false);
           this.countries = data.data;
           this.region = null;
-          console.log("countries", this.countries);
+          console.log('countries', this.countries);
         },
         error => {
           this.countriesLoading.next(false);

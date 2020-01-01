@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-language-setup",
-  templateUrl: "./language-setup.component.html",
-  styleUrls: ["./language-setup.component.css"]
+  selector: 'app-language-setup',
+  templateUrl: './language-setup.component.html',
+  styleUrls: ['./language-setup.component.css']
 })
 export class LanguageSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class LanguageSetupComponent implements OnInit {
   isCreatingLanguage = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  language = "";
-  componentLabel = "language";
+  error = '';
+  language = '';
+  componentLabel = 'language';
 
   submitForm(): void {
-    if (this.language == null || this.language == "") {
+    if (this.language == null || this.language === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingLanguage.next(true);
       this.setup
         .createLanguage(this.language)
@@ -33,14 +33,14 @@ export class LanguageSetupComponent implements OnInit {
             this.isCreatingLanguage.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getLanguages();
-              this.language = "";
+              this.language = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class LanguageSetupComponent implements OnInit {
           error => {
             this.isCreatingLanguage.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

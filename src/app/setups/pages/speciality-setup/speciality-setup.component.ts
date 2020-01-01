@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-speciality-setup",
-  templateUrl: "./speciality-setup.component.html",
-  styleUrls: ["./speciality-setup.component.css"]
+  selector: 'app-speciality-setup',
+  templateUrl: './speciality-setup.component.html',
+  styleUrls: ['./speciality-setup.component.css']
 })
 export class SpecialitySetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class SpecialitySetupComponent implements OnInit {
   isCreatingSpecialty = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  specialty = "";
-  componentLabel = "specialty";
+  error = '';
+  specialty = '';
+  componentLabel = 'specialty';
 
   submitForm(): void {
-    if (this.specialty == null || this.specialty == "") {
+    if (this.specialty == null || this.specialty === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingSpecialty.next(true);
       this.setup
         .createSpeciality(this.specialty)
@@ -33,14 +33,14 @@ export class SpecialitySetupComponent implements OnInit {
             this.isCreatingSpecialty.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getSpecialities();
-              this.specialty = "";
+              this.specialty = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class SpecialitySetupComponent implements OnInit {
           error => {
             this.isCreatingSpecialty.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

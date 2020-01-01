@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-id-type-setup",
-  templateUrl: "./id-type-setup.component.html",
-  styleUrls: ["./id-type-setup.component.css"]
+  selector: 'app-id-type-setup',
+  templateUrl: './id-type-setup.component.html',
+  styleUrls: ['./id-type-setup.component.css']
 })
 export class IdTypeSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class IdTypeSetupComponent implements OnInit {
   isCreatingIdType = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  idType = "";
-  componentLabel = "id type";
+  error = '';
+  idType = '';
+  componentLabel = 'id type';
 
   submitForm(): void {
-    if (this.idType == null || this.idType == "") {
+    if (this.idType == null || this.idType === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingIdType.next(true);
       this.setup
         .createIdType(this.idType)
@@ -33,14 +33,14 @@ export class IdTypeSetupComponent implements OnInit {
             this.isCreatingIdType.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getIdTypes();
-              this.idType = "";
+              this.idType = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class IdTypeSetupComponent implements OnInit {
           error => {
             this.isCreatingIdType.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

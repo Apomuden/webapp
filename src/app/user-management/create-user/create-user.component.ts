@@ -1,12 +1,12 @@
-import { BehaviorSubject } from "rxjs";
-import { SetupService } from "./../../shared/services/setup.service";
-import { Component, OnInit } from "@angular/core";
-import { first, retry } from "rxjs/operators";
+import { BehaviorSubject } from 'rxjs';
+import { SetupService } from './../../shared/services/setup.service';
+import { Component, OnInit } from '@angular/core';
+import { first, retry } from 'rxjs/operators';
 
 @Component({
-  selector: "app-create-user",
-  templateUrl: "./create-user.component.html",
-  styleUrls: ["./create-user.component.css"]
+  selector: 'app-create-user',
+  templateUrl: './create-user.component.html',
+  styleUrls: ['./create-user.component.css']
 })
 export class CreateUserComponent implements OnInit {
   countriesloading = new BehaviorSubject(false);
@@ -30,29 +30,29 @@ export class CreateUserComponent implements OnInit {
   current = 0;
   staffType = null;
   title = null;
-  firstName = "";
-  lastName = "";
-  middleName = "";
+  firstName = '';
+  lastName = '';
+  middleName = '';
   gender = null;
   dateOfBirth = null;
   religion = null;
   maritalStatus = null;
-  profession = "";
+  profession = '';
   educationalLevel = null;
-  residence = "";
+  residence = '';
   phone = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
-  email = "";
-  emergencyContactFullname = "";
+  email = '';
+  emergencyContactFullname = '';
   emergencyPhoneOne = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
   emergencyPhoneTwo = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
   department = null;
   role = null;
@@ -70,7 +70,7 @@ export class CreateUserComponent implements OnInit {
   taxOnSalary = null;
   signatory = null;
 
-  index = "First-content";
+  index = 'First-content';
 
   pre(): void {
     this.current -= 1;
@@ -80,7 +80,7 @@ export class CreateUserComponent implements OnInit {
     this.current += 1;
   }
 
-  done(): void {}
+  done(): void { }
 
   onBirthDateChange(result: Date): void {
     this.dateOfBirth = result;
@@ -92,7 +92,7 @@ export class CreateUserComponent implements OnInit {
     this.appointmentDate = result;
   }
 
-  constructor(private setup: SetupService) {}
+  constructor(private setup: SetupService) { }
 
   ngOnInit() {
     this.countriesloading.next(true);
@@ -101,13 +101,13 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+          console.log('data', data);
           this.countriesloading.next(false);
           this.countries = data.data;
         },
         error => {
           this.countriesloading.next(false);
-          console.log("error", error);
+          console.log('error', error);
         }
       );
 
@@ -117,13 +117,13 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+          console.log('data', data);
           this.rolesloading.next(false);
           this.roles = data.data;
         },
         error => {
           this.rolesloading.next(false);
-          console.log("error", error);
+          console.log('error', error);
         }
       );
 
@@ -133,13 +133,13 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+          console.log('data', data);
           this.educationalLevelsLoading.next(false);
           this.educationalLevels = data.data;
         },
         error => {
           this.educationalLevelsLoading.next(false);
-          console.log("error", error);
+          console.log('error', error);
         }
       );
 
@@ -181,13 +181,13 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("banks", data);
+          console.log('banks', data);
           this.banksloading.next(false);
           this.banks = data.data;
         },
         error => {
           this.banksloading.next(false);
-          console.log("error", error);
+          console.log('error', error);
         }
       );
 
@@ -197,13 +197,13 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+          console.log('data', data);
           this.departmentsloading.next(false);
           this.departments = data.data;
         },
         error => {
           this.departmentsloading.next(false);
-          console.log("error", error);
+          console.log('error', error);
         }
       );
 
@@ -213,13 +213,13 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+          console.log('data', data);
           this.bankBranchesLoading.next(false);
           this.bankBranches = data.data;
         },
         error => {
           this.bankBranchesLoading.next(false);
-          console.log("error", error);
+          console.log('error', error);
         }
       );
   }

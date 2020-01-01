@@ -1,13 +1,13 @@
-import { NzNotificationService } from "ng-zorro-antd";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { NzNotificationService } from 'ng-zorro-antd';
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-town-setup",
-  templateUrl: "./town-setup.component.html",
-  styleUrls: ["./town-setup.component.css"]
+  selector: 'app-town-setup',
+  templateUrl: './town-setup.component.html',
+  styleUrls: ['./town-setup.component.css']
 })
 export class TownSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -17,25 +17,25 @@ export class TownSetupComponent implements OnInit {
 
   data = [];
   list = [];
-  error = "";
-  name = "";
+  error = '';
+  name = '';
 
   district = null;
 
   districts = null;
 
-  componentLabel = "town";
+  componentLabel = 'town';
 
   submitForm(): void {
     if (
       this.name == null ||
-      this.name == "" ||
+      this.name === '' ||
       this.district == null ||
-      this.district == ""
+      this.district === ''
     ) {
-      this.error = "All Fields are required!";
+      this.error = 'All Fields are required!';
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingTown.next(true);
       this.setup
         .createTown(this.name, this.district)
@@ -45,15 +45,15 @@ export class TownSetupComponent implements OnInit {
             this.isCreatingTown.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getTowns();
-              this.name = "";
+              this.name = '';
               this.district = null;
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -61,7 +61,7 @@ export class TownSetupComponent implements OnInit {
           error => {
             this.isCreatingTown.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }

@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
 
 export class SearchComponent {
 
-    search : any
+    search: any;
 
     files = [
         {
@@ -34,7 +34,7 @@ export class SearchComponent {
             icon: 'file-pdf',
             color: 'ant-avatar-' + 'red'
         }
-    ]
+    ];
 
 }
 

@@ -1,27 +1,27 @@
-import { BehaviorSubject } from "rxjs";
-import { ViewChild } from "@angular/core";
-import { Address } from "ngx-google-places-autocomplete/objects/address";
-import { GooglePlaceDirective } from "ngx-google-places-autocomplete";
-import { first } from "rxjs/operators";
-import { SetupService } from "./../shared/services/setup.service";
-import { Component, OnInit } from "@angular/core";
-import { NzNotificationService } from "ng-zorro-antd";
+import { BehaviorSubject } from 'rxjs';
+import { ViewChild } from '@angular/core';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { first } from 'rxjs/operators';
+import { SetupService } from './../shared/services/setup.service';
+import { Component, OnInit } from '@angular/core';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-facility-management",
-  templateUrl: "./facility-management.component.html",
-  styleUrls: ["./facility-management.component.css"]
+  selector: 'app-facility-management',
+  templateUrl: './facility-management.component.html',
+  styleUrls: ['./facility-management.component.css']
 })
 export class FacilityManagementComponent implements OnInit {
-  registrationNumber = "";
-  registeringBodyName = "";
-  tinOrPinNumber = "";
-  adminLocation = "";
-  adminUsername = "";
-  adminEmail = "";
-  firstName = "";
-  middleName = "";
-  lastName = "";
+  registrationNumber = '';
+  registeringBodyName = '';
+  tinOrPinNumber = '';
+  adminLocation = '';
+  adminUsername = '';
+  adminEmail = '';
+  firstName = '';
+  middleName = '';
+  lastName = '';
   countries = [];
   googleAddress = null;
   countriesloading = new BehaviorSubject(false);
@@ -29,33 +29,33 @@ export class FacilityManagementComponent implements OnInit {
   registrationDate = null;
   expiryDate = null;
   dateOfBirth = null;
-  name = "";
-  address = "";
+  name = '';
+  address = '';
   hospitalPhoneOne = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
   hospitalPhoneTwo = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
   adminPhoneOne = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
   adminPhoneTwo = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
   nextOfKingPhone = {
-    countryCode: "+233",
-    number: ""
+    countryCode: '+233',
+    number: ''
   };
-  nextOfKingName = "";
+  nextOfKingName = '';
   relationship = null;
   facilityType = null;
 
-  @ViewChild("placesRef", { static: false }) placesRef: GooglePlaceDirective;
+  @ViewChild('placesRef', { static: false }) placesRef: GooglePlaceDirective;
 
   public handleAddressChange(address: Address) {
     // Do some stuff
@@ -111,8 +111,8 @@ export class FacilityManagementComponent implements OnInit {
       facilityType: this.facilityType
     };
     console.log(facilityDetails);
-    localStorage.setItem("facilityDetails", JSON.stringify(facilityDetails));
-    this.notification.blank("Success", "Facility Details Saved Successfully");
+    localStorage.setItem('facilityDetails', JSON.stringify(facilityDetails));
+    this.notification.blank('Success', 'Facility Details Saved Successfully');
   }
 
   onRegistrationDateChange(result: Date): void {
@@ -137,12 +137,12 @@ export class FacilityManagementComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+          console.log('data', data);
           this.countries = data.data;
           this.countriesloading.next(false);
         },
         error => {
-          console.log("error", error);
+          console.log('error', error);
           this.countriesloading.next(false);
         }
       );

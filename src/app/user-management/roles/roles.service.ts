@@ -1,10 +1,10 @@
-import { map } from "rxjs/operators";
-import { HttpClient } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { environment } from "src/environments/environment";
-const ROLES_API_URL = environment.apiBaseUrl + "/auth/roles";
+import { map } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+const ROLES_API_URL = environment.apiBaseUrl + '/auth/roles';
 @Injectable({
-  providedIn: "root"
+  providedIn: 'root'
 })
 export class RolesService {
   roles = null;

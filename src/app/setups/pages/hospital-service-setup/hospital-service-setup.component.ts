@@ -1,13 +1,13 @@
-import { SetupService } from "./../../../shared/services/setup.service";
-import { first } from "rxjs/operators";
-import { Component, OnInit } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from './../../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: "app-hospital-service-setup",
-  templateUrl: "./hospital-service-setup.component.html",
-  styleUrls: ["./hospital-service-setup.component.css"]
+  selector: 'app-hospital-service-setup',
+  templateUrl: './hospital-service-setup.component.html',
+  styleUrls: ['./hospital-service-setup.component.css']
 })
 export class HospitalServiceSetupComponent implements OnInit {
   initLoading = true; // bug
@@ -15,15 +15,15 @@ export class HospitalServiceSetupComponent implements OnInit {
   isCreatingHospitalService = new BehaviorSubject(false);
   data = [];
   list = [];
-  error = "";
-  hospitalService = "";
-  componentLabel = "hospital service";
+  error = '';
+  hospitalService = '';
+  componentLabel = 'hospital service';
 
   submitForm(): void {
-    if (this.hospitalService == null || this.hospitalService == "") {
+    if (this.hospitalService == null || this.hospitalService === '') {
       this.error = `Please enter ${this.componentLabel} name`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingHospitalService.next(true);
       this.setup
         .createHospitalService(this.hospitalService)
@@ -33,14 +33,14 @@ export class HospitalServiceSetupComponent implements OnInit {
             this.isCreatingHospitalService.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getHospitalServices();
-              this.hospitalService = "";
+              this.hospitalService = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -48,7 +48,7 @@ export class HospitalServiceSetupComponent implements OnInit {
           error => {
             this.isCreatingHospitalService.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }
