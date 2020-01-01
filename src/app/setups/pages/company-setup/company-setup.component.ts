@@ -1,48 +1,53 @@
-import { first } from "rxjs/operators";
-import { SetupService } from "./../../../shared/services/setup.service";
-import { NzNotificationService } from "ng-zorro-antd";
-import { Address } from "ngx-google-places-autocomplete/objects/address";
-import { GooglePlaceDirective } from "ngx-google-places-autocomplete";
-import { Component, OnInit, ViewChild } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { first } from 'rxjs/operators';
+import { SetupService } from './../../../shared/services/setup.service';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
-  selector: "app-company-setup",
-  templateUrl: "./company-setup.component.html",
-  styleUrls: ["./company-setup.component.css"]
+  selector: 'app-company-setup',
+  templateUrl: './company-setup.component.html',
+  styleUrls: ['./company-setup.component.css']
 })
 export class CompanySetupComponent implements OnInit {
-  @ViewChild("placesRef", { static: false }) placesRef: GooglePlaceDirective;
-  public handleAddressChange(address: Address) {
-    this.googleAddress = address.url;
-  }
+
+  constructor(
+    private setup: SetupService,
+    private notification: NzNotificationService
+  ) { }
+  @ViewChild('placesRef', { static: false }) placesRef: GooglePlaceDirective;
   initLoading = true; // bug
   loadingMore = false;
   isCreatingCompany = new BehaviorSubject(false);
   data = [];
   list = [];
 
-  error = "";
+  error = '';
   googleAddress = null;
-  name = "";
-  phone = "";
-  email = "";
-  componentLabel = "company";
+  name = '';
+  phone = '';
+  email = '';
+  componentLabel = 'company';
+  public handleAddressChange(address: Address) {
+    this.googleAddress = address.url;
+  }
 
   submitForm(): void {
     if (
       this.name === null ||
-      this.name === "" ||
+      this.name === '' ||
       this.email === null ||
-      this.email === "" ||
+      this.email === '' ||
       this.googleAddress === null ||
-      this.googleAddress === "" ||
+      this.googleAddress === '' ||
       this.phone === null ||
-      this.phone === ""
+      this.phone === ''
     ) {
       this.error = `All fields are required!`;
     } else {
-      this.error = "";
+      this.error = '';
       this.isCreatingCompany.next(true);
       this.setup
         .createCompany(this.name, this.phone, this.email, this.googleAddress)
@@ -52,16 +57,16 @@ export class CompanySetupComponent implements OnInit {
             this.isCreatingCompany.next(false);
             if (success) {
               this.notification.blank(
-                "Success",
+                'Success',
                 `Successfully created ${this.componentLabel}`
               );
               this.getCompanies();
-              this.email = "";
-              this.name = "";
-              this.phone = "";
+              this.email = '';
+              this.name = '';
+              this.phone = '';
             } else {
               this.notification.blank(
-                "Error",
+                'Error',
                 `Could not create ${this.componentLabel}`
               );
             }
@@ -69,18 +74,13 @@ export class CompanySetupComponent implements OnInit {
           error => {
             this.isCreatingCompany.next(false);
             this.notification.blank(
-              "Error",
+              'Error',
               `Could not create ${this.componentLabel}`
             );
           }
         );
     }
   }
-
-  constructor(
-    private setup: SetupService,
-    private notification: NzNotificationService
-  ) {}
   getCompanies() {
     this.setup
       .getCompanies()

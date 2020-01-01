@@ -16,9 +16,11 @@ export class CreateUserComponent implements OnInit {
   staffTypesLoading = new BehaviorSubject(false);
   titlesLoading = new BehaviorSubject(false);
   educationalLevelsLoading = new BehaviorSubject(false);
+  bankBranchesLoading = new BehaviorSubject(false);
 
   countries = [];
   departments = [];
+  bankBranches = [];
   roles = [];
   banks = [];
   educationalLevels = [];
@@ -125,6 +127,22 @@ export class CreateUserComponent implements OnInit {
         }
       );
 
+    this.educationalLevelsLoading.next(true);
+    this.setup
+      .getEducationalLevels()
+      .pipe(first())
+      .subscribe(
+        data => {
+          console.log("data", data);
+          this.educationalLevelsLoading.next(false);
+          this.educationalLevels = data.data;
+        },
+        error => {
+          this.educationalLevelsLoading.next(false);
+          console.log("error", error);
+        }
+      );
+
     this.staffTypesLoading.next(true);
     this.setup
       .getStaffTypes()
@@ -185,6 +203,22 @@ export class CreateUserComponent implements OnInit {
         },
         error => {
           this.departmentsloading.next(false);
+          console.log("error", error);
+        }
+      );
+
+    this.bankBranchesLoading.next(true);
+    this.setup
+      .getBankBranches()
+      .pipe(first())
+      .subscribe(
+        data => {
+          console.log("data", data);
+          this.bankBranchesLoading.next(false);
+          this.bankBranches = data.data;
+        },
+        error => {
+          this.bankBranchesLoading.next(false);
           console.log("error", error);
         }
       );
