@@ -1,5 +1,5 @@
-import { AuthGuard } from "./../guard/auth.guard";
-import { Routes } from "@angular/router";
+import {AuthGuard} from '../guard/auth.guard';
+import {Routes} from '@angular/router';
 
 export const CommonLayout_ROUTES: Routes = [
   {
@@ -27,6 +27,14 @@ export const CommonLayout_ROUTES: Routes = [
     loadChildren: () =>
       import("../../facility-management/facility-management.module").then(
         m => m.FacilityManagementModule
+      ),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: "records",
+    loadChildren: () =>
+      import("../../records/records.module").then(
+        m => m.RecordsModule
       ),
     canActivate: [AuthGuard]
   }

@@ -1,0 +1,113 @@
+<nz-steps [nzCurrent]="current">
+  <nz-step nzTitle="Billing Info"></nz-step>
+  <nz-step nzTitle="Patient Info"></nz-step>
+  <nz-step nzTitle="Contact Info"></nz-step>
+  <nz-step nzTitle="Next of Kin"></nz-step>
+</nz-steps>
+<div class="steps-content">
+  <form nz-form [formGroup]="patientForm" (ngSubmit)="submitForm()">
+    <div *ngIf="current === 0">
+      <div nz-row>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="billingType">Billing Type</nz-form-label>
+          <nz-form-control nzErrorTip="Please select a billing type">
+            <nz-select formControlName="billingType" nzPlaceHolder="Select billing type">
+              <nz-option nzValue="Cash" nzLabel="Cash"></nz-option>
+              <nz-option nzValue="Sponsored" nzLabel="Sponsored"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <div *ngIf="isBillingSponsored" formGroupName="sponsored">
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
+            <nz-form-control nzErrorTip="Select a company name">
+              <nz-select formControlName="sponsorName" nzPlaceHolder="Select sponsor name">
+                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
+                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="company">Company Name</nz-form-label>
+            <nz-form-control nzErrorTip="Select a company name">
+              <nz-select formControlName="company" nzPlaceHolder="Select company name">
+                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
+                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="memberId">Member Id</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid member Id">
+              <input type="text" nz-input placeholder="Member Id" formControlName="memberId"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cardSerialNumber">Card Serial Number</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid card serial number">
+              <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staffId">Staff Id</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid staff Id">
+              <input type="text" nz-input placeholder="Staff Id" formControlName="staffId"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
+            <nz-form-control nzErrorTip="Select beneficiary of sponsorship">
+              <nz-select formControlName="beneficiary" nzPlaceHolder="Beneficiary of the sponsorship">
+                <nz-option nzValue="Self" nzLabel="Self"></nz-option>
+                <nz-option nzValue="Dependant" nzLabel="Dependant"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="isBeneficiaryDependant">
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="relation">Relation</nz-form-label>
+            <nz-form-control nzErrorTip="Select the relation">
+              <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient">
+                <nz-option nzValue="Wife" nzLabel="Wife"></nz-option>
+                <nz-option nzValue="Son" nzLabel="Son"></nz-option>
+                <nz-option nzValue="Daughter" nzLabel="Daughter"></nz-option>
+                <nz-option nzValue="Other" nzLabel="Other"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="policy">Policy</nz-form-label>
+            <nz-form-control nzErrorTip="Select a policy type">
+              <nz-select formControlName="policy" nzPlaceHolder="Select policy type">
+                <nz-option nzValue="Silver" nzLabel="Silver"></nz-option>
+                <nz-option nzValue="Gold" nzLabel="Gold"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
+            <nz-form-control nzErrorTip="Select a valid issued date">
+              <nz-date-picker formControlName="issuedDate"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
+            <nz-form-control nzErrorTip="Select a valid expiry date">
+              <nz-date-picker formControlName="expiryDate"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="steps-action">
+  <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+    <span>Previous</span>
+  </button>
+  <button nz-button nzType="default" (click)="next()" *ngIf="current < 2">
+    <span>Next</span>
+  </button>
+  <button nz-button nzType="primary" (click)="done()" *ngIf="current === 2">
+    <span>Done</span>
+  </button>
+</div>

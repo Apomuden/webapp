@@ -1,4 +1,5 @@
-import { SideNavInterface } from "../../interfaces/side-nav.type";
+import {SideNavInterface} from '../../interfaces/side-nav.type';
+
 export const ROUTES: SideNavInterface[] = [
   {
     path: "/dashboard/default",
@@ -82,15 +83,15 @@ export const ROUTES: SideNavInterface[] = [
     ]
   },
   {
-    path: "",
+    path: "/records",
     title: "Records",
     iconType: "nzIcon",
     iconTheme: "outline",
-    icon: "appstore",
+    icon: "book",
     submenu: [
       {
-        path: "",
-        title: "New Patient Registration",
+        path: "/records/register-patient",
+        title: "Register New Patient",
         iconType: "",
         icon: "",
         iconTheme: "",
