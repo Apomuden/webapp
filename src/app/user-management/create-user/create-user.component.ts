@@ -80,7 +80,7 @@ export class CreateUserComponent implements OnInit {
     this.current += 1;
   }
 
-  done(): void {}
+  done(): void { }
 
   onBirthDateChange(result: Date): void {
     this.dateOfBirth = result;
@@ -92,7 +92,7 @@ export class CreateUserComponent implements OnInit {
     this.appointmentDate = result;
   }
 
-  constructor(private setup: SetupService) {}
+  constructor(private setup: SetupService) { }
 
   ngOnInit() {
     this.countriesloading.next(true);
@@ -133,13 +133,17 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+
+          console.log('data', data);
+
           this.educationalLevelsLoading.next(false);
           this.educationalLevels = data.data;
         },
         error => {
           this.educationalLevelsLoading.next(false);
-          console.log("error", error);
+
+          console.log('error', error);
+
         }
       );
 
@@ -213,13 +217,17 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log("data", data);
+
+          console.log('data', data);
+
           this.bankBranchesLoading.next(false);
           this.bankBranches = data.data;
         },
         error => {
           this.bankBranchesLoading.next(false);
-          console.log("error", error);
+
+          console.log('error', error);
+
         }
       );
   }
