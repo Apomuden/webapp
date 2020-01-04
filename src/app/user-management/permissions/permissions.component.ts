@@ -1,3 +1,5 @@
+import { first } from 'rxjs/operators';
+import { PermissionsService } from './permissions.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +9,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PermissionsComponent implements OnInit {
 
-  constructor() { }
+  constructor(private permissionsService: PermissionsService) { }
 
   ngOnInit() {
+    this.permissionsService.getPermissions().pipe(first()).subscribe(res => {
+
+    },
+      err => {
+
+      }
+    );
   }
 
 }

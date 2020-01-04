@@ -133,13 +133,17 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
+
           console.log('data', data);
+
           this.educationalLevelsLoading.next(false);
           this.educationalLevels = data.data;
         },
         error => {
           this.educationalLevelsLoading.next(false);
+
           console.log('error', error);
+
         }
       );
 
@@ -213,13 +217,17 @@ export class CreateUserComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
+
           console.log('data', data);
+
           this.bankBranchesLoading.next(false);
           this.bankBranches = data.data;
         },
         error => {
           this.bankBranchesLoading.next(false);
+
           console.log('error', error);
+
         }
       );
   }
