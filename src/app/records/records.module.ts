@@ -8,9 +8,9 @@ import {
   NzFormModule,
   NzGridModule,
   NzIconModule,
-  NzInputModule,
+  NzInputModule, NzInputNumberModule,
   NzSelectModule,
-  NzStepsModule
+  NzStepsModule, NzSwitchModule
 } from 'ng-zorro-antd';
 import {ReactiveFormsModule} from '@angular/forms';
 
@@ -29,6 +29,8 @@ import {ReactiveFormsModule} from '@angular/forms';
     NzSelectModule,
     NzDatePickerModule,
     NzIconModule,
+    NzInputNumberModule,
+    NzSwitchModule,
   ]
 })
 export class RecordsModule {}
