@@ -8,7 +8,7 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '
 })
 export class RegisterPatientComponent implements OnInit {
 
-  stepIndex = 0;
+  stepIndex = 2;
   readonly finalStepIndex = 3;
 
   patientForm: FormGroup;
@@ -28,7 +28,9 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   done(): void {
-    this.submitForm();
+    if (this.validateNextOfKinInfo()) {
+      this.submitForm();
+    }
   }
 
   changeContent(mode: 'next' | 'previous'): void {
@@ -36,13 +38,13 @@ export class RegisterPatientComponent implements OnInit {
     switch (this.stepIndex) {
       case 0: {
         if (this.validateBillingInfo()) {
-        action();
+          action();
         }
         break;
       }
       case 1: {
-        if(this.validatePatientInfo()) {
-        action();
+        if (this.validatePatientInfo()) {
+          action();
         }
         break;
       }
@@ -76,8 +78,8 @@ export class RegisterPatientComponent implements OnInit {
           cardSerialNumber: [null, [Validators.required]],
           staffId: [null, [Validators.required]],
           beneficiary: [null, [Validators.required]],
-          // relation: [null, [this.RelationValidator]],
-          relation: [null],
+          relation: [null, [this.relationValidator]],
+          // relation: [null],
           policy: [null, [Validators.required]],
           issuedDate: [null, [Validators.required]],
           expiryDate: [null, [Validators.required]],
@@ -169,8 +171,11 @@ export class RegisterPatientComponent implements OnInit {
 
   // noinspection JSMethodCanBeStatic
   // TODO fix validator error
-  RelationValidator = (control: AbstractControl):
-    { [key: string]: any } | null => {
+  relationValidator = (control: FormControl): { [key: string]: any } | null => {
+
+    if (!this.patientForm) {
+      return null;
+    }
 
     if (!this.isBeneficiaryDependant) {
       return null;
