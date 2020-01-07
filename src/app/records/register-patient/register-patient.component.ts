@@ -249,6 +249,6 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   submitForm() {
-    //todo get data from form and submit
+    //todo get data from form and submit .
   }
 }
