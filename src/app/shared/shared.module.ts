@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -8,18 +7,7 @@ import { NgZorroAntdModule, NzNotificationService } from 'ng-zorro-antd';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { ThemeConstantService } from './services/theme-constant.service';
 import { SearchPipe } from './pipes/search.pipe';
-=======
-import { NgModule } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
-import { RouterModule } from "@angular/router";
-import { NgZorroAntdModule, NzNotificationService } from "ng-zorro-antd";
-import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
-import { ThemeConstantService } from "./services/theme-constant.service";
-import { SearchPipe } from "./pipes/search.pipe";
-import { AntModule } from "./ant.module";
->>>>>>> Feature/patient_registration_form
+import { AntModule } from './ant.module';
 
 @NgModule({
   exports: [
@@ -43,4 +31,4 @@ import { AntModule } from "./ant.module";
   declarations: [SearchPipe],
   providers: [ThemeConstantService, NzNotificationService]
 })
-export class SharedModule {}
+export class SharedModule { }

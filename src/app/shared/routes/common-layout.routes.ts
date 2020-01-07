@@ -1,10 +1,5 @@
-<<<<<<< HEAD
 import { AuthGuard } from './../guard/auth.guard';
 import { Routes } from '@angular/router';
-=======
-import {AuthGuard} from '../guard/auth.guard';
-import {Routes} from '@angular/router';
->>>>>>> Feature/patient_registration_form
 
 export const CommonLayout_ROUTES: Routes = [
   {

@@ -38,19 +38,19 @@
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="memberId">Member Id</nz-form-label>
           <nz-form-control nzErrorTip="Enter a valid member Id">
-            <input type="text" nz-input placeholder="Member Id" formControlName="memberId"/>
+            <input type="text" nz-input placeholder="Member Id" formControlName="memberId" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cardSerialNumber">Card Serial Number</nz-form-label>
           <nz-form-control nzErrorTip="Enter a valid card serial number">
-            <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber"/>
+            <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staffId">Staff Id</nz-form-label>
           <nz-form-control nzErrorTip="Enter a valid staff Id">
-            <input type="text" nz-input placeholder="Staff Id" formControlName="staffId"/>
+            <input type="text" nz-input placeholder="Staff Id" formControlName="staffId" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
@@ -110,44 +110,33 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
         <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstName"/>
+          <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstName" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
         <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName"/>
+          <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
         <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName"/>
+          <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
         <nz-form-control nzErrorTip="Select a valid date">
-          <nz-date-picker
-            formControlName="dob"
-            nzPlaceHolder="Select date of birth"
-            [nzDisabled]="useAge"
-          ></nz-date-picker>
+          <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
+          </nz-date-picker>
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
         <nz-form-control nzErrorTip="Enter a valid name">
-          <nz-input-number
-            formControlName="age"
-            (ngModelChange)="ageChanged()"
-            [nzMin]="0"
-            [nzMax]="200"
-            [nzStep]="1"
-            [nzFormatter]="formatterAge"
-            [nzParser]="parserAge"
-            [nzDisabled]="!useAge"
-          ></nz-input-number>
+          <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
+            [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
         </nz-form-control>
         <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
       </nz-form-item>
@@ -210,7 +199,7 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="oldFolderNumber">Old Folder Number</nz-form-label>
         <nz-form-control nzErrorTip="Enter a valid folder number">
-          <input type="text" nz-input placeholder="Old Folder Number" formControlName="oldFolderNumber"/>
+          <input type="text" nz-input placeholder="Old Folder Number" formControlName="oldFolderNumber" />
         </nz-form-control>
       </nz-form-item>
     </div>
@@ -218,7 +207,7 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Home Address</nz-form-label>
         <nz-form-control nzErrorTip="Enter patient home address">
-          <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress"/>
+          <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -239,7 +228,7 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emailAddress">Email Address</nz-form-label>
         <nz-form-control nzErrorTip="Enter valid email">
-          <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress"/>
+          <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress" />
         </nz-form-control>
       </nz-form-item>
     </div>
@@ -247,13 +236,13 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Full Name</nz-form-label>
         <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="Full name eg. James Anim" formControlName="name"/>
+          <input type="text" nz-input placeholder="Full name eg. James Anim" formControlName="name" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Home Address</nz-form-label>
         <nz-form-control nzErrorTip="Enter patient home address">
-          <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress"/>
+          <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress" />
         </nz-form-control>
       </nz-form-item>
       <nz-form-item>
@@ -274,7 +263,7 @@
       <nz-form-item>
         <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emailAddress">Email Address</nz-form-label>
         <nz-form-control nzErrorTip="Enter valid email">
-          <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress"/>
+          <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress" />
         </nz-form-control>
       </nz-form-item>
     </div>
