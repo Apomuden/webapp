@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register-patient',
@@ -8,7 +8,7 @@ import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '
 })
 export class RegisterPatientComponent implements OnInit {
 
-  stepIndex = 2;
+  stepIndex = 0;
   readonly finalStepIndex = 3;
 
   patientForm: FormGroup;
@@ -34,30 +34,22 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   changeContent(mode: 'next' | 'previous'): void {
-    const action = () => mode === 'next' ? this.stepIndex++ : this.stepIndex--;
+    const action = (valid: boolean) => mode === 'next' ? (valid) ? this.stepIndex++ : null : this.stepIndex--;
     switch (this.stepIndex) {
       case 0: {
-        if (this.validateBillingInfo()) {
-          action();
-        }
+        action(this.validateBillingInfo());
         break;
       }
       case 1: {
-        if (this.validatePatientInfo()) {
-          action();
-        }
+        action(this.validatePatientInfo());
         break;
       }
       case 2: {
-        if (this.validateContactInfo()) {
-          action();
-        }
+        action(this.validateContactInfo());
         break;
       }
       case 3: {
-        if (this.validateNextOfKinInfo()) {
-          action();
-        }
+        action(this.validateContactInfo());
         break;
       }
       default: {
@@ -182,7 +174,7 @@ export class RegisterPatientComponent implements OnInit {
     }
 
     if (!control.value) {
-      return {required: true};
+      return { required: true };
     }
 
     return null;

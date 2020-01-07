@@ -7,6 +7,7 @@ import { NgZorroAntdModule, NzNotificationService } from "ng-zorro-antd";
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { ThemeConstantService } from "./services/theme-constant.service";
 import { SearchPipe } from "./pipes/search.pipe";
+import { AntModule } from "./ant.module";
 
 @NgModule({
   exports: [
@@ -15,12 +16,15 @@ import { SearchPipe } from "./pipes/search.pipe";
     HttpClientModule,
     NgZorroAntdModule,
     PerfectScrollbarModule,
-    SearchPipe
+    SearchPipe,
+    ReactiveFormsModule,
+    AntModule,
   ],
   imports: [
     RouterModule,
     CommonModule,
     NgZorroAntdModule,
+    AntModule,
     PerfectScrollbarModule,
     ReactiveFormsModule
   ],

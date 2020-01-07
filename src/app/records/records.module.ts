@@ -13,6 +13,7 @@ import {
   NzStepsModule, NzSwitchModule
 } from 'ng-zorro-antd';
 import {ReactiveFormsModule} from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
 
 
 @NgModule({
@@ -20,17 +21,7 @@ import {ReactiveFormsModule} from '@angular/forms';
   imports: [
     CommonModule,
     RecordsRoutingModule,
-    NzStepsModule,
-    NzButtonModule,
-    NzGridModule,
-    ReactiveFormsModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
-    NzDatePickerModule,
-    NzIconModule,
-    NzInputNumberModule,
-    NzSwitchModule,
+    SharedModule,
   ]
 })
 export class RecordsModule {}
