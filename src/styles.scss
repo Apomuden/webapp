@@ -1,4 +1,11 @@
 @import url('./assets/lib/hljs/styles/atom-one-light.css');
 @import url('../node_modules/ng-zorro-antd/src/ng-zorro-antd.min.css');
 @import url('../node_modules/@fortawesome/fontawesome-free/css/all.min.css');
-@import './assets/scss/app.scss'
+@import './assets/scss/app.scss';
+
+
+[nz-input]::placeholder,
+.ant-calendar-picker > input::placeholder,
+.ant-select-selection__placeholder {
+  color: #BDBDBD;
+}

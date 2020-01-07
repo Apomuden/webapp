@@ -1,0 +1,27 @@
+.steps-content {
+  padding: 30px 10px;
+}
+
+nz-select {
+  width: 350px;
+}
+
+nz-select.phone-select {
+  width: 70px !important;
+}
+
+.ant-input {
+  width: 350px;
+}
+
+nz-form-control {
+  display: inline-block;
+}
+
+[nz-button] {
+  margin-right: 10px;
+}
+
+.age-switch {
+  margin-left: 10px;
+}
