@@ -1,19 +1,16 @@
 <div class="container">
-  <nz-card>
+  <nz-card *ngIf="user!== null">
     <div class="row align-items-center">
       <div class="col-md-6">
         <div class="d-md-flex align-items-center">
           <div class="text-center text-sm-left ">
-            <nz-avatar
-              nzIcon="user"
-              [nzSize]="120"
-              style="background-color:#3c3ec2;"
-            ></nz-avatar>
+            <nz-avatar nzIcon="user" [nzSize]="120" style="background-color:#3c3ec2;"></nz-avatar>
           </div>
           <div class="text-center text-sm-left m-v-15 p-l-30">
-            <h2 class="m-b-5">Mr. John Brown</h2>
-            <p class="text-opacity font-size-13">jbrown</p>
-            <p class="text-dark m-b-20">Pharmacist</p>
+            <h2 class="m-b-5">{{user.title}} {{user.firstname}}{{user.middlename?" "+user.middlename:""}}
+              {{user.surname}}</h2>
+            <p class="text-opacity font-size-13">{{user.username}}</p>
+            <p class="text-dark m-b-20">{{user.profession_name}}</p>
             <button nz-button nzType="primary" nzGhost class="m-r-5">
               Edit
             </button>
@@ -28,51 +25,31 @@
             <ul class="list-unstyled m-t-10">
               <li class="row">
                 <p class="col-sm-3 col-4 font-weight-semibold text-dark m-b-5">
-                  <i
-                    class="m-r-10 text-primary"
-                    nz-icon
-                    nzType="mail"
-                    theme="outline"
-                  ></i>
+                  <i class="m-r-10 text-primary" nz-icon nzType="mail" theme="outline"></i>
                   <span>Email: </span>
                 </p>
-                <p class="col font-weight-semibold">jonnybrown@gmail.com</p>
+                <p class="col font-weight-semibold">{{user.email}}</p>
               </li>
               <li class="row">
                 <p class="col-sm-3 col-4 font-weight-semibold text-dark m-b-5">
-                  <i
-                    class="m-r-10 text-primary"
-                    nz-icon
-                    nzType="phone"
-                    theme="outline"
-                  ></i>
+                  <i class="m-r-10 text-primary" nz-icon nzType="phone" theme="outline"></i>
                   <span>Phone 1: </span>
                 </p>
-                <p class="col font-weight-semibold">+233242756809</p>
+                <p class="col font-weight-semibold">{{user.active_cell}}</p>
               </li>
               <li class="row">
                 <p class="col-sm-3 col-4 font-weight-semibold text-dark m-b-5">
-                  <i
-                    class="m-r-10 text-primary"
-                    nz-icon
-                    nzType="phone"
-                    theme="outline"
-                  ></i>
+                  <i class="m-r-10 text-primary" nz-icon nzType="phone" theme="outline"></i>
                   <span>Phone 2: </span>
                 </p>
-                <p class="col font-weight-semibold">+233245555839</p>
+                <p class="col font-weight-semibold">{{user.alternate_cell?user.alternate_cell:"N/A"}}</p>
               </li>
               <li class="row">
                 <p class="col-sm-3 col-5 font-weight-semibold text-dark m-b-5">
-                  <i
-                    class="m-r-10 text-primary"
-                    nz-icon
-                    nzType="compass"
-                    theme="outline"
-                  ></i>
+                  <i class="m-r-10 text-primary" nz-icon nzType="compass" theme="outline"></i>
                   <span>Location: </span>
                 </p>
-                <p class="col font-weight-semibold">Ashaiman</p>
+                <p class="col font-weight-semibold">{{user.region_name+" - "+user.country_name}}</p>
               </li>
             </ul>
           </div>
@@ -98,10 +75,10 @@
     <div class="col-md-6">
       <nz-card>
         <h5>Staff ID</h5>
-        <p>101</p>
+        <p>{{user.staff_id}}</p>
         <hr />
         <h5>Department</h5>
-        <p>Pharmacy</p>
+        <p>{{user.department_name}}</p>
         <hr />
       </nz-card>
     </div>

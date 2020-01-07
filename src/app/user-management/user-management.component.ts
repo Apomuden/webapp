@@ -1,3 +1,4 @@
+import { Router, NavigationExtras } from '@angular/router';
 import { first } from 'rxjs/operators';
 import { UserManagementService } from './user-management.service';
 import { Component, OnInit } from '@angular/core';
@@ -9,42 +10,52 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserManagementComponent implements OnInit {
   users = [];
-  constructor(private userManagementService: UserManagementService) { }
+  loading = true;
+  pageIndex = 1;
+  totalItems = 10;
+  pageSize = 10;
+  nextUrl = null;
+  prevUrl = null;
+  constructor(private router: Router, private userManagementService: UserManagementService) { }
 
   ngOnInit() {
     this.userManagementService.getAllUsers().pipe(first()).subscribe(
-      users => {
-        this.users = users;
+      res => {
+        this.loading = false;
+        this.users = res.data;
+        this.totalItems = res.pagination.total_records;
+        this.nextUrl = res.pagination.next_page_url;
+        this.prevUrl = res.pagination.prev_page_url;
       },
       err => {
-        console.log('could not fetch users')
+        this.loading = false;
+        console.log('could not fetch users');
       }
     );
-    // this.users = [
-    //   {
-    //     key: '1',
-    //     staff_id: '101',
-    //     profession: 'Pharmacist',
-    //     name: 'John Brown',
-    //     department: 'Pharmacy',
-    //     address: 'Ashaiman'
-    //   },
-    //   {
-    //     key: '2',
-    //     name: 'Jim Green',
-    //     staff_id: '112',
-    //     profession: 'Records Officer',
-    //     department: 'Records',
-    //     address: 'Trassaco'
-    //   },
-    //   {
-    //     key: '3',
-    //     name: 'Joe Black',
-    //     staff_id: '012',
-    //     profession: 'Doctor',
-    //     department: 'Male Ward',
-    //     address: 'Dansoman'
-    //   }
-    // ];
+  }
+  getPage(currentIndex) {
+    if (currentIndex > this.pageIndex) {
+      this.getPaginatedUsers(this.nextUrl, currentIndex);
+    } else if (currentIndex < this.pageIndex) {
+      this.getPaginatedUsers(this.prevUrl, currentIndex);
+    }
+  }
+
+  getPaginatedUsers(url: string, currentIndex: number) {
+    this.loading = true;
+    this.userManagementService.getUsersPagination(url).pipe(first()).subscribe(
+      res => {
+        this.loading = false;
+        this.users = res.data;
+        this.pageIndex = currentIndex;
+        this.totalItems = res.pagination.total_records;
+        this.nextUrl = res.pagination.next_page_url;
+        this.prevUrl = res.pagination.prev_page_url;
+      },
+      err => {
+        this.loading = false;
+        console.log('could not fetch users');
+      }
+    );
   }
 }

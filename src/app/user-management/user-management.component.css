@@ -1,0 +1,7 @@
+.current-page{
+  display: inline-block;
+  border:1px solid #ababab;
+  width: 30px;
+  height:30px;
+  border-radius: 2px;
+}

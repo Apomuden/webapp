@@ -20,7 +20,7 @@ const routes: Routes = [
     }
   },
   {
-    path: 'profile',
+    path: 'profile/:id',
     component: UserProfileComponent,
     canActivate: [AuthGuard],
     data: {
@@ -74,4 +74,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class UserManagementRoutingModule {}
+export class UserManagementRoutingModule { }

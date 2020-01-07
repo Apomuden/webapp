@@ -1,7 +1,7 @@
 <nz-card>
   <div class="m-t-25">
-    <nz-table #basicTable [nzData]="users">
-      <thead>
+    <nz-table #basicTable [nzData]="users" [nzLoading]="loading" [nzPageIndex]="pageIndex" [nzShowPagination]="false">
+      <thead *ngIf="!loading">
         <tr>
           <th>Staff ID</th>
           <th>Name</th>
@@ -17,12 +17,19 @@
           <td>{{ data.profession_name }}</td>
           <td>{{ data.department_name }}</td>
           <td>
-            <a [routerLink]="['/user-management', 'profile']">Details</a>
+            <a [routerLink]="['/user-management', 'profile',data.id]">Details</a>
+
             <nz-divider nzType="vertical"></nz-divider>
             <a>Block</a>
           </td>
         </tr>
       </tbody>
     </nz-table>
+    <div style="text-align: right;" class="m-t-10">
+      <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="totalItems" (nzPageIndexChange)="getPage($event)"
+        [nzPageSize]="pageSize"></nz-pagination>
+    </div>
+
+
   </div>
 </nz-card>

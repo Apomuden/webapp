@@ -18,7 +18,7 @@ export const ROUTES: SideNavInterface[] = [
   },
   {
     path: '/setup',
-    title: 'Setups',
+    title: 'System Configurations',
     iconType: 'nzIcon',
     iconTheme: 'outline',
     icon: 'setting',
