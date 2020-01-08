@@ -3,6 +3,7 @@
     <nz-steps nzDirection="vertical" nzSize="small" [nzCurrent]="stepIndex">
       <nz-step nzTitle="Staff Type"></nz-step>
       <nz-step nzTitle="Bio Data"></nz-step>
+      <nz-step nzTitle="Profile Data"></nz-step>
       <nz-step nzTitle="Contact Info"></nz-step>
       <nz-step nzTitle="Emergency"></nz-step>
       <nz-step nzTitle="Role and Department"></nz-step>
@@ -55,13 +56,6 @@
             <nz-form-control nzErrorTip="Please enter last name">
 
               <input nz-input placeholder="Last name" formControlName="lastName" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="userName">User name</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter user name">
-
-              <input type="text" placeholder="User name" nz-input formControlName="userName" />
             </nz-form-control>
           </nz-form-item>
 
@@ -125,7 +119,23 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div *ngIf="stepIndex == 2" formGroupName="contactInfo">
+
+        <div *ngIf="stepIndex == 2" formGroupName="profileData">
+            <nz-form-item>
+              <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="userName">User name</nz-form-label>
+              <nz-form-control nzErrorTip="Please enter user name">
+                <input autocomplete="username" type="text" placeholder="User name" nz-input formControlName="userName" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+                <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="password">Password</nz-form-label>
+                <nz-form-control nzErrorTip="Please enter a password">
+                  <input autocomplete="new-password" type="password" placeholder="Password" nz-input formControlName="password" />
+                </nz-form-control>
+              </nz-form-item>
+          </div>
+
+        <div *ngIf="stepIndex == 3" formGroupName="contactInfo">
 
           <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="number">Phone</nz-form-label>
@@ -149,7 +159,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div *ngIf="stepIndex == 3" formGroupName="emergency">
+        <div *ngIf="stepIndex == 4" formGroupName="emergency">
           <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emergencyContactFullname">Full name</nz-form-label>
             <nz-form-control nzErrorTip="Please enter full name">
@@ -188,7 +198,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div *ngIf="stepIndex == 4" formGroupName="role">
+        <div *ngIf="stepIndex == 5" formGroupName="role">
           <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="role">Role</nz-form-label>
             <nz-form-control nzErrorTip="Please select role">
@@ -210,7 +220,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div *ngIf="stepIndex == 5" formGroupName="other">
+        <div *ngIf="stepIndex == 6" formGroupName="other">
           <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="bankName">Bank Name</nz-form-label>
             <nz-form-control nzErrorTip="Please select bank name">
@@ -317,17 +327,17 @@
             </div>
           </div>
         </div>
-        <div *ngIf="stepIndex == 6">In The pipeline</div>
+        <div *ngIf="stepIndex == 7">In The pipeline</div>
       </form>
     </div>
     <div class="steps-action">
       <button nz-button nzType="default" (click)="pre()" *ngIf="stepIndex > 0">
         <span>Previous</span>
       </button>
-      <button nz-button nzType="default" (click)="next()" *ngIf="stepIndex < 6">
+      <button nz-button nzType="default" (click)="next()" *ngIf="stepIndex < 7">
         <span>Next</span>
       </button>
-      <button nz-button nzType="primary" (click)="done()" *ngIf="stepIndex === 6">
+      <button nz-button nzType="primary" (click)="done()" *ngIf="stepIndex === 7">
         <span>Done</span>
       </button>
     </div>

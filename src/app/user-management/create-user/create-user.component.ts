@@ -23,7 +23,6 @@ export class CreateUserComponent implements OnInit {
       firstName: [null, [Validators.required]],
       middleName: [null],
       lastName: [null, [Validators.required]],
-      userName: [null, [Validators.required]],
       dateOfBirth: [null, [Validators.required]],
       gender: [null, [Validators.required]],
       maritalStatus: [null, [Validators.required]],
@@ -32,13 +31,18 @@ export class CreateUserComponent implements OnInit {
       occupation: [null, [Validators.required]],
       residence: [null, [Validators.required]],
     }),
-    // 2 contact information
+    // 3 profile data
+    profileData: this.fb.group({
+      userName: [null, [Validators.required]],
+      password: [null, [Validators.required]],
+    }),
+    // 4 contact information
     contactInfo: this.fb.group({
       countryCode: ['+233', [Validators.required]],
       number: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
       email: [null, [Validators.email]],
     }),
-    // 3 emergency information
+    // 5 emergency information
     emergency: this.fb.group({
       emergencyContactFullname: [null, [Validators.required]],
       countryCode: ['+233', [Validators.required]],
@@ -47,12 +51,12 @@ export class CreateUserComponent implements OnInit {
       numberTwo: [null, [Validators.minLength(9), Validators.maxLength(9)]],
       emailAddress: [null, [Validators.email]],
     }),
-    // 4 role and department
+    // 6 role and department
     role: this.fb.group({
       role: [null, [Validators.required]],
       department: [null, [Validators.required]],
     }),
-    // 5 other information
+    // 7 other information
     other: this.fb.group({
       bankName: [null, [Validators.required]],
       bankBranch: [null, [Validators.required]],
@@ -71,6 +75,9 @@ export class CreateUserComponent implements OnInit {
 
   get staffTypeForm(): FormGroup {
     return this.userForm.get('staffType') as FormGroup;
+  }
+  get profileDataForm(): FormGroup {
+    return this.userForm.get('profileData') as FormGroup;
   }
   get bioDataForm(): FormGroup {
     return this.userForm.get('bioData') as FormGroup;
@@ -241,23 +248,31 @@ export class CreateUserComponent implements OnInit {
         break;
       }
       case 2: {
-        action(this.validateContactInfo());
+        action(this.validateprofileData());
         break;
       }
       case 3: {
+        action(this.validateContactInfo());
+        break;
+      }
+      case 4: {
         action(this.validateEmergency());
         this.fetchRoles();
         this.fetchDepartments();
         break;
       }
-      case 4: {
+      case 5: {
         action(this.validateRole());
         this.fetchBanks();
         this.fetchBankBranches();
         break;
       }
-      case 5: {
+      case 6: {
         action(this.validateOtherDetails());
+        break;
+      }
+      case 7: {
+        action(true);
         break;
       }
       default: {
@@ -273,6 +288,7 @@ export class CreateUserComponent implements OnInit {
     }
     return this.otherDetailsForm.valid;
   }
+
   validateRole(): boolean {
     for (const i of Object.keys(this.roleForm.controls)) {
       this.roleForm.controls[i].markAsDirty();
@@ -280,6 +296,7 @@ export class CreateUserComponent implements OnInit {
     }
     return this.roleForm.valid;
   }
+
   validateEmergency(): boolean {
     for (const i of Object.keys(this.emergencyForm.controls)) {
       this.emergencyForm.controls[i].markAsDirty();
@@ -287,6 +304,8 @@ export class CreateUserComponent implements OnInit {
     }
     return this.emergencyForm.valid;
   }
+
+
   validateStaffType(): boolean {
     for (const i of Object.keys(this.staffTypeForm.controls)) {
       this.staffTypeForm.controls[i].markAsDirty();
@@ -294,6 +313,8 @@ export class CreateUserComponent implements OnInit {
     }
     return this.staffTypeForm.valid;
   }
+
+
   validateBioData(): boolean {
     for (const i of Object.keys(this.bioDataForm.controls)) {
       this.bioDataForm.controls[i].markAsDirty();
@@ -301,6 +322,15 @@ export class CreateUserComponent implements OnInit {
     }
     return this.bioDataForm.valid;
   }
+
+  validateprofileData(): boolean {
+    for (const i of Object.keys(this.profileDataForm.controls)) {
+      this.profileDataForm.controls[i].markAsDirty();
+      this.profileDataForm.controls[i].updateValueAndValidity();
+    }
+    return this.profileDataForm.valid;
+  }
+
   validateContactInfo(): boolean {
     for (const i of Object.keys(this.contactInfoForm.controls)) {
       this.contactInfoForm.controls[i].markAsDirty();
