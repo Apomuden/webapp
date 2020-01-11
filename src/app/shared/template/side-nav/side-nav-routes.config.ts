@@ -89,8 +89,16 @@ export const ROUTES: SideNavInterface[] = [
     icon: 'book',
     submenu: [
       {
+        path: '/records/folders/all',
+        title: 'Folders',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+      {
         path: '/records/register-patient',
-        title: 'Register New Patient',
+        title: 'Patient',
         iconType: '',
         icon: '',
         iconTheme: '',
@@ -130,7 +138,6 @@ export const ROUTES: SideNavInterface[] = [
       }
     ]
   }
-
   // ,
   // {
   //   path: "",

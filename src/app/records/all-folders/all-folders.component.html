@@ -1,0 +1,48 @@
+<div>
+  <nz-card>
+    <div nz-row>
+      <div nz-col nzMd="4" nzOffset="20">
+        <button nz-button nzType="primary" nzSize="default" class="button--left" (click)="routeToCreateFolder()">
+          <i nz-icon nzType="folder-add" nzTheme="fill"></i> Create Folder
+        </button>
+        <!--<button nz-button nzType="default" nzSize="default"><i nz-icon nzType="folder-add"></i> Create Folder</button>-->
+      </div>
+    </div>
+  </nz-card>
+  <nz-card [nzLoading]="loadingData">
+    <div nz-row>
+      <div nz-col nzMd="12">
+        <form nz-form>
+          <nz-form-item>
+            <nz-form-label nzXs="4" nzRequired nzFor="search">Search Folder</nz-form-label>
+            <nz-form-control nzXs="14" nzOffset="1">
+              <input nz-input placeholder="Search Folder"/>
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </div>
+    </div>
+    <div nz-row>
+      <nz-table [nzData]="folders?.data" nzShowSizeChanger>
+        <thead>
+        <tr>
+          <th>Folder Number</th>
+          <th>Created On</th>
+          <th>Folder Type</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of folders?.data">
+          <td>{{ data.folder_no }}</td>
+          <td>{{ parseDate(data.created_at) | date: 'medium' }}</td>
+          <td>{{ data.folder_type | titlecase }}</td>
+          <td>
+            <a routerLink="../view/{{data.id}}">View</a>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </nz-card>
+</div>
