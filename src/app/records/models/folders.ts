@@ -9,8 +9,8 @@ export interface FolderDetails {
   updated_at: string;
 }
 
-export interface FoldersList extends GetPayload<FolderDetails[]> {
+export interface GetFoldersList extends GetPayload<FolderDetails[]> {
 }
 
-export interface Folder extends GetPayload <FolderDetails> {
+export interface GetFolder extends GetPayload <FolderDetails> {
 }

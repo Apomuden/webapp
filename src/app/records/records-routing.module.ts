@@ -4,6 +4,8 @@ import {RouterModule, Routes} from '@angular/router';
 import {RegisterPatientComponent} from './register-patient/register-patient.component';
 import {FullLayoutComponent} from '../layouts/full-layout/full-layout.component';
 import {AllFoldersComponent} from './all-folders/all-folders.component';
+import {ViewFolderComponent} from './view-folder/view-folder.component';
+import {CreateFolderComponent} from './create-folder/create-folder.component';
 
 const routes: Routes = [
   {
@@ -17,12 +19,18 @@ const routes: Routes = [
   {
     path: 'folders',
     component: FullLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'all',
         component: AllFoldersComponent,
         data: {title: 'All'}
-      }
+      },
+      {
+        path: 'view/:id',
+        component: ViewFolderComponent,
+        data: {title: 'View'}
+      },
     ],
     data: {
       title: 'Folders'

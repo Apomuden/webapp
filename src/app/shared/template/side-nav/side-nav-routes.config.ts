@@ -98,7 +98,7 @@ export const ROUTES: SideNavInterface[] = [
       },
       {
         path: '/records/register-patient',
-        title: 'Patient',
+        title: 'Patients',
         iconType: '',
         icon: '',
         iconTheme: '',
