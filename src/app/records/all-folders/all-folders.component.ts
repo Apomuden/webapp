@@ -2,9 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {RecordsService} from '../records.service';
 import {GetFoldersList} from '../models/folders';
-import {BehaviorSubject, pipe} from 'rxjs';
-import {catchError, single} from 'rxjs/operators';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {NzMessageService} from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-all-folders',
@@ -26,6 +25,7 @@ export class AllFoldersComponent implements OnInit {
     private readonly router: Router,
     private readonly recordService: RecordsService,
     private readonly fb: FormBuilder,
+    private readonly message: NzMessageService,
   ) {
   }
 
@@ -49,6 +49,14 @@ export class AllFoldersComponent implements OnInit {
     });
   }
 
+  get rackNoControl(): FormControl {
+    return this.createFolderForm.get('rackNo') as FormControl;
+  }
+
+  get folderTypeControl(): FormControl {
+    return this.createFolderForm.get('folderType') as FormControl;
+  }
+
   parseDate(dateString: string) {
     return Date.parse(dateString);
   }
@@ -59,7 +67,22 @@ export class AllFoldersComponent implements OnInit {
 
   handleSubmit() {
     this.createFolderLoading = true;
-    // this.isCreateFolderVisible = false;
+    this.recordService.createFolder({
+      rack_no: parseInt(this.rackNoControl.value, 10),
+      folder_type: this.folderTypeControl.value
+    })
+      .subscribe(value => {
+        // console.log(value);
+        this.createFolderLoading = false;
+        this.isCreateFolderVisible = false;
+        this.router.navigate(['/records/folders/view/', value.data.id]);
+      }, error => {
+        this.createFolderLoading = false;
+        this.message.create('error',
+          'Sorry, there was an error creating folder. Please try again', {
+            nzDuration: 5000, // 5 seconds
+          });
+      });
   }
 
   showCreateFolderModal() {

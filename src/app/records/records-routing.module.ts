@@ -5,7 +5,6 @@ import {RegisterPatientComponent} from './register-patient/register-patient.comp
 import {FullLayoutComponent} from '../layouts/full-layout/full-layout.component';
 import {AllFoldersComponent} from './all-folders/all-folders.component';
 import {ViewFolderComponent} from './view-folder/view-folder.component';
-import {CreateFolderComponent} from './create-folder/create-folder.component';
 
 const routes: Routes = [
   {

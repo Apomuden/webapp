@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {Observable} from 'rxjs';
-import {GetFoldersList} from './models/folders';
+import {CreateFolder, GetFolder, GetFoldersList} from './models/folders';
 
 const recordsUrl = environment.apiBaseUrl + '/registry';
 
@@ -16,4 +16,7 @@ export class RecordsService {
     return this.http.get<GetFoldersList>(`${recordsUrl}/folders`);
   }
 
+  createFolder(newFolder: CreateFolder): Observable<GetFolder> {
+    return this.http.post<GetFolder>(`${recordsUrl}/folders`, newFolder);
+  }
 }

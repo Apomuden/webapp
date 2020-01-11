@@ -14,3 +14,8 @@ export interface GetFoldersList extends GetPayload<FolderDetails[]> {
 
 export interface GetFolder extends GetPayload <FolderDetails> {
 }
+
+export interface CreateFolder {
+  rack_no: number;
+  folder_type: string;
+}
