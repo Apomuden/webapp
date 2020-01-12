@@ -984,21 +984,6 @@ export class SetupService {
     );
   }
 
-  getCountryRegions(countryId: number) {
-    return this.http.get<any>(`${COUNTRIES_API_URL}/${countryId}/regions`).pipe(
-      map(res => {
-        if (res) {
-          this.regions = res;
-          for (let i = 0; i < this.regions.data.length; i++) {
-            this.regions.data[i].isActivated =
-              this.regions.data[i].status === 'ACTIVE' ? true : false;
-          }
-        }
-        return this.regions;
-      })
-    );
-  }
-
   createDistrict(name: string, region: string) {
     return this.http
       .post<any>(DISTRICT_API_URL, {

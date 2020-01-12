@@ -190,7 +190,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     this.originCountryChangeSub.unsubscribe();
   }
 
-  private fetchRegions(countryId: number) {
+  private fetchRegions(countryId: string) {
     if (!countryId) {
       this.regions = [];
       if (this.bioDataForm.get('originCountry').value) {
@@ -200,7 +200,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     }
     this.regionsLoading.next(true);
     this.setup
-      .getCountryRegions(countryId)
+      .getRegionsByCountryId(countryId)
       .pipe(first())
       .subscribe(data => {
         this.regionsLoading.next(false);

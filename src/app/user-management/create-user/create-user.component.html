@@ -186,22 +186,22 @@
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Home town</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a town">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="townsLoading | async" nzPlaceHolder="Select a town"
-                formControlName="homeTown">
-                <nz-option *ngFor="let town of towns" [nzLabel]="town.name" [nzValue]="town.id">
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Origin region</nz-form-label>
+            <nz-form-control nzErrorTip="Please select a region">
+              <nz-select nzShowSearch nzAllowClear [nzLoading]="regionsLoading | async" nzPlaceHolder="Select a region"
+                formControlName="originRegion">
+                <nz-option *ngFor="let region of regions" [nzLabel]="region.name" [nzValue]="region.id">
                 </nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Origin region</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a region">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="regionsLoading | async" nzPlaceHolder="Select a region"
-                formControlName="originRegion">
-                <nz-option *ngFor="let region of regions" [nzLabel]="region.name" [nzValue]="region.id">
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Home town</nz-form-label>
+            <nz-form-control nzErrorTip="Please select a town">
+              <nz-select nzShowSearch nzAllowClear [nzLoading]="townsLoading | async" nzPlaceHolder="Select a town"
+                formControlName="homeTown">
+                <nz-option *ngFor="let town of towns" [nzLabel]="town.name" [nzValue]="town.id">
                 </nz-option>
               </nz-select>
             </nz-form-control>
