@@ -5,6 +5,7 @@ import {Observable} from 'rxjs';
 import {CreateFolder, GetFolder, GetFoldersList} from './models/folders';
 
 const recordsUrl = environment.apiBaseUrl + '/registry';
+const foldersUrl = `${recordsUrl}/folders`;
 
 @Injectable()
 export class RecordsService {
@@ -13,10 +14,14 @@ export class RecordsService {
   }
 
   getFolderList(): Observable<GetFoldersList> {
-    return this.http.get<GetFoldersList>(`${recordsUrl}/folders`);
+    return this.http.get<GetFoldersList>(foldersUrl);
   }
 
   createFolder(newFolder: CreateFolder): Observable<GetFolder> {
-    return this.http.post<GetFolder>(`${recordsUrl}/folders`, newFolder);
+    return this.http.post<GetFolder>(foldersUrl, newFolder);
+  }
+
+  getFolder(folderId: number): Observable<GetFolder> {
+    return this.http.get<GetFolder>(`${foldersUrl}/${folderId}`);
   }
 }
