@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {RecordsService} from '../records.service';
 import {GetFolder} from '../models/folders';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {catchError, switchMap} from 'rxjs/operators';
 
@@ -23,6 +23,7 @@ export class ViewFolderComponent implements OnInit {
   constructor(
     private readonly recordsService: RecordsService,
     private readonly route: ActivatedRoute,
+    private readonly router: Router,
     ) {
   }
 
@@ -35,4 +36,7 @@ export class ViewFolderComponent implements OnInit {
     );
   }
 
+  gotoRegisterPatient() {
+    this.router.navigate(['./add-patient'], { relativeTo: this.route});
+  }
 }

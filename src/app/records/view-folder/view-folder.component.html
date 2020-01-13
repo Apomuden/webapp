@@ -25,14 +25,14 @@
   <nz-card>
     <div nz-row>
       <div nz-col nzMd="4" nzOffset="20">
-        <button nz-button nzType="primary" nzSize="default" class="button--left button">
+        <button nz-button nzType="primary" nzSize="default" class="button--left button" (click)="gotoRegisterPatient()">
           <i nz-icon nzType="user-add"></i> Add Patient
         </button>
       </div>
     </div>
     <div nz-row>
       <nz-collapse [nzBordered]="false">
-        <nz-collapse-panel *ngFor="let patient of folderPatients" [nzHeader]="patient" [nzActive]="true">
+        <nz-collapse-panel *ngFor="let patient of folderPatients" [nzHeader]="patient" [nzActive]="false">
           <p>{{ patient }} content</p>
         </nz-collapse-panel>
       </nz-collapse>
