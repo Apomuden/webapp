@@ -12,6 +12,7 @@ import { PermissionsComponent } from './permissions/permissions.component';
 import { SystemComponentsComponent } from './system-components/system-components.component';
 import { SignaturePadModule } from 'angular2-signaturepad';
 import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzMessageServiceModule } from 'ng-zorro-antd';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { NzUploadModule } from 'ng-zorro-antd/upload';
     SharedModule,
     UserManagementRoutingModule,
     SignaturePadModule,
-    NzUploadModule
+    NzUploadModule,
+    NzMessageServiceModule,
   ]
 })
 export class UserManagementModule { }

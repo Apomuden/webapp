@@ -5,7 +5,7 @@ import { first, retry } from 'rxjs/operators';
 import { Validators, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { UserManagementService } from '../user-management.service';
 import { SignaturePad } from 'angular2-signaturepad/signature-pad';
-import { UploadFile } from 'ng-zorro-antd';
+import { UploadFile, NzMessageService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
 
 @Component({
@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-user.component.css']
 })
 export class CreateUserComponent implements OnInit, OnDestroy {
-  stepIndex = 0;
+  stepIndex = 7;
   originCountryChangeSub: Subscription;
 
   userForm = this.fb.group({
@@ -175,6 +175,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     private setup: SetupService,
     private fb: FormBuilder,
     private userService: UserManagementService,
+    private messageService: NzMessageService,
     private router: Router) { }
 
   ngOnInit() {
@@ -619,7 +620,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
           }
         }, error => {
           // todo show error message
-          console.log(error);
+          this.messageService.error(`Unable to upload ${attachedFile.name}`);
           if (this.attachedFiles.indexOf(attachedFile) === this.attachedFiles.length - 1) {
             this.isLoading = false;
           }
