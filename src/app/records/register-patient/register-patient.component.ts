@@ -83,8 +83,8 @@ export class RegisterPatientComponent implements OnInit {
       billingInfo: this.fb.group({
         billingType: [null, [Validators.required]],
         sponsored: this.fb.group({
-          sponsorName: [null, [Validators.required]],
-          company: [null, [Validators.required]],
+          sponsorName: [null, [Validators.required]],  //Glico  compulsory
+          company: [null, [Validators.required]],//la Palm optional
           memberId: [null, [Validators.required]],
           cardSerialNumber: [null, [Validators.required]],
           staffId: [null, [Validators.required]],

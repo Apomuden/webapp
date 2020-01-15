@@ -105,7 +105,7 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '',
+        path: '/records/search-patient',
         title: 'Search Patient Information',
         iconType: '',
         icon: '',

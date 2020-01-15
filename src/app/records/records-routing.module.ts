@@ -29,7 +29,14 @@ const routes: Routes = [
             data: { title: 'Add Patient' }
           }
         ]
-      }
+      },
+      {
+        path: 'search-patient',
+        component: SearchPatientComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Search Patient'
+        }
     ],
     data: { title: 'Folders' }
   }

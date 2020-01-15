@@ -1,0 +1,136 @@
+<nz-row>
+  <nz-col nzSpan="24">
+    <nz-card>
+      <form [nzLayout]="'inline'" nz-form>
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="search">Search patient</nz-form-label>
+          <nz-form-control>
+            <nz-input-group nzPrefixIcon="search">
+              <input nz nz-input [(ngModel)]='searchValue' (ngModelChange)="getData()" name='search' id="search" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="search">Search by</nz-form-label>
+          <nz-form-control>
+            <nz-select style="width:200px" [(ngModel)]="filterBy" (ngModelChange)="getData()" name='filterby'
+              nzPlaceHolder="Search by">
+              <nz-option nzValue="firstname" nzLabel="First Name"></nz-option>
+              <nz-option nzValue="surname" nzLabel="Surname"></nz-option>
+              <nz-option nzValue="middlename" nzLabel="Middle Name"></nz-option>
+              <nz-option nzValue="profession_name" nzLabel="Occupation"></nz-option>
+              <nz-option nzValue="phone" nzLabel="Phone number"></nz-option>
+              <nz-option nzValue="folder_no" nzLabel="Folder Number"></nz-option>
+              <nz-option nzValue="member_no" nzLabel="Member Number"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+      <nz-divider></nz-divider>
+      <div *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'" class="m-r-5"></i> Please search for a patient
+        to see table
+      </div>
+      <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
+        <nz-table #basicTable [nzData]="listOfData" *ngIf="searchInitialized" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Patient No</th>
+              <th>Folder No</th>
+              <th>Folder Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- id: 2
+title: "Mr"
+title_id: 1
+patient_no: "0000001/20"
+folder_no: "A0000001/20"
+folder_rack: "1"
+folder_type: "INDIVIDUAL"
+folder_status: "ACTIVE"
+old_folder_no: null
+funding_type_name: "Cash/Prepaid"
+funding_type_id: 1
+sponsorship_type_name: "Patient"
+sponsorship_type_id: 1
+billing_system_name: "UNBUNDLED/ITEMIZE"
+billing_system_id: 1
+billing_cycle_name: "Daily"
+billing_cycle_id: 1
+payment_style_name: "Prepaid"
+payment_style_id: 1
+payment_channel_name: "Cash"
+payment_channel_id: 1
+ssnit_no: null
+tin: null
+username: null
+surname: "Sam"
+middlename: "Baagyan-Nyamekye"
+firstname: "Arhin"
+dob: "2021-01-10"
+gender: "MALE"
+country_name: null
+country_id: null
+region_name: null
+region_id: null
+district_name: null
+district_id: null
+hometown_name: null
+hometown_id: null
+marital: null
+profession_name: null
+profession_id: null
+staff_id: null
+work_address: null
+residence_address: null
+native_language_name: null
+native_language_id: null
+second_language_name: null
+second_language_id: null
+official_language_name: null
+official_language_id: null
+id_type_name: "National ID"
+id_type_id: 1
+id_no: "123456719"
+id_expiry_date: "2030-01-01"
+religion_name: null
+religion_id: null
+educational_level_name: null
+educational_level_id: null
+active_cell: null
+email: null
+emerg_name: null
+emerg_phone: null
+emerg_relation_name: null
+emerg_relation_id: null
+photo: null
+mortality: "ALIVE"
+reg_status: "OUT-PATIENT"
+status: "ACTIVE"
+created_at: "2020-01-09 13:37:29"
+updated_at: "2020-01-09 13:37:29" -->
+            <tr *ngFor="let data of basicTable.data">
+              <td>{{ data.title}} {{data.firstname}} {{data.middlename!==null?data.middlename :""}} {{data.surname}}
+              </td>
+              <td>{{ data.patient_no }}</td>
+              <td>{{ data.folder_no }}</td>
+              <td>{{ data.folder_type }}</td>
+
+              <td>
+                <a>view</a>
+                <nz-divider nzType="vertical"></nz-divider>
+
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <div style="text-align: right;" class="m-t-10">
+          <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="totalItems" (nzPageIndexChange)="getPage($event)"
+            [nzPageSize]="pageSize"></nz-pagination>
+        </div>
+      </nz-skeleton>
+    </nz-card>
+  </nz-col>
+</nz-row>
