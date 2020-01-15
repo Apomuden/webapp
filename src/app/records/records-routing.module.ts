@@ -1,3 +1,4 @@
+import { SearchPatientComponent } from './search-patient/search-patient.component';
 import { AuthGuard } from '../shared/guard/auth.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -29,16 +30,17 @@ const routes: Routes = [
             data: { title: 'Add Patient' }
           }
         ]
-      },
-      {
-        path: 'search-patient',
-        component: SearchPatientComponent,
-        canActivate: [AuthGuard],
-        data: {
-          title: 'Search Patient'
-        }
+      }
     ],
     data: { title: 'Folders' }
+  },
+  {
+    path: 'search-patient',
+    component: SearchPatientComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Search Patient'
+    }
   }
 ];
 
