@@ -1,3 +1,4 @@
+import { AppointmentComponent } from './appointment/appointment.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RecordsRoutingModule } from './records-routing.module';
@@ -14,6 +15,7 @@ import { AddPatientComponent } from './add-patient/add-patient.component';
     AllFoldersComponent,
     ViewFolderComponent,
     AddPatientComponent,
+    AppointmentComponent
   ],
   imports: [
     CommonModule,
