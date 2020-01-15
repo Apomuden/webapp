@@ -1,0 +1,42 @@
+<nz-row>
+  <nz-col nzSize=24>
+    <nz-card>
+      <button style="float:right;" nz-button nzType="primary"><i nz-icon nzType="clock-circle"></i> Create Appointment
+      </button>
+    </nz-card>
+  </nz-col>
+</nz-row>
+<nz-row>
+  <nz-col>
+    <nz-card>
+      <nz-table #basicTable [nzData]="listOfData">
+        <thead>
+          <tr>
+            <th>Fullname</th>
+            <th>Phone</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Seciality</th>
+            <th>Doctor</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{data.fullname}}</td>
+            <td>{{data.phone}}</td>
+            <td>{{data.date}}</td>
+            <td>{{data.time}}</td>
+            <td>{{data.speciality}}</td>
+            <td>{{data.doctor}}</td>
+            <td>
+              <a>Action 一 {{data.name}}</a>
+              <nz-divider nzType="vertical"></nz-divider>
+              <a>Delete</a>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-col>
+</nz-row>

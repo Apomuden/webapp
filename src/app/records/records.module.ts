@@ -14,10 +14,11 @@ import {
 } from 'ng-zorro-antd';
 import {ReactiveFormsModule} from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { AppointmentComponent } from './appointment/appointment.component';
 
 
 @NgModule({
-  declarations: [RegisterPatientComponent],
+  declarations: [RegisterPatientComponent, AppointmentComponent],
   imports: [
     CommonModule,
     RecordsRoutingModule,
