@@ -14,10 +14,11 @@ import {
 } from 'ng-zorro-antd';
 import {ReactiveFormsModule} from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { WalkinRegistrationComponent } from './walkin-registration/walkin-registration.component';
 
 
 @NgModule({
-  declarations: [RegisterPatientComponent],
+  declarations: [RegisterPatientComponent, WalkinRegistrationComponent],
   imports: [
     CommonModule,
     RecordsRoutingModule,

@@ -121,7 +121,7 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '',
+        path: '/records/walkin-registration',
         title: 'Walk-in Registration',
         iconType: '',
         icon: '',
