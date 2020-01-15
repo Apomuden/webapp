@@ -1,25 +1,14 @@
-import { first, map } from 'rxjs/operators';
-import { SetupService } from './../../shared/services/setup.service';
 import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {SetupService} from '../../shared/services/setup.service';
+import {first} from 'rxjs/operators';
 
 @Component({
-  selector: 'app-register-patient',
-  templateUrl: './register-patient.component.html',
-  styleUrls: ['./register-patient.component.css']
+  selector: 'app-add-patient',
+  templateUrl: './add-patient.component.html',
+  styleUrls: ['./add-patient.component.scss']
 })
-export class RegisterPatientComponent implements OnInit {
-  fundingTypes = [];
-  titles = [];
-  religions = [];
-  educationalLevels = [];
-  countryCodes = [];
-  isLoadingFundingTypes = new BehaviorSubject(false);
-  isLoadingTitles = new BehaviorSubject(false);
-  isLoadingReligions = new BehaviorSubject(false);
-  isLoadingEducationalLevels = new BehaviorSubject(false);
-  isLoadingCountryCodes = new BehaviorSubject(false);
+export class AddPatientComponent implements OnInit {
 
   stepIndex = 0;
   readonly finalStepIndex = 3;
@@ -41,9 +30,9 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   done(): void {
-    // if (this.validateNextOfKinInfo()) {
+    if (this.validateNextOfKinInfo()) {
     this.submitForm();
-    // }
+    }
   }
 
   changeContent(mode: 'next' | 'previous'): void {
@@ -72,12 +61,6 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.getFundingTypes();
-    this.getTitles();
-    this.getReligions();
-    this.getEducationalLevels();
-    this.getCountryCodes();
-
     this.patientForm = this.fb.group({
       // 1.0 Billing Information
       billingInfo: this.fb.group({
@@ -169,7 +152,7 @@ export class RegisterPatientComponent implements OnInit {
       this.relationControl.reset();
     }
 
-    for (const i in this.sponsoredForm.controls) {
+    for (const i of Object.keys(this.sponsoredForm.controls)) {
       this.sponsoredForm.controls[i].markAsDirty();
       this.sponsoredForm.controls[i].updateValueAndValidity();
     }
@@ -182,7 +165,7 @@ export class RegisterPatientComponent implements OnInit {
 
   // noinspection JSMethodCanBeStatic
   // TODO fix validator error
-  relationValidator = (control: FormControl): { [key: string]: any } | null => {
+  relationValidator = (control: FormControl): { [key: string]: any } | null =>{
 
     if (!this.patientForm) {
       return null;
@@ -197,7 +180,7 @@ export class RegisterPatientComponent implements OnInit {
     }
 
     return null;
-  };
+  }
 
   get patientInfoForm(): FormGroup {
     return this.patientForm.get('patientInfo') as FormGroup;
@@ -221,10 +204,10 @@ export class RegisterPatientComponent implements OnInit {
 
     const ageDate = new Date(today - age);
     this.dobControl.setValue(ageDate);
-  };
+  }
 
   validatePatientInfo(): boolean {
-    for (const i in this.patientInfoForm.controls) {
+    for (const i of Object.keys(this.patientInfoForm.controls)) {
       this.patientInfoForm.controls[i].markAsDirty();
       this.patientInfoForm.controls[i].updateValueAndValidity();
     }
@@ -238,7 +221,7 @@ export class RegisterPatientComponent implements OnInit {
 
 
   validateContactInfo(): boolean {
-    for (const i in this.contactInfoForm.controls) {
+    for (const i of Object.keys(this.contactInfoForm.controls)) {
       this.contactInfoForm.controls[i].markAsDirty();
       this.contactInfoForm.controls[i].updateValueAndValidity();
     }
@@ -251,144 +234,14 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   validateNextOfKinInfo(): boolean {
-    for (const i in this.nextOfKinInfoForm.controls) {
+    for (const i of Object.keys(this.nextOfKinInfoForm.controls)) {
       this.nextOfKinInfoForm.controls[i].markAsDirty();
       this.nextOfKinInfoForm.controls[i].updateValueAndValidity();
     }
 
     return this.nextOfKinInfoForm.valid;
   }
-  getFundingTypes() {
-    this.isLoadingFundingTypes.next(true);
-    this.setups.getFundingTypes().pipe(first()).subscribe(
-      res => {
-        this.isLoadingFundingTypes.next(false);
-        if (res) {
-          this.fundingTypes = res.data;
-        }
 
-      },
-      err => {
-        this.isLoadingFundingTypes.next(false);
-        console.log(err);
-      }
-    );
-  }
-
-  getTitles() {
-    this.isLoadingTitles.next(true);
-    this.setups.getTitles().pipe(first()).subscribe(
-      res => {
-        if (res) {
-          this.isLoadingTitles.next(false);
-          this.titles = res.data;
-        }
-      },
-      err => {
-        console.log(err);
-        this.isLoadingTitles.next(false);
-      }
-    );
-  }
-  getReligions() {
-    this.isLoadingReligions.next(true);
-    this.setups.getReligions().pipe(first()).subscribe(
-      res => {
-        this.isLoadingReligions.next(false);
-        if (res) {
-          this.religions = res.data;
-        }
-
-      },
-      err => {
-        this.isLoadingReligions.next(false);
-        console.log(err);
-      }
-    );
-  }
-
-  getEducationalLevels() {
-    this.isLoadingEducationalLevels.next(true);
-    this.setups.getEducationalLevels().pipe(first()).subscribe(
-      res => {
-        if (res) {
-          this.isLoadingEducationalLevels.next(false);
-          this.educationalLevels = res.data;
-        }
-      },
-      err => {
-        this.isLoadingEducationalLevels.next(false);
-        console.log(err);
-      }
-    );
-  }
-
-  getCountryCodes() {
-    this.isLoadingCountryCodes.next(true);
-    this.setups.getCountries().pipe(first()).subscribe(
-      res => {
-        this.isLoadingCountryCodes.next(false);
-        this.countryCodes = res.data.map(item => item.call_code);
-      },
-      err => {
-        this.isLoadingCountryCodes.next(false);
-        console.log(err);
-      }
-    );
-  }
   submitForm() {
-    //     firstName: "zcvxz"
-    // lastName: "rvzvcxz"
-    // middleName: "vvsdfzxv"
-    // title: 7
-    // dob: Wed Jan 22 2020 11:42:50 GMT+0000 (Greenwich Mean Time) {}
-    // age: 0
-    // useAge: false
-    // gender: "FEMALE"
-    // maritalStatus: "MARRIED"
-    // nationality: "Ghanaian"
-    // religion: 3
-    // educationalLevel: 8
-    // occupation: "zxcvsfd"
-    // oldFolderNumber: "zvzvdf"
-    console.log(this.patientInfoForm.value);
-    let payload = {
-      'title_id': 1,
-      'folder_id': 7,
-      'funding_type_id': 1,
-      'ssnit_no': null,
-      'tin': null,
-      'username': null,
-      'surname': 'Samd',
-      'middlename': 'Baagyan-Nyamekye',
-      'firstname': 'Arhin',
-      'dob': '10-01-2021',
-      'gender': 'MALE',
-      'country_id': null,
-      'region_id': null,
-      'district_id': null,
-      'hometown_id': null,
-      'marital': null,
-      'profession_id': null,
-      'staff_id': null,
-      'work_address': null,
-      'residence_address': null,
-      'native_language_id': null,
-      'second_language_id': null,
-      'official_language_id': null,
-      'id_type_id': 1,
-      'id_no': '123456719',
-      'id_expiry_date': '01-01-2030',
-      'religion_id': null,
-      'educational_level_id': null,
-      'active_cell': null,
-      'email': null,
-      'emerg_name': null,
-      'emerg_phone': null,
-      'emerg_relation_id': null,
-      'mortality': 'ALIVE',
-      'reg_status': 'OUT-PATIENT',
-      'status': 'ACTIVE'
-    };
   }
 }
