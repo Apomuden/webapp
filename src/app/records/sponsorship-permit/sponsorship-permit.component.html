@@ -1,12 +1,11 @@
 <nz-row>
-  <nz-col [nzSpan]="selected ? '11' : '12'">
+  <nz-col [nzSpan]="patient ? '12' : '24'">
     <nz-card>
       <form nzLayout="block" nz-form>
         <nz-form-item>
           <nz-form-control>
             <nz-input-group nzPrefixIcon="search">
-              <input  data-attr="search" nz nz-input placeholder="Search Folder" [formControl]='searchValue'
-                name='search' id="search" />
+              <input nz nz-input placeholder="Search Folder" [formControl]='searchValue' name='search' id="search" />
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>
@@ -20,24 +19,24 @@
           <thead>
             <tr>
               <th>Name</th>
-              <th>Patient No</th>
-              <!-- <th>Folder No</th> -->
-              <th>Folder Type</th>
+              <!-- <th>Patient No</th> -->
+              <th>Folder No</th>
+              <!-- <th>Folder Type</th> -->
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let data of basicTable.data">
-              <td>{{ data.title}} {{data.firstname}} {{data.middlename!==null?data.middlename :""}} {{data.surname}}
+            <tr *ngFor="let pat of basicTable.data">
+              <td>{{ pat.title}} {{pat.firstname}} {{pat.middlename!== null ? pat.middlename :""}}
+                {{pat.surname}}
               </td>
-              <td>{{ data.patient_no }}</td>
-              <!-- <td>{{ data.folder_no }}</td> -->
-              <td>{{ data.folder_type }}</td>
+              <!-- <td>{{ pat.patient_no }}</td> -->
+              <td>{{ pat.folder_no }}</td>
+              <!-- <td>{{ pat.folder_type }}</td> -->
 
               <td>
-                <a>view</a>
-                <nz-divider nzType="vertical"></nz-divider>
-
+                <a *ngIf="!patient || (patient && patient.id !== pat.id)" (click)="select(pat)">Add sponsor</a>
+                <a *ngIf="patient && patient.id === pat.id">Selected</a>
               </td>
             </tr>
           </tbody>
@@ -48,97 +47,129 @@
         </div>
       </nz-skeleton>
     </nz-card>
+
+    <nz-card *ngIf="patient">
+      <div class="row align-items-center">
+        <div class="col-md-5">
+          <div class="d-md-flex align-items-center">
+            <div class="text-center text-sm-left m-v-10 p-l-20">
+              <h5 class="m-b-5">{{patient.title}} {{patient.firstname}}{{patient.middlename?" "+patient.middlename:""}}
+                {{patient.surname}}</h5>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-7">
+          <div class="row">
+            <div class="d-md-block d-none border-left col-1"></div>
+            <div class="col">
+              <ul class="list-unstyled m-t-10">
+                <li class="row">
+                  <p class="col-4 font-weight-semibold text-dark m-b-5">
+                    <i class="m-r-5 text-primary" nz-icon nzType="file" theme="outline"></i>
+                    <span>Folder: </span>
+                  </p>
+                  <p class="col-6 font-weight-semibold">{{patient.folder_no}}</p>
+                </li>
+                <li class="row">
+                  <p class="col-4 font-weight-semibold text-dark m-b-5">
+                    <i class="m-r-5 text-primary" nz-icon nzType="user" theme="outline"></i>
+                    <span>No: </span>
+                  </p>
+                  <p class="col-6 font-weight-semibold">{{patient.patient_no}}</p>
+                </li>
+                <li class="row">
+                  <p class="col-4 font-weight-semibold text-dark m-b-5">
+                    <i class="m-r-5 text-primary" nz-icon nzType="form" theme="outline"></i>
+                    <span>Status: </span>
+                  </p>
+                  <p class="col-6 font-weight-semibold">{{patient.reg_status}}</p>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nz-card>
   </nz-col>
-  <nz-col nzSpan="12">
-    <nz-card>
-      <form nz-form [formGroup]="sponsorForm">
+
+  <nz-col *ngIf="patient" nzSpan="12">
+    <nz-card class="m-l-1">
+      <form nzLayout="block" nz-form [formGroup]="sponsorForm">
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sponsorType">Sponsor type</nz-form-label>
           <nz-form-control nzErrorTip="Select a sponsor type">
             <input type="text" nz-input placeholder="Select a sponsor type" formControlName="sponsorType" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sponsorName">Sponsor name</nz-form-label>
           <nz-form-control nzErrorTip="Select a sponsor name">
             <input type="text" nz-input placeholder="Select a sponsor name" formControlName="sponsorName" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="company">Company</nz-form-label>
           <nz-form-control nzErrorTip="Select a company">
             <input type="text" nz-input placeholder="Select a company" formControlName="company" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="memberId">Member ID</nz-form-label>
           <nz-form-control nzErrorTip="Enter a member ID">
             <input type="text" nz-input placeholder="Enter a member ID" formControlName="memberId" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cardSerialNumber">Serial number</nz-form-label>
           <nz-form-control nzErrorTip="Enter card serial number">
             <input type="text" nz-input placeholder="Enter card serial number" formControlName="cardSerialNumber" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staffId">Staff ID</nz-form-label>
           <nz-form-control nzErrorTip="Enter staff ID">
             <input type="text" nz-input placeholder="Enter staff ID" formControlName="staffId" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
           <nz-form-control nzErrorTip="Select a beneficiary">
             <input type="text" nz-input placeholder="Select a beneficiary" formControlName="beneficiary" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="relation">Relation</nz-form-label>
           <nz-form-control nzErrorTip="Select a relation">
             <input type="text" nz-input placeholder="Select a relation" formControlName="relation" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="priority">Priority</nz-form-label>
           <nz-form-control nzErrorTip="Select a priority">
             <input type="text" nz-input placeholder="Select a priority" formControlName="priority" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="policy">Policy</nz-form-label>
           <nz-form-control nzErrorTip="Select a policy">
             <input type="text" nz-input placeholder="Select a policy" formControlName="policy" />
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="issueDate">Issue Date</nz-form-label>
           <nz-form-control nzErrorTip="Select a valid issued date">
             <nz-date-picker formControlName="issueDate" nzPlaceHolder="Select issue date"></nz-date-picker>
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
           <nz-form-control nzErrorTip="Select a valid expiry date">
             <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
           </nz-form-control>
         </nz-form-item>
-      
+
         <button nz-button nzType="primary" (click)="addSponsor()">
-            <span>Add Sponsor</span>
-          </button>
+          <span>Add Sponsor</span>
+        </button>
       </form>
     </nz-card>
   </nz-col>

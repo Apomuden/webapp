@@ -16,8 +16,8 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   listOfData = [];
   filterBy = 'folder_no';
   pageIndex = 1;
-  totalItems = 10;
-  pageSize = 10;
+  totalItems = 5;
+  pageSize = 5;
   nextUrl = null;
   prevUrl = null;
 
@@ -36,6 +36,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     issueDate: this.fb.control(null, [Validators.required]),
     expiryDate: this.fb.control(null, [Validators.required]),
   });
+  patient: any;
 
   constructor(
     private recordService: RecordService,
@@ -92,7 +93,6 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         this.listOfData = res.data;
         this.isLoadingData = false;
         if (res.pagination) {
-          console.log(res.pagination);
           this.totalItems = res.pagination.total_records;
           this.nextUrl = res.pagination.next_page_url;
           this.prevUrl = res.pagination.prev_page_url;
@@ -104,6 +104,11 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         console.log(error);
       }
     );
+  }
+
+  select(patient) {
+    this.patient = patient;
+    console.log(this.patient);
   }
 
   addSponsor() {
