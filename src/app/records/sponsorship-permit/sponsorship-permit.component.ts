@@ -27,7 +27,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     sponsorName: [null, [Validators.required]],
     company: [null, [Validators.required]],
     memberId: [null, [Validators.required]],
-    cardSerialNumber: [null, [Validators.required]],
+    cardSerialNumber: [null],
     staffId: [null, [Validators.required]],
     beneficiary: [null, [Validators.required]],
     relation: [null],
