@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./create-user.component.scss']
 })
 export class CreateUserComponent implements OnInit, OnDestroy {
-  stepIndex = 7;
+  stepIndex = 0;
   originCountryChangeSub: Subscription;
 
   userForm = this.fb.group({
