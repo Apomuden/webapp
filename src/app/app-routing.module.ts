@@ -22,6 +22,10 @@ const appRoutes: Routes = [
     path: '',
     component: FullLayoutComponent,
     children: FullLayout_ROUTES
+  },
+  {
+    path: '***',
+    redirectTo: 'dashboard/default'
   }
 ];
 
@@ -35,4 +39,4 @@ const appRoutes: Routes = [
   ],
   exports: [RouterModule]
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

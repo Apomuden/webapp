@@ -20,6 +20,14 @@ const routes: Routes = [
     data: {
       title: 'Search Patient'
     }
+  },
+  {
+    path: 'request-consultation',
+    component: SearchPatientComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Request Consultation'
+    }
   }
 ];
 
