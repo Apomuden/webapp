@@ -591,18 +591,13 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     // TODO: submit details to backend
     const formData = this.prepareToSubmit();
-    console.log(formData);
     this.userService.createUser(formData)
       .pipe(first())
       .subscribe(response => {
-        /* this.userService.createNextOfKin({
-         name: this.emergencyForm.get('emergencyContactFullname'),
-         phone: `${this.emergencyForm.get('countryCode').value.replace('+', '')}${this.emergencyForm.get('number').value}`,
-         email: this.emergencyForm.get('emailAddress'),
-         user_id: response.data.id,
-         relation_id: this.emergencyForm.get('relationship')
-       }); */
         this.uploadFiles(response);
+      }, error => {
+        this.isLoading = false;
+        this.messageService.error('Could not create user. Please try again');
       });
   }
 
@@ -619,7 +614,6 @@ export class CreateUserComponent implements OnInit, OnDestroy {
             this.router.navigate(['/user-management', 'profile', response.data.id]);
           }
         }, error => {
-          // todo show error message
           this.messageService.error(`Unable to upload ${attachedFile.name}`);
           if (this.attachedFiles.indexOf(attachedFile) === this.attachedFiles.length - 1) {
             this.isLoading = false;
