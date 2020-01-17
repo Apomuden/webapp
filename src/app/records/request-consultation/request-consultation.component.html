@@ -1,1 +1,72 @@
-<p>request-consultation works!</p>
+<div class="steps-content">
+  <form nz-form [formGroup]="walkinForm" (ngSubmit)="submitForm()">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
+      <nz-form-control nzErrorTip="Select a title">
+        <nz-select formControlName="title" nzPlaceHolder="Select title" nzShowSearch nzAllowClear
+          [nzLoading]="titlesLoading | async">
+          <nz-option *ngFor="let title of titles" [nzLabel]="title.name" [nzValue]="title.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstName" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
+      <nz-form-control nzErrorTip="Select a valid date">
+        <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
+        </nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
+          [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
+      </nz-form-control>
+      <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="location">Location</nz-form-label>
+      <nz-form-control nzErrorTip="Enter location">
+        <input type="text" nz-input placeholder="Location" formControlName="location" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phone">Mobile Number</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid phone number">
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+          <ng-template #addOnBeforeTemplate>
+            <nz-select formControlName="countryCode" class="phone-select" nzShowSearch
+              [nzLoading]="countriesloading | async">
+              <nz-option *ngFor="let country of countries" [nzValue]="country.call_code" [nzLabel]="country.call_code">
+              </nz-option>
+            </nz-select>
+          </ng-template>
+          <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="phone" />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</div>
+<div class="steps-action">
+  <button nz-button nzType="primary" (click)="done()">
+    <span>Done</span>
+  </button>
+</div>
