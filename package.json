@@ -26,6 +26,7 @@
     "@angular/router": "^8.1.1",
     "@fortawesome/fontawesome-free": "^5.5.0",
     "@types/chartist": "^0.9.43",
+    "@w11k/ngx-componentdestroyed": "^4.1.4",
     "chart.js": "^2.7.3",
     "chartist": "^0.11.0",
     "core-js": "^2.5.7",

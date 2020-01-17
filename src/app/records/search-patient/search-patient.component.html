@@ -1,19 +1,19 @@
 <nz-row>
   <nz-col nzSpan="24">
     <nz-card>
-      <form [nzLayout]="'inline'" nz-form>
+      <form [nzLayout]="'inline'" [formGroup]="searchForm" nz-form>
         <nz-form-item>
           <nz-form-label nzRequired nzFor="search">Search patient</nz-form-label>
-          <nz-form-control>
+          <nz-form-control [nzErrorTip]="'gyfghf'">
             <nz-input-group nzPrefixIcon="search">
-              <input nz nz-input [(ngModel)]='searchValue' (ngModelChange)="getData()" name='search' id="search" />
+              <input nz nz-input formControlName="searchControl" name='search' id="search" />
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
           <nz-form-label nzRequired nzFor="search">Search by</nz-form-label>
           <nz-form-control>
-            <nz-select style="width:200px" [(ngModel)]="filterBy" (ngModelChange)="getData()" name='filterby'
+            <nz-select style="width:200px" formControlName="filterByControl" [nzDisabled]="'true'" name='filterby'
               nzPlaceHolder="Search by">
               <nz-option nzValue="firstname" nzLabel="First Name"></nz-option>
               <nz-option nzValue="surname" nzLabel="Surname"></nz-option>
