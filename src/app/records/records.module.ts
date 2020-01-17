@@ -15,10 +15,11 @@ import {
 import {ReactiveFormsModule} from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
 import { SearchPatientComponent } from './search-patient/search-patient.component';
+import { RequestConsultationComponent } from './request-consultation/request-consultation.component';
 
 
 @NgModule({
-  declarations: [RegisterPatientComponent, SearchPatientComponent],
+  declarations: [RegisterPatientComponent, SearchPatientComponent, RequestConsultationComponent],
   imports: [
     CommonModule,
     RecordsRoutingModule,

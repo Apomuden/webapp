@@ -105,7 +105,7 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '',
+        path: '/records/request-consultation',
         title: 'Request Consultation',
         iconType: '',
         icon: '',
