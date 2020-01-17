@@ -461,7 +461,7 @@
           </nz-form-item>
 
           <nz-upload [(nzFileList)]="attachedFiles" [nzBeforeUpload]="beforeUploadDocs">
-            <button [nzLoading]="isLoading" nz-button nzType="primary"><i nz-icon nzType="upload"></i>Attach
+            <button [nzLoading]="isLoading" nz-button nzType="primary" class="attach_doc_btn"><i nz-icon nzType="upload"></i>Attach
               documents</button>
           </nz-upload>
 
@@ -469,9 +469,11 @@
             <nz-form-control nzErrorTip="Please sign">
               <input type="hidden" placeholder="signature" nz-input formControlName="signature" />
               <signature-pad [options]="signaturePadOptions" (onEndEvent)="drawComplete()"></signature-pad>
-              <button [nzLoading]="isLoading" nz-button nzType="danger" (click)="clearSignature()">
-                <span>Clear signature</span>
-              </button>
+              <div nz-row>
+                <button [nzLoading]="isLoading" nz-button nzType="danger" (click)="clearSignature()">
+                  <span>Clear signature</span>
+                </button>
+              </div>
             </nz-form-control>
           </nz-form-item>
         </div>

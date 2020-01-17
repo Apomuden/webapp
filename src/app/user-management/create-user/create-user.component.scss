@@ -36,4 +36,12 @@ nz-form-control {
 
 [nz-button] {
   margin-right: 10px;
+
+  &.attach_doc_btn {
+    margin-bottom: 10px;
+  }
+}
+
+.steps-action {
+  margin-top: 10px;
 }
