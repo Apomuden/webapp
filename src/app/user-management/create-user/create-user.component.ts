@@ -139,7 +139,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   @ViewChild(SignaturePad, { static: false }) signaturePad: SignaturePad;
 
   signaturePadOptions = {
-    'minWidth': 5,
+    'minWidth': 2,
     'canvasWidth': 600,
     'canvasHeight': 300,
     'backgroundColor': 'rgba(240,240,241,1)'
