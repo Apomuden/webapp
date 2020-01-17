@@ -3,9 +3,9 @@
     <nz-card>
       <form nzLayout="block" nz-form>
         <nz-form-item>
-          <nz-form-control>
+          <nz-form-control nzErrorTip="Please enter a valid folder number">
             <nz-input-group nzPrefixIcon="search">
-              <input nz nz-input placeholder="Search Folder" [formControl]='searchValue' name='search' id="search" />
+              <input nz nz-input placeholder="Search Folder" [formControl]='searchControl' name='search' id="search" />
             </nz-input-group>
           </nz-form-control>
         </nz-form-item>

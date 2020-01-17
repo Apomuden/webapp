@@ -21,7 +21,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   pageSize = 5;
   nextUrl = null;
   prevUrl = null;
-  searchValue = this.fb.control(null);
+  searchControl = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(11)]);
   sponsorForm = this.fb.group({
     fundingType: [null, [Validators.required]],
     sponsorName: [null, [Validators.required]],
@@ -63,9 +63,8 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   ngAfterViewInit() {
-    this.searchValue.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this)).subscribe(value => {
-      if (value) {
-        console.log(value);
+    this.searchControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this)).subscribe(value => {
+      if (value && this.searchControl.valid) {
         this.search(value);
       }
     });
@@ -189,7 +188,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   getPaginatedPatients(url: string, currentIndex: number) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    this.recordService.getPatientsPagination(`${url}&${this.filterBy}=${this.searchValue.value}`).pipe(first()).subscribe(
+    this.recordService.getPatientsPagination(`${url}&${this.filterBy}=${this.searchControl.value}`).pipe(first()).subscribe(
       res => {
         this.listOfData = res.data;
         this.isLoadingData = false;
