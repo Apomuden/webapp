@@ -42,75 +42,7 @@
             </tr>
           </thead>
           <tbody>
-            <!-- id: 2
-title: "Mr"
-title_id: 1
-patient_no: "0000001/20"
-folder_no: "A0000001/20"
-folder_rack: "1"
-folder_type: "INDIVIDUAL"
-folder_status: "ACTIVE"
-old_folder_no: null
-funding_type_name: "Cash/Prepaid"
-funding_type_id: 1
-sponsorship_type_name: "Patient"
-sponsorship_type_id: 1
-billing_system_name: "UNBUNDLED/ITEMIZE"
-billing_system_id: 1
-billing_cycle_name: "Daily"
-billing_cycle_id: 1
-payment_style_name: "Prepaid"
-payment_style_id: 1
-payment_channel_name: "Cash"
-payment_channel_id: 1
-ssnit_no: null
-tin: null
-username: null
-surname: "Sam"
-middlename: "Baagyan-Nyamekye"
-firstname: "Arhin"
-dob: "2021-01-10"
-gender: "MALE"
-country_name: null
-country_id: null
-region_name: null
-region_id: null
-district_name: null
-district_id: null
-hometown_name: null
-hometown_id: null
-marital: null
-profession_name: null
-profession_id: null
-staff_id: null
-work_address: null
-residence_address: null
-native_language_name: null
-native_language_id: null
-second_language_name: null
-second_language_id: null
-official_language_name: null
-official_language_id: null
-id_type_name: "National ID"
-id_type_id: 1
-id_no: "123456719"
-id_expiry_date: "2030-01-01"
-religion_name: null
-religion_id: null
-educational_level_name: null
-educational_level_id: null
-active_cell: null
-email: null
-emerg_name: null
-emerg_phone: null
-emerg_relation_name: null
-emerg_relation_id: null
-photo: null
-mortality: "ALIVE"
-reg_status: "OUT-PATIENT"
-status: "ACTIVE"
-created_at: "2020-01-09 13:37:29"
-updated_at: "2020-01-09 13:37:29" -->
+
             <tr *ngFor="let data of basicTable.data">
               <td>{{ data.title}} {{data.firstname}} {{data.middlename!==null?data.middlename :""}} {{data.surname}}
               </td>
