@@ -680,9 +680,6 @@ export class SetupService {
     );
   }
 
-  /**
-   * Languages routes
-   */
   createStaffCategory(name: string) {
     return this.http
       .post<any>(STAFF_CATEGORY_API_URL, { name })
