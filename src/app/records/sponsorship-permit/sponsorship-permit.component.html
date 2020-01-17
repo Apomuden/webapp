@@ -96,78 +96,95 @@
     <nz-card class="m-l-1">
       <form nzLayout="block" nz-form [formGroup]="sponsorForm">
         <nz-form-item>
-          <nz-form-control nzErrorTip="Select a sponsor type">
-            <input type="text" nz-input placeholder="Select a sponsor type" formControlName="sponsorType" />
+          <nz-form-label [nzXs]="6" nzRequired nzFor="fundingType">Funding Type</nz-form-label>
+          <nz-form-control nzErrorTip="Please select a funding type">
+            <nz-select formControlName="fundingType" nzPlaceHolder="Select funding type"
+              [nzLoading]="isLoadingFundingTypes">
+              <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id"
+                [nzLabel]="fundingType.name">
+              </nz-option>
+              <nz-option nzValue="Hello" nzLabel="Hello"></nz-option>
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a sponsor name">
-            <input type="text" nz-input placeholder="Select a sponsor name" formControlName="sponsorName" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a company">
-            <input type="text" nz-input placeholder="Select a company" formControlName="company" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Enter a member ID">
-            <input type="text" nz-input placeholder="Enter a member ID" formControlName="memberId" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Enter card serial number">
-            <input type="text" nz-input placeholder="Enter card serial number" formControlName="cardSerialNumber" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Enter staff ID">
-            <input type="text" nz-input placeholder="Enter staff ID" formControlName="staffId" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a beneficiary">
-            <input type="text" nz-input placeholder="Select a beneficiary" formControlName="beneficiary" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a relation">
-            <input type="text" nz-input placeholder="Select a relation" formControlName="relation" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a priority">
-            <input type="text" nz-input placeholder="Select a priority" formControlName="priority" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a policy">
-            <input type="text" nz-input placeholder="Select a policy" formControlName="policy" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a valid issued date">
-            <nz-date-picker formControlName="issueDate" nzPlaceHolder="Select issue date"></nz-date-picker>
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Select a valid expiry date">
-            <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
-          </nz-form-control>
-        </nz-form-item>
-
-        <button nz-button nzType="primary" (click)="addSponsor()">
+          <nz-form-item>
+            <nz-form-label [nzXs]="6" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
+            <nz-form-control nzErrorTip="Select a company name">
+              <nz-select formControlName="sponsorName" nzPlaceHolder="Select sponsor name">
+                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
+                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzXs]="6" nzRequired nzFor="company">Company Name</nz-form-label>
+            <nz-form-control nzErrorTip="Select a company name">
+              <nz-select formControlName="company" nzPlaceHolder="Select company name">
+                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
+                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="isInsurance">
+            <nz-form-label [nzXs]="6" nzRequired nzFor="memberId">Member Id</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid member Id">
+              <input type="text" nz-input placeholder="Member Id" formControlName="memberId" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzXs]="6" nzRequired nzFor="cardSerialNumber">Serial Number</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid card serial number">
+              <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="!isInsurance">
+            <nz-form-label [nzXs]="6" nzRequired nzFor="staffId">Staff Id</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid staff Id">
+              <input type="text" nz-input placeholder="Staff Id" formControlName="staffId" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzXs]="6" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
+            <nz-form-control nzErrorTip="Select beneficiary of sponsorship">
+              <nz-select formControlName="beneficiary" nzPlaceHolder="Beneficiary of the sponsorship">
+                <nz-option nzValue="Self" nzLabel="Self"></nz-option>
+                <nz-option nzValue="Dependant" nzLabel="Dependant"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="isBeneficiaryDependant">
+            <nz-form-label [nzXs]="6" nzRequired nzFor="relation">Relation</nz-form-label>
+            <nz-form-control nzErrorTip="Select the relation">
+              <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient">
+                <nz-option nzValue="Wife" nzLabel="Wife"></nz-option>
+                <nz-option nzValue="Son" nzLabel="Son"></nz-option>
+                <nz-option nzValue="Daughter" nzLabel="Daughter"></nz-option>
+                <nz-option nzValue="Other" nzLabel="Other"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzXs]="6" nzRequired nzFor="policy">Policy</nz-form-label>
+            <nz-form-control nzErrorTip="Select a policy type">
+              <nz-select formControlName="policy" nzPlaceHolder="Select policy type">
+                <nz-option nzValue="Silver" nzLabel="Silver"></nz-option>
+                <nz-option nzValue="Gold" nzLabel="Gold"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzXs]="6" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
+            <nz-form-control nzErrorTip="Select a valid issued date">
+              <nz-date-picker formControlName="issuedDate" nzPlaceHolder="Select issue date"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzXs]="6" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
+            <nz-form-control nzErrorTip="Select a valid expiry date">
+              <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+        <button nz-button nzType="primary" [disabled]="!sponsorForm.valid" (click)="addSponsor()">
           <span>Add Sponsor</span>
         </button>
       </form>

@@ -1,4 +1,4 @@
-/* nz-select {
+nz-select {
   width: 350px;
 }
 
@@ -8,9 +8,8 @@
 
 nz-form-control {
   display: inline-block;
-}*/
+}
 
 [nz-button] {
   margin-right: 10px;
-  text-align: right;
 }
