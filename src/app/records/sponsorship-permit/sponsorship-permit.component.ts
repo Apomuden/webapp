@@ -21,7 +21,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   pageSize = 5;
   nextUrl = null;
   prevUrl = null;
-  searchControl = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(11)]);
+  searchControl = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
   sponsorForm = this.fb.group({
     fundingType: [null, [Validators.required]],
     sponsorName: [null, [Validators.required]],
