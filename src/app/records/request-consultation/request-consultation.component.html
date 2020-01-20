@@ -1,72 +1,218 @@
 <div class="steps-content">
-  <form nz-form [formGroup]="walkinForm" (ngSubmit)="submitForm()">
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
-      <nz-form-control nzErrorTip="Select a title">
-        <nz-select formControlName="title" nzPlaceHolder="Select title" nzShowSearch nzAllowClear
-          [nzLoading]="titlesLoading | async">
-          <nz-option *ngFor="let title of titles" [nzLabel]="title.name" [nzValue]="title.id"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid name">
-        <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstName" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid name">
-        <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid name">
-        <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
-      <nz-form-control nzErrorTip="Select a valid date">
-        <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
-        </nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid name">
-        <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
-          [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
-      </nz-form-control>
-      <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="location">Location</nz-form-label>
-      <nz-form-control nzErrorTip="Enter location">
-        <input type="text" nz-input placeholder="Location" formControlName="location" />
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phone">Mobile Number</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid phone number">
-        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-          <ng-template #addOnBeforeTemplate>
-            <nz-select formControlName="countryCode" class="phone-select" nzShowSearch
-              [nzLoading]="countriesloading | async">
-              <nz-option *ngFor="let country of countries" [nzValue]="country.call_code" [nzLabel]="country.call_code">
-              </nz-option>
+  <form nz-form nzLayout="vertical" [formGroup]="requestForm" (ngSubmit)="submitForm()">
+    <div nz-row [nzGutter]="24">
+      <div nz-col [nzSpan]="8">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="title">Folder Number</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
+            <input type="text" nz-input placeholder="A0000001/20a" formControlName="folderNumber" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" *ngIf="searchInitialized && !isLoadingData">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="title">Full Name</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter full name">
+            <input type="text" nz-input placeholder="Enter full name" formControlName="fullName" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="8" *ngIf="searchInitialized && !isLoadingData">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzFor="age">Age</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter age">
+            <nz-input-number [nzDisabled]="true" formControlName="age" [nzMin]="0" [nzMax]="200" [nzStep]="1"
+              [nzFormatter]="formatterAge" [nzParser]="parserAge">
+            </nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="gender">Gender</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Please enter gender">
+            <nz-select [nzDisabled]="true" nzShowSearch nzAllowClear nzPlaceHolder="Gender" formControlName="gender">
+              <nz-option nzLabel="Male" nzValue="MALE"></nz-option>
+              <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
+              <nz-option nzLabel="Other" nzValue="OTHER"></nz-option>
             </nz-select>
-          </ng-template>
-          <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="phone" />
-        </nz-input-group>
-      </nz-form-control>
-    </nz-form-item>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="status">Current Status</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a valid status">
+            <input type="text" nz-input placeholder="IN-PATIENT / OUT-PATIENT" formControlName="status" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="fundingType">Funding Type</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a funding type">
+            <input type="text" nz-input placeholder="Enter funding type" formControlName="fundingType" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="orderType">Order Type</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Please select order type">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Order type" formControlName="orderType">
+              <nz-option nzLabel="INTERNAL" nzValue="INTERNAL"></nz-option>
+              <nz-option nzLabel="EXTERNAL" nzValue="EXTERNAL"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="clinic">Clinic
+          </nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Please select clinic">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Clinic" formControlName="clinic">
+              <nz-option nzLabel="Male" nzValue="MALE"></nz-option>
+              <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
+              <nz-option nzLabel="Other" nzValue="OTHER"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="consultationService">Consultation Service
+          </nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Please select service">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Consultation Service"
+              formControlName="consultationService">
+              <nz-option nzLabel="Male" nzValue="MALE"></nz-option>
+              <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
+              <nz-option nzLabel="Other" nzValue="OTHER"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a sponsor name">
+            <input type="text" nz-input placeholder="Enter sponsor name" formControlName="sponsorName" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="billed">Billed Sponsor</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Please select billed sponsor">
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Billed sponsor" formControlName="billed">
+              <nz-option nzLabel="INTERNAL" nzValue="INTERNAL"></nz-option>
+              <nz-option nzLabel="EXTERNAL" nzValue="EXTERNAL"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="memberId">Member ID</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a member ID">
+            <input type="text" nz-input placeholder="Enter member ID" formControlName="memberId" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
+      <div nz-col [nzSpan]="8">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="ccc">CCC</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter valid CCC">
+            <input type="text" nz-input placeholder="ccc" formControlName="ccc" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="staffId">Staff ID</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a staff ID">
+            <input type="text" nz-input placeholder="Enter staff ID" formControlName="staffId" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="cardStatus">Card Status</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="card status">
+            <input type="text" nz-input placeholder="card status" formControlName="cardStatus" />
+          </nz-form-control>
+        </nz-form-item>
+
+      </div>
+    </div>
+
+    <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="qty">Service Qty and fee</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a valid quantity">
+            <nz-input-group>
+              <!-- <ng-template #addOnBeforeTemplate> -->
+              <nz-input-number [nzDisabled]="true" formControlName="qty" [nzMin]="1" [nzMax]="200" [nzStep]="1"
+                [nzFormatter]="formatService" [nzParser]="parseService">
+              </nz-input-number>
+              <!-- </ng-template> -->
+              <nz-input-number formControlName="fee" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatFee"
+                [nzParser]="parseFee">
+              </nz-input-number>
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col [nzSpan]="8">
+        <nz-form-item nzLayout="vertical">
+          <nz-form-label nzRequired nzFor="attendanceDate">Attendance Date</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Select a valid date">
+            <nz-date-picker formControlName="attendanceDate" nzPlaceHolder="Select attendance date">
+            </nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
+          class="m-r-5"></i> {{message}}
+      </div>
+    </div>
+
+    <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
+    </nz-skeleton>
   </form>
-</div>
-<div class="steps-action">
-  <button nz-button nzType="primary" (click)="done()">
-    <span>Done</span>
-  </button>
+
+  <div nz-row *ngIf="searchInitialized && !isLoadingData">
+    <div nz-col nzSpan="4" nzOffset="11">
+      <button [disabled]="!requestForm.valid" nz-button nzType="primary" (click)="done()">
+        <span>Done</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- this is just to make the getters run and update some field's validators -->
+  <div *ngIf="isCash || isInsurance || isCoporateInsured"></div>
 </div>
