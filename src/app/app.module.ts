@@ -20,7 +20,6 @@ import {NgChartjsModule} from 'ng-chartjs';
 import {ThemeConstantService} from './shared/services/theme-constant.service';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 
-
 registerLocaleData(en);
 
 @NgModule({

@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { first, retry, debounceTime } from 'rxjs/operators';
+import { first, retry, debounceTime, take } from 'rxjs/operators';
 import { SetupService } from 'src/app/shared/services/setup.service';
 import { BehaviorSubject } from 'rxjs';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
@@ -14,7 +14,7 @@ import { RecordService } from '../record.service';
 export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDestroy {
 
   requestForm: FormGroup = this.fb.group({
-    folderNumber: this.fb.control('a0000001/20.', [Validators.required, Validators.minLength(11), Validators.maxLength(12)]),
+    folderNumber: this.fb.control('A0000001/20', [Validators.required, Validators.minLength(11), Validators.maxLength(12)]),
     fullName: this.fb.control({ value: null, disabled: true }, [Validators.required]),
     age: this.fb.control({ value: 0, disabled: true }, [Validators.required]),
     gender: this.fb.control({ value: null, disabled: true }, [Validators.required]),
@@ -25,22 +25,22 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     clinic: this.fb.control(null, [Validators.required]),
     consultationService: this.fb.control(null, [Validators.required]),
     orderType: this.fb.control('INTERNAL', [Validators.required]),
-    billed: this.fb.control(null, [Validators.required]),
-    memberId: this.fb.control(null),
-    staffId: this.fb.control(null),
-    cardStatus: this.fb.control(null),
-    ccc: this.fb.control(null, [Validators.minLength(5), Validators.maxLength(5)]),
+    billed: this.fb.control({ value: null, disabled: true }, [Validators.required]),
+    memberId: this.fb.control({ value: null, disabled: true }),
+    staffId: this.fb.control({ value: null, disabled: true }),
+    cardStatus: this.fb.control({ value: null, disabled: true }),
+    ccc: this.fb.control({ value: null, disabled: true }, [Validators.minLength(5), Validators.maxLength(5)]),
     qty: this.fb.control({ value: 1, disabled: true }, [Validators.required, Validators.min(1)]),
-    fee: this.fb.control({ value: 0.7, disabled: true }, [Validators.required]),
+    fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required]),
   });
 
-  countriesloading = new BehaviorSubject(false);
-  titlesLoading = new BehaviorSubject(false);
+  clinicsloading = new BehaviorSubject(false);
+  servicesLoading = new BehaviorSubject(false);
   isLoadingData = false;
   searchInitialized = false;
 
-  countries = [];
-  titles = [];
+  clinics = [];
+  services = [];
   patient: any;
   message = 'Please enter a valid folder number to fill this form.';
 
@@ -62,14 +62,26 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngAfterViewInit() {
-    this.getFolderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
+    this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
       .subscribe(folderNo => {
-        if (folderNo && this.getFolderNoControl.valid) {
+        if (folderNo && this.folderNoControl.valid) {
           this.getPatient(folderNo);
         } else {
           this.message = 'Please enter a valid folder number to fill this form.';
           this.searchInitialized = false;
         }
+      });
+
+    this.clinicControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe((value: number) => {
+        this.getClinicServices(value);
+      });
+
+    this.serviceControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe((value: number) => {
+        // display price of the selected service
+        const service = this.services.find(s => s.id === value);
+        this.feeControl.patchValue(service.price);
       });
   }
 
@@ -77,20 +89,32 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   }
 
-  get getFolderNoControl(): FormControl {
+  get folderNoControl(): FormControl {
     return this.requestForm.get('folderNumber') as FormControl;
   }
 
-  get getFeeControl(): FormControl {
+  get feeControl(): FormControl {
     return this.requestForm.get('fee') as FormControl;
   }
 
-  get getQtyControl(): FormControl {
+  get qtyControl(): FormControl {
     return this.requestForm.get('qty') as FormControl;
   }
 
+  get clinicControl(): FormControl {
+    return this.requestForm.get('clinic') as FormControl;
+  }
+
+  get serviceControl(): FormControl {
+    return this.requestForm.get('consultationService') as FormControl;
+  }
+
+  get billedControl(): FormControl {
+    return this.requestForm.get('billed') as FormControl;
+  }
+
   get isFolderAvailable(): boolean {
-    return this.getFolderNoControl.valid && this.patient;
+    return this.folderNoControl.valid && this.patient;
   }
 
   get ageControl(): FormControl {
@@ -138,31 +162,11 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   get isCash(): boolean {
-    const clearValidators = () => {
-      this.cardStatusControl.clearValidators();
-      this.cardStatusControl.reset();
-      this.cardStatusControl.disable();
-      this.staffIdControl.clearValidators();
-      this.staffIdControl.reset();
-      this.staffIdControl.disable();
-      this.memberIdControl.clearValidators();
-      this.memberIdControl.reset();
-      this.memberIdControl.disable();
-      this.cccControl.clearValidators();
-      this.cccControl.reset();
-      this.cccControl.disable();
-    };
     const fundType = this.fundingTypeControl.value as string;
     if (!fundType) {
-      clearValidators();
       return false;
     }
-    if (fundType.toLocaleLowerCase().includes('cash') || fundType.toLocaleLowerCase().includes('prepaid')) {
-      clearValidators();
-      return true;
-    } else {
-      return false;
-    }
+    return fundType.toLocaleLowerCase().includes('cash') || fundType.toLocaleLowerCase().includes('prepaid');
   }
 
   get isCoporateInsured(): boolean {
@@ -171,6 +175,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       return false;
     }
     if (fundType.toLocaleLowerCase().includes('company') || fundType.toLocaleLowerCase().includes('insurance')) {
+      this.billedControl.setValidators(Validators.required);
       this.staffIdControl.setValidators(Validators.required);
       this.staffIdControl.enable();
       this.cardStatusControl.enable();
@@ -217,6 +222,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
         if (data.data) {
           this.patient = data.data;
           this.appendToForm();
+          this.getClinics();
         } else {
           this.message = 'Folder not found';
           this.searchInitialized = false;
@@ -227,8 +233,32 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       });
   }
 
+  getClinics() {
+    this.clinicsloading.next(true);
+    this.setup.getClinics().pipe(first())
+      .subscribe(data => {
+        this.clinics = data.data;
+        this.clinicsloading.next(false);
+      }, error => {
+        this.clinicsloading.next(false);
+      });
+  }
+
+  getClinicServices(clinicId: number) {
+    this.servicesLoading.next(true);
+    this.setup.getServicesByClinic(clinicId).pipe(first())
+      .subscribe(data => {
+        this.services = data.data;
+        this.servicesLoading.next(false);
+      }, error => {
+        this.servicesLoading.next(false);
+      });
+  }
+
   appendToForm() {
-    this.ageControl.patchValue(this.calculateAge(this.patient.dob));
+    const age = this.calculateAge(this.patient.dob);
+    this.patient.age = age;
+    this.ageControl.patchValue(age);
     this.fullNameControl.patchValue(`${this.patient.firstname} ${this.patient.middlename} ${this.patient.surname}`);
     this.genderControl.patchValue(this.patient.gender);
     this.statusControl.patchValue(this.patient.reg_status);
@@ -242,19 +272,14 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
-  validateForm(): boolean {
-    for (const i of Object.keys(this.requestForm.controls)) {
-      this.requestForm.controls[i].markAsDirty();
-      this.requestForm.controls[i].updateValueAndValidity();
-    }
-
-    return this.requestForm.valid;
+  cancel(): void {
+    this.patient = null;
+    this.searchInitialized = false;
+    this.requestForm.reset();
   }
 
   done(): void {
-    if (this.validateForm()) {
-      this.submitForm();
-    }
+    this.submitForm();
   }
 
   submitForm() {

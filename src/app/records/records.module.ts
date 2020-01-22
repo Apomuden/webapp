@@ -10,7 +10,6 @@ import { AllFoldersComponent } from './all-folders/all-folders.component';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
 
-
 @NgModule({
   declarations: [
     AllFoldersComponent,
