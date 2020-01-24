@@ -1,0 +1,47 @@
+.avatar {
+  width: 128px;
+  height: 128px;
+}
+.upload-icon {
+  font-size: 32px;
+  color: #999;
+}
+.ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+
+.avatar-uploader {
+  border: 1px solid red;
+}
+.steps-content {
+  padding: 30px 10px;
+}
+
+nz-select {
+  width: 350px;
+}
+
+nz-select.phone-select {
+  width: 70px !important;
+}
+
+.ant-input {
+  width: 350px;
+}
+
+nz-form-control {
+  display: inline-block;
+}
+
+[nz-button] {
+  margin-right: 10px;
+
+  &.attach_doc_btn {
+    margin-bottom: 10px;
+  }
+}
+
+.steps-action {
+  margin-top: 10px;
+}

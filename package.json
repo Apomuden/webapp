@@ -27,6 +27,7 @@
     "@fortawesome/fontawesome-free": "^5.5.0",
     "@types/chartist": "^0.9.43",
     "@w11k/ngx-componentdestroyed": "^4.1.4",
+    "angular2-signaturepad": "^2.9.0",
     "chart.js": "^2.7.3",
     "chartist": "^0.11.0",
     "core-js": "^2.5.7",
@@ -48,7 +49,7 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.803.23",
+    "@angular-devkit/build-angular": "^0.803.22",
     "@angular/cli": "^8.3.20",
     "@angular/compiler-cli": "^8.1.1",
     "@angular/language-service": "^8.1.1",

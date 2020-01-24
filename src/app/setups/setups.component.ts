@@ -100,12 +100,15 @@ export class SetupsComponent implements OnInit {
       case 'specialties':
         this.routerLink = 'specialties';
         break;
+      case 'medicalsponsors':
+        this.routerLink = 'medicalsponsors';
+        break;
     }
 
     this.router.navigate(['setup/' + this.routerLink]);
     console.log(this.routerLink);
   }
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   ngOnInit() {
     this.router.navigate(['setup/departments']);

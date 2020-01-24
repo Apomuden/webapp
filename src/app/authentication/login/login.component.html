@@ -1,12 +1,7 @@
 <div class="container-fluid p-0 h-100">
   <div class="row no-gutters h-100">
-    <div
-      class="col-lg-4 d-none d-lg-flex"
-      style="background-image:url('assets/images/others/login-1.jpg')"
-    >
-      <div
-        class="d-flex h-100 p-h-40 p-v-15 flex-column justify-content-between"
-      >
+    <div class="col-lg-4 d-none d-lg-flex" style="background-image:url('assets/images/others/login-1.jpg')">
+      <div class="d-flex h-100 p-h-40 p-v-15 flex-column justify-content-between">
         <div>
           <img src="assets/images/logo/logo-white.png" alt="" />
         </div>
@@ -36,92 +31,36 @@
       <div class="container h-100">
         <div class="row no-gutters h-100 align-items-center">
           <div class="col-md-8 col-lg-7 col-xl-6 mx-auto">
-            <nz-alert
-              *ngIf="error"
-              nzType="error"
-              nzCloseable
-              nzMessage="{{ error }}"
-              class="m-b-30"
-            >
+            <nz-alert *ngIf="error" nzType="error" nzCloseable nzMessage="{{ error }}" class="m-b-30">
             </nz-alert>
             <h2>Sign In</h2>
             <p class="m-b-30">Enter your credential to get access</p>
-            <form
-              nz-form
-              [formGroup]="loginForm"
-              class="login-form"
-              (ngSubmit)="submitForm()"
-            >
+            <form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="submitForm()">
               <nz-form-item>
-                <nz-form-label nzRequired nzFor="userName"
-                  >Username</nz-form-label
-                >
-                <nz-form-control>
+                <nz-form-label nzRequired nzFor="userName">Username</nz-form-label>
+                <nz-form-control nzErrorTip="Please input your username!">
                   <nz-input-group [nzPrefix]="prefixUser">
-                    <input
-                      type="text"
-                      nz-input
-                      formControlName="userName"
-                      placeholder="Username"
-                    />
+                    <input autocomplete="username" type="text" nz-input formControlName="userName" placeholder="Username" />
                   </nz-input-group>
-                  <nz-form-explain
-                    *ngIf="
-                      loginForm.get('userName').dirty &&
-                      loginForm.get('userName').errors
-                    "
-                  >
-                    Please input your username!
-                  </nz-form-explain>
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
-                <nz-form-label nzRequired nzFor="password"
-                  >Password</nz-form-label
-                >
-                <a
-                  class="float-right font-size-13 p-t-10 text-muted"
-                  [routerLink]="['/authentication/reset-password-1']"
-                  >Forget Password?</a
-                >
-                <nz-form-control>
+                <nz-form-label nzRequired nzFor="password">Password</nz-form-label>
+                <a class="float-right font-size-13 p-t-10 text-muted"
+                  [routerLink]="['/authentication/reset-password-1']">Forgot Password?</a>
+                <nz-form-control nzErrorTip="Please input your Password!">
                   <nz-input-group [nzPrefix]="prefixLock">
-                    <input
-                      type="password"
-                      nz-input
-                      formControlName="password"
-                      placeholder="Password"
-                    />
+                    <input autocomplete="current-password" type="password" nz-input formControlName="password" placeholder="Password" />
                   </nz-input-group>
-                  <nz-form-explain
-                    *ngIf="
-                      loginForm.get('password').dirty &&
-                      loginForm.get('password').errors
-                    "
-                    >Please input your Password!</nz-form-explain
-                  >
                 </nz-form-control>
               </nz-form-item>
               <nz-form-item>
                 <nz-form-control>
-                  <div
-                    class="d-flex align-items-center justify-content-between"
-                  >
-                    <span class="font-size-13 text-muted"
-                      >Don't have an account?
-                      <a
-                        class="small"
-                        [routerLink]="['/authentication/sign-up-1']"
-                      >
-                        Signup</a
-                      ></span
-                    >
-                    <button
-                      nz-button
-                      class="login-form-button"
-                      [nzType]="'primary'"
-                      type="submit"
-                    >
+                  <div class="d-flex align-items-center justify-content-between">
+                    <span class="font-size-13 text-muted">Don't have an account?
+                      <a class="small" [routerLink]="['/authentication/sign-up-1']">
+                        Signup</a></span>
+                    <button nz-button class="login-form-button" [nzType]="'primary'" type="submit">
                       Sign In
                     </button>
                   </div>

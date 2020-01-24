@@ -10,6 +10,9 @@ import { RolesComponent } from './roles/roles.component';
 import { ModulesComponent } from './modules/modules.component';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { SystemComponentsComponent } from './system-components/system-components.component';
+import { SignaturePadModule } from 'angular2-signaturepad';
+import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzMessageServiceModule } from 'ng-zorro-antd';
 
 @NgModule({
   declarations: [
@@ -21,6 +24,13 @@ import { SystemComponentsComponent } from './system-components/system-components
     PermissionsComponent,
     SystemComponentsComponent
   ],
-  imports: [CommonModule, SharedModule, UserManagementRoutingModule]
+  imports: [
+    CommonModule,
+    SharedModule,
+    UserManagementRoutingModule,
+    SignaturePadModule,
+    NzUploadModule,
+    NzMessageServiceModule,
+  ]
 })
-export class UserManagementModule {}
+export class UserManagementModule { }
