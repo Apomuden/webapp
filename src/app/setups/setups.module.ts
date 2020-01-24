@@ -36,6 +36,7 @@ import { CountrySetupComponent } from './pages/country-setup/country-setup.compo
 import { CompanySetupComponent } from './pages/company-setup/company-setup.component';
 import { SpecialitySetupComponent } from './pages/speciality-setup/speciality-setup.component';
 import { FormsModule } from '@angular/forms';
+import { MedicalSponsorSetupComponent } from './pages/medical-sponsor-setup/medical-sponsor-setup.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { FormsModule } from '@angular/forms';
     AccreditationSetupComponent,
     CountrySetupComponent,
     CompanySetupComponent,
-    SpecialitySetupComponent
+    SpecialitySetupComponent,
+    MedicalSponsorSetupComponent
   ],
   imports: [
     CommonModule,

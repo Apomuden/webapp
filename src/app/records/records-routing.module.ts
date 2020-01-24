@@ -50,6 +50,7 @@ const routes: Routes = [
     data: {
       title: 'Search Patient'
     }
+  }
 ];
 
 @NgModule({

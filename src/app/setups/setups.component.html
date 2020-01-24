@@ -1,50 +1,25 @@
 <div nz-row class="m-b-10">
   <div nz-col nzSpan="8">
-    <nz-select
-      style="width:100%"
-      [(ngModel)]="selectedSetup"
-      (ngModelChange)="onSetupChanged()"
-      nzPlaceHolder="Choose"
-    >
+    <nz-select style="width:100%" [(ngModel)]="selectedSetup" (ngModelChange)="onSetupChanged()" nzPlaceHolder="Choose">
       <nz-option nzValue="departments" nzLabel="Departments"></nz-option>
       <nz-option nzValue="fundingtypes" nzLabel="Funding Types"></nz-option>
-      <nz-option
-        nzValue="paymentchannels"
-        nzLabel="Payment Channels"
-      ></nz-option>
-      <nz-option
-        nzValue="sponsorshiptypes"
-        nzLabel="Sponsorship Types"
-      ></nz-option>
+      <nz-option nzValue="paymentchannels" nzLabel="Payment Channels"></nz-option>
+      <nz-option nzValue="sponsorshiptypes" nzLabel="Sponsorship Types"></nz-option>
       <nz-option nzValue="paymentstyles" nzLabel="Payment Styles"></nz-option>
       <nz-option nzValue="billingsystems" nzLabel="Billing Systems"></nz-option>
       <nz-option nzValue="billingcycles" nzLabel="Billing Cycles"></nz-option>
-      <nz-option
-        nzValue="hospitalservices"
-        nzLabel="Hospital Services"
-      ></nz-option>
-      <nz-option
-        nzValue="servicecategories"
-        nzLabel="Service Categories"
-      ></nz-option>
+      <nz-option nzValue="hospitalservices" nzLabel="Hospital Services"></nz-option>
+      <nz-option nzValue="servicecategories" nzLabel="Service Categories"></nz-option>
       <nz-option nzValue="stafftypes" nzLabel="Staff Types"></nz-option>
       <nz-option nzValue="professions" nzLabel="Professions"></nz-option>
-      <nz-option
-        nzValue="staffcategories"
-        nzLabel="Staff Categories"
-      ></nz-option>
-      <nz-option
-        nzValue="servicesubcategories"
-        nzLabel="Service SubCategories"
-      ></nz-option>
+      <nz-option nzValue="medicalsponsors" nzLabel="Medical Sponsors"></nz-option>
+      <nz-option nzValue="staffcategories" nzLabel="Staff Categories"></nz-option>
+      <nz-option nzValue="servicesubcategories" nzLabel="Service SubCategories"></nz-option>
       <nz-option nzValue="languages" nzLabel="Languages"></nz-option>
       <nz-option nzValue="banks" nzLabel="Banks"></nz-option>
       <nz-option nzValue="bankbranches" nzLabel="Bank Branches"></nz-option>
       <nz-option nzValue="idtypes" nzLabel="Id Types"></nz-option>
-      <nz-option
-        nzValue="educationallevels"
-        nzLabel="Educational Levels"
-      ></nz-option>
+      <nz-option nzValue="educationallevels" nzLabel="Educational Levels"></nz-option>
       <nz-option nzValue="agegroups" nzLabel="Age Groups"></nz-option>
       <nz-option nzValue="titles" nzLabel="Titles"></nz-option>
       <nz-option nzValue="relationships" nzLabel="Relationships"></nz-option>
