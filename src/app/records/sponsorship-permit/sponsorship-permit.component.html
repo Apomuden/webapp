@@ -1,193 +1,158 @@
-<nz-row>
-  <nz-col [nzSpan]="patient ? '12' : '24'">
-    <nz-card>
-      <form nzLayout="block" nz-form>
-        <nz-form-item>
-          <nz-form-control nzErrorTip="Please enter a valid folder number">
-            <nz-input-group nzPrefixIcon="search">
-              <input nz nz-input placeholder="Search Folder" [formControl]='searchControl' name='search' id="search" />
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
-      </form>
-      <nz-divider></nz-divider>
-      <div *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'" class="m-r-5"></i> Please search for a folder
-        to see table
-      </div>
-      <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
-        <nz-table #basicTable [nzData]="listOfData" *ngIf="searchInitialized" [nzShowPagination]="false">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <!-- <th>Patient No</th> -->
-              <th>Folder No</th>
-              <!-- <th>Folder Type</th> -->
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let pat of basicTable.data">
-              <td>{{ pat.title}} {{pat.firstname}} {{pat.middlename!== null ? pat.middlename :""}}
-                {{pat.surname}}
-              </td>
-              <!-- <td>{{ pat.patient_no }}</td> -->
-              <td>{{ pat.folder_no }}</td>
-              <!-- <td>{{ pat.folder_type }}</td> -->
+<div class="steps-content">
+  <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
+    <div nz-col *ngIf="patient">
+      <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+        <nz-descriptions-item nzTitle="Folder #">
+          {{patient.folder_no}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Name">
+          {{patient.firstname}} {{patient.middlename}} {{patient.surname}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Gender">
+          {{patient.gender}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Age">
+          {{patient.age}} year(s)
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Member #">
+          2389298323898
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Staff #">
+          2389298323898
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Card Status">
+          ACTIVE
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Patient Status">
+          {{patient.reg_status}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Funding Type">
+          {{patient.funding_type_name}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Sponsor">
+          {{patient.sponsorship_type_name}}
+        </nz-descriptions-item>
 
-              <td>
-                <a *ngIf="!patient || (patient && patient.id !== pat.id)" (click)="select(pat)">Add sponsor</a>
-                <a *ngIf="patient && patient.id === pat.id">Selected</a>
-              </td>
-            </tr>
-          </tbody>
-        </nz-table>
-        <div style="text-align: right;" class="m-t-10">
-          <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="totalItems" (nzPageIndexChange)="getPage($event)"
-            [nzPageSize]="pageSize"></nz-pagination>
-        </div>
-      </nz-skeleton>
-    </nz-card>
+      </nz-descriptions>
+    </div>
+  </div>
+  <div nz-row [nzGutter]="24" *ngIf="!patient">
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
+        <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
+          <input type="text" nz-input placeholder="A0000001/20a" [formControl]="searchControl" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
 
-    <nz-card *ngIf="patient">
-      <div class="row align-items-center">
-        <div class="col-md-5">
-          <div class="d-md-flex align-items-center">
-            <div class="text-center text-sm-left m-v-10 p-l-20">
-              <h5 class="m-b-5">{{patient.title}} {{patient.firstname}}{{patient.middlename?" "+patient.middlename:""}}
-                {{patient.surname}}</h5>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-7">
-          <div class="row">
-            <div class="d-md-block d-none border-left col-1"></div>
-            <div class="col">
-              <ul class="list-unstyled m-t-10">
-                <li class="row">
-                  <p class="col-4 font-weight-semibold text-dark m-b-5">
-                    <i class="m-r-5 text-primary" nz-icon nzType="file" theme="outline"></i>
-                    <span>Folder: </span>
-                  </p>
-                  <p class="col-6 font-weight-semibold">{{patient.folder_no}}</p>
-                </li>
-                <li class="row">
-                  <p class="col-4 font-weight-semibold text-dark m-b-5">
-                    <i class="m-r-5 text-primary" nz-icon nzType="user" theme="outline"></i>
-                    <span>No: </span>
-                  </p>
-                  <p class="col-6 font-weight-semibold">{{patient.patient_no}}</p>
-                </li>
-                <li class="row">
-                  <p class="col-4 font-weight-semibold text-dark m-b-5">
-                    <i class="m-r-5 text-primary" nz-icon nzType="form" theme="outline"></i>
-                    <span>Status: </span>
-                  </p>
-                  <p class="col-6 font-weight-semibold">{{patient.reg_status}}</p>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nz-card>
-  </nz-col>
+  <nz-divider></nz-divider>
+  <form nzLayout="block" nz-form [formGroup]="sponsorForm" *ngIf="patient">
+    <nz-form-item>
+      <nz-form-label [nzXs]="6" nzRequired nzFor="fundingType">Funding Type</nz-form-label>
+      <nz-form-control nzErrorTip="Please select a funding type">
+        <nz-select formControlName="fundingType" nzPlaceHolder="Select funding type"
+          [nzLoading]="isLoadingFundingTypes">
+          <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id" [nzLabel]="fundingType.name">
+          </nz-option>
+          <nz-option nzValue="Hello" nzLabel="Hello"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzXs]="6" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
+      <nz-form-control nzErrorTip="Select a company name">
+        <nz-select formControlName="sponsorName" nzPlaceHolder="Select sponsor name"
+          [nzLoading]="isLoadingFundingTypes">
+          <nz-option *ngFor="let sponsor of sponsors" [nzValue]="sponsor.id" [nzLabel]="sponsor.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="isCoporateSponsor">
+      <nz-form-label [nzXs]="6" nzRequired nzFor="company">Company Name</nz-form-label>
+      <nz-form-control nzErrorTip="Select a company name">
+        <nz-select formControlName="company" nzPlaceHolder="Select company name">
+          <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
+          <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="isInsurance">
+      <nz-form-label [nzXs]="6" nzRequired nzFor="memberId">Member Id</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid member Id">
+        <input type="text" nz-input placeholder="Member Id" formControlName="memberId" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="isInsurance">
+      <nz-form-label [nzXs]="6" nzRequired nzFor="cardSerialNumber">Serial Number</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid card serial number">
+        <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="isCoporateSponsor">
+      <nz-form-label [nzXs]="6" nzRequired nzFor="staffId">Staff Id</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid staff Id">
+        <input type="text" nz-input placeholder="Staff Id" formControlName="staffId" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzXs]="6" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
+      <nz-form-control nzErrorTip="Select beneficiary of sponsorship">
+        <nz-select formControlName="beneficiary" nzPlaceHolder="Beneficiary of the sponsorship">
+          <nz-option nzValue="Self" nzLabel="Self"></nz-option>
+          <nz-option nzValue="Dependant" nzLabel="Dependant"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="isBeneficiaryDependant">
+      <nz-form-label [nzXs]="6" nzRequired nzFor="relation">Relation</nz-form-label>
+      <nz-form-control nzErrorTip="Select the relation">
+        <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient">
+          <nz-option nzValue="Wife" nzLabel="Wife"></nz-option>
+          <nz-option nzValue="Son" nzLabel="Son"></nz-option>
+          <nz-option nzValue="Daughter" nzLabel="Daughter"></nz-option>
+          <nz-option nzValue="Other" nzLabel="Other"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzXs]="6" nzRequired nzFor="policy">Policy</nz-form-label>
+      <nz-form-control nzErrorTip="Select a policy type">
+        <nz-select formControlName="policy" nzPlaceHolder="Select policy type">
+          <nz-option nzValue="Silver" nzLabel="Silver"></nz-option>
+          <nz-option nzValue="Gold" nzLabel="Gold"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzXs]="6" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
+      <nz-form-control nzErrorTip="Select a valid issued date">
+        <nz-date-picker formControlName="issuedDate" nzPlaceHolder="Select issue date"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzXs]="6" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
+      <nz-form-control nzErrorTip="Select a valid expiry date">
+        <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <div nz-row>
+    <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
+        class="m-r-5"></i> {{message}}
+    </div>
+  </div>
 
-  <nz-col *ngIf="patient" nzSpan="12">
-    <nz-card class="m-l-1">
-      <form nzLayout="block" nz-form [formGroup]="sponsorForm">
-        <nz-form-item>
-          <nz-form-label [nzXs]="6" nzRequired nzFor="fundingType">Funding Type</nz-form-label>
-          <nz-form-control nzErrorTip="Please select a funding type">
-            <nz-select formControlName="fundingType" nzPlaceHolder="Select funding type"
-              [nzLoading]="isLoadingFundingTypes">
-              <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id"
-                [nzLabel]="fundingType.name">
-              </nz-option>
-              <nz-option nzValue="Hello" nzLabel="Hello"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzXs]="6" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
-            <nz-form-control nzErrorTip="Select a company name">
-              <nz-select formControlName="sponsorName" nzPlaceHolder="Select sponsor name">
-                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
-                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzXs]="6" nzRequired nzFor="company">Company Name</nz-form-label>
-            <nz-form-control nzErrorTip="Select a company name">
-              <nz-select formControlName="company" nzPlaceHolder="Select company name">
-                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
-                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item *ngIf="isInsurance">
-            <nz-form-label [nzXs]="6" nzRequired nzFor="memberId">Member Id</nz-form-label>
-            <nz-form-control nzErrorTip="Enter a valid member Id">
-              <input type="text" nz-input placeholder="Member Id" formControlName="memberId" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzXs]="6" nzRequired nzFor="cardSerialNumber">Serial Number</nz-form-label>
-            <nz-form-control nzErrorTip="Enter a valid card serial number">
-              <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item *ngIf="!isInsurance">
-            <nz-form-label [nzXs]="6" nzRequired nzFor="staffId">Staff Id</nz-form-label>
-            <nz-form-control nzErrorTip="Enter a valid staff Id">
-              <input type="text" nz-input placeholder="Staff Id" formControlName="staffId" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzXs]="6" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
-            <nz-form-control nzErrorTip="Select beneficiary of sponsorship">
-              <nz-select formControlName="beneficiary" nzPlaceHolder="Beneficiary of the sponsorship">
-                <nz-option nzValue="Self" nzLabel="Self"></nz-option>
-                <nz-option nzValue="Dependant" nzLabel="Dependant"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item *ngIf="isBeneficiaryDependant">
-            <nz-form-label [nzXs]="6" nzRequired nzFor="relation">Relation</nz-form-label>
-            <nz-form-control nzErrorTip="Select the relation">
-              <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient">
-                <nz-option nzValue="Wife" nzLabel="Wife"></nz-option>
-                <nz-option nzValue="Son" nzLabel="Son"></nz-option>
-                <nz-option nzValue="Daughter" nzLabel="Daughter"></nz-option>
-                <nz-option nzValue="Other" nzLabel="Other"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzXs]="6" nzRequired nzFor="policy">Policy</nz-form-label>
-            <nz-form-control nzErrorTip="Select a policy type">
-              <nz-select formControlName="policy" nzPlaceHolder="Select policy type">
-                <nz-option nzValue="Silver" nzLabel="Silver"></nz-option>
-                <nz-option nzValue="Gold" nzLabel="Gold"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzXs]="6" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
-            <nz-form-control nzErrorTip="Select a valid issued date">
-              <nz-date-picker formControlName="issuedDate" nzPlaceHolder="Select issue date"></nz-date-picker>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzXs]="6" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
-            <nz-form-control nzErrorTip="Select a valid expiry date">
-              <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
-            </nz-form-control>
-          </nz-form-item>
-        <button nz-button nzType="primary" [disabled]="!sponsorForm.valid" (click)="addSponsor()">
-          <span>Add Sponsor</span>
-        </button>
-      </form>
-    </nz-card>
-  </nz-col>
-</nz-row>
+  <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
+  </nz-skeleton>
+
+  <div nz-row *ngIf="searchInitialized && !isLoadingData">
+    <div nz-col nzOffset="7">
+      <nz-button-group>
+        <button nz-button nzType="danger" (click)="cancel()">Cancel</button>
+        <button nz-button nzType="primary" (click)="addSponsor()" [disabled]="!sponsorForm.valid">Done</button>
+      </nz-button-group>
+    </div>
+  </div>
+</div>

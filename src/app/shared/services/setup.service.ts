@@ -1110,4 +1110,23 @@ export class SetupService {
       })
     );
   }
+
+  getSponsorsByType(sponsor_type_id: number) {
+    return this.http.get<any>(MEDICAL_SPONSOR_API_URL, {
+      params: {
+        sponsorship_type_id: `${sponsor_type_id}`,
+      }
+    }).pipe(
+      map(res => {
+        if (res) {
+          this.medicalSponsors = res;
+          for (let i = 0; i < this.medicalSponsors.data.length; i++) {
+            this.medicalSponsors.data[i].isActivated =
+              this.medicalSponsors.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.medicalSponsors;
+      })
+    );
+  }
 }
