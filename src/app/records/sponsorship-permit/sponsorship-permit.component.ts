@@ -4,6 +4,8 @@ import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl, FormGroup } from '@angular/forms';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { SetupService } from 'src/app/shared/services/setup.service';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-sponsorship-permit',
@@ -19,59 +21,77 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   sponsorForm = this.fb.group({
     fundingType: [null, [Validators.required]],
     sponsorName: [null, [Validators.required]],
-    company: [null, [Validators.required]],
-    memberId: [null, [Validators.required]],
+    company: [null],
+    memberId: [null],
     cardSerialNumber: [null],
-    staffId: [null, [Validators.required]],
+    staffId: [null],
+    staffName: [null],
     beneficiary: [null, [Validators.required]],
     relation: [null],
-    policy: [null, [Validators.required]],
+    policy: [null],
     issuedDate: [null, [Validators.required]],
     expiryDate: [null, [Validators.required]],
+  });
+  companyForm = this.fb.group({
+    name: [null, [Validators.required]],
+    email: [null, [Validators.required]],
+    phone: [null, [Validators.required]],
+    googleAddress: [null, [Validators.required]],
   });
   patient: any;
 
   fundingTypes = [];
   sponsors = [];
   message = 'Enter a valid folder number to fill this form';
+  relationships = [];
+  isLoadingRelation = false;
+  isCreatingCompany = false;
+  isVisible = false;
+  googleAddress: string = null;
+  companies = [];
+  isCompaniesLoading = false;
+  isCreatingSponsor = false;
+  policies = [];
 
   constructor(
     private recordService: RecordService,
     private setupService: SetupService,
+    private notification: NzNotificationService,
     private fb: FormBuilder) { }
 
 
-  ngOnInit() {
-    this.getFundingTypes();
-  }
-
-  private getFundingTypes() {
-    this.setupService.getFundingTypes()
-      .pipe(first())
-      .subscribe(data => {
-        this.isLoadingFundingTypes = false;
-        this.fundingTypes = data.data;
-      }, error => {
-        this.isLoadingFundingTypes = false;
-        console.log(error);
-      });
-  }
+  ngOnInit() { }
 
   ngAfterViewInit() {
     this.searchControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
       .subscribe(folderNo => {
-        if (folderNo && this.searchControl.valid) {
+        if (folderNo) {
           this.getPatient(folderNo);
+          this.getFundingTypes();
+          this.getRelationsips();
+          this.getCompanies();
         } else {
           this.message = 'Please enter a valid folder number to fill this form.';
           this.searchInitialized = false;
         }
       });
-    this.fundingTypeControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
+
+    this.fundingTypeControl.valueChanges.pipe(debounceTime(500), untilComponentDestroyed(this))
       .subscribe(id => {
-        if (id && this.fundingTypeControl.valid) {
+        if (this.fundingTypeControl.valid) {
           this.sponsorNameControl.reset();
           this.getSponsors(this.getSelectedFundingType(id).sponsorship_type_id);
+        }
+      });
+
+    this.sponsorNameControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
+      .subscribe(id => {
+        if (this.fundingTypeControl.valid) {
+          this.policyControl.reset();
+          this.policies = [];
+          if (this.isPrivateInsurance) {
+            this.getPolicies(id);
+          }
         }
       });
   }
@@ -90,8 +110,18 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     return this.sponsorForm.get('beneficiary') as FormControl;
   }
 
+  get policyControl(): FormControl {
+    return this.sponsorForm.get('policy') as FormControl;
+  }
+
   get isBeneficiaryDependant(): boolean {
-    if (this.beneficiaryControl.value === 'Dependant') {
+    if (this.beneficiaryControl.value === 'DEPENDANT') {
+      if (this.isPrivateCompany || this.isGovernmentCompany) {
+        this.staffNameControl.setValidators([Validators.required]);
+      } else {
+        this.staffNameControl.clearValidators();
+        this.staffNameControl.reset();
+      }
       this.relationControl.setValidators(Validators.required);
       return true;
     } else {
@@ -101,50 +131,118 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     }
   }
 
-  get isCoporateSponsor(): boolean {
+  get isGovernmentCompany(): boolean {
     const fundType = this.getSelectedFundingType(this.fundingTypeControl.value);
     if (!fundType) {
       return false;
     }
-    const isCoporate = fundType.name.toLocaleLowerCase().includes('coporate');
-    if (isCoporate) {
+    const isGovernmentCom = fundType.sponsorship_type_name.toLocaleLowerCase() === 'government company';
+    if (isGovernmentCom) {
       this.staffIDControl.setValidators(Validators.required);
-    } else {
-      this.staffIDControl.clearValidators();
-      this.staffIDControl.reset();
+      this.memberIDControl.clearValidators();
+      this.memberIDControl.reset();
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
     }
-    return isCoporate;
+    return isGovernmentCom;
   }
 
-  get isInsurance(): boolean {
+  get isPrivateCompany(): boolean {
     const fundType = this.getSelectedFundingType(this.fundingTypeControl.value);
     if (!fundType) {
       return false;
     }
-    if (fundType.name.toLocaleLowerCase().includes('nhis') || fundType.name.toLocaleLowerCase().includes('insurance')) {
-      this.memberIDControl.setValidators(Validators.required);
-      this.cardSerialControl.setValidators(Validators.required);
-      return true;
-    } else {
+    const isPrivateCom = fundType.sponsorship_type_name.toLocaleLowerCase() === 'private company';
+    if (isPrivateCom) {
+      this.staffIDControl.setValidators(Validators.required);
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
       this.memberIDControl.clearValidators();
       this.memberIDControl.reset();
       this.cardSerialControl.clearValidators();
       this.cardSerialControl.reset();
+    }
+    return isPrivateCom;
+  }
+
+  get isPrivateInsurance(): boolean {
+    const fundType = this.getSelectedFundingType(this.fundingTypeControl.value);
+    if (!fundType) {
       return false;
     }
+    const isPrivateIn = fundType.sponsorship_type_name.toLocaleLowerCase() === 'private insurance';
+    if (isPrivateIn) {
+      this.memberIDControl.setValidators(Validators.required);
+      // this.policyControl.setValidators(Validators.required);
+      this.staffIDControl.clearValidators();
+      this.staffIDControl.reset();
+      this.staffNameControl.clearValidators();
+      this.staffNameControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
+    }
+    return isPrivateIn;
+  }
+
+  get isGovernmentInsurance(): boolean {
+    const fundType = this.getSelectedFundingType(this.fundingTypeControl.value);
+    if (!fundType) {
+      return false;
+    }
+    const isGovIn = fundType.sponsorship_type_name.toLocaleLowerCase() === 'government insurance';
+    if (isGovIn) {
+      this.memberIDControl.setValidators(Validators.required);
+      this.cardSerialControl.setValidators(Validators.required);
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
+      this.staffNameControl.clearValidators();
+      this.staffNameControl.reset();
+      this.staffIDControl.reset();
+      this.staffIDControl.clearValidators();
+      return true;
+    }
+    return isGovIn;
+  }
+
+  get isCash(): boolean {
+    const fundType = this.getSelectedFundingType(this.fundingTypeControl.value);
+    if (!fundType) {
+      return false;
+    }
+    const isCash = fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
+    if (isCash) {
+      this.staffIDControl.setValidators(Validators.required);
+      this.staffNameControl.setValidators(Validators.required);
+    }
+    return isCash;
   }
 
   get companyControl(): FormControl {
     return this.sponsorForm.get('company') as FormControl;
   }
 
+  get staffNameControl(): FormControl {
+    return this.sponsorForm.get('staffName') as FormControl;
+  }
+
   get cardSerialControl(): FormControl {
     return this.sponsorForm.get('cardSerialNumber') as FormControl;
+  }
+
+  get issueDateControl(): FormControl {
+    return this.sponsorForm.get('issuedDate') as FormControl;
+  }
+
+  get expiryDateControl(): FormControl {
+    return this.sponsorForm.get('expiryDate') as FormControl;
   }
 
   get staffIDControl(): FormControl {
     return this.sponsorForm.get('staffId') as FormControl;
   }
+
   get memberIDControl(): FormControl {
     return this.sponsorForm.get('memberId') as FormControl;
   }
@@ -153,7 +251,46 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     return this.sponsorForm.get('relation') as FormControl;
   }
 
-  getSelectedFundingType(value: number) {
+  private getFundingTypes() {
+    this.setupService.getFundingTypes()
+      .pipe(first())
+      .subscribe(data => {
+        this.isLoadingFundingTypes = false;
+        this.fundingTypes = data.data;
+      }, error => {
+        this.isLoadingFundingTypes = false;
+        console.log(error);
+      });
+  }
+
+  private getPolicies(sponsorId: number) {
+    this.setupService.getSponsorPolicies(sponsorId)
+      .pipe(first())
+      .subscribe(data => {
+        this.isLoadingFundingTypes = false;
+        this.policies = data.data;
+      }, error => {
+        this.isLoadingFundingTypes = false;
+        this.policies = [];
+      });
+  }
+
+  private getRelationsips() {
+    this.setupService.getRelationships()
+      .pipe(first())
+      .subscribe(data => {
+        this.isLoadingRelation = false;
+        this.relationships = data.data;
+      }, error => {
+        this.isLoadingRelation = false;
+      });
+  }
+
+  public handleAddressChange(address: Address) {
+    this.googleAddress = address.url;
+  }
+
+  private getSelectedFundingType(value: number) {
     const fundType = this.fundingTypes.find(ft => ft.id === value);
     if (!fundType) {
       return null;
@@ -161,7 +298,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     return fundType;
   }
 
-  getSponsors(sponsor_type_id: number) {
+  private getSponsors(sponsor_type_id: number) {
     this.isLoadingFundingTypes = true;
     this.setupService.getSponsorsByType(sponsor_type_id).pipe(first())
       .subscribe(data => {
@@ -174,7 +311,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
       });
   }
 
-  getPatient(folderNo: string) {
+  private getPatient(folderNo: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
     this.recordService.getAllPatients(`/single?folder_no=${folderNo}`).pipe(first())
@@ -193,12 +330,69 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
       });
   }
 
-  calculateAge(birthday: string) {
+  private calculateAge(birthday: string) {
     const ageDifMs = Date.now() - new Date(birthday).getTime();
     const ageDate = new Date(ageDifMs);
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
+  handleCancel() {
+    this.isVisible = false;
+  }
+
+  createCompany() {
+    this.isCreatingCompany = true;
+    this.setupService
+      .createCompany(`${this.companyForm.get('name').value}`, `${this.companyForm.get('phone').value}`,
+        `${this.companyForm.get('email').value}`, `${this.googleAddress}`)
+      .pipe(first())
+      .subscribe(
+        success => {
+          this.isCreatingCompany = false;
+          if (success) {
+            this.notification.success(
+              'Success',
+              `Successfully created ${this.companyForm.get('name').value}`
+            );
+            this.getCompanies();
+            this.companyForm.reset();
+            this.isVisible = false;
+          } else {
+            this.notification.error(
+              'Error',
+              `Could not create ${this.companyForm.get('name').value}`
+            );
+          }
+        },
+        error => {
+          this.isCreatingCompany = false;
+          console.log(error);
+          this.notification.error(
+            'Error',
+            `Could not create ${this.companyForm.get('name').value}`
+          );
+        }
+      );
+  }
+
+  private getCompanies() {
+    this.setupService
+      .getCompanies()
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.companies = data.data;
+          this.isCompaniesLoading = false;
+        },
+        error => {
+          this.isCompaniesLoading = false;
+        }
+      );
+  }
+
+  showModal() {
+    this.isVisible = true;
+  }
 
   cancel() {
     this.patient = null;
@@ -207,237 +401,62 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   addSponsor() {
+    this.isCreatingSponsor = true;
+    const data = this.processData();
+    this.recordService.addSponsorPermit(data).pipe(first())
+      .subscribe(res => {
+        this.isCreatingSponsor = false;
+        this.sponsorForm.reset();
+        this.searchControl.reset();
+        this.patient = null;
+        this.searchInitialized = false;
+        this.notification.success(
+          'Success',
+          `Sponsor permit has been added to ${this.patient.folder_no}`
+        );
+      }, e => {
+        this.isCreatingSponsor = false;
+        this.notification.error(
+          'Error',
+          `Could not add sponsor permit to ${this.patient.folder_no}`
+        );
+        console.error(e);
+      });
+  }
+
+  private processData() {
+    return {
+      patient_id: this.patient.id as number,
+      billing_sponsor_id: this.sponsorNameControl.value as number,
+      // sponsorship_policy_id: 6,
+      priority: 1,
+      member_id: this.memberIDControl.value,
+      card_serial_no: this.cardSerialControl.value,
+      company_id: this.companyControl.value as number,
+      staff_name: this.staffNameControl.value,
+      staff_id: this.staffIDControl.value,
+      benefit_type: this.beneficiaryControl.value,
+      relation_id: this.relationControl.value,
+      issued_date: this.formatDate(this.issueDateControl.value as Date),
+      expiry_date: this.formatDate(this.expiryDateControl.value as Date),
+    };
+  }
+
+  private formatDate(date: Date): string {
+    if (!date) {
+      return null;
+    }
+    let month = '' + (date.getMonth() + 1);
+    let day = '' + date.getDate();
+    const year = date.getFullYear();
+
+    if (month.length < 2) {
+      month = '0' + month;
+    }
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
   }
 }
-
-/*
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { first, retry, debounceTime, take } from 'rxjs/operators';
-import { SetupService } from 'src/app/shared/services/setup.service';
-import { BehaviorSubject } from 'rxjs';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { RecordService } from '../record.service';
-
-@Component({
-  selector: 'app-request-consultation',
-  templateUrl: './request-consultation.component.html',
-  styleUrls: ['./request-consultation.component.scss']
-})
-export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDestroy {
-
-  requestForm: FormGroup = this.fb.group({
-    folderNumber: this.fb.control('A0000001/20', [Validators.required, Validators.minLength(11), Validators.maxLength(12)]),
-    fullName: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    age: this.fb.control({ value: 0, disabled: true }, [Validators.required]),
-    gender: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    status: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    fundingType: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    sponsorName: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    attendanceDate: this.fb.control(new Date(), [Validators.required]),
-    clinic: this.fb.control(null, [Validators.required]),
-    consultationService: this.fb.control(null, [Validators.required]),
-    orderType: this.fb.control('INTERNAL', [Validators.required]),
-    billed: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    memberId: this.fb.control({ value: null, disabled: true }),
-    staffId: this.fb.control({ value: null, disabled: true }),
-    cardStatus: this.fb.control({ value: null, disabled: true }),
-    ccc: this.fb.control({ value: null, disabled: true }, [Validators.minLength(5), Validators.maxLength(5)]),
-    qty: this.fb.control({ value: 1, disabled: true }, [Validators.required, Validators.min(1)]),
-    fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required]),
-  });
-
-  clinicsloading = new BehaviorSubject(false);
-  servicesLoading = new BehaviorSubject(false);
-  isLoadingData = false;
-  searchInitialized = false;
-
-  clinics = [];
-  services = [];
-  patient: any;
-  message = 'Please enter a valid folder number to fill this form.';
-
-  formatterAge = (value: number) => `${value} yrs`;
-  parserAge = (value: string) => value.replace('yrs', '');
-
-  formatFee = (value: number) => `GHC ${value}`;
-  parseFee = (value: string) => value.replace('GHC', '');
-
-  formatService = (value: number) => `${value} Svcs`;
-  parseService = (value: string) => value.replace('Svcs', '');
-
-  constructor(private readonly fb: FormBuilder,
-    private recordService: RecordService,
-    private setup: SetupService) {
-  }
-
-  ngOnInit() {
-  }
-
-  ngAfterViewInit() {
-    this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
-      .subscribe(folderNo => {
-        if (folderNo && this.folderNoControl.valid) {
-          this.getPatient(folderNo);
-        } else {
-          this.message = 'Please enter a valid folder number to fill this form.';
-          this.searchInitialized = false;
-        }
-      });
-
-    this.clinicControl.valueChanges.pipe(untilComponentDestroyed(this))
-      .subscribe((value: number) => {
-        this.getClinicServices(value);
-      });
-
-    this.serviceControl.valueChanges.pipe(untilComponentDestroyed(this))
-      .subscribe((value: number) => {
-        // display price of the selected service
-        const service = this.services.find(s => s.id === value);
-        this.feeControl.patchValue(service.price);
-      });
-  }
-
-  ngOnDestroy() {
-
-  }
-
-  get folderNoControl(): FormControl {
-    return this.requestForm.get('folderNumber') as FormControl;
-  }
-
-  get feeControl(): FormControl {
-    return this.requestForm.get('fee') as FormControl;
-  }
-
-  get qtyControl(): FormControl {
-    return this.requestForm.get('qty') as FormControl;
-  }
-
-  get clinicControl(): FormControl {
-    return this.requestForm.get('clinic') as FormControl;
-  }
-
-  get serviceControl(): FormControl {
-    return this.requestForm.get('consultationService') as FormControl;
-  }
-
-  get billedControl(): FormControl {
-    return this.requestForm.get('billed') as FormControl;
-  }
-
-  get isFolderAvailable(): boolean {
-    return this.folderNoControl.valid && this.patient;
-  }
-
-  get ageControl(): FormControl {
-    return this.requestForm.get('age') as FormControl;
-  }
-
-  get fullNameControl(): FormControl {
-    return this.requestForm.get('fullName') as FormControl;
-  }
-
-  get genderControl(): FormControl {
-    return this.requestForm.get('gender') as FormControl;
-  }
-
-  get statusControl(): FormControl {
-    return this.requestForm.get('status') as FormControl;
-  }
-
-  get fundingTypeControl(): FormControl {
-    return this.requestForm.get('fundingType') as FormControl;
-  }
-
-  get memberIdControl(): FormControl {
-    return this.requestForm.get('memberId') as FormControl;
-  }
-
-  get cccControl(): FormControl {
-    return this.requestForm.get('ccc') as FormControl;
-  }
-
-  get staffIdControl(): FormControl {
-    return this.requestForm.get('staffId') as FormControl;
-  }
-
-  get sponsorNameControl(): FormControl {
-    return this.requestForm.get('sponsorName') as FormControl;
-  }
-
-  get attendanceDateControl(): FormControl {
-    return this.requestForm.get('attendanceDate') as FormControl;
-  }
-
-  get cardStatusControl(): FormControl {
-    return this.requestForm.get('cardStatus') as FormControl;
-  }
-
-  get isCash(): boolean {
-    const fundType = this.fundingTypeControl.value as string;
-    if (!fundType) {
-      return false;
-    }
-    return fundType.toLocaleLowerCase().includes('cash') || fundType.toLocaleLowerCase().includes('prepaid');
-  }
-
-  get isCoporateInsured(): boolean {
-    const fundType = this.fundingTypeControl.value as string;
-    if (!fundType) {
-      return false;
-    }
-    if (fundType.toLocaleLowerCase().includes('company') || fundType.toLocaleLowerCase().includes('insurance')) {
-      this.billedControl.setValidators(Validators.required);
-      this.staffIdControl.setValidators(Validators.required);
-      this.staffIdControl.enable();
-      this.cardStatusControl.enable();
-      this.cardStatusControl.setValidators(Validators.required);
-      this.memberIdControl.clearValidators();
-      this.memberIdControl.reset();
-      this.memberIdControl.disable();
-      this.cccControl.clearValidators();
-      this.cccControl.disable();
-      this.cccControl.reset();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  get isInsurance(): boolean {
-    const fundType = this.fundingTypeControl.value as string;
-    if (!fundType) {
-      return false;
-    }
-    if (fundType.toLocaleLowerCase().includes('nhis')) {
-      this.cardStatusControl.enable();
-      this.cardStatusControl.setValidators(Validators.required);
-      this.memberIdControl.setValidators(Validators.required);
-      this.memberIdControl.enable();
-      this.cccControl.setValidators(Validators.required);
-      this.cccControl.enable();
-      this.staffIdControl.clearValidators();
-      this.staffIdControl.reset();
-      this.staffIdControl.disable();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  cancel(): void {
-    this.patient = null;
-    this.searchInitialized = false;
-    this.requestForm.reset();
-  }
-
-  done(): void {
-    this.submitForm();
-  }
-
-  submitForm() {
-    // todo get data from form and submit .
-  }
-}
- */

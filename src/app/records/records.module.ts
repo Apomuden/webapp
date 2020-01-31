@@ -10,6 +10,8 @@ import { RecordsService } from './records.service';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
 import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-permit.component';
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
+import { NzNotificationModule } from 'ng-zorro-antd';
 
 
 @NgModule({
@@ -25,6 +27,8 @@ import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-per
     CommonModule,
     RecordsRoutingModule,
     SharedModule,
+    NzNotificationModule,
+    GooglePlaceModule,
   ],
   providers: [RecordsService]
 })
