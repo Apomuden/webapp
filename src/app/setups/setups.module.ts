@@ -37,6 +37,14 @@ import { CompanySetupComponent } from './pages/company-setup/company-setup.compo
 import { SpecialitySetupComponent } from './pages/speciality-setup/speciality-setup.component';
 import { FormsModule } from '@angular/forms';
 import { MedicalSponsorSetupComponent } from './pages/medical-sponsor-setup/medical-sponsor-setup.component';
+import { RecordComponent } from './categories/record/record.component';
+import { AccountComponent } from './categories/account/account.component';
+import { InpatientComponent } from './categories/inpatient/inpatient.component';
+import { LaboratoryComponent } from './categories/laboratory/laboratory.component';
+import { EisuComponent } from './categories/eisu/eisu.component';
+import { OtherComponent } from './categories/other/other.component';
+import { ClinicComponent } from './pages/clinic/clinic.component';
+import { ServicePricingSetupComponent } from './pages/service-pricing-setup/service-pricing-setup.component';
 
 @NgModule({
   declarations: [
@@ -71,7 +79,15 @@ import { MedicalSponsorSetupComponent } from './pages/medical-sponsor-setup/medi
     CountrySetupComponent,
     CompanySetupComponent,
     SpecialitySetupComponent,
-    MedicalSponsorSetupComponent
+    MedicalSponsorSetupComponent,
+    RecordComponent,
+    AccountComponent,
+    InpatientComponent,
+    LaboratoryComponent,
+    EisuComponent,
+    OtherComponent,
+    ClinicComponent,
+    ServicePricingSetupComponent
   ],
   imports: [
     CommonModule,

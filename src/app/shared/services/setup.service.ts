@@ -40,6 +40,7 @@ const DISTRICT_API_URL = environment.apiBaseUrl + '/setups/districts';
 const STAFF_TYPE_API_URL = environment.apiBaseUrl + '/setups/stafftypes';
 const SPECIALITY_API_URL = environment.apiBaseUrl + '/setups/specialties';
 const RELATIONSHIP_API_URL = environment.apiBaseUrl + '/setups/relationships';
+const CLINICS_API_URL = environment.apiBaseUrl + '/setups/clinics';
 const RELIGION_API_URL = environment.apiBaseUrl + '/setups/religions';
 const SERVICE_CATEGORY_API_URL =
   environment.apiBaseUrl + '/setups/servicecategories';
@@ -83,6 +84,7 @@ export class SetupService {
   private companies;
   private accreditations;
   private medicalSponsors;
+  private clinics;
 
   constructor(private http: HttpClient) { }
 
@@ -137,6 +139,37 @@ export class SetupService {
         })
       );
   }
+
+
+  createClinic(fields: object) {
+    return this.http
+      .post<any>(CLINICS_API_URL, fields)
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+  getClinics() {
+    return this.http.get<any>(CLINICS_API_URL).pipe(
+      map(
+        res => {
+          if (res) {
+            this.clinics = res;
+            for (let i = 0; i < this.clinics.data.length; i++) {
+              this.clinics.data[i].isActivated =
+                this.clinics.data[i].status === 'ACTIVE' ? true : false;
+            }
+          }
+          return this.clinics;
+        }
+      )
+    )
+  }
+
   getDepartments() {
     return this.http.get<any>(DEPARTMENTS_API_URL).pipe(
       map(res => {

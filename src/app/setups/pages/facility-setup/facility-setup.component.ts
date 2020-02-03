@@ -16,8 +16,8 @@ export class FacilitySetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
-  initLoading = true; // bug
+  ) { }
+  initLoading = true;
   loadingMore = false;
   isCreatingFacility = new BehaviorSubject(false);
   regionsLoading = new BehaviorSubject(false);
