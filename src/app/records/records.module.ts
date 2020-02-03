@@ -9,6 +9,7 @@ import { AllFoldersComponent } from './all-folders/all-folders.component';
 import { RecordsService } from './records.service';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
+import { RecordsReportComponent } from './records-report/records-report.component';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { AddPatientComponent } from './add-patient/add-patient.component';
     ViewFolderComponent,
     AddPatientComponent,
     RegisterPatientComponent,
-    SearchPatientComponent
+    SearchPatientComponent,
+    RecordsReportComponent
   ],
   imports: [
     CommonModule,
