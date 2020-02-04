@@ -5,6 +5,7 @@ import { SetupService } from 'src/app/shared/services/setup.service';
 import { BehaviorSubject } from 'rxjs';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from '../record.service';
+import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-request-consultation',
@@ -14,21 +15,12 @@ import { RecordService } from '../record.service';
 export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDestroy {
 
   requestForm: FormGroup = this.fb.group({
-    folderNumber: this.fb.control('A0000001/20', [Validators.required, Validators.minLength(11), Validators.maxLength(12)]),
-    fullName: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    age: this.fb.control({ value: 0, disabled: true }, [Validators.required]),
-    gender: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    status: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    fundingType: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    sponsorName: this.fb.control({ value: null, disabled: true }, [Validators.required]),
+    folderNumber: this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]),
     attendanceDate: this.fb.control(new Date(), [Validators.required]),
     clinic: this.fb.control(null, [Validators.required]),
     consultationService: this.fb.control(null, [Validators.required]),
     orderType: this.fb.control('INTERNAL', [Validators.required]),
-    billed: this.fb.control({ value: null, disabled: true }, [Validators.required]),
-    memberId: this.fb.control({ value: null, disabled: true }),
-    staffId: this.fb.control({ value: null, disabled: true }),
-    cardStatus: this.fb.control({ value: null, disabled: true }),
+    billed: this.fb.control(0, [Validators.required]),
     ccc: this.fb.control({ value: null, disabled: true }, [Validators.minLength(5), Validators.maxLength(5)]),
     qty: this.fb.control({ value: 1, disabled: true }, [Validators.required, Validators.min(1)]),
     fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required]),
@@ -38,14 +30,14 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   servicesLoading = new BehaviorSubject(false);
   isLoadingData = false;
   searchInitialized = false;
+  requesting = false;
 
   clinics = [];
+  sponsorPermits = [];
   services = [];
   patient: any;
   message = 'Please enter a valid folder number to fill this form.';
-
-  formatterAge = (value: number) => `${value} yrs`;
-  parserAge = (value: string) => value.replace('yrs', '');
+  permit: any;
 
   formatFee = (value: number) => `GHC ${value}`;
   parseFee = (value: string) => value.replace('GHC', '');
@@ -55,6 +47,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   constructor(private readonly fb: FormBuilder,
     private recordService: RecordService,
+    private notificationS: NzNotificationService,
     private setup: SetupService) {
   }
 
@@ -80,14 +73,16 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     this.serviceControl.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe((value: number) => {
         // display price of the selected service
-        const service = this.services.find(s => s.id === value);
-        this.feeControl.patchValue(service.price);
+        if (value) {
+          const service = this.services.find(s => s.id === value);
+          if (service) {
+            this.feeControl.patchValue(service.price);
+          }
+        }
       });
   }
 
-  ngOnDestroy() {
-
-  }
+  ngOnDestroy() { }
 
   get folderNoControl(): FormControl {
     return this.requestForm.get('folderNumber') as FormControl;
@@ -113,104 +108,43 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     return this.requestForm.get('billed') as FormControl;
   }
 
-  get isFolderAvailable(): boolean {
-    return this.folderNoControl.valid && this.patient;
-  }
-
-  get ageControl(): FormControl {
-    return this.requestForm.get('age') as FormControl;
-  }
-
-  get fullNameControl(): FormControl {
-    return this.requestForm.get('fullName') as FormControl;
-  }
-
-  get genderControl(): FormControl {
-    return this.requestForm.get('gender') as FormControl;
-  }
-
-  get statusControl(): FormControl {
-    return this.requestForm.get('status') as FormControl;
-  }
-
-  get fundingTypeControl(): FormControl {
-    return this.requestForm.get('fundingType') as FormControl;
-  }
-
-  get memberIdControl(): FormControl {
-    return this.requestForm.get('memberId') as FormControl;
-  }
-
   get cccControl(): FormControl {
     return this.requestForm.get('ccc') as FormControl;
-  }
-
-  get staffIdControl(): FormControl {
-    return this.requestForm.get('staffId') as FormControl;
-  }
-
-  get sponsorNameControl(): FormControl {
-    return this.requestForm.get('sponsorName') as FormControl;
   }
 
   get attendanceDateControl(): FormControl {
     return this.requestForm.get('attendanceDate') as FormControl;
   }
 
-  get cardStatusControl(): FormControl {
-    return this.requestForm.get('cardStatus') as FormControl;
-  }
-
-  get isCash(): boolean {
-    const fundType = this.fundingTypeControl.value as string;
-    if (!fundType) {
-      return false;
-    }
-    return fundType.toLocaleLowerCase().includes('cash') || fundType.toLocaleLowerCase().includes('prepaid');
-  }
-
-  get isCoporateInsured(): boolean {
-    const fundType = this.fundingTypeControl.value as string;
-    if (!fundType) {
-      return false;
-    }
-    if (fundType.toLocaleLowerCase().includes('company') || fundType.toLocaleLowerCase().includes('insurance')) {
-      this.billedControl.setValidators(Validators.required);
-      this.staffIdControl.setValidators(Validators.required);
-      this.staffIdControl.enable();
-      this.cardStatusControl.enable();
-      this.cardStatusControl.setValidators(Validators.required);
-      this.memberIdControl.clearValidators();
-      this.memberIdControl.reset();
-      this.memberIdControl.disable();
-      this.cccControl.clearValidators();
+  get isInsurance(): boolean {
+    const id = this.billedControl.value as number;
+    const sponsorPermit = this.getSelectedSponsorPermit(id); // TODO: change to the billed sponsor value
+    if (!sponsorPermit) {
       this.cccControl.disable();
       this.cccControl.reset();
+      this.cccControl.clearValidators();
+      return false;
+    }
+    const sponsorType = sponsorPermit.billing_sponsor.sponsorship_type_name;
+    if (sponsorType.toLocaleLowerCase() === 'government insurance') {
+      this.cccControl.setValidators([Validators.required, Validators.minLength(5), Validators.maxLength(5)]);
+      this.cccControl.enable();
       return true;
     } else {
+      this.cccControl.disable();
+      this.cccControl.reset();
+      this.cccControl.clearValidators();
       return false;
     }
   }
 
-  get isInsurance(): boolean {
-    const fundType = this.fundingTypeControl.value as string;
-    if (!fundType) {
-      return false;
+  private getSelectedSponsorPermit(value: number) {
+    const permit = this.sponsorPermits.find(sp => sp.id === value);
+    this.permit = permit;
+    if (!permit) {
+      return null;
     }
-    if (fundType.toLocaleLowerCase().includes('nhis')) {
-      this.cardStatusControl.enable();
-      this.cardStatusControl.setValidators(Validators.required);
-      this.memberIdControl.setValidators(Validators.required);
-      this.memberIdControl.enable();
-      this.cccControl.setValidators(Validators.required);
-      this.cccControl.enable();
-      this.staffIdControl.clearValidators();
-      this.staffIdControl.reset();
-      this.staffIdControl.disable();
-      return true;
-    } else {
-      return false;
-    }
+    return permit;
   }
 
   getPatient(folderNo: string) {
@@ -222,6 +156,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
         if (data.data) {
           this.patient = data.data;
           this.appendToForm();
+          this.getPatientSponsorPermits(this.patient.id);
           this.getClinics();
         } else {
           this.message = 'Folder not found';
@@ -230,6 +165,33 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       }, e => {
         this.message = 'Folder not found';
         this.searchInitialized = false;
+      });
+  }
+
+  getPatientSponsorPermits(id: number) {
+    this.recordService.getPatientSponsors(id)
+      .pipe(first()).subscribe(res => {
+        if (res && res.data) {
+          this.sponsorPermits.push({
+            billing_sponsor_name: 'Patient',
+            id: 0,
+            card_serial_no: null,
+            member_id: null,
+            staff_id: null,
+            billing_sponsor: {
+              sponsorship_type_name: 'Patient'
+            }
+          }, ...res.data);
+        } else {
+          this.sponsorPermits.push({
+            billing_sponsor_name: 'Patient',
+            id: 0,
+            billing_sponsor: {
+              sponsorship_type_name: 'Patient'
+            }
+          });
+        }
+      }, error => {
       });
   }
 
@@ -255,15 +217,16 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       });
   }
 
+  compareFn(c1: any, c2: any): boolean {
+    return c1 === c2;
+  }
+
   appendToForm() {
     const age = this.calculateAge(this.patient.dob);
     this.patient.age = age;
-    this.ageControl.patchValue(age);
-    this.fullNameControl.patchValue(`${this.patient.firstname} ${this.patient.middlename} ${this.patient.surname}`);
-    this.genderControl.patchValue(this.patient.gender);
-    this.statusControl.patchValue(this.patient.reg_status);
-    this.fundingTypeControl.patchValue(this.patient.funding_type_name);
-    this.sponsorNameControl.patchValue(this.patient.sponsorship_type_name);
+    if (this.patient.sponsorship_type_name !== 'Patient') {
+      this.billedControl.reset();
+    }
   }
 
   calculateAge(birthday: string) {
@@ -274,6 +237,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   cancel(): void {
     this.patient = null;
+    this.sponsorPermits = [];
     this.searchInitialized = false;
     this.requestForm.reset();
   }
@@ -283,6 +247,59 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   submitForm() {
-    // todo get data from form and submit .
+    this.requesting = true;
+    const data = this.processData();
+    console.log(data);
+    this.recordService.requestConsultation(data)
+      .subscribe(res => {
+        this.requesting = false;
+        this.notificationS.success('Success',
+          `Successfully requested consultation for ${this.patient.folder_no}`);
+        this.cancel();
+        console.log(res);
+      }, error => {
+        this.requesting = false;
+        this.notificationS.error('Oops',
+          `Failed to request consultation for ${this.patient.folder_no}`);
+        console.log(error);
+      });
+  }
+
+  processData() {
+    return {
+      order_type: this.requestForm.get('orderType').value as string,
+      service_quantity: this.qtyControl.value as number,
+      service_fee: this.feeControl.value,
+      age: this.patient.age,
+      patient_id: this.patient.id,
+      consultation_service_id: this.serviceControl.value as number,
+      funding_type_id: this.patient.funding_type_id,
+      sponsorship_type: this.permit.billing_sponsor.sponsorship_type_name,
+      ccc: this.cccControl.value,
+      patient_status: this.patient.reg_status,
+      billing_sponsor_id: (this.billedControl.value === 0) ? null : this.billedControl.value,
+      attendance_date: this.formatDate(this.attendanceDateControl.value),
+      card_serial_no: this.permit.card_serial_no,
+      member_id: this.permit.member_id,
+      staff_id: this.permit.staff_id,
+    };
+  }
+
+  formatDate(date: Date): string {
+    if (!date) {
+      return null;
+    }
+    let month = '' + (date.getMonth() + 1);
+    let day = '' + date.getDate();
+    const year = date.getFullYear();
+
+    if (month.length < 2) {
+      month = '0' + month;
+    }
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+
+    return [year, month, day].join('-');
   }
 }

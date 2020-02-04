@@ -9,6 +9,7 @@ import { RecordsService } from './records.service';
 import { AllFoldersComponent } from './all-folders/all-folders.component';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
+import { NzNotificationModule } from 'ng-zorro-antd';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { AddPatientComponent } from './add-patient/add-patient.component';
     CommonModule,
     RecordsRoutingModule,
     SharedModule,
+    NzNotificationModule,
   ],
   providers: [RecordsService]
 })
