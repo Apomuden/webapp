@@ -65,7 +65,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   ngAfterViewInit() {
     this.searchControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
       .subscribe(folderNo => {
-        if (folderNo) {
+        if (folderNo && this.searchControl.valid) {
           this.getPatient(folderNo);
           this.getFundingTypes();
           this.getRelationsips();
@@ -319,6 +319,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         this.isLoadingData = false;
         if (data.data) {
           this.patient = data.data;
+          console.log(this.patient.id, 'patient id');
           this.patient.age = this.calculateAge(this.patient.dob);
         } else {
           this.message = 'Folder not found';
@@ -405,15 +406,15 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     const data = this.processData();
     this.recordService.addSponsorPermit(data).pipe(first())
       .subscribe(res => {
+        this.notification.success(
+          'Success',
+          `Sponsor permit has been added to ${this.patient.folder_no}`
+        );
         this.isCreatingSponsor = false;
         this.sponsorForm.reset();
         this.searchControl.reset();
         this.patient = null;
         this.searchInitialized = false;
-        this.notification.success(
-          'Success',
-          `Sponsor permit has been added to ${this.patient.folder_no}`
-        );
       }, e => {
         this.isCreatingSponsor = false;
         this.notification.error(
