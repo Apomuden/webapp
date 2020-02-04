@@ -10,6 +10,8 @@ import { AllFoldersComponent } from './all-folders/all-folders.component';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
 import { NzNotificationModule } from 'ng-zorro-antd';
+import { RecordsReportComponent } from './records-report/records-report.component';
+
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { NzNotificationModule } from 'ng-zorro-antd';
     AddPatientComponent,
     RegisterPatientComponent,
     SearchPatientComponent,
-    RequestConsultationComponent],
+    RequestConsultationComponent,
+    RecordsReportComponent
+  ],
   imports: [
     CommonModule,
     RecordsRoutingModule,

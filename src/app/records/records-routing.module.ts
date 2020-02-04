@@ -1,3 +1,4 @@
+import { RecordsReportComponent } from './records-report/records-report.component';
 import { SearchPatientComponent } from './search-patient/search-patient.component';
 import { RegisterPatientComponent } from './register-patient/register-patient.component';
 import { AuthGuard } from '../shared/guard/auth.guard';
@@ -58,6 +59,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       title: 'Request Consultation'
+    }
+  }, {
+    path: 'records-report',
+    component: RecordsReportComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Reports'
     }
   }
 ];
