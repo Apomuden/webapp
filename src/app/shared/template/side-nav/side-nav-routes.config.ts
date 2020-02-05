@@ -113,7 +113,7 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '',
+        path: '/records/request-consultation',
         title: 'Request Consultation',
         iconType: '',
         icon: '',
@@ -147,13 +147,4 @@ export const ROUTES: SideNavInterface[] = [
       }
     ]
   }
-  // ,
-  // {
-  //   path: "",
-  //   title: "Settings",
-  //   iconType: "nzIcon",
-  //   iconTheme: "outline",
-  //   icon: "setting",
-  //   submenu: []
-  // }
 ];

@@ -1096,6 +1096,27 @@ export class SetupService {
       })
     );
   }
+
+  getClinics() {
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinics`)
+      .pipe(map(data => {
+        if (!data) {
+          return { data: [] };
+        }
+        return data;
+      }));
+  }
+
+  getServicesByClinic(clinicId: number) {
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/consultationservices?clinic_id=${clinicId}`)
+      .pipe(map(data => {
+        if (!data) {
+          return { data: [] };
+        }
+        return data;
+      }));
+  }
+
   getMedicalSponsors() {
     return this.http.get<any>(MEDICAL_SPONSOR_API_URL).pipe(
       map(res => {
