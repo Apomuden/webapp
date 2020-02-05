@@ -144,6 +144,15 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       }
+      ,
+      {
+        path: '/records/records-report',
+        title: 'Reports',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      }
     ]
   }
   // ,

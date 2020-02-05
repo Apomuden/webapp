@@ -12,6 +12,7 @@ import { AddPatientComponent } from './add-patient/add-patient.component';
 import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-permit.component';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { NzNotificationModule } from 'ng-zorro-antd';
+import { RecordsReportComponent } from './records-report/records-report.component';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { NzNotificationModule } from 'ng-zorro-antd';
     RegisterPatientComponent,
     SearchPatientComponent,
     SponsorshipPermitComponent,
+    RecordsReportComponent
   ],
   imports: [
     CommonModule,

@@ -1,0 +1,129 @@
+<nz-row>
+  <nz-col nzSpan="24">
+    <nz-card>
+      <div style="text-align: right;">
+        <h1>Port Medical Center</h1>
+
+        <h6>Tema, Community one</h6>
+        <h6>Reg no: 238876</h6>
+        <h6>+233242767876</h6>
+      </div>
+
+      <form nz-form [nzLayout]="'inline'">
+        <nz-form-item>
+          <nz-form-label nzFor="dateRange">Date Range</nz-form-label>
+          <nz-form-control>
+            <nz-range-picker id="dateRange"></nz-range-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <button nz-button nzType="primary">Generate Report</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-card>
+  </nz-col>
+
+
+</nz-row>
+
+<nz-tabset>
+  <nz-tab nzTitle="Patients Report">
+    <div style="text-align: right;">
+      <button nz-button nzType="primary"><i nz-icon nzType="printer" nzTheme="outline"></i>Print</button>
+    </div>
+    <form nz-form [nzLayout]="'inline'">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzPlaceHolder="Gender">
+            <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+            <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzPlaceHolder="Param2">
+            <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+            <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzPlaceHolder="Param3">
+            <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+            <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+
+    <nz-card>
+      <nz-table #basicTable>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Patient No.</th>
+            <th>Folder No.</th>
+            <th>Old folder No.</th>
+            <th>Gender</th>
+            <th>createdAt</th>
+          </tr>
+        </thead>
+        <tbody>
+
+
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-tab>
+  <nz-tab nzTitle="Attendance Report">
+    <div style="text-align: right;">
+      <button nz-button nzType="primary"><i nz-icon nzType="printer" nzTheme="outline"></i>Print</button>
+    </div>
+    <form nz-form [nzLayout]="'inline'">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzPlaceHolder="Gender">
+            <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+            <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzPlaceHolder="Param2">
+            <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+            <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-select nzPlaceHolder="Param3">
+            <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+            <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+    <nz-card>
+      <nz-table #basicTable>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Patient No.</th>
+            <th>Folder No.</th>
+            <th>Old folder No.</th>
+            <th>Gender</th>
+            <th>createdAt</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </nz-table>
+    </nz-card>
+  </nz-tab>
+</nz-tabset>
