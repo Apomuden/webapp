@@ -31,9 +31,9 @@ export const CommonLayout_ROUTES: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: "records",
+    path: 'records',
     loadChildren: () =>
-      import("../../records/records.module").then(
+      import('../../records/records.module').then(
         m => m.RecordsModule
       ),
     canActivate: [AuthGuard]

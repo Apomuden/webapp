@@ -1,16 +1,80 @@
+import { WalkinRegistrationComponent } from './walkin-registration/walkin-registration.component';
+import { RecordsReportComponent } from './records-report/records-report.component';
+import { SearchPatientComponent } from './search-patient/search-patient.component';
+import { RegisterPatientComponent } from './register-patient/register-patient.component';
 import { AuthGuard } from '../shared/guard/auth.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RegisterPatientComponent } from './register-patient/register-patient.component';
-import { WalkinRegistrationComponent } from './walkin-registration/walkin-registration.component';
+import { RequestConsultationComponent } from './request-consultation/request-consultation.component';
+import { FullLayoutComponent } from '../layouts/full-layout/full-layout.component';
+import { AllFoldersComponent } from './all-folders/all-folders.component';
+import { ViewFolderComponent } from './view-folder/view-folder.component';
+import { AddPatientComponent } from './add-patient/add-patient.component';
+import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-permit.component';
 
 const routes: Routes = [
+  {
+    path: 'folders',
+    component: FullLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'all',
+        component: AllFoldersComponent,
+        data: { title: 'All' }
+      },
+      {
+        path: 'view',
+        component: FullLayoutComponent,
+        data: { title: 'View' },
+        children: [
+          { path: ':id', component: ViewFolderComponent },
+          {
+            path: ':id/add-patient',
+            component: AddPatientComponent,
+            data: { title: 'Add Patient' }
+          }
+        ]
+      }
+    ],
+    data: { title: 'Folders' }
+  },
   {
     path: 'register-patient',
     component: RegisterPatientComponent,
     canActivate: [AuthGuard],
     data: {
       title: 'Register New Patient'
+    }
+  },
+  {
+    path: 'search-patient',
+    component: SearchPatientComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Search Patient'
+    },
+  }, {
+    path: 'sponsorship-permit',
+    component: SponsorshipPermitComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Sponsorship Permit'
+    }
+  },
+  {
+    path: 'request-consultation',
+    component: RequestConsultationComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Request Consultation'
+    }
+  }, {
+    path: 'records-report',
+    component: RecordsReportComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Reports'
     }
   }, {
     path: 'walkin-registration',

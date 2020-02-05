@@ -35,11 +35,15 @@ const HOSPITAL_SERVICE_API_URL =
   environment.apiBaseUrl + '/setups/hospitalservices';
 
 const LANGUAGE_API_URL = environment.apiBaseUrl + '/setups/languages';
+const MEDICAL_SPONSOR_API_URL = environment.apiBaseUrl + '/setups/billingsponsors';
+const POLICY_API_URL = `${environment.apiBaseUrl}/setups/sponsorpolicies`;
 const DISTRICT_API_URL = environment.apiBaseUrl + '/setups/districts';
 const STAFF_TYPE_API_URL = environment.apiBaseUrl + '/setups/stafftypes';
 const SPECIALITY_API_URL = environment.apiBaseUrl + '/setups/specialties';
 const RELATIONSHIP_API_URL = environment.apiBaseUrl + '/setups/relationships';
+const CLINICS_API_URL = environment.apiBaseUrl + '/setups/clinics';
 const RELIGION_API_URL = environment.apiBaseUrl + '/setups/religions';
+const SERVICE_PRICING_API_URL = environment.apiBaseUrl + '/pricing/serviceprices';
 const SERVICE_CATEGORY_API_URL =
   environment.apiBaseUrl + '/setups/servicecategories';
 const FUNDING_TYPE_API_URL = environment.apiBaseUrl + '/setups/fundingtypes';
@@ -81,6 +85,9 @@ export class SetupService {
   private facilities;
   private companies;
   private accreditations;
+  private medicalSponsors;
+  private clinics;
+  private servicePrices;
 
   constructor(private http: HttpClient) { }
 
@@ -123,6 +130,49 @@ export class SetupService {
         })
       );
   }
+  createMedicalSponsor(fields: object) {
+    return this.http
+      .post<any>(MEDICAL_SPONSOR_API_URL, fields)
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+
+  createClinic(fields: object) {
+    return this.http
+      .post<any>(CLINICS_API_URL, fields)
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+  getClinics() {
+    return this.http.get<any>(CLINICS_API_URL).pipe(
+      map(
+        res => {
+          if (res) {
+            this.clinics = res;
+            for (let i = 0; i < this.clinics.data.length; i++) {
+              this.clinics.data[i].isActivated =
+                this.clinics.data[i].status === 'ACTIVE' ? true : false;
+            }
+          }
+          return this.clinics;
+        }
+      )
+    )
+  }
+
   getDepartments() {
     return this.http.get<any>(DEPARTMENTS_API_URL).pipe(
       map(res => {
@@ -519,6 +569,7 @@ export class SetupService {
       })
     );
   }
+  createHostpitalService
 
   /**
    * Languages routes
@@ -584,6 +635,33 @@ export class SetupService {
     );
   }
 
+  getServicePricings() {
+    return this.http.get<any>(SERVICE_PRICING_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.servicePrices = res;
+          console.log(res);
+          for (let i = 0; i < this.servicePrices.data.length; i++) {
+            this.servicePrices.data[i].isActivated =
+              this.servicePrices.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.servicePrices;
+      })
+
+    );
+  }
+
+  createServicePricing(fields: object) {
+    return this.http.post<any>(SERVICE_PRICING_API_URL, fields).pipe(
+      map(res => {
+        if (res) {
+          return true;
+        }
+        return false;
+      })
+    )
+  }
   /**
    * Relationship routes
    */
@@ -680,9 +758,6 @@ export class SetupService {
     );
   }
 
-  /**
-   * Languages routes
-   */
   createStaffCategory(name: string) {
     return this.http
       .post<any>(STAFF_CATEGORY_API_URL, { name })
@@ -1082,6 +1157,79 @@ export class SetupService {
           }
         }
         return this.facilities;
+      })
+    );
+  }
+
+  getClinics() {
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinics`)
+      .pipe(map(data => {
+        if (!data) {
+          return { data: [] };
+        }
+        return data;
+      }));
+  }
+
+  getServicesByClinic(clinicId: number) {
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/consultationservices?clinic_id=${clinicId}`)
+      .pipe(map(data => {
+        if (!data) {
+          return { data: [] };
+        }
+        return data;
+      }));
+  }
+
+  getMedicalSponsors() {
+    return this.http.get<any>(MEDICAL_SPONSOR_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.medicalSponsors = res;
+          for (let i = 0; i < this.medicalSponsors.data.length; i++) {
+            this.medicalSponsors.data[i].isActivated =
+              this.medicalSponsors.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.medicalSponsors;
+      })
+    );
+  }
+
+  getSponsorsByType(sponsorTypeId: number) {
+    return this.http.get<any>(MEDICAL_SPONSOR_API_URL, {
+      params: {
+        sponsorship_type_id: `${sponsorTypeId}`,
+      }
+    }).pipe(
+      map(res => {
+        if (res) {
+          this.medicalSponsors = res;
+          for (let i = 0; i < this.medicalSponsors.data.length; i++) {
+            this.medicalSponsors.data[i].isActivated =
+              this.medicalSponsors.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.medicalSponsors;
+      })
+    );
+  }
+
+  getSponsorPolicies(sponsorId: number) {
+    return this.http.get<any>(POLICY_API_URL, {
+      params: {
+        billing_sponsor_id: `${sponsorId}`,
+      }
+    }).pipe(
+      map(res => {
+        if (res) {
+          this.medicalSponsors = res;
+          for (let i = 0; i < this.medicalSponsors.data.length; i++) {
+            this.medicalSponsors.data[i].isActivated =
+              this.medicalSponsors.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.medicalSponsors;
       })
     );
   }

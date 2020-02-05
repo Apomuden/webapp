@@ -1,0 +1,68 @@
+<nz-row>
+  <nz-col nzSpan="24">
+    <nz-card>
+      <form [nzLayout]="'inline'" [formGroup]="searchForm" nz-form>
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="search">Search patient</nz-form-label>
+          <nz-form-control [nzErrorTip]="'gyfghf'">
+            <nz-input-group nzPrefixIcon="search">
+              <input nz nz-input formControlName="searchControl" name='search' id="search" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="search">Search by</nz-form-label>
+          <nz-form-control>
+            <nz-select style="width:200px" formControlName="filterByControl" [nzDisabled]="'true'" name='filterby'
+              nzPlaceHolder="Search by">
+              <nz-option nzValue="firstname" nzLabel="First Name"></nz-option>
+              <nz-option nzValue="surname" nzLabel="Surname"></nz-option>
+              <nz-option nzValue="middlename" nzLabel="Middle Name"></nz-option>
+              <nz-option nzValue="profession_name" nzLabel="Occupation"></nz-option>
+              <nz-option nzValue="phone" nzLabel="Phone number"></nz-option>
+              <nz-option nzValue="folder_no" nzLabel="Folder Number"></nz-option>
+              <nz-option nzValue="member_no" nzLabel="Member Number"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+      <nz-divider></nz-divider>
+      <div *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'" class="m-r-5"></i> Please search for a patient
+        to see table
+      </div>
+      <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
+        <nz-table #basicTable [nzData]="listOfData" *ngIf="searchInitialized" [nzShowPagination]="false">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Patient No</th>
+              <th>Folder No</th>
+              <th>Folder Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr *ngFor="let data of basicTable.data">
+              <td>{{ data.title}} {{data.firstname}} {{data.middlename!==null?data.middlename :""}} {{data.surname}}
+              </td>
+              <td>{{ data.patient_no }}</td>
+              <td>{{ data.folder_no }}</td>
+              <td>{{ data.folder_type }}</td>
+
+              <td>
+                <a>view</a>
+                <nz-divider nzType="vertical"></nz-divider>
+
+              </td>
+            </tr>
+          </tbody>
+        </nz-table>
+        <div style="text-align: right;" class="m-t-10">
+          <nz-pagination [nzPageIndex]="pageIndex" [nzTotal]="totalItems" (nzPageIndexChange)="getPage($event)"
+            [nzPageSize]="pageSize"></nz-pagination>
+        </div>
+      </nz-skeleton>
+    </nz-card>
+  </nz-col>
+</nz-row>

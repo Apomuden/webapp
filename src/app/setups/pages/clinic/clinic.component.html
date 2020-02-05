@@ -1,0 +1,69 @@
+<div nz-row nzGutter="10">
+  <nz-col nzSpan="12">
+    <nz-card>
+      <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
+        [nzRenderItem]="item">
+        <ng-template #item let-item>
+          <nz-list-item [nzActions]="item.loading ? [] : [editAction, moreAction]">
+            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
+              <ng-template #editAction><a>edit</a></ng-template>
+              <ng-template #moreAction>
+                <nz-switch [(ngModel)]="item.isActivated"></nz-switch>
+              </ng-template>
+              <nz-list-item-meta [nzTitle]="nzTitle">
+                <ng-template #nzTitle>
+                  <a>{{ item.name }}</a>
+                </ng-template>
+              </nz-list-item-meta>
+            </nz-skeleton>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+    </nz-card>
+  </nz-col>
+  <nz-col nzSpan="8">
+    <nz-card>
+      <h5>Create Clinic</h5>
+      <form (ngSubmit)="submitForm()" [formGroup]="clinicForm">
+        <nz-alert *ngIf="error" nzType="error" nzMessage="Error" [nzDescription]="error">
+        </nz-alert>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="name" placeholder="Input clinic name" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="gender" formControlName="gender"
+              nzPlaceHolder="Select gender">
+              <nz-option nzLabel="Male" nzMale="MALE"></nz-option>
+              <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
+              <nz-option nzLabel="Bigender" nzValue="BIGENDER"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="patient_status"
+            nzPlaceHolder="Patient status">
+            <nz-option nzLabel="IN-PATIENT" nzValue="IN-PATIENT"></nz-option>
+            <nz-option nzLabel="OUT-PATIENT" nzValue="OUT-PATIENT"></nz-option>
+          </nz-select>
+
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="age_group_id" nzPlaceHolder="Age Group"
+            [nzLoading]="isAgeGroupsLoading | async">
+            <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id"></nz-option>
+          </nz-select>
+        </nz-row>
+        <nz-row>
+          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingClinic | async">
+              Submit
+            </button>
+          </nz-form-control>
+        </nz-row>
+      </form>
+    </nz-card>
+  </nz-col>
+</div>

@@ -89,15 +89,23 @@ export const ROUTES: SideNavInterface[] = [
     icon: 'book',
     submenu: [
       {
-        path: '/records/register-patient',
-        title: 'Register New Patient',
+        path: '/records/folders/all',
+        title: 'Folders',
         iconType: '',
         icon: '',
         iconTheme: '',
         submenu: []
       },
       {
-        path: '',
+        path: '/records/register-patient',
+        title: 'Patients',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+      {
+        path: '/records/search-patient',
         title: 'Search Patient Information',
         iconType: '',
         icon: '',
@@ -105,7 +113,15 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '',
+        path: '/records/sponsorship-permit',
+        title: 'Sponsorship Permit',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+      {
+        path: '/records/request-consultation',
         title: 'Request Consultation',
         iconType: '',
         icon: '',
@@ -128,16 +144,15 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       }
+      ,
+      {
+        path: '/records/records-report',
+        title: 'Reports',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      }
     ]
   }
-
-  // ,
-  // {
-  //   path: "",
-  //   title: "Settings",
-  //   iconType: "nzIcon",
-  //   iconTheme: "outline",
-  //   icon: "setting",
-  //   submenu: []
-  // }
 ];

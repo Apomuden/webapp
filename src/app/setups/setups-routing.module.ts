@@ -1,3 +1,8 @@
+import { AccountComponent } from './categories/account/account.component';
+import { OtherComponent } from './categories/other/other.component';
+import { RecordComponent } from './categories/record/record.component';
+import { FullLayoutComponent } from './../layouts/full-layout/full-layout.component';
+import { MedicalSponsorSetupComponent } from './pages/medical-sponsor-setup/medical-sponsor-setup.component';
 import { AuthGuard } from './../shared/guard/auth.guard';
 import { ReligionSetupComponent } from './pages/religion-setup/religion-setup.component';
 import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-style-setup.component';
@@ -37,19 +42,42 @@ import { SpecialitySetupComponent } from './pages/speciality-setup/speciality-se
 const routes: Routes = [
   {
     path: '',
-    component: SetupsComponent,
+    component: FullLayoutComponent,
     canActivate: [AuthGuard],
+
     children: [
       {
         path: '',
-        redirectTo: 'departments',
-        pathMatch: 'full',
-        canActivate: [AuthGuard]
+        component: SetupsComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'System Configurations'
+        }
+
       },
       {
-        path: 'departments',
-        component: DepartmentSetupComponent,
-        canActivate: [AuthGuard]
+        path: 'records',
+        component: RecordComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Records Setup'
+        }
+      },
+      {
+        path: 'others',
+        component: OtherComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Others'
+        }
+      },
+      {
+        path: 'accounts',
+        component: AccountComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Others'
+        }
       },
       {
         path: 'funding-types',
@@ -127,6 +155,11 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'medicalsponsors',
+        component: MedicalSponsorSetupComponent,
+        canActivate: [AuthGuard]
+      },
+      {
         path: 'id-types',
         component: IdTypeSetupComponent,
         canActivate: [AuthGuard]
@@ -198,10 +231,11 @@ const routes: Routes = [
       }
     ]
   }
+
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SetupsRoutingModule {}
+export class SetupsRoutingModule { }
