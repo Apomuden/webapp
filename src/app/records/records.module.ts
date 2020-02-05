@@ -9,6 +9,8 @@ import { RecordsService } from './records.service';
 import { AllFoldersComponent } from './all-folders/all-folders.component';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
+import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-permit.component';
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { NzNotificationModule } from 'ng-zorro-antd';
 import { RecordsReportComponent } from './records-report/records-report.component';
 
@@ -20,6 +22,7 @@ import { RecordsReportComponent } from './records-report/records-report.componen
     AddPatientComponent,
     RegisterPatientComponent,
     SearchPatientComponent,
+    SponsorshipPermitComponent,
     RequestConsultationComponent,
     RecordsReportComponent
   ],
@@ -28,6 +31,7 @@ import { RecordsReportComponent } from './records-report/records-report.componen
     RecordsRoutingModule,
     SharedModule,
     NzNotificationModule,
+    GooglePlaceModule,
   ],
   providers: [RecordsService]
 })

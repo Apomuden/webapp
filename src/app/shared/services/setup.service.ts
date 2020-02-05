@@ -36,6 +36,7 @@ const HOSPITAL_SERVICE_API_URL =
 
 const LANGUAGE_API_URL = environment.apiBaseUrl + '/setups/languages';
 const MEDICAL_SPONSOR_API_URL = environment.apiBaseUrl + '/setups/billingsponsors';
+const POLICY_API_URL = `${environment.apiBaseUrl}/setups/sponsorpolicies`;
 const DISTRICT_API_URL = environment.apiBaseUrl + '/setups/districts';
 const STAFF_TYPE_API_URL = environment.apiBaseUrl + '/setups/stafftypes';
 const SPECIALITY_API_URL = environment.apiBaseUrl + '/setups/specialties';
@@ -1182,6 +1183,44 @@ export class SetupService {
 
   getMedicalSponsors() {
     return this.http.get<any>(MEDICAL_SPONSOR_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.medicalSponsors = res;
+          for (let i = 0; i < this.medicalSponsors.data.length; i++) {
+            this.medicalSponsors.data[i].isActivated =
+              this.medicalSponsors.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.medicalSponsors;
+      })
+    );
+  }
+
+  getSponsorsByType(sponsorTypeId: number) {
+    return this.http.get<any>(MEDICAL_SPONSOR_API_URL, {
+      params: {
+        sponsorship_type_id: `${sponsorTypeId}`,
+      }
+    }).pipe(
+      map(res => {
+        if (res) {
+          this.medicalSponsors = res;
+          for (let i = 0; i < this.medicalSponsors.data.length; i++) {
+            this.medicalSponsors.data[i].isActivated =
+              this.medicalSponsors.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.medicalSponsors;
+      })
+    );
+  }
+
+  getSponsorPolicies(sponsorId: number) {
+    return this.http.get<any>(POLICY_API_URL, {
+      params: {
+        billing_sponsor_id: `${sponsorId}`,
+      }
+    }).pipe(
       map(res => {
         if (res) {
           this.medicalSponsors = res;

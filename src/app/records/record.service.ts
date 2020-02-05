@@ -41,6 +41,10 @@ export class RecordService {
     );
   }
 
+  addSponsorPermit(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/patientsponsors`;
+    return this.http.post(url, data);
+  }
   requestConsultation(data: any) {
     const url = `${environment.apiBaseUrl}/registry/consultationservicerequests`;
     return this.http.post(url, data);

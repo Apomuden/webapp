@@ -9,6 +9,7 @@ import { FullLayoutComponent } from '../layouts/full-layout/full-layout.componen
 import { AllFoldersComponent } from './all-folders/all-folders.component';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
 import { AddPatientComponent } from './add-patient/add-patient.component';
+import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-permit.component';
 
 const routes: Routes = [
   {
@@ -51,6 +52,13 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     data: {
       title: 'Search Patient'
+    },
+  }, {
+    path: 'sponsorship-permit',
+    component: SponsorshipPermitComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Sponsorship Permit'
     }
   },
   {

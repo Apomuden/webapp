@@ -113,6 +113,14 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
+        path: '/records/sponsorship-permit',
+        title: 'Sponsorship Permit',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+      {
         path: '/records/request-consultation',
         title: 'Request Consultation',
         iconType: '',
