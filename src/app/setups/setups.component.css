@@ -1,0 +1,10 @@
+.setup-category i{
+  font-size: 35px;
+}
+.setup-category div{
+  font-size: 20px;
+  display: inline-block;
+  position: absolute;
+  top:28px;
+  text-transform: uppercase;
+}

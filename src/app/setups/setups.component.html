@@ -1,4 +1,4 @@
-<div nz-row class="m-b-10">
+<!-- <div nz-row class="m-b-10">
   <div nz-col nzSpan="8">
     <nz-select style="width:100%" [(ngModel)]="selectedSetup" (ngModelChange)="onSetupChanged()" nzPlaceHolder="Choose">
       <nz-option nzValue="departments" nzLabel="Departments"></nz-option>
@@ -35,4 +35,43 @@
   </div>
 </div>
 
-<router-outlet></router-outlet>
+<router-outlet></router-outlet> -->
+<nz-row nzGutter="30">
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToRecords()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Records</div>
+    </nz-card>
+  </nz-col>
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToAccounts()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Accounts</div>
+    </nz-card>
+  </nz-col>
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToInpatient()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Inpatient</div>
+    </nz-card>
+  </nz-col>
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToLaboratory()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Laboratory</div>
+    </nz-card>
+  </nz-col>
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToEISU()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>eINSU. & CORP.</div>
+    </nz-card>
+  </nz-col>
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToOthers()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Others</div>
+    </nz-card>
+  </nz-col>
+
+</nz-row>
