@@ -111,6 +111,24 @@ export class SetupsComponent implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    this.router.navigate(['setup/departments']);
+    // this.router.navigate(['setup/departments']);
+  }
+  goToRecords() {
+    this.router.navigate(['setup/records']);
+  }
+  goToAccounts() {
+    this.router.navigate(['setup/accounts']);
+  }
+  goToInpatient() {
+    this.router.navigate(['setup/inpatient']);
+  }
+  goToLaboratory() {
+    this.router.navigate(['setup/laboratory']);
+  }
+  goToEISU() {
+    this.router.navigate(['setup/eisu']);
+  }
+  goToOthers() {
+    this.router.navigate(['setup/others']);
   }
 }

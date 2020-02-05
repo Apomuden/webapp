@@ -2,6 +2,7 @@ import { map } from 'rxjs/operators';
 import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 const PATIENT_API_URL = environment.apiBaseUrl + '/registry/patients';
 
 @Injectable({
@@ -43,5 +44,14 @@ export class RecordService {
   addSponsorPermit(data: any) {
     const url = `${environment.apiBaseUrl}/registry/patientsponsors`;
     return this.http.post(url, data);
+  }
+  requestConsultation(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/consultationservicerequests`;
+    return this.http.post(url, data);
+  }
+
+  getPatientSponsors(id: number): Observable<any> {
+    const url = `${environment.apiBaseUrl}/registry/patientsponsors?patient_id=${id}`;
+    return this.http.get(url);
   }
 }

@@ -1,0 +1,124 @@
+<div nz-row nzGutter="10">
+  <nz-col nzSpan="12">
+    <nz-card>
+      <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
+        [nzRenderItem]="item">
+        <ng-template #item let-item>
+          <nz-list-item [nzActions]="item.loading ? [] : [editAction, moreAction]">
+            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
+              <ng-template #editAction><a>edit</a></ng-template>
+              <ng-template #moreAction>
+                <nz-switch [(ngModel)]="item.isActivated"></nz-switch>
+              </ng-template>
+              <nz-list-item-meta [nzTitle]="nzTitle">
+                <ng-template #nzTitle>
+                  <a>{{item.description}} </a>
+                  <div>GHS {{item.amount}}</div>
+                </ng-template>
+              </nz-list-item-meta>
+            </nz-skeleton>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+    </nz-card>
+  </nz-col>
+  <nz-col nzSpan="8">
+    <nz-card>
+      <h5>Create Service Pricing</h5>
+      <form (ngSubmit)="submitForm()" [formGroup]="servicePricingForm">
+        <nz-alert *ngIf="error" nzType="error" nzMessage="Error" [nzDescription]="error">
+        </nz-alert>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="description" placeholder="Description" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="hospital_service_id"
+              [nzLoading]="isHospitalServicesLoading | async" formControlName="hospital_service_id"
+              nzPlaceHolder="Hospital Service">
+              <nz-option *ngFor="let service of services" [nzLabel]="service.name" [nzValue]="service.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="true" name="service_category_id"
+              [nzLoading]="isServiceCategoriesLoading | async" formControlName="service_category_id"
+              nzPlaceHolder="Service Category">
+              <nz-option *ngFor="let serviceCategory of serviceCategories" [nzLabel]="serviceCategory.name"
+                [nzValue]="serviceCategory.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24" *ngIf="this.servicePricingForm.get('service_category_id').value != null">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="service_subcategory_id"
+              [nzLoading]="isServiceSubCategoriesLoading | async" formControlName="service_subcategory_id"
+              nzPlaceHolder="Service Sub Category">
+              <nz-option *ngFor="let servicesub of serviceSubCategories" [nzLabel]="servicesub.name"
+                [nzValue]="servicesub.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="funding_type_id"
+              [nzLoading]="isFundingTypesLoading | async" formControlName="funding_type_id"
+              nzPlaceHolder="Funding Type">
+              <nz-option *ngFor="let fundingType of fundingTypes" [nzLabel]="fundingType.name"
+                [nzValue]="fundingType.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+
+        <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzMode="tags" nzAllowClear="false" [nzTokenSeparators]="[',']"
+            formControlName="patient_status" nzPlaceHolder="Patient status">
+            <nz-option nzLabel="IN-PATIENT" nzValue="IN-PATIENT"></nz-option>
+            <nz-option nzLabel="OUT-PATIENT" nzValue="OUT-PATIENT"></nz-option>
+            <nz-option nzLabel="WALK-IN" nzValue="WALK-IN"></nz-option>
+          </nz-select>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="status" nzPlaceHolder="Status">
+            <nz-option nzLabel="ACTIVE" nzValue="ACTIVE"></nz-option>
+            <nz-option nzLabel="INACTIVE" nzValue="INACTIVE"></nz-option>
+          </nz-select>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input nz-input type="number" formControlName="amount" placeholder="Amount in GHS" />
+          </nz-form-control>
+
+        </nz-row>
+
+
+
+        <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzMode="tags" nzAllowClear="false" [nzTokenSeparators]="[',']"
+            formControlName="gender" nzPlaceHolder="Gender">
+            <nz-option nzLabel="MALE" nzValue="MALE"></nz-option>
+            <nz-option nzLabel="FEMALE" nzValue="FEMALE"></nz-option>
+            <nz-option nzLabel="BIGENDER" nzValue="BIGENDER"></nz-option>
+          </nz-select>
+        </nz-row>
+
+        <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="age_group_id" nzPlaceHolder="Age Group"
+            [nzLoading]="isAgeGroupsLoading | async">
+            <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id"></nz-option>
+          </nz-select>
+        </nz-row>
+        <nz-row>
+          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingServicePricing | async">
+              Submit
+            </button>
+          </nz-form-control>
+        </nz-row>
+      </form>
+    </nz-card>
+  </nz-col>
+</div>

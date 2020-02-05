@@ -17,7 +17,6 @@ export class AuthGuard implements CanActivate {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (currentUser) {
       const current_time = new Date().getTime() / 1000;
-      console.log(currentUser.exp, current_time > currentUser.exp);
       if (current_time > currentUser.exp) {
         this.router.navigate(['authentication/login'], {
           queryParams: { returnUrl: state.url }

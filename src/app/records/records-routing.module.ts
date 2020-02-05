@@ -4,6 +4,7 @@ import { RegisterPatientComponent } from './register-patient/register-patient.co
 import { AuthGuard } from '../shared/guard/auth.guard';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { RequestConsultationComponent } from './request-consultation/request-consultation.component';
 import { FullLayoutComponent } from '../layouts/full-layout/full-layout.component';
 import { AllFoldersComponent } from './all-folders/all-folders.component';
 import { ViewFolderComponent } from './view-folder/view-folder.component';
@@ -61,6 +62,13 @@ const routes: Routes = [
     }
   },
   {
+    path: 'request-consultation',
+    component: RequestConsultationComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Request Consultation'
+    }
+  }, {
     path: 'records-report',
     component: RecordsReportComponent,
     canActivate: [AuthGuard],
