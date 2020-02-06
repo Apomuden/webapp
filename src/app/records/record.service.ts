@@ -51,7 +51,16 @@ export class RecordService {
   }
 
   getPatientSponsors(id: number): Observable<any> {
-    const url = `${environment.apiBaseUrl}/registry/patientsponsors?patient_id=${id}`;
-    return this.http.get(url);
+    const url = `${environment.apiBaseUrl}/registry/patientsponsors`;
+    return this.http.get(url, {
+      params: {
+        patient_id: `${id}`,
+      }
+    });
+  }
+
+  createWalkIn(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/patients`;
+    return this.http.post(url, data);
   }
 }
