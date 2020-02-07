@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RegisterPatientComponent } from './register-patient/register-patient.component';
 import { RecordsRoutingModule } from './records-routing.module';
 import { SharedModule } from '../shared/shared.module';
+import { WalkinRegistrationComponent } from './walkin-registration/walkin-registration.component';
 import { SearchPatientComponent } from './search-patient/search-patient.component';
 import { RequestConsultationComponent } from './request-consultation/request-consultation.component';
 import { RecordsService } from './records.service';
@@ -17,6 +18,8 @@ import { RecordsReportComponent } from './records-report/records-report.componen
 
 @NgModule({
   declarations: [
+    RegisterPatientComponent,
+    WalkinRegistrationComponent,
     AllFoldersComponent,
     ViewFolderComponent,
     AddPatientComponent,

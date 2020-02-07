@@ -1,12 +1,13 @@
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { SetupService } from './../../shared/services/setup.service';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { first, retry } from 'rxjs/operators';
+import { first, retry, debounceTime } from 'rxjs/operators';
 import { Validators, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { UserManagementService } from '../user-management.service';
 import { SignaturePad } from 'angular2-signaturepad/signature-pad';
-import { UploadFile, NzMessageService } from 'ng-zorro-antd';
+import { UploadFile, NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
+import { componentDestroyed, untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 
 @Component({
   selector: 'app-create-user',
@@ -15,7 +16,6 @@ import { Router } from '@angular/router';
 })
 export class CreateUserComponent implements OnInit, OnDestroy {
   stepIndex = 0;
-  originCountryChangeSub: Subscription;
 
   userForm = this.fb.group({
     // 1 staff type
@@ -175,7 +175,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     private setup: SetupService,
     private fb: FormBuilder,
     private userService: UserManagementService,
-    private messageService: NzMessageService,
+    private notificationS: NzNotificationService,
     private router: Router) { }
 
   ngOnInit() {
@@ -184,19 +184,38 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     this.fetchStaffCategories();
     this.fetchSpecialties();
 
-    this.originCountryChangeSub = this.bioDataForm.get('originCountry').valueChanges.subscribe(data => this.fetchRegions(data));
+    this.bioDataForm.get('originCountry').valueChanges.pipe(untilComponentDestroyed(this), debounceTime(500))
+      .subscribe((data: string) => this.fetchRegions(data));
+    this.bioDataForm.get('originRegion').valueChanges.pipe(untilComponentDestroyed(this), debounceTime(500))
+      .subscribe((regionId: string) => this.fetchTowns(regionId));
   }
 
   ngOnDestroy() {
-    this.originCountryChangeSub.unsubscribe();
+  }
+
+  private fetchTowns(regionId: string) {
+    this.bioDataForm.get('homeTown').reset();
+    this.towns = [];
+    if (!regionId) {
+      return;
+    }
+    this.townsLoading.next(true);
+    this.setup
+      .getTownsByReigion(regionId)
+      .pipe(first())
+      .subscribe(data => {
+        this.townsLoading.next(false);
+        this.towns = data.data;
+        console.log(this.towns);
+      }, error => {
+        this.townsLoading.next(false);
+      });
   }
 
   private fetchRegions(countryId: string) {
+    this.bioDataForm.get('originRegion').reset();
+    this.regions = [];
     if (!countryId) {
-      this.regions = [];
-      if (this.bioDataForm.get('originCountry').value) {
-        this.bioDataForm.get('originCountry').reset();
-      }
       return;
     }
     this.regionsLoading.next(true);
@@ -359,19 +378,6 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       });
   }
 
-  private fetchTowns() {
-    this.townsLoading.next(true);
-    this.setup
-      .getTowns()
-      .pipe(first())
-      .subscribe(data => {
-        this.townsLoading.next(false);
-        this.towns = data.data;
-      }, error => {
-        this.townsLoading.next(false);
-      });
-  }
-
   private fetchEducationLevels() {
     this.educationalLevelsLoading.next(true);
     this.setup
@@ -431,7 +437,6 @@ export class CreateUserComponent implements OnInit, OnDestroy {
         this.fetchEducationLevels();
         this.fetchReligions();
         this.fetchProfessions();
-        this.fetchTowns();
         this.fetchIdTypes();
         break;
       }
@@ -597,7 +602,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
         this.uploadFiles(response);
       }, error => {
         this.isLoading = false;
-        this.messageService.error('Could not create user. Please try again');
+        this.notificationS.error('Oops', 'Could not create user. Please try again');
       });
   }
 
@@ -614,7 +619,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
             this.router.navigate(['/user-management', 'profile', response.data.id]);
           }
         }, error => {
-          this.messageService.error(`Unable to upload ${attachedFile.name}`);
+          this.notificationS.error('Oops', `Unable to upload ${attachedFile.name}`);
           if (this.attachedFiles.indexOf(attachedFile) === this.attachedFiles.length - 1) {
             this.isLoading = false;
           }

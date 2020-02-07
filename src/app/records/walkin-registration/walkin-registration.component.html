@@ -1,0 +1,120 @@
+<div class="steps-content">
+  <form nz-form [formGroup]="walkinForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
+      <nz-form-control nzErrorTip="Select a title">
+        <nz-select formControlName="title" nzPlaceHolder="Select title" nzShowSearch nzAllowClear
+          [nzLoading]="titlesLoading | async">
+          <nz-option *ngFor="let title of titles" [nzLabel]="title.name" [nzValue]="title.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstName" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Gender</nz-form-label>
+      <nz-form-control nzErrorTip="Select a gender">
+        <nz-select nzPlaceHolder="Gender" formControlName="gender" nzShowSearch>
+          <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+          <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          <nz-option nzValue="OTHER" nzLabel="Other"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
+      <nz-form-control nzErrorTip="Select a valid date">
+        <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
+        </nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
+          [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
+      </nz-form-control>
+      <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phone">Mobile Number</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid phone number">
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+          <ng-template #addOnBeforeTemplate>
+            <nz-select formControlName="countryCode" [compareWith]="compareFn" class="phone-select" nzShowSearch
+              [nzLoading]="countriesloading | async">
+              <nz-option *ngFor="let country of countries" [nzValue]="country.call_code" [nzLabel]="country.call_code">
+              </nz-option>
+            </nz-select>
+          </ng-template>
+          <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="phone" />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originCountry">Origin country</nz-form-label>
+      <nz-form-control nzErrorTip="Please select a country">
+        <nz-select nzShowSearch [nzLoading]="countriesloading | async" nzPlaceHolder="Select a country"
+          formControlName="originCountry">
+          <nz-option *ngFor="let country of countries" [nzLabel]="country.name" [nzValue]="country.id">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Origin region</nz-form-label>
+      <nz-form-control nzErrorTip="Please select a region">
+        <nz-select nzShowSearch nzAllowClear [nzLoading]="regionsLoading | async" nzPlaceHolder="Select a region"
+          formControlName="originRegion">
+          <nz-option *ngFor="let region of regions" [nzLabel]="region.name" [nzValue]="region.id">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Home town</nz-form-label>
+      <nz-form-control nzErrorTip="Please select a town">
+        <nz-select nzShowSearch nzAllowClear [nzLoading]="townsLoading | async" nzPlaceHolder="Select a town"
+          formControlName="homeTown">
+          <nz-option *ngFor="let town of towns" [nzLabel]="town.name" [nzValue]="town.id">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+
+  <div nz-row>
+    <div nz-col nzOffset="7">
+      <nz-button-group>
+        <button nz-button nzType="danger" (click)="clearForm()" [nzLoading]="creating | async">Cancel</button>
+        <button nz-button nzType="primary" (click)="submitForm()" [nzLoading]="creating | async"
+          [disabled]="walkinForm.invalid">Done</button>
+      </nz-button-group>
+    </div>
+  </div>
+</div>

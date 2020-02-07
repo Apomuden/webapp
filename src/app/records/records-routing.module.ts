@@ -1,3 +1,4 @@
+import { WalkinRegistrationComponent } from './walkin-registration/walkin-registration.component';
 import { RecordsReportComponent } from './records-report/records-report.component';
 import { SearchPatientComponent } from './search-patient/search-patient.component';
 import { RegisterPatientComponent } from './register-patient/register-patient.component';
@@ -75,7 +76,14 @@ const routes: Routes = [
     data: {
       title: 'Reports'
     }
-  }
+  }, {
+    path: 'walkin-registration',
+    component: WalkinRegistrationComponent,
+    canActivate: [AuthGuard],
+    data: {
+      title: 'Register Walk-in'
+    }
+  },
 ];
 
 @NgModule({

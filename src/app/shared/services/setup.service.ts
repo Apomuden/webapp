@@ -635,6 +635,26 @@ export class SetupService {
     );
   }
 
+  getTownsByReigion(regionId: string) {
+    return this.http.get<any>(TOWN_API_URL, {
+      params: {
+        region_id: regionId,
+      }
+    }).pipe(
+      map(res => {
+        if (res) {
+          this.towns = res;
+          console.log(res);
+          for (let i = 0; i < this.towns.data.length; i++) {
+            this.towns.data[i].isActivated =
+              this.towns.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.towns;
+      })
+    );
+  }
+
   getServicePricings() {
     return this.http.get<any>(SERVICE_PRICING_API_URL).pipe(
       map(res => {
@@ -1159,16 +1179,6 @@ export class SetupService {
         return this.facilities;
       })
     );
-  }
-
-  getClinics() {
-    return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinics`)
-      .pipe(map(data => {
-        if (!data) {
-          return { data: [] };
-        }
-        return data;
-      }));
   }
 
   getServicesByClinic(clinicId: number) {
