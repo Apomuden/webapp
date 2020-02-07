@@ -59,7 +59,7 @@ export class RecordService {
     });
   }
 
-  createWalkIn(data: any) {
+  createWalkIn(data: any): Observable<any> {
     const url = `${environment.apiBaseUrl}/registry/patients`;
     return this.http.post(url, data);
   }

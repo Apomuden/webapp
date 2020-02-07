@@ -37,7 +37,9 @@ export class WalkinRegistrationComponent implements OnInit, AfterViewInit, OnDes
   townsLoading = new BehaviorSubject(false);
   regionsLoading = new BehaviorSubject(false);
   creating = new BehaviorSubject(false);
+  showModal = false;
 
+  patient: any;
   countries = [];
   titles = [];
   towns = [];
@@ -168,14 +170,20 @@ export class WalkinRegistrationComponent implements OnInit, AfterViewInit, OnDes
     this.creating.next(true);
     this.recordsService.createWalkIn(data)
       .subscribe(res => {
+        this.patient = res.data;
         this.clearForm();
         this.notificationS.success('Success', 'Successfully created patient');
+        this.showModal = true;
         this.creating.next(false);
       }, e => {
         console.log(e);
         this.notificationS.error('Oops', 'Could not create patient. Please try again');
         this.creating.next(false);
       });
+  }
+
+  closeModal() {
+    this.showModal = false;
   }
 
   clearForm() {
