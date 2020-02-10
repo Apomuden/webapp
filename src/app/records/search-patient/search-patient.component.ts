@@ -1,9 +1,10 @@
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { first, debounceTime, filter } from 'rxjs/operators';
-import { RecordService } from './../record.service';
-import { BehaviorSubject } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {first, debounceTime, filter} from 'rxjs/operators';
+import {RecordService} from './../record.service';
+import {BehaviorSubject} from 'rxjs';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-search-patient',
@@ -24,7 +25,11 @@ export class SearchPatientComponent implements OnInit, OnDestroy {
   nextUrl = null;
   prevUrl = null;
 
-  constructor(private recordService: RecordService, private readonly fb: FormBuilder) { }
+  constructor(
+    private recordService: RecordService,
+    private readonly fb: FormBuilder,
+    private readonly router: Router) {
+  }
 
   ngOnInit() {
     this.searchForm = this.fb.group({
@@ -47,7 +52,8 @@ export class SearchPatientComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {
+  }
 
 
   getPage(currentIndex) {
@@ -57,6 +63,7 @@ export class SearchPatientComponent implements OnInit, OnDestroy {
       this.getPaginatedPatients(this.prevUrl, currentIndex);
     }
   }
+
   getPaginatedPatients(url: string, currentIndex: number) {
     this.isLoadingData = true;
     this.searchInitialized = true;
@@ -78,6 +85,7 @@ export class SearchPatientComponent implements OnInit, OnDestroy {
       }
     );
   }
+
   getData(searchValue, filterBy) {
 
     this.isLoadingData = true;
@@ -101,6 +109,9 @@ export class SearchPatientComponent implements OnInit, OnDestroy {
     );
 
 
+  }
 
+  gotoRegisterPatient() {
+    this.router.navigate(['/records/patients/register-patient']);
   }
 }
