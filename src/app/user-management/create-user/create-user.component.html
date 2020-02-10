@@ -1,494 +1,452 @@
-<div nz-row>
-  <div nz-col nzSpan="4">
-    <nz-steps nzDirection="vertical" nzSize="small" [nzCurrent]="stepIndex">
-      <nz-step nzTitle="Staff Type"></nz-step>
-      <nz-step nzTitle="Bio Data"></nz-step>
-      <nz-step nzTitle="Profile Data"></nz-step>
-      <nz-step nzTitle="Contact Info"></nz-step>
-      <nz-step nzTitle="Emergency contact"></nz-step>
-      <nz-step nzTitle="Role and Department"></nz-step>
-      <nz-step nzTitle="Other Details"></nz-step>
-      <nz-step nzTitle="Attachments"></nz-step>
-    </nz-steps>
-  </div>
-  <div nz-col nzSpan="20">
-    <div class="steps-content">
-      <form nz-form [formGroup]="userForm">
-        <div *ngIf="stepIndex == 0" formGroupName="staffInfo">
+<nz-steps [nzCurrent]="current">
+  <nz-step nzTitle="Staff Type"></nz-step>
+  <nz-step nzTitle="Bio Data"></nz-step>
+  <nz-step nzTitle="Contact Info"></nz-step>
+  <nz-step nzTitle="In case of Emergency"></nz-step>
+  <nz-step nzTitle="Role and Department Assignment"></nz-step>
+  <nz-step nzTitle="Other Details"></nz-step>
+  <nz-step nzTitle="Review"></nz-step>
+</nz-steps>
 
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staffType">Staff Type</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a staff type">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="staffTypesLoading | async"
-                nzPlaceHolder="Select a staff type" formControlName="staffType">
-                <nz-option *ngFor="let staffType of staffTypes" [nzLabel]="staffType.name" [nzValue]="staffType.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="specialty">Specialty</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a specialty">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="specialtiesLoading | async"
-                nzPlaceHolder="Select a specialty" formControlName="specialty">
-                <nz-option *ngFor="let specialty of specialties" [nzLabel]="specialty.name" [nzValue]="specialty.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="specialty">Staff category</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a category">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="categoriesLoading | async"
-                nzPlaceHolder="Select a category" formControlName="category">
-                <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-
-        <div *ngIf="stepIndex == 1" formGroupName="bioData">
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a title">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="titlesLoading | async" nzPlaceHolder="Select a title"
-                formControlName="title">
-                <nz-option *ngFor="let title of titles" [nzLabel]="title.name" [nzValue]="title.id"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First name</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter first name">
-
-              <input nz-input placeholder="First name" formControlName="firstName" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle name</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter middle name">
-
-              <input nz-input placeholder="Middle name" formControlName="middleName" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last name</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter last name">
-              <input nz-input placeholder="Last name" formControlName="lastName" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dateOfBirth">Date of birth</nz-form-label>
-            <nz-form-control nzErrorTip="Please select date of birth">
-              <nz-date-picker formControlName="dateOfBirth" nzPlaceHolder="Select Birthdate"></nz-date-picker>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gender">Gender</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter gender">
-
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Gender" formControlName="gender">
-                <nz-option nzLabel="Male" nzValue="MALE"></nz-option>
-                <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
-                <nz-option nzLabel="Other" nzValue="OTHER"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="maritalStatus">Marital status</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter marital status">
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Marital Status" formControlName="maritalStatus">
-                <nz-option nzLabel="Single" nzValue="SINGLE"></nz-option>
-                <nz-option nzLabel="Married" nzValue="MARRIED"></nz-option>
-                <nz-option nzLabel="Divorced" nzValue="DIVORCED"></nz-option>
-                <nz-option nzLabel="Widow" nzValue="WIDOW"></nz-option>
-                <nz-option nzLabel="Other" nzValue="OTHER"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">ID</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter ID">
-              <input nz-input placeholder="ID" formControlName="idNo" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="idType">ID type</nz-form-label>
-            <nz-form-control nzErrorTip="Please select ID type">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="professionsLoading | async" nzPlaceHolder="ID type"
-                formControlName="idType">
-                <nz-option *ngFor="let idType of idTypes" [nzLabel]="idType.name" [nzValue]="idType.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="profession">Profession</nz-form-label>
-            <nz-form-control nzErrorTip="Please select profession">
-              <nz-select nz-col nzSpan="6" nzShowSearch nzAllowClear [nzLoading]="professionsLoading | async"
-                nzPlaceHolder="Select a profession" formControlName="profession">
-                <nz-option *ngFor="let profession of professions" [nzLabel]="profession.name" [nzValue]="profession.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="religion">Religion</nz-form-label>
-            <nz-form-control nzErrorTip="Please select religion">
-              <nz-select nz-col nzSpan="6" nzShowSearch nzAllowClear [nzLoading]="religionsLoading | async"
-                nzPlaceHolder="Select a religion" formControlName="religion">
-                <nz-option *ngFor="let religion of religions" [nzLabel]="religion.name" [nzValue]="religion.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="educationalLevel">Educational level</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter educational level">
-              <nz-select nz-col nzSpan="6" nzShowSearch nzAllowClear [nzLoading]="educationalLevelsLoading | async"
-                nzPlaceHolder="Select a Educational Level" formControlName="educationalLevel">
-                <nz-option *ngFor="let level of educationalLevels" [nzLabel]="level.name" [nzValue]="level.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="residence">Residence</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter residence">
-              <input nz-input placeholder="Residence" formControlName="residence" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originCountry">Origin country</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a country">
-              <nz-select nzShowSearch [nzLoading]="countriesloading | async" nzPlaceHolder="Select a country"
-                formControlName="originCountry">
-                <nz-option *ngFor="let country of countries" [nzLabel]="country.name" [nzValue]="country.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Origin region</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a region">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="regionsLoading | async" nzPlaceHolder="Select a region"
-                formControlName="originRegion">
-                <nz-option *ngFor="let region of regions" [nzLabel]="region.name" [nzValue]="region.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Home town</nz-form-label>
-            <nz-form-control nzErrorTip="Please select a town">
-              <nz-select nzShowSearch nzAllowClear [nzLoading]="townsLoading | async" nzPlaceHolder="Select a town"
-                formControlName="homeTown">
-                <nz-option *ngFor="let town of towns" [nzLabel]="town.name" [nzValue]="town.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-
-        <div *ngIf="stepIndex == 2" formGroupName="profileData">
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="userName">User name</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter user name">
-              <input autocomplete="username" type="text" placeholder="User name" nz-input formControlName="userName" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="password">Password</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter a password">
-              <input autocomplete="new-password" type="password" placeholder="Password" nz-input
-                formControlName="password" />
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-
-        <div *ngIf="stepIndex == 3" formGroupName="contactInfo">
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="number">Phone</nz-form-label>
-            <nz-form-control nzErrorTip="Enter a valid phone number">
-              <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                <ng-template #addOnBeforeTemplate>
-                  <nz-select nzShowSearch nzPlaceHolder="Country Code" formControlName="countryCode"
-                    [nzLoading]="countriesloading | async">
-                    <nz-option *ngFor="let country of countries" [nzValue]="country.call_code"
-                      [nzLabel]="country.call_code  "></nz-option>
-                  </nz-select>
-                </ng-template>
-                <input type="tel" nz-input placeholder="505429933" formControlName="number" />
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="number">Alt Phone</nz-form-label>
-            <nz-form-control nzErrorTip="Enter a valid phone number">
-              <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                <ng-template #addOnBeforeTemplate>
-                  <nz-select nzShowSearch nzPlaceHolder="Country Code" formControlName="altCode"
-                    [nzLoading]="countriesloading | async">
-                    <nz-option *ngFor="let country of countries" [nzValue]="country.call_code"
-                      [nzLabel]="country.call_code  "></nz-option>
-                  </nz-select>
-                </ng-template>
-                <input type="tel" nz-input placeholder="505429933" formControlName="altNumber" />
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Email</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter valid email">
-              <input type="email" placeholder="Email" nz-input formControlName="email" />
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div *ngIf="stepIndex == 4" formGroupName="emergency">
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emergencyContactFullname">Full name</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter full name">
-
-              <input type="text" placeholder="Full name" nz-input formControlName="emergencyContactFullname" />
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="religion">Relationship</nz-form-label>
-            <nz-form-control nzErrorTip="Please select relationship">
-              <nz-select nz-col nzSpan="6" nzShowSearch nzAllowClear [nzLoading]="religionsLoading | async"
-                nzPlaceHolder="Select a relationship" formControlName="relationship">
-                <nz-option *ngFor="let relationship of relationships" [nzLabel]="relationship.name"
-                  [nzValue]="relationship.id">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="number">Phone</nz-form-label>
-            <nz-form-control nzErrorTip="Enter a valid phone number">
-              <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                <ng-template #addOnBeforeTemplate>
-                  <nz-select nzShowSearch nzPlaceHolder="Country Code" formControlName="countryCode"
-                    [nzLoading]="countriesloading | async">
-                    <nz-option *ngFor="let country of countries" [nzValue]="country.call_code"
-                      [nzLabel]="country.call_code  "></nz-option>
-                  </nz-select>
-                </ng-template>
-                <input type="tel" nz-input placeholder="505429933" formControlName="number" />
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="number">Other phone</nz-form-label>
-            <nz-form-control nzErrorTip="Enter a valid phone number">
-              <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-                <ng-template #addOnBeforeTemplate>
-                  <nz-select nzShowSearch nzPlaceHolder="Country Code" formControlName="countryCodeTwo"
-                    [nzLoading]="countriesloading | async">
-                    <nz-option *ngFor="let country of countries" [nzValue]="country.call_code"
-                      [nzLabel]="country.call_code  "></nz-option>
-                  </nz-select>
-                </ng-template>
-                <input type="tel" nz-input placeholder="505429933" formControlName="numberTwo" />
-              </nz-input-group>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div *ngIf="stepIndex == 5" formGroupName="role">
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="role">Role</nz-form-label>
-            <nz-form-control nzErrorTip="Please select role">
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Role" formControlName="role"
-                [nzLoading]="rolesloading | async">
-                <nz-option *ngFor="let role of roles" [nzValue]="role.id" [nzLabel]="role.name"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="department">Department</nz-form-label>
-            <nz-form-control nzErrorTip="Please select department">
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Department" formControlName="department"
-                [nzLoading]="departmentsloading | async">
-                <nz-option *ngFor="let department of departments" [nzValue]="department.id" [nzLabel]="department.name">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-        <div *ngIf="stepIndex == 6" formGroupName="other">
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="bankName">Bank Name</nz-form-label>
-            <nz-form-control nzErrorTip="Please select bank name">
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Bank Name" formControlName="bankName"
-                [nzLoading]="banksloading | async">
-                <nz-option *ngFor="let bank of banks" [nzValue]="bank.id" [nzLabel]="bank.name"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="bankBranch">Bank branch</nz-form-label>
-            <nz-form-control nzErrorTip="Please select bank branch">
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Bank branch" formControlName="bankBranch"
-                [nzLoading]="bankBranchesLoading | async">
-                <nz-option *ngFor="let branch of bankBranches" [nzValue]="branch.id" [nzLabel]="branch.name">
-                </nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="accountNumber">Account number</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter account number">
-              <input type="number" placeholder="Account Number" nz-input formControlName="accountNumber" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="profBody">Professional body</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter professional body">
-              <input type="text" placeholder="Professional body" nz-input formControlName="profBody" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="pin">Professional pin</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter professional pin">
-              <input type="text" placeholder="Professional Pin" nz-input formControlName="pin" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="expiryDate">Expiry date</nz-form-label>
-            <nz-form-control nzErrorTip="Please select expiry date">
-              <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Expiry Date"></nz-date-picker>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="appointmentDate">Appointment date</nz-form-label>
-            <nz-form-control nzErrorTip="Please select appointment date">
-              <nz-date-picker formControlName="appointmentDate" nzPlaceHolder="Appointment Date"></nz-date-picker>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="salary">Salary</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter salary">
-              <input type="number" placeholder="Salary" nz-input formControlName="salary" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="snnitNumber">SNNIT number</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter SNNIT number">
-              <input type="text" placeholder="SNNIT Number" nz-input formControlName="snnitNumber" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="tinNumber">TIN number</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter TIN number">
-              <input type="number" placeholder="TIN Number" nz-input formControlName="tinNumber" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <!-- <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="thirdPartyContribution">3rd Party Contribution
-            </nz-form-label>
-            <nz-form-control nzErrorTip="Please this is required">
-              <input type="text" placeholder="3rd Party Contribution" nz-input
-                formControlName="thirdPartyContribution" />
-            </nz-form-control>
-          </nz-form-item> -->
-
-          <!--  <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="taxOnSalary">Tax on salary</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter tax on salary">
-              <input type="text" placeholder="Tax on Salary" nz-input formControlName="taxOnSalary" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="signatory">Signatory</nz-form-label>
-            <nz-form-control nzErrorTip="Please select signatory">
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Signatory" formControlName="signatory">
-                <nz-option nzValue="doctor" nzLabel="Doctor"></nz-option>
-                <nz-option nzValue="nurse" nzLabel="Nurse"></nz-option>
-                <nz-option nzValue="other" nzLabel="Other"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item> -->
-        </div>
-
-        <div *ngIf="stepIndex == 7" formGroupName="attachments">
-
-
-          <nz-form-item>
-            <nz-form-control nzErrorTip="Please add photo">
-              <input type="hidden" placeholder="signature" nz-input formControlName="photo" />
-              <nz-upload [nzBeforeUpload]="beforeUploadPhoto">
-                <ng-container *ngIf="!photo" class="avatar-uploader">
-                  <button nz-button nzType="primary"><i nz-icon nzType="upload"></i>Attach photo</button>
-                </ng-container>
-                <img *ngIf="photo" [src]="photo" class="avatar" />
-              </nz-upload>
-              <button [nzLoading]="isLoading" *ngIf="photo" (click)="clearPhoto()" nz-button nzType="danger"><i nz-icon
-                  nzType="close"></i></button>
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-upload [(nzFileList)]="attachedFiles" [nzBeforeUpload]="beforeUploadDocs">
-            <button [nzLoading]="isLoading" nz-button nzType="primary" class="attach_doc_btn"><i nz-icon nzType="upload"></i>Attach
-              documents</button>
-          </nz-upload>
-
-          <nz-form-item>
-            <nz-form-control nzErrorTip="Please sign">
-              <input type="hidden" placeholder="signature" nz-input formControlName="signature" />
-              <signature-pad [options]="signaturePadOptions" (onEndEvent)="drawComplete()"></signature-pad>
-              <div nz-row>
-                <button [nzLoading]="isLoading" nz-button nzType="danger" (click)="clearSignature()">
-                  <span>Clear signature</span>
-                </button>
-              </div>
-            </nz-form-control>
-          </nz-form-item>
-        </div>
-      </form>
-    </div>
-    <div class="steps-action">
-      <button [nzLoading]="isLoading" nz-button nzType="default" (click)="pre()" *ngIf="stepIndex > 0">
-        <span>Previous</span>
-      </button>
-      <button nz-button nzType="default" (click)="next()" *ngIf="stepIndex < 7">
-        <span>Next</span>
-      </button>
-      <button [nzLoading]="isLoading" nz-button nzType="primary" (click)="done()" *ngIf="stepIndex === 7">
-        <span>Done</span>
-      </button>
+<div class="steps-content">
+  <div *ngIf="current == 0">
+    <div nz-row>
+      <nz-select
+        nz-col
+        nzSpan="6"
+        style="min-width: 200px;"
+        nzShowSearch
+        nzAllowClear
+        [nzLoading]="staffTypesLoading | async"
+        nzPlaceHolder="Select a staff type"
+        [(ngModel)]="staffType"
+      >
+        <nz-option
+          *ngFor="let staffType of staffTypes"
+          [nzLabel]="staffType.name"
+          [nzValue]="staffType.id"
+        ></nz-option>
+      </nz-select>
     </div>
   </div>
+
+  <div *ngIf="current == 1">
+    <div nz-row>
+      <nz-select
+        nz-col
+        nzSpan="6"
+        style="min-width: 200px;"
+        nzShowSearch
+        nzAllowClear
+        [nzLoading]="titlesLoading | async"
+        nzPlaceHolder="Select a title"
+        [(ngModel)]="title"
+      >
+        <nz-option
+          *ngFor="let title of titles"
+          [nzLabel]="title.name"
+          [nzValue]="title.id"
+        ></nz-option>
+      </nz-select>
+    </div>
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="4">
+        <input nz-input placeholder="First name" [(ngModel)]="firstName" />
+      </div>
+
+      <div nz-col nzSpan="4">
+        <input nz-input placeholder="Middle name" [(ngModel)]="middleName" />
+      </div>
+
+      <div nz-col nzSpan="4">
+        <input nz-input placeholder="Last name" [(ngModel)]="lastName" />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="User name"
+          nz-input
+          [(ngModel)]="username"
+        />
+      </div>
+    </div>
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="3">
+        <nz-date-picker
+          [(ngModel)]="dateOfBirth"
+          (ngModelChange)="onBirthDateChange($event)"
+          nzPlaceHolder="Select Birthdate"
+        ></nz-date-picker>
+      </div>
+      <div nz-col nzSpan="3">
+        <nz-select
+          style="width: 100%;"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Gender"
+          [(ngModel)]="gender"
+        >
+          <nz-option nzLabel="Male" nzValue="male"></nz-option>
+          <nz-option nzLabel="Female" nzValue="female"></nz-option>
+          <nz-option nzLabel="Other" nzValue="other"></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="3">
+        <nz-select
+          style="width: 100%;"
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Marital Status"
+          [(ngModel)]="maritalStatus"
+        >
+          <nz-option nzLabel="Single" nzValue="single"></nz-option>
+          <nz-option nzLabel="Married" nzValue="married"></nz-option>
+          <nz-option nzLabel="Divorced" nzValue="divorced"></nz-option>
+          <nz-option nzLabel="Widow" nzValue="widow"></nz-option>
+          <nz-option nzLabel="Other" nzValue="other"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="6">
+        <input nz-input placeholder="Profession" [(ngModel)]="profession" />
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <nz-select
+        nz-col
+        nzSpan="6"
+        style="min-width: 200px;"
+        nzShowSearch
+        nzAllowClear
+        [nzLoading]="educationalLevelsLoading | async"
+        nzPlaceHolder="Select a Educational Level"
+        [(ngModel)]="educationalLevel"
+      >
+        <nz-option
+          *ngFor="let level of educationalLevels"
+          [nzLabel]="level.name"
+          [nzValue]="level.id"
+        ></nz-option>
+      </nz-select>
+    </div>
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="6">
+        <input nz-input placeholder="Residence" [(ngModel)]="residence" />
+      </div>
+    </div>
+  </div>
+  <div *ngIf="current == 2">
+    <nz-input-group>
+      <div nz-col nzSpan="5">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Country Code"
+          style="width:100%;"
+          [(ngModel)]="phone.countryCode"
+          [nzLoading]="countriesloading | async"
+        >
+          <nz-option
+            *ngFor="let country of countries"
+            [nzValue]="country.call_code"
+            [nzLabel]="country.name + '  ' + country.call_code"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Phone"
+          nz-input
+          [(ngModel)]="phone.number"
+        />
+      </div>
+    </nz-input-group>
+
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <input type="email" placeholder="Email" nz-input [(ngModel)]="email" />
+      </div>
+    </div>
+  </div>
+  <div *ngIf="current == 3">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          placeholder="Full name"
+          nz-input
+          [(ngModel)]="emergencyContactFullname"
+        />
+      </div>
+    </div>
+    <br />
+    <nz-input-group>
+      <div nz-col nzSpan="5">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Country Code"
+          style="width:100%;"
+          [(ngModel)]="emergencyPhoneOne.countryCode"
+          [nzLoading]="countriesloading | async"
+        >
+          <nz-option
+            *ngFor="let country of countries"
+            [nzValue]="country.call_code"
+            [nzLabel]="country.name + '  ' + country.call_code"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Phone One"
+          nz-input
+          [(ngModel)]="emergencyPhoneOne.number"
+        />
+      </div>
+    </nz-input-group>
+    <br />
+    <nz-input-group>
+      <div nz-col nzSpan="5">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Country Code"
+          style="width:100%;"
+          [(ngModel)]="emergencyPhoneTwo.countryCode"
+          [nzLoading]="countriesloading | async"
+        >
+          <nz-option
+            *ngFor="let country of countries"
+            [nzValue]="country.call_code"
+            [nzLabel]="country.name + '  ' + country.call_code"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Phone Two"
+          nz-input
+          [(ngModel)]="emergencyPhoneTwo.number"
+        />
+      </div>
+    </nz-input-group>
+  </div>
+  <div *ngIf="current == 4">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Role"
+          style="width:100%;"
+          [(ngModel)]="role"
+          [nzLoading]="rolesloading | async"
+        >
+          <nz-option
+            *ngFor="let role of roles"
+            [nzValue]="role.value"
+            [nzLabel]="role.name"
+          ></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Department"
+          style="width:100%;"
+          [(ngModel)]="department"
+          [nzLoading]="departmentsloading | async"
+        >
+          <nz-option
+            *ngFor="let department of departments"
+            [nzValue]="department.name"
+            [nzLabel]="department.name"
+          ></nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="current == 5">
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="8">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Bank Name"
+          style="width:100%;"
+          [(ngModel)]="bankName"
+          [nzLoading]="banksloading | async"
+        >
+          <nz-option
+            *ngFor="let bank of banks"
+            [nzValue]="bank.id"
+            [nzLabel]="bank.name"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Bank Branch"
+          nz-input
+          [(ngModel)]="bankBranch"
+        />
+
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Bank Name"
+          style="width:100%;"
+          [(ngModel)]="bankBranch"
+          [nzLoading]="bankBranchesLoading | async"
+        >
+          <nz-option
+            *ngFor="let branch of bankBranches"
+            [nzValue]="branch.id"
+            [nzLabel]="branch.name"
+          ></nz-option>
+        </nz-select>
+      </div>
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Account Number"
+          nz-input
+          [(ngModel)]="accountNumber"
+        />
+      </div>
+    </div>
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="8">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Professional Pin"
+          nz-input
+          [(ngModel)]="pin"
+        />
+      </div>
+      <div nz-col nzSpan="4" style="text-align: left;">
+        <nz-date-picker
+          style="min-width: 400px;"
+          [(ngModel)]="expiryDate"
+          (ngModelChange)="onExpiryDateChange($event)"
+          nzPlaceHolder="Expiry Date"
+        ></nz-date-picker>
+      </div>
+      <div nz-col nzSpan="4" style="text-align:left">
+        <nz-date-picker
+          style="min-width: 400px;"
+          [(ngModel)]="appointmentDate"
+          (ngModelChange)="onAppointmentDateChange($event)"
+          nzPlaceHolder="Appointment Date"
+        ></nz-date-picker>
+      </div>
+    </div>
+    <br />
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Salary"
+          nz-input
+          [(ngModel)]="salary"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="SNNIT Number"
+          nz-input
+          [(ngModel)]="snnitNumber"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="TIN Number"
+          nz-input
+          [(ngModel)]="tinNumber"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="3rd Party Contribution"
+          nz-input
+          [(ngModel)]="thirdPartyContribution"
+        />
+      </div>
+      <div nz-col nzSpan="4">
+        <input
+          type="text"
+          style="text-align: left;"
+          placeholder="Tax on Salary"
+          nz-input
+          [(ngModel)]="taxOnSalary"
+        />
+      </div>
+    </div>
+    <br />
+    <div nz-row>
+      <div nz-col nzSpan="4">
+        <nz-select
+          nzShowSearch
+          nzAllowClear
+          nzPlaceHolder="Signatory"
+          style="width:100%;"
+          [(ngModel)]="signatory"
+        >
+          <nz-option nzValue="doctor" nzLabel="Doctor"></nz-option>
+          <nz-option nzValue="nurse" nzLabel="Nurse"></nz-option>
+          <nz-option nzValue="other" nzLabel="Other"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <!-- Work on signature pad -->
+        <!-- work on documents -->
+        In the pipeline
+      </div>
+    </div>
+  </div>
+  <div *ngIf="current == 6">In The pipeline</div>
+</div>
+<div class="steps-action">
+  <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+    <span>Previous</span>
+  </button>
+  <button nz-button nzType="default" (click)="next()" *ngIf="current < 6">
+    <span>Next</span>
+  </button>
+  <button nz-button nzType="primary" (click)="done()" *ngIf="current === 6">
+    <span>Done</span>
+  </button>
 </div>

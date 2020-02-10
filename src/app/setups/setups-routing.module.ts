@@ -1,4 +1,3 @@
-import { MedicalSponsorSetupComponent } from './pages/medical-sponsor-setup/medical-sponsor-setup.component';
 import { AuthGuard } from './../shared/guard/auth.guard';
 import { ReligionSetupComponent } from './pages/religion-setup/religion-setup.component';
 import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-style-setup.component';
@@ -128,11 +127,6 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
-        path: 'medicalsponsors',
-        component: MedicalSponsorSetupComponent,
-        canActivate: [AuthGuard]
-      },
-      {
         path: 'id-types',
         component: IdTypeSetupComponent,
         canActivate: [AuthGuard]
@@ -210,4 +204,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class SetupsRoutingModule { }
+export class SetupsRoutingModule {}

@@ -1,18 +1,29 @@
 <div nz-row nzGutter="10">
   <nz-col nzSpan="12">
     <nz-card>
-      <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
-        [nzRenderItem]="item">
+      <nz-list
+        style="min-height: 350px;"
+        [nzDataSource]="list"
+        [nzItemLayout]="'horizontal'"
+        [nzLoading]="initLoading"
+        [nzRenderItem]="item"
+      >
         <ng-template #item let-item>
-          <nz-list-item [nzActions]="item.loading ? [] : [editAction, moreAction]">
-            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
+          <nz-list-item
+            [nzActions]="item.loading ? [] : [editAction, moreAction]"
+          >
+            <nz-skeleton
+              [nzActive]="true"
+              [nzTitle]="false"
+              [nzLoading]="item.loading"
+            >
               <ng-template #editAction><a>edit</a></ng-template>
-              <ng-template #moreAction>
-                <nz-switch [(ngModel)]="item.isActivated"></nz-switch>
-              </ng-template>
+              <ng-template #moreAction
+                ><nz-switch [(ngModel)]="item.isActivated"></nz-switch
+              ></ng-template>
               <nz-list-item-meta [nzTitle]="nzTitle">
                 <ng-template #nzTitle>
-                  <a href="">{{ item.name }}</a>
+                  <a href="https://ng.ant.design">{{ item.name }}</a>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>
@@ -28,61 +39,126 @@
         <div *ngIf="error">{{ error }}</div>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input type="text" nz-input [(ngModel)]="name" name="name" placeholder="Input Funding Type name" />
+            <input
+              type="text"
+              nz-input
+              [(ngModel)]="name"
+              name="name"
+              placeholder="Input Funding Type name"
+            />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="sponsorshipType" style="width:100%;"
-              [(ngModel)]="sponsorshipType" name="sponsorshipType" [nzLoading]="sponsorshipTypesLoading | async">
-              <nz-option *ngFor="let sponsorshipType of sponsorshipTypes" [nzValue]="sponsorshipType.id"
-                [nzLabel]="sponsorshipType.name"></nz-option>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="sponsorshipType"
+              style="width:100%;"
+              [(ngModel)]="sponsorshipType"
+              name="sponsorshipType"
+              [nzLoading]="sponsorshipTypesLoading | async"
+            >
+              <nz-option
+                *ngFor="let sponsorshipType of sponsorshipTypes"
+                [nzValue]="sponsorshipType.id"
+                [nzLabel]="sponsorshipType.name"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Billing Cycle" style="width:100%;"
-              [(ngModel)]="billingCycle" name="billingCycle" [nzLoading]="billingCyclesLoading | async">
-              <nz-option *ngFor="let billingCycle of billingCycles" [nzValue]="billingCycle.id"
-                [nzLabel]="billingCycle.name"></nz-option>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Billing Cycle"
+              style="width:100%;"
+              [(ngModel)]="billingCycle"
+              name="billingCycle"
+              [nzLoading]="billingCyclesLoading | async"
+            >
+              <nz-option
+                *ngFor="let billingCycle of billingCycles"
+                [nzValue]="billingCycle.id"
+                [nzLabel]="billingCycle.name"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Payment Style" style="width:100%;"
-              [(ngModel)]="paymentStyle" name="paymentStyle" [nzLoading]="paymentStylesLoading | async">
-              <nz-option *ngFor="let paymentStyle of paymentStyles" [nzValue]="paymentStyle.id"
-                [nzLabel]="paymentStyle.name"></nz-option>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Payment Style"
+              style="width:100%;"
+              [(ngModel)]="paymentStyle"
+              name="paymentStyle"
+              [nzLoading]="paymentStylesLoading | async"
+            >
+              <nz-option
+                *ngFor="let paymentStyle of paymentStyles"
+                [nzValue]="paymentStyle.id"
+                [nzLabel]="paymentStyle.name"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Payment Channel" style="width:100%;"
-              [(ngModel)]="paymentChannel" name="paymentChannel" [nzLoading]="paymentChannelsLoading | async">
-              <nz-option *ngFor="let paymentChannel of paymentChannels" [nzValue]="paymentChannel.id"
-                [nzLabel]="paymentChannel.name"></nz-option>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Payment Channel"
+              style="width:100%;"
+              [(ngModel)]="paymentChannel"
+              name="paymentChannel"
+              [nzLoading]="paymentChannelsLoading | async"
+            >
+              <nz-option
+                *ngFor="let paymentChannel of paymentChannels"
+                [nzValue]="paymentChannel.id"
+                [nzLabel]="paymentChannel.name"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Billing System" style="width:100%;"
-              [(ngModel)]="billingSystem" name="billingSystem" [nzLoading]="billingSystemsLoading | async">
-              <nz-option *ngFor="let billingSystem of billingSystems" [nzValue]="billingSystem.id"
-                [nzLabel]="billingSystem.name"></nz-option>
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="Billing System"
+              style="width:100%;"
+              [(ngModel)]="billingSystem"
+              name="billingSystem"
+              [nzLoading]="billingSystemsLoading | async"
+            >
+              <nz-option
+                *ngFor="let billingSystem of billingSystems"
+                [nzValue]="billingSystem.id"
+                [nzLabel]="billingSystem.name"
+              ></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
         <nz-row>
-          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
-            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingFundingType | async">
+          <nz-form-control
+            nzSpan="24"
+            style="text-align: right;"
+            class="m-t-10"
+          >
+            <button
+              nz-button
+              nzType="primary"
+              type="submit"
+              [nzLoading]="isCreatingFundingType | async"
+            >
               Submit
             </button>
           </nz-form-control>

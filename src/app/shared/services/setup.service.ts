@@ -35,7 +35,6 @@ const HOSPITAL_SERVICE_API_URL =
   environment.apiBaseUrl + '/setups/hospitalservices';
 
 const LANGUAGE_API_URL = environment.apiBaseUrl + '/setups/languages';
-const MEDICAL_SPONSOR_API_URL = environment.apiBaseUrl + '/setups/billingsponsors';
 const DISTRICT_API_URL = environment.apiBaseUrl + '/setups/districts';
 const STAFF_TYPE_API_URL = environment.apiBaseUrl + '/setups/stafftypes';
 const SPECIALITY_API_URL = environment.apiBaseUrl + '/setups/specialties';
@@ -82,7 +81,6 @@ export class SetupService {
   private facilities;
   private companies;
   private accreditations;
-  private medicalSponsors;
 
   constructor(private http: HttpClient) { }
 
@@ -116,18 +114,6 @@ export class SetupService {
   createDepartment(name: string) {
     return this.http
       .post<any>(DEPARTMENTS_API_URL, { name })
-      .pipe(
-        map(res => {
-          if (res) {
-            return true;
-          }
-          return false;
-        })
-      );
-  }
-  createMedicalSponsor(fields: object) {
-    return this.http
-      .post<any>(MEDICAL_SPONSOR_API_URL, fields)
       .pipe(
         map(res => {
           if (res) {
@@ -694,6 +680,9 @@ export class SetupService {
     );
   }
 
+  /**
+   * Languages routes
+   */
   createStaffCategory(name: string) {
     return this.http
       .post<any>(STAFF_CATEGORY_API_URL, { name })
@@ -1093,20 +1082,6 @@ export class SetupService {
           }
         }
         return this.facilities;
-      })
-    );
-  }
-  getMedicalSponsors() {
-    return this.http.get<any>(MEDICAL_SPONSOR_API_URL).pipe(
-      map(res => {
-        if (res) {
-          this.medicalSponsors = res;
-          for (let i = 0; i < this.medicalSponsors.data.length; i++) {
-            this.medicalSponsors.data[i].isActivated =
-              this.medicalSponsors.data[i].status === 'ACTIVE' ? true : false;
-          }
-        }
-        return this.medicalSponsors;
       })
     );
   }

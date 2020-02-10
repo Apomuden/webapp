@@ -1,5 +1,5 @@
 <div class="container">
-  <nz-card *ngIf="user">
+  <nz-card *ngIf="user!== null">
     <div class="row align-items-center">
       <div class="col-md-6">
         <div class="d-md-flex align-items-center">
@@ -73,7 +73,7 @@
       </nz-card>
     </div>
     <div class="col-md-6">
-      <nz-card *ngIf="user">
+      <nz-card>
         <h5>Staff ID</h5>
         <p>{{user.staff_id}}</p>
         <hr />
