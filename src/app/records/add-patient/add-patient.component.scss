@@ -10,9 +10,9 @@ nz-select.phone-select {
   width: 70px !important;
 }
 
-.ant-input {
-  width: 350px;
-}
+//.ant-input {
+//  width: 350px;
+//}
 
 nz-form-control {
   display: inline-block;
@@ -24,4 +24,10 @@ nz-form-control {
 
 .age-switch {
   margin-left: 10px;
+}
+
+::ng-deep nz-steps {
+  div.ant-steps {
+    margin-bottom: 20px;
+  }
 }
