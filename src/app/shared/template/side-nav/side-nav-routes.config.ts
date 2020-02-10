@@ -97,16 +97,8 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '/records/register-patient',
+        path: '/records/patients',
         title: 'Patients',
-        iconType: '',
-        icon: '',
-        iconTheme: '',
-        submenu: []
-      },
-      {
-        path: '/records/search-patient',
-        title: 'Search Patient Information',
         iconType: '',
         icon: '',
         iconTheme: '',
