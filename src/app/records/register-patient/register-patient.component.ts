@@ -1,13 +1,13 @@
-import { first, map } from 'rxjs/operators';
-import { SetupService } from './../../shared/services/setup.service';
-import { Component, OnInit } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
+import {first, map} from 'rxjs/operators';
+import {SetupService} from './../../shared/services/setup.service';
+import {Component, OnInit} from '@angular/core';
+import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {BehaviorSubject} from 'rxjs';
 
 @Component({
   selector: 'app-register-patient',
   templateUrl: './register-patient.component.html',
-  styleUrls: ['./register-patient.component.css']
+  styleUrls: ['./register-patient.component.scss']
 })
 export class RegisterPatientComponent implements OnInit {
   fundingTypes = [];
@@ -15,11 +15,11 @@ export class RegisterPatientComponent implements OnInit {
   religions = [];
   educationalLevels = [];
   countryCodes = [];
-  isLoadingFundingTypes = new BehaviorSubject(false);
-  isLoadingTitles = new BehaviorSubject(false);
-  isLoadingReligions = new BehaviorSubject(false);
-  isLoadingEducationalLevels = new BehaviorSubject(false);
-  isLoadingCountryCodes = new BehaviorSubject(false);
+  isLoadingFundingTypes = true;
+  isLoadingTitles = true;
+  isLoadingReligions = true;
+  isLoadingEducationalLevels = true;
+  isLoadingCountryCodes = true;
 
   stepIndex = 0;
   readonly finalStepIndex = 3;
@@ -83,8 +83,8 @@ export class RegisterPatientComponent implements OnInit {
       billingInfo: this.fb.group({
         billingType: [null, [Validators.required]],
         sponsored: this.fb.group({
-          sponsorName: [null, [Validators.required]],  //Glico  compulsory
-          company: [null, [Validators.required]],//la Palm optional
+          sponsorName: [null, [Validators.required]],
+          company: [null, [Validators.required]],
           memberId: [null, [Validators.required]],
           cardSerialNumber: [null, [Validators.required]],
           staffId: [null, [Validators.required]],
@@ -169,7 +169,7 @@ export class RegisterPatientComponent implements OnInit {
       this.relationControl.reset();
     }
 
-    for (const i in this.sponsoredForm.controls) {
+    for (const i of Object.keys(this.sponsoredForm.controls)) {
       this.sponsoredForm.controls[i].markAsDirty();
       this.sponsoredForm.controls[i].updateValueAndValidity();
     }
@@ -193,7 +193,7 @@ export class RegisterPatientComponent implements OnInit {
     }
 
     if (!control.value) {
-      return { required: true };
+      return {required: true};
     }
 
     return null;
@@ -224,7 +224,7 @@ export class RegisterPatientComponent implements OnInit {
   };
 
   validatePatientInfo(): boolean {
-    for (const i in this.patientInfoForm.controls) {
+    for (const i of Object.keys(this.patientInfoForm.controls)) {
       this.patientInfoForm.controls[i].markAsDirty();
       this.patientInfoForm.controls[i].updateValueAndValidity();
     }
@@ -238,7 +238,7 @@ export class RegisterPatientComponent implements OnInit {
 
 
   validateContactInfo(): boolean {
-    for (const i in this.contactInfoForm.controls) {
+    for (const i of Object.keys(this.contactInfoForm.controls)) {
       this.contactInfoForm.controls[i].markAsDirty();
       this.contactInfoForm.controls[i].updateValueAndValidity();
     }
@@ -251,91 +251,89 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   validateNextOfKinInfo(): boolean {
-    for (const i in this.nextOfKinInfoForm.controls) {
+    for (const i of Object.keys(this.nextOfKinInfoForm.controls)) {
       this.nextOfKinInfoForm.controls[i].markAsDirty();
       this.nextOfKinInfoForm.controls[i].updateValueAndValidity();
     }
 
     return this.nextOfKinInfoForm.valid;
   }
-  getFundingTypes() {
-    this.isLoadingFundingTypes.next(true);
-    this.setups.getFundingTypes().pipe(first()).subscribe(
-      res => {
-        this.isLoadingFundingTypes.next(false);
-        if (res) {
-          this.fundingTypes = res.data;
-        }
 
-      },
-      err => {
-        this.isLoadingFundingTypes.next(false);
-        console.log(err);
-      }
-    );
+  private getFundingTypes() {
+    this.setups.getFundingTypes()
+      .pipe(first())
+      .subscribe(data => {
+        this.isLoadingFundingTypes = false;
+        this.fundingTypes = data.data;
+      }, error => {
+        this.isLoadingFundingTypes = false;
+        console.log(error);
+      });
   }
 
   getTitles() {
-    this.isLoadingTitles.next(true);
+    this.isLoadingTitles = true;
     this.setups.getTitles().pipe(first()).subscribe(
       res => {
         if (res) {
-          this.isLoadingTitles.next(false);
+          this.isLoadingTitles = false;
           this.titles = res.data;
         }
       },
       err => {
         console.log(err);
-        this.isLoadingTitles.next(false);
+        this.isLoadingTitles = false;
       }
     );
   }
+
   getReligions() {
-    this.isLoadingReligions.next(true);
+    this.isLoadingReligions = true;
     this.setups.getReligions().pipe(first()).subscribe(
       res => {
-        this.isLoadingReligions.next(false);
+        this.isLoadingReligions = false;
         if (res) {
           this.religions = res.data;
         }
 
       },
       err => {
-        this.isLoadingReligions.next(false);
+        this.isLoadingReligions = false;
         console.log(err);
       }
     );
   }
 
   getEducationalLevels() {
-    this.isLoadingEducationalLevels.next(true);
+    this.isLoadingEducationalLevels = true;
     this.setups.getEducationalLevels().pipe(first()).subscribe(
       res => {
         if (res) {
-          this.isLoadingEducationalLevels.next(false);
+          this.isLoadingEducationalLevels = false;
           this.educationalLevels = res.data;
         }
       },
       err => {
-        this.isLoadingEducationalLevels.next(false);
+        this.isLoadingEducationalLevels = false;
         console.log(err);
       }
     );
   }
 
   getCountryCodes() {
-    this.isLoadingCountryCodes.next(true);
+    this.isLoadingCountryCodes = true;
     this.setups.getCountries().pipe(first()).subscribe(
       res => {
-        this.isLoadingCountryCodes.next(false);
+        this.isLoadingCountryCodes = false;
         this.countryCodes = res.data.map(item => item.call_code);
       },
       err => {
-        this.isLoadingCountryCodes.next(false);
+        this.isLoadingCountryCodes = false;
         console.log(err);
       }
     );
   }
+
   submitForm() {
     //     firstName: "zcvxz"
     // lastName: "rvzvcxz"

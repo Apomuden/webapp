@@ -4,269 +4,271 @@
   <nz-step nzTitle="Contact Info"></nz-step>
   <nz-step nzTitle="Next of Kin"></nz-step>
 </nz-steps>
-<div class="steps-content">
-  <form nz-form [formGroup]="patientForm" (ngSubmit)="submitForm()">
-    <div *ngIf="stepIndex === 0" formGroupName="billingInfo" nz-row>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="billingType">Billing Type</nz-form-label>
-        <nz-form-control nzErrorTip="Please select a billing type">
-          <nz-select formControlName="billingType" nzPlaceHolder="Select billing type"
-            [nzLoading]="isLoadingFundingTypes|async">
-            <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id" [nzLabel]="fundingType.name">
-            </nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <div *ngIf="isBillingSponsored" formGroupName="sponsored">
+<nz-card class="form-content">
+  <div class="steps-content">
+    <form nz-form [formGroup]="patientForm" (ngSubmit)="submitForm()">
+      <div *ngIf="stepIndex === 0" formGroupName="billingInfo" nz-row>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
-          <nz-form-control nzErrorTip="Select a company name">
-            <nz-select formControlName="sponsorName" nzPlaceHolder="Select sponsor name">
-              <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
-              <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="billingType">Billing Type</nz-form-label>
+          <nz-form-control nzErrorTip="Please select a billing type">
+            <nz-select formControlName="billingType" nzPlaceHolder="Select billing type"
+                       [nzLoading]="isLoadingFundingTypes">
+              <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id" [nzLabel]="fundingType.name">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <div *ngIf="isBillingSponsored" formGroupName="sponsored">
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
+            <nz-form-control nzErrorTip="Select a company name">
+              <nz-select formControlName="sponsorName" nzPlaceHolder="Select sponsor name">
+                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
+                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="company">Company Name</nz-form-label>
+            <nz-form-control nzErrorTip="Select a company name">
+              <nz-select formControlName="company" nzPlaceHolder="Select company name">
+                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
+                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="memberId">Member Id</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid member Id">
+              <input type="text" nz-input placeholder="Member Id" formControlName="memberId" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cardSerialNumber">Card Serial Number</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid card serial number">
+              <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staffId">Staff Id</nz-form-label>
+            <nz-form-control nzErrorTip="Enter a valid staff Id">
+              <input type="text" nz-input placeholder="Staff Id" formControlName="staffId" />
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
+            <nz-form-control nzErrorTip="Select beneficiary of sponsorship">
+              <nz-select formControlName="beneficiary" nzPlaceHolder="Beneficiary of the sponsorship">
+                <nz-option nzValue="Self" nzLabel="Self"></nz-option>
+                <nz-option nzValue="Dependant" nzLabel="Dependant"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item *ngIf="isBeneficiaryDependant">
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="relation">Relation</nz-form-label>
+            <nz-form-control nzErrorTip="Select the relation">
+              <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient">
+                <nz-option nzValue="Wife" nzLabel="Wife"></nz-option>
+                <nz-option nzValue="Son" nzLabel="Son"></nz-option>
+                <nz-option nzValue="Daughter" nzLabel="Daughter"></nz-option>
+                <nz-option nzValue="Other" nzLabel="Other"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="policy">Policy</nz-form-label>
+            <nz-form-control nzErrorTip="Select a policy type">
+              <nz-select formControlName="policy" nzPlaceHolder="Select policy type">
+                <nz-option nzValue="Silver" nzLabel="Silver"></nz-option>
+                <nz-option nzValue="Gold" nzLabel="Gold"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
+            <nz-form-control nzErrorTip="Select a valid issued date">
+              <nz-date-picker formControlName="issuedDate" nzPlaceHolder="Select issue date"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
+            <nz-form-control nzErrorTip="Select a valid expiry date">
+              <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div *ngIf="stepIndex === 1" formGroupName="patientInfo" nz-row>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
+          <nz-form-control nzErrorTip="Select a title">
+            <nz-select formControlName="title" nzPlaceHolder="Select title" [nzLoading]="isLoadingTitles">
+              <nz-option *ngFor="let title of titles" [nzValue]="title.id" [nzLabel]="title.name"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="company">Company Name</nz-form-label>
-          <nz-form-control nzErrorTip="Select a company name">
-            <nz-select formControlName="company" nzPlaceHolder="Select company name">
-              <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
-              <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid name">
+            <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstName" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid name">
+            <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid name">
+            <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
+          <nz-form-control nzErrorTip="Select a valid date">
+            <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
+            </nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid name">
+            <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
+                             [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
+          </nz-form-control>
+          <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gender">Gender</nz-form-label>
+          <nz-form-control nzErrorTip="Select a gender">
+            <nz-select formControlName="gender" nzPlaceHolder="Select a gender">
+              <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+              <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+              <nz-option nzValue="BIGENDER" nzLabel="Bigender"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="memberId">Member Id</nz-form-label>
-          <nz-form-control nzErrorTip="Enter a valid member Id">
-            <input type="text" nz-input placeholder="Member Id" formControlName="memberId" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cardSerialNumber">Card Serial Number</nz-form-label>
-          <nz-form-control nzErrorTip="Enter a valid card serial number">
-            <input type="text" nz-input placeholder="Card Serial Number" formControlName="cardSerialNumber" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staffId">Staff Id</nz-form-label>
-          <nz-form-control nzErrorTip="Enter a valid staff Id">
-            <input type="text" nz-input placeholder="Staff Id" formControlName="staffId" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
-          <nz-form-control nzErrorTip="Select beneficiary of sponsorship">
-            <nz-select formControlName="beneficiary" nzPlaceHolder="Beneficiary of the sponsorship">
-              <nz-option nzValue="Self" nzLabel="Self"></nz-option>
-              <nz-option nzValue="Dependant" nzLabel="Dependant"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item *ngIf="isBeneficiaryDependant">
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="relation">Relation</nz-form-label>
-          <nz-form-control nzErrorTip="Select the relation">
-            <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient">
-              <nz-option nzValue="Wife" nzLabel="Wife"></nz-option>
-              <nz-option nzValue="Son" nzLabel="Son"></nz-option>
-              <nz-option nzValue="Daughter" nzLabel="Daughter"></nz-option>
-              <nz-option nzValue="Other" nzLabel="Other"></nz-option>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="maritalStatus">Marital Status</nz-form-label>
+          <nz-form-control nzErrorTip="Select marital status">
+            <nz-select formControlName="maritalStatus" nzPlaceHolder="Select marital status">
+              <nz-option nzValue="SINGLE" nzLabel="Single"></nz-option>
+              <nz-option nzValue="MARRIED" nzLabel="Married"></nz-option>
+              <nz-option nzValue="DIVORCED" nzLabel="Divorced"></nz-option>
+              <nz-option nzValue="WIDOW" nzLabel="Widow"></nz-option>
+              <nz-option nzValue="WIDOWER" nzLabel="Widower"></nz-option>
+              <nz-option nzValue="OTHER" nzLabel="Other"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="policy">Policy</nz-form-label>
-          <nz-form-control nzErrorTip="Select a policy type">
-            <nz-select formControlName="policy" nzPlaceHolder="Select policy type">
-              <nz-option nzValue="Silver" nzLabel="Silver"></nz-option>
-              <nz-option nzValue="Gold" nzLabel="Gold"></nz-option>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="nationality">Nationality</nz-form-label>
+          <nz-form-control nzErrorTip="Select nationality">
+            <nz-select formControlName="nationality" nzPlaceHolder="Select nationality">
+              <nz-option nzValue="Ghanaian" nzLabel="Ghanaian"></nz-option>
+              <nz-option nzValue="Foreigner" nzLabel="Foreigner"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
-          <nz-form-control nzErrorTip="Select a valid issued date">
-            <nz-date-picker formControlName="issuedDate" nzPlaceHolder="Select issue date"></nz-date-picker>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="religion">Religion</nz-form-label>
+          <nz-form-control nzErrorTip="Select religion">
+            <nz-select formControlName="religion" nzPlaceHolder="Select religion" [nzLoading]="isLoadingReligions">
+              <nz-option *ngFor="let religion of religions" [nzValue]="religion.id" [nzLabel]="religion.name"></nz-option>
+            </nz-select>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
-          <nz-form-control nzErrorTip="Select a valid expiry date">
-            <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="educationalLevel">Educational Level</nz-form-label>
+          <nz-form-control nzErrorTip="Select educational level">
+            <nz-select formControlName="educationalLevel" nzPlaceHolder="Select educational level"
+                       [nzLoading]="isLoadingEducationalLevels">
+              <nz-option *ngFor="let level of educationalLevels" [nzValue]="level.id" [nzLabel]="level.name"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="occupation">Occupation</nz-form-label>
+          <nz-form-control nzErrorTip="Enter occupation">
+            <input type="text" nz-input placeholder="Occupation eg. (Engineer)" formControlName="occupation" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="oldFolderNumber">Old Folder Number</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid folder number">
+            <input type="text" nz-input placeholder="Old Folder Number" formControlName="oldFolderNumber" />
           </nz-form-control>
         </nz-form-item>
       </div>
-    </div>
-    <div *ngIf="stepIndex === 1" formGroupName="patientInfo" nz-row>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
-        <nz-form-control nzErrorTip="Select a title">
-          <nz-select formControlName="title" nzPlaceHolder="Select title" [nzLoading]="isLoadingTitles|async">
-            <nz-option *ngFor="let title of titles" [nzValue]="title.id" [nzLabel]="title.name"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstName" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
-        <nz-form-control nzErrorTip="Select a valid date">
-          <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
-          </nz-date-picker>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid name">
-          <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
-            [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
-        </nz-form-control>
-        <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gender">Gender</nz-form-label>
-        <nz-form-control nzErrorTip="Select a gender">
-          <nz-select formControlName="gender" nzPlaceHolder="Select a gender">
-            <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
-            <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
-            <nz-option nzValue="BIGENDER" nzLabel="Bigender"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="maritalStatus">Marital Status</nz-form-label>
-        <nz-form-control nzErrorTip="Select marital status">
-          <nz-select formControlName="maritalStatus" nzPlaceHolder="Select marital status">
-            <nz-option nzValue="SINGLE" nzLabel="Single"></nz-option>
-            <nz-option nzValue="MARRIED" nzLabel="Married"></nz-option>
-            <nz-option nzValue="DIVORCED" nzLabel="Divorced"></nz-option>
-            <nz-option nzValue="WIDOW" nzLabel="Widow"></nz-option>
-            <nz-option nzValue="WIDOWER" nzLabel="Widower"></nz-option>
-            <nz-option nzValue="OTHER" nzLabel="Other"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="nationality">Nationality</nz-form-label>
-        <nz-form-control nzErrorTip="Select nationality">
-          <nz-select formControlName="nationality" nzPlaceHolder="Select nationality">
-            <nz-option nzValue="Ghanaian" nzLabel="Ghanaian"></nz-option>
-            <nz-option nzValue="Foreigner" nzLabel="Foreigner"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="religion">Religion</nz-form-label>
-        <nz-form-control nzErrorTip="Select religion">
-          <nz-select formControlName="religion" nzPlaceHolder="Select religion" [nzLoading]="isLoadingReligions|async">
-            <nz-option *ngFor="let religion of religions" [nzValue]="religion.id" [nzLabel]="religion.name"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="educationalLevel">Educational Level</nz-form-label>
-        <nz-form-control nzErrorTip="Select educational level">
-          <nz-select formControlName="educationalLevel" nzPlaceHolder="Select educational level"
-            [nzLoading]="isLoadingEducationalLevels|async">
-            <nz-option *ngFor="let level of educationalLevels" [nzValue]="level.id" [nzLabel]="level.name"></nz-option>
-          </nz-select>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="occupation">Occupation</nz-form-label>
-        <nz-form-control nzErrorTip="Enter occupation">
-          <input type="text" nz-input placeholder="Occupation eg. (Engineer)" formControlName="occupation" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="oldFolderNumber">Old Folder Number</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid folder number">
-          <input type="text" nz-input placeholder="Old Folder Number" formControlName="oldFolderNumber" />
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-    <div *ngIf="stepIndex === 2" formGroupName="contactInfo">
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Home Address</nz-form-label>
-        <nz-form-control nzErrorTip="Enter patient home address">
-          <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cellPhoneNumber">Mobile Number</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid phone number">
-          <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-            <ng-template #addOnBeforeTemplate>
-              <nz-select formControlName="countryCode" class="phone-select">
-                <nz-option nzLabel="+86" nzValue="+86"></nz-option>
-                <nz-option nzLabel="+87" nzValue="+87"></nz-option>
-                <nz-option nzLabel="+233" nzValue="+233"></nz-option>
-              </nz-select>
-            </ng-template>
-            <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="cellPhoneNumber" />
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emailAddress">Email Address</nz-form-label>
-        <nz-form-control nzErrorTip="Enter valid email">
-          <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress" />
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-    <div *ngIf="stepIndex === 3" formGroupName="nextOfKin">
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Full Name</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid name">
-          <input type="text" nz-input placeholder="Full name eg. James Anim" formControlName="name" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Home Address</nz-form-label>
-        <nz-form-control nzErrorTip="Enter patient home address">
-          <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress" />
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cellPhoneNumber">Mobile Number</nz-form-label>
-        <nz-form-control nzErrorTip="Enter a valid phone number">
-          <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-            <ng-template #addOnBeforeTemplate>
-              <nz-select formControlName="countryCode" class="phone-select">
-                <nz-option nzLabel="+86" nzValue="+86"></nz-option>
-                <nz-option nzLabel="+87" nzValue="+87"></nz-option>
-                <nz-option nzLabel="+233" nzValue="+233"></nz-option>
-              </nz-select>
-            </ng-template>
-            <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="cellPhoneNumber" />
-          </nz-input-group>
-        </nz-form-control>
-      </nz-form-item>
-      <nz-form-item>
-        <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emailAddress">Email Address</nz-form-label>
-        <nz-form-control nzErrorTip="Enter valid email">
-          <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress" />
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-  </form>
-</div>
+      <div *ngIf="stepIndex === 2" formGroupName="contactInfo">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Home Address</nz-form-label>
+          <nz-form-control nzErrorTip="Enter patient home address">
+            <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cellPhoneNumber">Mobile Number</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid phone number">
+            <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+              <ng-template #addOnBeforeTemplate>
+                <nz-select formControlName="countryCode" class="phone-select">
+                  <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+                  <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+                  <nz-option nzLabel="+233" nzValue="+233"></nz-option>
+                </nz-select>
+              </ng-template>
+              <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="cellPhoneNumber" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emailAddress">Email Address</nz-form-label>
+          <nz-form-control nzErrorTip="Enter valid email">
+            <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div *ngIf="stepIndex === 3" formGroupName="nextOfKin">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Full Name</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid name">
+            <input type="text" nz-input placeholder="Full name eg. James Anim" formControlName="name" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Home Address</nz-form-label>
+          <nz-form-control nzErrorTip="Enter patient home address">
+            <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress" />
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="cellPhoneNumber">Mobile Number</nz-form-label>
+          <nz-form-control nzErrorTip="Enter a valid phone number">
+            <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+              <ng-template #addOnBeforeTemplate>
+                <nz-select formControlName="countryCode" class="phone-select">
+                  <nz-option nzLabel="+86" nzValue="+86"></nz-option>
+                  <nz-option nzLabel="+87" nzValue="+87"></nz-option>
+                  <nz-option nzLabel="+233" nzValue="+233"></nz-option>
+                </nz-select>
+              </ng-template>
+              <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="cellPhoneNumber" />
+            </nz-input-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emailAddress">Email Address</nz-form-label>
+          <nz-form-control nzErrorTip="Enter valid email">
+            <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </form>
+  </div>
+</nz-card>
 <div class="steps-action">
   <button nz-button nzType="default" (click)="pre()" *ngIf="stepIndex > 0">
     <span>Previous</span>
