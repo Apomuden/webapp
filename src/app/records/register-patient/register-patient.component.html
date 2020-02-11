@@ -7,14 +7,36 @@
 <nz-card class="form-content">
   <div class="steps-content">
     <form nz-form [formGroup]="patientForm" (ngSubmit)="submitForm()">
+      <!-- patient_id: this.patient.id as number,
+      billing_sponsor_id: this.sponsorNameControl.value as number,
+      // sponsorship_policy_id: 6,
+      priority: 1,
+      member_id: this.memberIDControl.value,
+      card_serial_no: this.cardSerialControl.value,
+      company_id: this.companyControl.value as number,
+      staff_name: this.staffNameControl.value,
+      staff_id: this.staffIDControl.value,
+      benefit_type: this.beneficiaryControl.value,
+      relation_id: this.relationControl.value,
+      issued_date: this.formatDate(this.issueDateControl.value as Date),
+      expiry_date: this.formatDate(this.expiryDateControl.value as Date), -->
       <div *ngIf="stepIndex === 0" formGroupName="billingInfo" nz-row>
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="billingType">Billing Type</nz-form-label>
           <nz-form-control nzErrorTip="Please select a billing type">
-            <nz-select formControlName="billingType" nzPlaceHolder="Select billing type"
-                       [nzLoading]="isLoadingFundingTypes">
-              <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id" [nzLabel]="fundingType.name">
+            <nz-select formControlName="billingType" nzPlaceHolder="Select billing type" [compareWith]="compareFn"
+              [nzLoading]="isLoadingFundingTypes">
+              <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType" [nzLabel]="fundingType.name">
               </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="folder_type">Folder Type</nz-form-label>
+          <nz-form-control nzErrorTip="Please select a billing type">
+            <nz-select formControlName="folder_type" nzPlaceHolder="Select folder type">
+              <nz-option nzValue="FAMILY" nzLabel="Family"></nz-option>
+              <nz-option nzValue="INDIVIDUAL" nzLabel="Individual"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -31,9 +53,10 @@
           <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="company">Company Name</nz-form-label>
             <nz-form-control nzErrorTip="Select a company name">
-              <nz-select formControlName="company" nzPlaceHolder="Select company name">
-                <nz-option nzValue="GLICO" nzLabel="GLICO"></nz-option>
-                <nz-option nzValue="NHIS" nzLabel="NHIS"></nz-option>
+              <nz-select formControlName="company" nzPlaceHolder="Select company name"
+                [nzLoading]="isLoadingCompanies | async">
+                <nz-option *ngFor="let company of companies" [nzValue]="company.id" [nzLabel]="company.name">
+                </nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -59,23 +82,23 @@
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="beneficiary">Beneficiary</nz-form-label>
             <nz-form-control nzErrorTip="Select beneficiary of sponsorship">
               <nz-select formControlName="beneficiary" nzPlaceHolder="Beneficiary of the sponsorship">
-                <nz-option nzValue="Self" nzLabel="Self"></nz-option>
-                <nz-option nzValue="Dependant" nzLabel="Dependant"></nz-option>
+                <nz-option nzValue="SELF" nzLabel="Self"></nz-option>
+                <nz-option nzValue="DEPENDENT" nzLabel="Dependant"></nz-option>
+                <nz-option nzValue="BABY" nzLabel="Baby"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
           <nz-form-item *ngIf="isBeneficiaryDependant">
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="relation">Relation</nz-form-label>
             <nz-form-control nzErrorTip="Select the relation">
-              <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient">
-                <nz-option nzValue="Wife" nzLabel="Wife"></nz-option>
-                <nz-option nzValue="Son" nzLabel="Son"></nz-option>
-                <nz-option nzValue="Daughter" nzLabel="Daughter"></nz-option>
-                <nz-option nzValue="Other" nzLabel="Other"></nz-option>
+              <nz-select formControlName="relation" nzPlaceHolder="Beneficiary's relationship to patient"
+                [nzLoading]="isLoadingReligions | async">
+                <nz-option *ngFor="let relationship of relationships" [nzValue]="relationship.id"
+                  [nzLabel]="relationship.name"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item>
+          <!-- <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="policy">Policy</nz-form-label>
             <nz-form-control nzErrorTip="Select a policy type">
               <nz-select formControlName="policy" nzPlaceHolder="Select policy type">
@@ -83,7 +106,7 @@
                 <nz-option nzValue="Gold" nzLabel="Gold"></nz-option>
               </nz-select>
             </nz-form-control>
-          </nz-form-item>
+          </nz-form-item> -->
           <nz-form-item>
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
             <nz-form-control nzErrorTip="Select a valid issued date">
@@ -136,7 +159,7 @@
           <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
           <nz-form-control nzErrorTip="Enter a valid name">
             <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
-                             [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
+              [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
           </nz-form-control>
           <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
         </nz-form-item>
@@ -166,9 +189,27 @@
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="nationality">Nationality</nz-form-label>
           <nz-form-control nzErrorTip="Select nationality">
-            <nz-select formControlName="nationality" nzPlaceHolder="Select nationality">
-              <nz-option nzValue="Ghanaian" nzLabel="Ghanaian"></nz-option>
-              <nz-option nzValue="Foreigner" nzLabel="Foreigner"></nz-option>
+            <nz-select formControlName="nationality" nzPlaceHolder="Select nationality"
+              [nzLoading]="isLoadingCountryCodes | async">
+              <nz-option *ngFor="let country of countries" [nzValue]="country.id" [nzLabel]="country.name"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="region">Region</nz-form-label>
+          <nz-form-control nzErrorTip="Select region">
+            <nz-select formControlName="region" nzPlaceHolder="Select region" [nzLoading]="isLoadingRegions | async">
+              <nz-option *ngFor="let region of regions" [nzValue]="region.id" [nzLabel]="region.name"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="district">District</nz-form-label>
+          <nz-form-control nzErrorTip="Select district">
+            <nz-select formControlName="district" nzPlaceHolder="Select district"
+              [nzLoading]="isLoadingDistricts | async">
+              <nz-option *ngFor="let district of districts" [nzValue]="district.id" [nzLabel]="district.name">
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -176,7 +217,8 @@
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="religion">Religion</nz-form-label>
           <nz-form-control nzErrorTip="Select religion">
             <nz-select formControlName="religion" nzPlaceHolder="Select religion" [nzLoading]="isLoadingReligions">
-              <nz-option *ngFor="let religion of religions" [nzValue]="religion.id" [nzLabel]="religion.name"></nz-option>
+              <nz-option *ngFor="let religion of religions" [nzValue]="religion.id" [nzLabel]="religion.name">
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>
@@ -184,8 +226,9 @@
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="educationalLevel">Educational Level</nz-form-label>
           <nz-form-control nzErrorTip="Select educational level">
             <nz-select formControlName="educationalLevel" nzPlaceHolder="Select educational level"
-                       [nzLoading]="isLoadingEducationalLevels">
-              <nz-option *ngFor="let level of educationalLevels" [nzValue]="level.id" [nzLabel]="level.name"></nz-option>
+              [nzLoading]="isLoadingEducationalLevels">
+              <nz-option *ngFor="let level of educationalLevels" [nzValue]="level.id" [nzLabel]="level.name">
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

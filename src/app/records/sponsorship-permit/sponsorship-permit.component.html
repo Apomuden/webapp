@@ -54,7 +54,7 @@
         <nz-form-label [nzXs]="6" nzRequired nzFor="fundingType">Funding Type</nz-form-label>
         <nz-form-control nzErrorTip="Please select a funding type">
           <nz-select formControlName="fundingType" nzPlaceHolder="Select funding type" nzAllowClear
-                     [nzLoading]="isLoadingFundingTypes">
+            [nzLoading]="isLoadingFundingTypes">
             <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id" [nzLabel]="fundingType.name">
             </nz-option>
           </nz-select>
@@ -65,7 +65,7 @@
         <nz-form-label [nzXs]="6" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
         <nz-form-control nzErrorTip="Select a sponsor">
           <nz-select formControlName="sponsorName" nzPlaceHolder="Select sponsor name" nzShowSearch nzAllowClear
-                     [nzLoading]="isLoadingFundingTypes">
+            [nzLoading]="isLoadingFundingTypes">
             <nz-option *ngFor="let sponsor of sponsors" [nzValue]="sponsor.id" [nzLabel]="sponsor.name"></nz-option>
           </nz-select>
         </nz-form-control>
@@ -79,7 +79,7 @@
               <button nz-button nzType="default" (click)="showModal()">Add New</button>
             </ng-template>
             <nz-select formControlName="company" nzShowSearch nzAllowClear [nzLoading]="isCompaniesLoading"
-                       nzPlaceHolder="Select company name">
+              nzPlaceHolder="Select company name">
               <nz-option *ngFor="let company of companies" [nzValue]="company.id" [nzLabel]="company.name">
               </nz-option>
             </nz-select>
@@ -130,7 +130,7 @@
         <nz-form-label [nzXs]="6" nzRequired nzFor="relation">Relation</nz-form-label>
         <nz-form-control nzErrorTip="Select the relation">
           <nz-select formControlName="relation" nzAllowClear [nzLoading]="isLoadingRelation"
-                     nzPlaceHolder="Beneficiary's relationship to patient">
+            nzPlaceHolder="Beneficiary's relationship to patient">
             <nz-option *ngFor="let relation of relationships" [nzValue]="relation.id" [nzLabel]="relation.name">
             </nz-option>
           </nz-select>
@@ -141,7 +141,7 @@
         <nz-form-label [nzXs]="6" nzRequired nzFor="policy">Health Plan</nz-form-label>
         <nz-form-control nzErrorTip="Select a health plan">
           <nz-select formControlName="policy" nzPlaceHolder="Select health plan" nzAllowClear
-                     [nzLoading]="isLoadingFundingTypes">
+            [nzLoading]="isLoadingFundingTypes">
             <nz-option *ngFor="let policy of policies" [nzValue]="policy.id" [nzLabel]="policy.name">
             </nz-option>
           </nz-select>
@@ -192,7 +192,7 @@
     </nz-modal>
     <div nz-row>
       <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
-                                                                                   class="m-r-5"></i> {{message}}
+          class="m-r-5"></i> {{message}}
       </div>
     </div>
 
@@ -204,7 +204,7 @@
         <nz-button-group>
           <button [nzLoading]="isCreatingSponsor" nz-button nzType="danger" (click)="cancel()">Cancel</button>
           <button nz-button nzType="primary" (click)="addSponsor()" [disabled]="!sponsorForm.valid"
-                  [nzLoading]="isCreatingSponsor">Done</button>
+            [nzLoading]="isCreatingSponsor">Done</button>
         </nz-button-group>
       </div>
     </div>

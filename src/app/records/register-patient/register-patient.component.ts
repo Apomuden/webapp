@@ -1,8 +1,8 @@
-import {first, map} from 'rxjs/operators';
-import {SetupService} from './../../shared/services/setup.service';
-import {Component, OnInit} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {BehaviorSubject} from 'rxjs';
+import { first, map } from 'rxjs/operators';
+import { SetupService } from './../../shared/services/setup.service';
+import { Component, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-register-patient',
@@ -14,12 +14,21 @@ export class RegisterPatientComponent implements OnInit {
   titles = [];
   religions = [];
   educationalLevels = [];
+  companies = [];
+  relationships = [];
   countryCodes = [];
+  countries = [];
+  regions = [];
+  districts = [];
   isLoadingFundingTypes = true;
   isLoadingTitles = true;
   isLoadingReligions = true;
   isLoadingEducationalLevels = true;
   isLoadingCountryCodes = true;
+  isLoadingCompanies = new BehaviorSubject(false);
+  isLoadingRelationships = new BehaviorSubject(false);
+  isLoadingRegions = new BehaviorSubject(false);
+  isLoadingDistricts = new BehaviorSubject(false);
 
   stepIndex = 0;
   readonly finalStepIndex = 3;
@@ -77,11 +86,13 @@ export class RegisterPatientComponent implements OnInit {
     this.getReligions();
     this.getEducationalLevels();
     this.getCountryCodes();
-
+    this.getCompanies();
+    this.getRelationships();
     this.patientForm = this.fb.group({
       // 1.0 Billing Information
       billingInfo: this.fb.group({
         billingType: [null, [Validators.required]],
+        folder_type: [null, [Validators.required]],
         sponsored: this.fb.group({
           sponsorName: [null, [Validators.required]],
           company: [null, [Validators.required]],
@@ -103,6 +114,7 @@ export class RegisterPatientComponent implements OnInit {
         middleName: [null, [Validators.required]],
         title: [null, [Validators.required]],
         dob: [null, [Validators.required]],
+
         // todo add custom validator for when useAge is selected
         age: [0],
         useAge: [false],
@@ -130,14 +142,29 @@ export class RegisterPatientComponent implements OnInit {
         emailAddress: [null, [Validators.email]],
       }),
     });
+    this.patientInfoForm.get('nationality').valueChanges.subscribe(val => {
+      this.getRegionsByCountryId(val.toString())
+    },
+      err => console.log(err)
+    );
+    this.patientForm.get('billingInfo').get('billingType').valueChanges.subscribe(val => {
+      console.log(this.billingTypeControl);
+      // if (this.isBillingSponsored) {
+      //   this.showBillingForm = true;
+      // } else {
+      //   this.showBillingForm = false;
+      // }
+    });
   }
 
   get billingTypeControl(): FormControl {
     return this.patientForm.get('billingInfo').get('billingType') as FormControl;
   }
 
+
+
   get isBillingSponsored(): boolean {
-    return this.billingTypeControl.value === 'Sponsored';
+    return this.billingTypeControl.value !== null && this.billingTypeControl.value.name.trim() !== 'Cash/Prepaid';
   }
 
   get sponsoredForm(): FormGroup {
@@ -149,7 +176,7 @@ export class RegisterPatientComponent implements OnInit {
   }
 
   get isBeneficiaryDependant(): boolean {
-    return this.beneficiaryControl.value === 'Dependant';
+    return this.beneficiaryControl.value === 'DEPENDENT';
   }
 
   get relationControl(): FormControl {
@@ -193,7 +220,7 @@ export class RegisterPatientComponent implements OnInit {
     }
 
     if (!control.value) {
-      return {required: true};
+      return { required: true };
     }
 
     return null;
@@ -326,6 +353,7 @@ export class RegisterPatientComponent implements OnInit {
       res => {
         this.isLoadingCountryCodes = false;
         this.countryCodes = res.data.map(item => item.call_code);
+        this.countries = res.data;
       },
       err => {
         this.isLoadingCountryCodes = false;
@@ -334,48 +362,86 @@ export class RegisterPatientComponent implements OnInit {
     );
   }
 
+  getCompanies() {
+    this.isLoadingCompanies.next(true);
+    this.setups.getCompanies().pipe(first()).subscribe(
+      res => {
+        this.isLoadingCompanies.next(false);
+        this.companies = res.data;
+      }, err => {
+        this.isLoadingCompanies.next(false);
+      }
+    );
+  }
+
+  getRelationships() {
+    this.isLoadingRelationships.next(true);
+    this.setups.getRelationships().pipe(first()).subscribe(
+      res => {
+        this.isLoadingRelationships.next(false);
+        this.relationships = res.data;
+      },
+      err => {
+        this.isLoadingRelationships.next(false);
+      }
+    );
+  }
+
+
+  getRegionsByCountryId(countryId: string) {
+    this.isLoadingRegions.next(true);
+    this.setups.getRegionsByCountryId(countryId).pipe(first()).subscribe(
+      res => {
+        this.regions = res.data;
+        this.isLoadingRegions.next(false);
+      },
+      err => {
+        this.isLoadingRegions.next(false);
+      }
+    );
+  }
+
+
+  getDistricts() {
+    this.isLoadingDistricts.next(true);
+    this.setups.getDistricts().pipe(first()).subscribe(
+      res => {
+        this.districts = res.data;
+      },
+      err => {
+        console.log(err);
+      }
+
+    )
+  }
   submitForm() {
-    //     firstName: "zcvxz"
-    // lastName: "rvzvcxz"
-    // middleName: "vvsdfzxv"
-    // title: 7
-    // dob: Wed Jan 22 2020 11:42:50 GMT+0000 (Greenwich Mean Time) {}
-    // age: 0
-    // useAge: false
-    // gender: "FEMALE"
-    // maritalStatus: "MARRIED"
-    // nationality: "Ghanaian"
-    // religion: 3
-    // educationalLevel: 8
-    // occupation: "zxcvsfd"
-    // oldFolderNumber: "zvzvdf"
+
     console.log(this.patientInfoForm.value);
     let payload = {
       'title_id': 1,
-      'folder_id': 7,
       'funding_type_id': 1,
+      'folder_type': 'FAMILY',
       'ssnit_no': null,
       'tin': null,
-      'username': null,
-      'surname': 'Samd',
-      'middlename': 'Baagyan-Nyamekye',
-      'firstname': 'Arhin',
+      'surname': 'Sam',
+      'middlename': 'Han',
+      'firstname': 'Kwabena',
       'dob': '10-01-2021',
       'gender': 'MALE',
-      'country_id': null,
-      'region_id': null,
-      'district_id': null,
+      'origin_country_id': null,
+      'origin_region_id': null,
+      'origin_district_id': null,
       'hometown_id': null,
       'marital': null,
       'profession_id': null,
       'staff_id': null,
       'work_address': null,
       'residence_address': null,
-      'native_language_id': null,
-      'second_language_id': null,
-      'official_language_id': null,
+      'native_lang_id': null,
+      'second_lang_id': null,
+      'official_lang_id': null,
       'id_type_id': 1,
-      'id_no': '123456719',
+      'id_no': '123456709',
       'id_expiry_date': '01-01-2030',
       'religion_id': null,
       'educational_level_id': null,
@@ -387,6 +453,10 @@ export class RegisterPatientComponent implements OnInit {
       'mortality': 'ALIVE',
       'reg_status': 'OUT-PATIENT',
       'status': 'ACTIVE'
-    };
+    }
+  }
+
+  compareFn(c1: any, c2: any): boolean {
+    return c1 === c2;
   }
 }

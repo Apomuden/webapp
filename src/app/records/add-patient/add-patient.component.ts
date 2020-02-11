@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {SetupService} from '../../shared/services/setup.service';
-import {first} from 'rxjs/operators';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { SetupService } from '../../shared/services/setup.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-patient',
@@ -31,7 +31,7 @@ export class AddPatientComponent implements OnInit {
 
   done(): void {
     if (this.validateNextOfKinInfo()) {
-    this.submitForm();
+      this.submitForm();
     }
   }
 
@@ -120,7 +120,7 @@ export class AddPatientComponent implements OnInit {
   }
 
   get isBillingSponsored(): boolean {
-    return this.billingTypeControl.value === 'Sponsored';
+    return !this.billingTypeControl.value.trim().toLowerCase().contains('cash/prepaid');
   }
 
   get sponsoredForm(): FormGroup {
@@ -165,7 +165,7 @@ export class AddPatientComponent implements OnInit {
 
   // noinspection JSMethodCanBeStatic
   // TODO fix validator error
-  relationValidator = (control: FormControl): { [key: string]: any } | null =>{
+  relationValidator = (control: FormControl): { [key: string]: any } | null => {
 
     if (!this.patientForm) {
       return null;

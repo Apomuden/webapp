@@ -447,6 +447,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (!date) {
       return null;
     }
+
     let month = '' + (date.getMonth() + 1);
     let day = '' + date.getDate();
     const year = date.getFullYear();
@@ -457,7 +458,6 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (day.length < 2) {
       day = '0' + day;
     }
-
     return [year, month, day].join('-');
   }
 }
