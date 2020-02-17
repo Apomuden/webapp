@@ -164,13 +164,45 @@ export class SetupService {
             this.clinics = res;
             for (let i = 0; i < this.clinics.data.length; i++) {
               this.clinics.data[i].isActivated =
-                this.clinics.data[i].status === 'ACTIVE' ? true : false;
+                this.clinics.data[i].status === 'ACTIVE';
             }
           }
           return this.clinics;
         }
       )
-    )
+    );
+  }
+
+  getAllSponsorPolicies() {
+    let data: any = [];
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/sponsorpolicies`).pipe(
+      map(res => {
+        if (res) {
+          data = res;
+          for (let i = 0; i < res.data.length; i++) {
+            data.data[i].isActivated = data.data[i].status === 'ACTIVE';
+          }
+        }
+        return data;
+      })
+    );
+  }
+
+  createSponsorPolicy(name: string, medicalSponser: string) {
+
+    return this.http.post<any>(`${environment.apiBaseUrl}/setups/sponsorpolicies`, {
+      name,
+      billing_sponsor_id: medicalSponser
+    }).pipe(
+      map(
+        res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        }
+      )
+    );
   }
 
   getDepartments() {
@@ -180,7 +212,7 @@ export class SetupService {
           this.departments = res;
           for (let i = 0; i < this.departments.data.length; i++) {
             this.departments.data[i].isActivated =
-              this.departments.data[i].status === 'ACTIVE' ? true : false;
+              this.departments.data[i].status === 'ACTIVE';
           }
         }
         return this.departments;
@@ -224,13 +256,15 @@ export class SetupService {
           this.fundingTypes = res;
           for (let i = 0; i < this.fundingTypes.data.length; i++) {
             this.fundingTypes.data[i].isActivated =
-              this.fundingTypes.data[i].status === 'ACTIVE' ? true : false;
+              this.fundingTypes.data[i].status === 'ACTIVE';
           }
         }
         return this.fundingTypes;
       })
     );
   }
+
+
 
   /**
    * Service Category routes
@@ -257,7 +291,7 @@ export class SetupService {
           this.serviceCategories = res;
           for (let i = 0; i < this.serviceCategories.data.length; i++) {
             this.serviceCategories.data[i].isActivated =
-              this.serviceCategories.data[i].status === 'ACTIVE' ? true : false;
+              this.serviceCategories.data[i].status === 'ACTIVE';
           }
         }
         return this.serviceCategories;
@@ -290,9 +324,7 @@ export class SetupService {
           this.serviceSubCategories = res;
           for (let i = 0; i < this.serviceSubCategories.data.length; i++) {
             this.serviceSubCategories.data[i].isActivated =
-              this.serviceSubCategories.data[i].status === 'ACTIVE'
-                ? true
-                : false;
+              this.serviceSubCategories.data[i].status === 'ACTIVE';
           }
         }
         return this.serviceSubCategories;
@@ -325,7 +357,7 @@ export class SetupService {
           this.professions = res;
           for (let i = 0; i < this.professions.data.length; i++) {
             this.professions.data[i].isActivated =
-              this.professions.data[i].status === 'ACTIVE' ? true : false;
+              this.professions.data[i].status === 'ACTIVE';
           }
         }
         return this.professions;
@@ -358,7 +390,7 @@ export class SetupService {
           this.staffTypes = res;
           for (let i = 0; i < this.staffTypes.data.length; i++) {
             this.staffTypes.data[i].isActivated =
-              this.staffTypes.data[i].status === 'ACTIVE' ? true : false;
+              this.staffTypes.data[i].status === 'ACTIVE';
           }
         }
         return this.staffTypes;
@@ -390,7 +422,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.paymentChannels.data.length; i++) {
             this.paymentChannels.data[i].isActivated =
-              this.paymentChannels.data[i].status === 'ACTIVE' ? true : false;
+              this.paymentChannels.data[i].status === 'ACTIVE';
           }
         }
         return this.paymentChannels;
@@ -422,7 +454,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.billingCycles.data.length; i++) {
             this.billingCycles.data[i].isActivated =
-              this.billingCycles.data[i].status === 'ACTIVE' ? true : false;
+              this.billingCycles.data[i].status === 'ACTIVE';
           }
         }
         return this.billingCycles;
@@ -466,7 +498,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.accreditations.data.length; i++) {
             this.accreditations.data[i].isActivated =
-              this.accreditations.data[i].status === 'ACTIVE' ? true : false;
+              this.accreditations.data[i].status === 'ACTIVE';
           }
         }
         return this.accreditations;
@@ -498,7 +530,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.billingSystems.data.length; i++) {
             this.billingSystems.data[i].isActivated =
-              this.billingSystems.data[i].status === 'ACTIVE' ? true : false;
+              this.billingSystems.data[i].status === 'ACTIVE';
           }
         }
         return this.billingSystems;
@@ -530,7 +562,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.companies.data.length; i++) {
             this.companies.data[i].isActivated =
-              this.companies.data[i].status === 'ACTIVE' ? true : false;
+              this.companies.data[i].status === 'ACTIVE';
           }
         }
         return this.companies;
@@ -562,14 +594,13 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.hospitalServices.data.length; i++) {
             this.hospitalServices.data[i].isActivated =
-              this.hospitalServices.data[i].status === 'ACTIVE' ? true : false;
+              this.hospitalServices.data[i].status === 'ACTIVE';
           }
         }
         return this.hospitalServices;
       })
     );
   }
-  createHostpitalService
 
   /**
    * Languages routes
@@ -595,7 +626,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.languages.data.length; i++) {
             this.languages.data[i].isActivated =
-              this.languages.data[i].status === 'ACTIVE' ? true : false;
+              this.languages.data[i].status === 'ACTIVE';
           }
         }
         return this.languages;
@@ -627,7 +658,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.towns.data.length; i++) {
             this.towns.data[i].isActivated =
-              this.towns.data[i].status === 'ACTIVE' ? true : false;
+              this.towns.data[i].status === 'ACTIVE';
           }
         }
         return this.towns;
@@ -647,7 +678,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.towns.data.length; i++) {
             this.towns.data[i].isActivated =
-              this.towns.data[i].status === 'ACTIVE' ? true : false;
+              this.towns.data[i].status === 'ACTIVE';
           }
         }
         return this.towns;
@@ -663,7 +694,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.servicePrices.data.length; i++) {
             this.servicePrices.data[i].isActivated =
-              this.servicePrices.data[i].status === 'ACTIVE' ? true : false;
+              this.servicePrices.data[i].status === 'ACTIVE';
           }
         }
         return this.servicePrices;
@@ -706,7 +737,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.relationships.data.length; i++) {
             this.relationships.data[i].isActivated =
-              this.relationships.data[i].status === 'ACTIVE' ? true : false;
+              this.relationships.data[i].status === 'ACTIVE';
           }
         }
         return this.relationships;
@@ -738,7 +769,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.specialities.data.length; i++) {
             this.specialities.data[i].isActivated =
-              this.specialities.data[i].status === 'ACTIVE' ? true : false;
+              this.specialities.data[i].status === 'ACTIVE';
           }
         }
         return this.specialities;
@@ -770,7 +801,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.religions.data.length; i++) {
             this.religions.data[i].isActivated =
-              this.religions.data[i].status === 'ACTIVE' ? true : false;
+              this.religions.data[i].status === 'ACTIVE';
           }
         }
         return this.religions;
@@ -799,7 +830,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.staffCategories.data.length; i++) {
             this.staffCategories.data[i].isActivated =
-              this.staffCategories.data[i].status === 'ACTIVE' ? true : false;
+              this.staffCategories.data[i].status === 'ACTIVE';
           }
         }
         return this.staffCategories;
@@ -831,7 +862,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.paymentStyle.data.length; i++) {
             this.paymentStyle.data[i].isActivated =
-              this.paymentStyle.data[i].status === 'ACTIVE' ? true : false;
+              this.paymentStyle.data[i].status === 'ACTIVE';
           }
         }
         return this.paymentStyle;
@@ -863,7 +894,7 @@ export class SetupService {
           console.log(res);
           for (let i = 0; i < this.sponsorshipTypes.data.length; i++) {
             this.sponsorshipTypes.data[i].isActivated =
-              this.sponsorshipTypes.data[i].status === 'ACTIVE' ? true : false;
+              this.sponsorshipTypes.data[i].status === 'ACTIVE';
           }
         }
         return this.sponsorshipTypes;

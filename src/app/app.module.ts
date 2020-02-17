@@ -49,7 +49,6 @@ registerLocaleData(en);
       useClass: JwtInterceptor,
       multi: true
     }
-
   ],
   bootstrap: [AppComponent]
 })

@@ -1,14 +1,15 @@
-import {NgModule} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HttpClientModule} from '@angular/common/http';
-import {RouterModule} from '@angular/router';
-import {NgZorroAntdModule, NzNotificationService} from 'ng-zorro-antd';
-import {PerfectScrollbarModule} from 'ngx-perfect-scrollbar';
-import {ThemeConstantService} from './services/theme-constant.service';
-import {SearchPipe} from './pipes/search.pipe';
-import {AntModule} from './ant.module';
-import {FullLayoutComponent} from '../layouts/full-layout/full-layout.component';
+import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { RouterModule } from '@angular/router';
+import { NgZorroAntdModule, NzNotificationService } from 'ng-zorro-antd';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
+import { ThemeConstantService } from './services/theme-constant.service';
+import { SearchPipe } from './pipes/search.pipe';
+import { AntModule } from './ant.module';
+import { FullLayoutComponent } from '../layouts/full-layout/full-layout.component';
 
 @NgModule({
   exports: [
@@ -19,11 +20,13 @@ import {FullLayoutComponent} from '../layouts/full-layout/full-layout.component'
     SearchPipe,
     ReactiveFormsModule,
     AntModule,
+    GooglePlaceModule
   ],
   imports: [
     RouterModule,
     CommonModule,
     NgZorroAntdModule,
+    GooglePlaceModule,
     AntModule,
     PerfectScrollbarModule,
     ReactiveFormsModule

@@ -68,7 +68,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         if (folderNo && this.searchControl.valid) {
           this.getPatient(folderNo);
           this.getFundingTypes();
-          this.getRelationsips();
+          this.getRelationships();
           this.getCompanies();
         } else {
           this.message = 'Please enter a valid folder number to fill this form.';
@@ -275,7 +275,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
       });
   }
 
-  private getRelationsips() {
+  private getRelationships() {
     this.setupService.getRelationships()
       .pipe(first())
       .subscribe(data => {
@@ -447,6 +447,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (!date) {
       return null;
     }
+
     let month = '' + (date.getMonth() + 1);
     let day = '' + date.getDate();
     const year = date.getFullYear();
@@ -457,7 +458,6 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (day.length < 2) {
       day = '0' + day;
     }
-
     return [year, month, day].join('-');
   }
 }
