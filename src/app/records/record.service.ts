@@ -63,4 +63,33 @@ export class RecordService {
     const url = `${environment.apiBaseUrl}/registry/patients`;
     return this.http.post(url, data);
   }
+  createPatient(data: object) {
+    return this.http
+      .post<any>(`${environment.apiBaseUrl}/registry/patients/withfolder`, data)
+      .pipe(
+        map(res => {
+          if (res) {
+            console.log('Patient Response Results: ');
+            console.log(res);
+            return res.data;
+
+          }
+          return false;
+        })
+      );
+  }
+  createNextOfKin(data: object) {
+    return this.http
+      .post<any>(`${environment.apiBaseUrl}/registry/patientnextofkins`, data)
+      .pipe(
+        map(res => {
+          if (res) {
+            console.log('Patient Next of Kin Results: ');
+            console.log(res);
+            return res.data;
+          }
+          return false;
+        })
+      );
+  }
 }

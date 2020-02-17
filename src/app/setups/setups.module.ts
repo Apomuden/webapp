@@ -45,6 +45,7 @@ import { EisuComponent } from './categories/eisu/eisu.component';
 import { OtherComponent } from './categories/other/other.component';
 import { ClinicComponent } from './pages/clinic/clinic.component';
 import { ServicePricingSetupComponent } from './pages/service-pricing-setup/service-pricing-setup.component';
+import { SponsorPolicySetupComponent } from './pages/sponsor-policy-setup/sponsor-policy-setup.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +88,8 @@ import { ServicePricingSetupComponent } from './pages/service-pricing-setup/serv
     EisuComponent,
     OtherComponent,
     ClinicComponent,
-    ServicePricingSetupComponent
+    ServicePricingSetupComponent,
+    SponsorPolicySetupComponent
   ],
   imports: [
     CommonModule,

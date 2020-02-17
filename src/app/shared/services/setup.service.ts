@@ -170,7 +170,39 @@ export class SetupService {
           return this.clinics;
         }
       )
-    )
+    );
+  }
+
+  getAllSponsorPolicies() {
+    let data: any = [];
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/sponsorpolicies`).pipe(
+      map(res => {
+        if (res) {
+          data = res;
+          for (let i = 0; i < res.data.length; i++) {
+            data.data[i].isActivated = data.data[i].status === 'ACTIVE';
+          }
+        }
+        return data;
+      })
+    );
+  }
+
+  createSponsorPolicy(name: string, medicalSponser: string) {
+
+    return this.http.post<any>(`${environment.apiBaseUrl}/setups/sponsorpolicies`, {
+      name,
+      billing_sponsor_id: medicalSponser
+    }).pipe(
+      map(
+        res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        }
+      )
+    );
   }
 
   getDepartments() {
@@ -231,6 +263,8 @@ export class SetupService {
       })
     );
   }
+
+
 
   /**
    * Service Category routes
