@@ -148,7 +148,8 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     this.billingTypeControl.valueChanges.pipe(debounceTime(500), untilComponentDestroyed(this))
       .subscribe(id => {
         if (this.billingTypeControl.valid) {
-          // this.sponsorNameControl.reset();
+          // this must be reset so that the previous selections will be cleared to avoid conflict with the backend validation
+          this.sponsorNameControl.reset();
           this.getSponsors(this.getSelectedFundingType(id).sponsorship_type_id);
         }
       });
@@ -196,15 +197,15 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
         folder_type: [null, [Validators.required]],
         sponsored: this.fb.group({
           sponsorName: [null, [Validators.required]],
-          company: [null, [Validators.required]],
-          memberId: [null, [Validators.required]],
-          cardSerialNumber: [null, [Validators.required]],
-          staffId: [null, [Validators.required]],
-          staffName: [null, [Validators.required]],
+          company: [null], // some of the fields are conditionally required so must not set them as required here
+          memberId: [null],
+          cardSerialNumber: [null],
+          staffId: [null],
+          staffName: [null],
           beneficiary: [null, [Validators.required]],
-          relation: [null, [this.relationValidator]],
+          relation: [null], // the relation validator is not needed
           // relation: [null],
-          policy: [null, [Validators.required]],
+          policy: [null],
           issuedDate: [null, [Validators.required]],
           expiryDate: [null, [Validators.required]],
         }),
