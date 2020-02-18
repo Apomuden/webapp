@@ -70,7 +70,6 @@ export class RecordService {
         map(res => {
           if (res) {
             return res.data;
-
           }
           return false;
         })

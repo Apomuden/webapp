@@ -495,13 +495,13 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
 
   private createPatient(data: object) {
     this.recordService.createPatient(data).pipe(first()).subscribe(
-      res => {
-        if (!res) {
+      patient => {
+        if (!patient) {
           this.isCreatingPatient = false;
           this.notification.error('Error', 'Could not create patient, please try again');
         } else {
-          this.createdPatient = res;
-          this.createNextOfKin(res.id as number, this.processNextOfKinData(res.id));
+          this.createdPatient = patient;
+          this.createNextOfKin(patient.id as number, this.processNextOfKinData(patient.id));
         }
       },
       err => {
@@ -514,6 +514,8 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
 
   private createNextOfKin(patientId: number, data: object) {
     if (this.createdNextofKin) {
+      /* at this point, the nok had been created but an error occured while
+      adding the sponsor, so resume here */
       this.addSponsor(this.processSponsorData(patientId));
     }
     this.recordService.createNextOfKin(data).subscribe(
@@ -948,7 +950,8 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
         if (res) {
           this.notification.success(
             'Success',
-            `Patient hass been created successfully!`
+            `Folder number is ${this.createdPatient.folder_no}. Write it for the patient and close this!`,
+            { nzDuration: 0 }
           );
           this.isCreatingSponsor = false;
           this.isCreatingPatient = false;
@@ -976,6 +979,8 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   submitForm() {
     const patientData = this.processPatientData();
     if (this.createdPatient) {
+      /* at this point, the patient had been created but an error occured while
+      adding the nok, so resume here */
       this.createNextOfKin(this.createdPatient.id,
         this.processNextOfKinData(this.createdPatient.id));
       return;
