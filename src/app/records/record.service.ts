@@ -69,10 +69,7 @@ export class RecordService {
       .pipe(
         map(res => {
           if (res) {
-            console.log('Patient Response Results: ');
-            console.log(res);
             return res.data;
-
           }
           return false;
         })
@@ -84,8 +81,6 @@ export class RecordService {
       .pipe(
         map(res => {
           if (res) {
-            console.log('Patient Next of Kin Results: ');
-            console.log(res);
             return res.data;
           }
           return false;
