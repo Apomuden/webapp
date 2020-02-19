@@ -71,13 +71,13 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       billingType: [null, [Validators.required]],
       folder_type: [null, [Validators.required]],
       sponsored: this.fb.group({
-        sponsorName: [null, [Validators.required]],
+        sponsorName: [null],
         company: [null], // some of the fields are conditionally required so must not set them as required here
         memberId: [null],
         cardSerialNumber: [null],
         staffId: [null],
         staffName: [null],
-        beneficiary: [null, [Validators.required]],
+        beneficiary: [null],
         relation: [null], // the relation validator is not needed
         // relation: [null],
         policy: [null],
@@ -352,10 +352,12 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     }
     const isCash = fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
     if (isCash) {
-      this.staffIDControl.setValidators(Validators.required);
-      this.staffNameControl.setValidators(Validators.required);
+      for (const i of Object.keys(this.sponsoredForm.controls)) {
+        // try to show errors on only invalid fields
+        this.sponsoredForm.controls[i].clearValidators();
+      }
+      return isCash;
     }
-    return isCash;
   }
 
   public handleAddressChange(address: Address) {
