@@ -13,6 +13,10 @@ export class RecordService {
 
   constructor(private http: HttpClient) { }
 
+  getFacilityDetails() {
+    return JSON.parse(localStorage.getItem('facilityDetails'));
+  }
+
   getAllPatients(query = '') {
 
     const url = PATIENT_API_URL + query;
