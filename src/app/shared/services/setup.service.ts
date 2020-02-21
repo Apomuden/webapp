@@ -156,6 +156,34 @@ export class SetupService {
         })
       );
   }
+  createClinicType(name: String) {
+    return this.http
+      .post<any>(`${environment.apiBaseUrl}/setups/clinictypes`, { name })
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+  getClinicTypes() {
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinictypes`).pipe(
+      map(
+        res => {
+          const clinicTypes = res;
+          if (res) {
+            for (let i = 0; i < clinicTypes.data.length; i++) {
+              clinicTypes.data[i].isActivated =
+                clinicTypes.data[i].status === 'ACTIVE';
+            }
+          }
+          return clinicTypes;
+        }
+      )
+    );
+  }
   getClinics() {
     return this.http.get<any>(CLINICS_API_URL).pipe(
       map(
@@ -1231,6 +1259,7 @@ export class SetupService {
     return this.http.get<any>(`${environment.apiBaseUrl}/pricing/services/${serviceId}`)
       .pipe(map(res => res.data));
   }
+
 
   getMedicalSponsors() {
     return this.http.get<any>(MEDICAL_SPONSOR_API_URL).pipe(
