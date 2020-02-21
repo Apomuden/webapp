@@ -15,15 +15,6 @@
           <nz-descriptions-item nzTitle="Age">
             {{patient.age}} year(s)
           </nz-descriptions-item>
-          <!-- <nz-descriptions-item nzTitle="Member #">
-            2389298323898
-          </nz-descriptions-item>
-          <nz-descriptions-item nzTitle="Staff #">
-            2389298323898
-          </nz-descriptions-item>
-          <nz-descriptions-item nzTitle="Card Status">
-            ACTIVE
-          </nz-descriptions-item> -->
           <nz-descriptions-item nzTitle="Patient Status">
             {{patient.reg_status}}
           </nz-descriptions-item>
@@ -71,7 +62,7 @@
         </nz-form-control>
       </nz-form-item>
 
-      <nz-form-item *ngIf="isPrivateCompany || isGovernmentCompany">
+      <nz-form-item *ngIf="isPrivateInsurance">
         <nz-form-label [nzXs]="6" nzRequired nzFor="company">Company Name</nz-form-label>
         <nz-form-control nzErrorTip="Select a company">
           <nz-input-group [nzAddOnAfter]="addOnBeforeTemplate">
@@ -151,14 +142,18 @@
       <nz-form-item *ngIf="!isCash">
         <nz-form-label [nzXs]="6" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
         <nz-form-control nzErrorTip="Select a valid issued date">
-          <nz-date-picker formControlName="issuedDate" nzPlaceHolder="Select issue date"></nz-date-picker>
+          <nz-date-picker [nzDisabledDate]="disabledIssueDate" [nzAllowClear]="false" formControlName="issuedDate"
+            nzPlaceHolder="Select issue date">
+          </nz-date-picker>
         </nz-form-control>
       </nz-form-item>
 
       <nz-form-item *ngIf="!isCash">
         <nz-form-label [nzXs]="6" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
         <nz-form-control nzErrorTip="Select a valid expiry date">
-          <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
+          <nz-date-picker [nzDisabledDate]="disabledExpiryDate" [nzAllowClear]="false" formControlName="expiryDate"
+            nzPlaceHolder="Select expiry date">
+          </nz-date-picker>
         </nz-form-control>
       </nz-form-item>
     </form>

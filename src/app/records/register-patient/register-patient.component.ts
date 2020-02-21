@@ -71,13 +71,13 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       billingType: [null, [Validators.required]],
       folder_type: [null, [Validators.required]],
       sponsored: this.fb.group({
-        sponsorName: [null, [Validators.required]],
+        sponsorName: [null],
         company: [null], // some of the fields are conditionally required so must not set them as required here
         memberId: [null],
         cardSerialNumber: [null],
         staffId: [null],
         staffName: [null],
-        beneficiary: [null, [Validators.required]],
+        beneficiary: [null],
         relation: [null], // the relation validator is not needed
         // relation: [null],
         policy: [null],
@@ -101,8 +101,6 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       gender: [null, [Validators.required]],
       maritalStatus: [null, [Validators.required]],
       nativeLanguage: [null, [Validators.required]],
-      secondLanguage: [null, [Validators.required]],
-      officialLanguage: [null, [Validators.required]],
       nationality: [null, [Validators.required]],
       region: [null, [Validators.required]],
       district: [null, [Validators.required]],
@@ -110,8 +108,8 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       religion: [null, [Validators.required]],
       educationalLevel: [null, [Validators.required]],
       idtype: [null, [Validators.required]],
-      idNumber: [null, [Validators.required]],
-      IdExpiryDate: [null, [Validators.required]],
+      idNumber: [null],
+      IdExpiryDate: [null],
       occupation: [null, [Validators.required]],
       oldFolderNumber: [null],
     }),
@@ -122,10 +120,6 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       countryCode: ['+233', [Validators.required]],
       cellPhoneNumber: [null, [Validators.required]],
       emailAddress: [null, [Validators.email]],
-      emergencyName: [null, [Validators.required]],
-      emergencyRelationship: [null, [Validators.required]],
-      emergencyCountryCode: ['+233', [Validators.required]],
-      emergencyPhoneNumber: [null, [Validators.required]]
     }),
     // 4.0 Next of Kin
     nextOfKin: this.fb.group({
@@ -352,10 +346,12 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     }
     const isCash = fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
     if (isCash) {
-      this.staffIDControl.setValidators(Validators.required);
-      this.staffNameControl.setValidators(Validators.required);
+      for (const i of Object.keys(this.sponsoredForm.controls)) {
+        // try to show errors on only invalid fields
+        this.sponsoredForm.controls[i].clearValidators();
+      }
+      return isCash;
     }
-    return isCash;
   }
 
   public handleAddressChange(address: Address) {
