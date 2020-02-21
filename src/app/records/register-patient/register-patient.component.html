@@ -36,27 +36,29 @@
       </div>
     </nz-modal>
     <form nz-form [formGroup]="patientForm" (ngSubmit)="submitForm()">
-      <div *ngIf="stepIndex === 0" formGroupName="billingInfo" nz-row>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="billingType">Funding Type</nz-form-label>
-          <nz-form-control nzErrorTip="Please select a funding type">
-            <nz-select formControlName="billingType" nzPlaceHolder="Select funding type"
-              [nzLoading]="isLoadingFundingTypes">
-              <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id"
-                [nzLabel]="fundingType.name">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="folder_type">Folder Type</nz-form-label>
-          <nz-form-control nzErrorTip="Please select a billing type">
-            <nz-select formControlName="folder_type" nzPlaceHolder="Select folder type">
-              <nz-option nzValue="FAMILY" nzLabel="Family"></nz-option>
-              <nz-option nzValue="INDIVIDUAL" nzLabel="Individual"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
+      <div *ngIf="stepIndex === 0" nz-row>
+        <div formGroupName="billingInfo">
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="billingType">Funding Type</nz-form-label>
+            <nz-form-control nzErrorTip="Please select a funding type">
+              <nz-select formControlName="billingType" nzPlaceHolder="Select funding type"
+                [nzLoading]="isLoadingFundingTypes">
+                <nz-option *ngFor="let fundingType of fundingTypes" [nzValue]="fundingType.id"
+                  [nzLabel]="fundingType.name">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item>
+            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="folder_type">Folder Type</nz-form-label>
+            <nz-form-control nzErrorTip="Please select a folder type">
+              <nz-select formControlName="folder_type" nzPlaceHolder="Select folder type">
+                <nz-option *ngFor="let folderType of folderTypes" [nzValue]="folderType" [nzLabel]="folderType">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
         <div *ngIf="isBillingSponsored" formGroupName="sponsored">
           <nz-form-item *ngIf="!isCash">
             <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="sponsorName">Sponsor Name</nz-form-label>
@@ -142,14 +144,16 @@
           <nz-form-item *ngIf="!isCash">
             <nz-form-label [nzXs]="6" nzRequired nzFor="issuedDate">Issue Date</nz-form-label>
             <nz-form-control nzErrorTip="Select a valid issued date">
-              <nz-date-picker formControlName="issuedDate" nzPlaceHolder="Select issue date"></nz-date-picker>
+              <nz-date-picker [nzShowToday]="false" [nzDisabledDate]="disabledIssueDate" formControlName="issuedDate"
+                nzPlaceHolder="Select issue date"></nz-date-picker>
             </nz-form-control>
           </nz-form-item>
 
           <nz-form-item *ngIf="!isCash">
             <nz-form-label [nzXs]="6" nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
             <nz-form-control nzErrorTip="Select a valid expiry date">
-              <nz-date-picker formControlName="expiryDate" nzPlaceHolder="Select expiry date"></nz-date-picker>
+              <nz-date-picker [nzShowToday]="false" [nzDisabledDate]="disabledExpiryDate" formControlName="expiryDate"
+                nzPlaceHolder="Select expiry date"></nz-date-picker>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -220,8 +224,8 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="nativeLanguage">Native Language</nz-form-label>
-          <nz-form-control nzErrorTip="Enter native language">
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="nativeLanguage">Language</nz-form-label>
+          <nz-form-control nzErrorTip="Select language">
             <nz-select nzPlaceHolder="Native language" formControlName="nativeLanguage" name="nativeLanguage"
               [nzLoading]="isLoadingLanguages | async">
               <nz-option *ngFor="let language of languages" [nzValue]="language.id" [nzLabel]="language.name">
@@ -318,18 +322,6 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="snnit">Snnit</nz-form-label>
-          <nz-form-control nzErrorTip="Enter snnit no.">
-            <input type="text" nz-input placeholder="Snnit number" formControlName="snnit" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="tin">Tin Number</nz-form-label>
-          <nz-form-control nzErrorTip="Enter a valid tin number">
-            <input type="text" nz-input placeholder="Tin" formControlName="tin" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="oldFolderNumber">Old Folder Number</nz-form-label>
           <nz-form-control nzErrorTip="Enter a valid folder number">
             <input type="text" nz-input placeholder="Old Folder Number" formControlName="oldFolderNumber" />
@@ -338,9 +330,9 @@
       </div>
       <div *ngIf="stepIndex === 2" formGroupName="contactInfo">
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Home Address</nz-form-label>
-          <nz-form-control nzErrorTip="Enter patient home address">
-            <input type="text" nz-input placeholder="Home Address" formControlName="homeAddress" />
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Residential Address</nz-form-label>
+          <nz-form-control nzErrorTip="Enter patient residential address">
+            <input type="text" nz-input placeholder="Residential Address" formControlName="homeAddress" />
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
