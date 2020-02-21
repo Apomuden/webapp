@@ -1213,13 +1213,23 @@ export class SetupService {
   }
 
   getServicesByClinic(clinicId: number) {
-    return this.http.get<any>(`${environment.apiBaseUrl}/setups/consultationservices?clinic_id=${clinicId}`)
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinicservices`,
+      {
+        params: {
+          clinic_id: `${clinicId}`,
+        }
+      })
       .pipe(map(data => {
         if (!data) {
           return { data: [] };
         }
         return data;
       }));
+  }
+
+  getServicePrice(serviceId: number) {
+    return this.http.get<any>(`${environment.apiBaseUrl}/pricing/services/${serviceId}`)
+      .pipe(map(res => res.data));
   }
 
   getMedicalSponsors() {

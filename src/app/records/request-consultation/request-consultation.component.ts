@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from '../record.service';
 import { NzNotificationService } from 'ng-zorro-antd';
+import * as dateFns from 'date-fns';
 
 @Component({
   selector: 'app-request-consultation',
@@ -21,9 +22,9 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     consultationService: this.fb.control(null, [Validators.required]),
     orderType: this.fb.control('INTERNAL', [Validators.required]),
     billed: this.fb.control(0, [Validators.required]),
-    ccc: this.fb.control({ value: null, disabled: true }, [Validators.minLength(5), Validators.maxLength(5)]),
+    ccc: this.fb.control(null, [Validators.minLength(5), Validators.maxLength(5)]),
     qty: this.fb.control({ value: 1, disabled: true }, [Validators.required, Validators.min(1)]),
-    fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required]),
+    fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required, Validators.min(0.1)]),
   });
 
   clinicsloading = new BehaviorSubject(false);
@@ -39,16 +40,24 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   message = 'Please enter a valid folder number to fill this form.';
   permit: any;
 
+  patientSponsor = {
+    billing_sponsor_name: 'Patient',
+    id: 0,
+    card_serial_no: null,
+    member_id: null,
+    staff_id: null,
+    billing_sponsor: {
+      sponsorship_type_name: 'Patient'
+    }
+  };
+  servicePrice: any;
   formatFee = (value: number) => `GHC ${value}`;
   parseFee = (value: string) => value.replace('GHC', '');
-
-  formatService = (value: number) => `${value} Svcs`;
-  parseService = (value: string) => value.replace('Svcs', '');
 
   constructor(private readonly fb: FormBuilder,
     private recordService: RecordService,
     private notificationS: NzNotificationService,
-    private setup: SetupService) {
+    private setupService: SetupService) {
   }
 
   ngOnInit() {
@@ -70,14 +79,16 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
         this.getClinicServices(value);
       });
 
+    this.billedControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(_ => {
+        this.setPrice();
+      });
+
     this.serviceControl.valueChanges.pipe(untilComponentDestroyed(this))
-      .subscribe((value: number) => {
+      .subscribe((service_id: number) => {
         // display price of the selected service
-        if (value) {
-          const service = this.services.find(s => s.id === value);
-          if (service) {
-            this.feeControl.patchValue(service.price);
-          }
+        if (service_id) {
+          this.getPrice(service_id);
         }
       });
   }
@@ -138,6 +149,16 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     }
   }
 
+  get isCash(): boolean {
+    const id = this.billedControl.value as number;
+    const sponsorPermit = this.getSelectedSponsorPermit(id); // TODO: change to the billed sponsor value
+    if (!sponsorPermit) {
+      return false;
+    }
+    const sponsorType = sponsorPermit.billing_sponsor.sponsorship_type_name;
+    return sponsorType.toLocaleLowerCase() === 'patient';
+  }
+
   private getSelectedSponsorPermit(value: number) {
     const permit = this.sponsorPermits.find(sp => sp.id === value);
     this.permit = permit;
@@ -168,28 +189,22 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       });
   }
 
+  disabledDate(current: Date): boolean {
+    if (!current) {
+      return false;
+    }
+    // can only select days before today
+    return dateFns.isAfter(current, new Date());
+  }
+
   getPatientSponsorPermits(id: number) {
+    this.sponsorPermits = [];
     this.recordService.getPatientSponsors(id)
       .pipe(first()).subscribe(res => {
         if (res && res.data) {
-          this.sponsorPermits.push({
-            billing_sponsor_name: 'Patient',
-            id: 0,
-            card_serial_no: null,
-            member_id: null,
-            staff_id: null,
-            billing_sponsor: {
-              sponsorship_type_name: 'Patient'
-            }
-          }, ...res.data);
+          this.sponsorPermits.push(this.patientSponsor, ...res.data);
         } else {
-          this.sponsorPermits.push({
-            billing_sponsor_name: 'Patient',
-            id: 0,
-            billing_sponsor: {
-              sponsorship_type_name: 'Patient'
-            }
-          });
+          this.sponsorPermits.push(this.patientSponsor);
         }
       }, error => {
       });
@@ -197,7 +212,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   getClinics() {
     this.clinicsloading.next(true);
-    this.setup.getClinics().pipe(first())
+    this.setupService.getClinics().pipe(first())
       .subscribe(data => {
         this.clinics = data.data;
         this.clinicsloading.next(false);
@@ -208,13 +223,34 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   getClinicServices(clinicId: number) {
     this.servicesLoading.next(true);
-    this.setup.getServicesByClinic(clinicId).pipe(first())
+    this.setupService.getServicesByClinic(clinicId).pipe(first())
       .subscribe(data => {
         this.services = data.data;
         this.servicesLoading.next(false);
       }, error => {
         this.servicesLoading.next(false);
       });
+  }
+
+  getPrice(service_id: any) {
+    this.requesting = true;
+    this.setupService.getServicePrice(service_id).pipe(first())
+      .subscribe(servicePrice => {
+        this.servicePrice = servicePrice;
+        this.requesting = false;
+        this.setPrice();
+      });
+  }
+
+  private setPrice() {
+    if (!this.servicePrice) {
+      return;
+    }
+    if (this.isCash) {
+      this.feeControl.patchValue(this.servicePrice.prepaid_amount);
+    } else {
+      this.feeControl.patchValue(this.servicePrice.postpaid_amount);
+    }
   }
 
   compareFn(c1: any, c2: any): boolean {
@@ -238,8 +274,14 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   cancel(): void {
     this.patient = null;
     this.sponsorPermits = [];
+    this.sponsorPermits.push(this.patientSponsor);
     this.searchInitialized = false;
     this.requestForm.reset();
+    this.requestForm.get('orderType').setValue('INTERNAL');
+    this.billedControl.setValue(0);
+    this.feeControl.setValue(0);
+    this.qtyControl.setValue(0);
+    this.attendanceDateControl.setValue(new Date());
   }
 
   done(): void {
@@ -249,18 +291,16 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   submitForm() {
     this.requesting = true;
     const data = this.processData();
-    console.log(data);
     this.recordService.requestConsultation(data)
       .subscribe(res => {
         this.requesting = false;
         this.notificationS.success('Success',
           `Successfully requested consultation for ${this.patient.folder_no}`);
         this.cancel();
-        console.log(res);
       }, error => {
         this.requesting = false;
         this.notificationS.error('Oops',
-          `Failed to request consultation for ${this.patient.folder_no}`);
+          `Failed to request consultation for ${this.patient.folder_no}. Consultation has probably been requested already.`);
         console.log(error);
       });
   }
@@ -272,6 +312,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       service_fee: this.feeControl.value,
       age: this.patient.age,
       patient_id: this.patient.id,
+      clinic_id: this.clinicControl.value as number,
       consultation_service_id: this.serviceControl.value as number,
       funding_type_id: this.patient.funding_type_id,
       sponsorship_type: this.permit.billing_sponsor.sponsorship_type_name,

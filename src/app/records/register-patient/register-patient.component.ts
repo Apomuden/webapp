@@ -101,8 +101,6 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       gender: [null, [Validators.required]],
       maritalStatus: [null, [Validators.required]],
       nativeLanguage: [null, [Validators.required]],
-      secondLanguage: [null, [Validators.required]],
-      officialLanguage: [null, [Validators.required]],
       nationality: [null, [Validators.required]],
       region: [null, [Validators.required]],
       district: [null, [Validators.required]],
@@ -110,8 +108,8 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       religion: [null, [Validators.required]],
       educationalLevel: [null, [Validators.required]],
       idtype: [null, [Validators.required]],
-      idNumber: [null, [Validators.required]],
-      IdExpiryDate: [null, [Validators.required]],
+      idNumber: [null],
+      IdExpiryDate: [null],
       occupation: [null, [Validators.required]],
       oldFolderNumber: [null],
     }),
@@ -122,10 +120,6 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       countryCode: ['+233', [Validators.required]],
       cellPhoneNumber: [null, [Validators.required]],
       emailAddress: [null, [Validators.email]],
-      emergencyName: [null, [Validators.required]],
-      emergencyRelationship: [null, [Validators.required]],
-      emergencyCountryCode: ['+233', [Validators.required]],
-      emergencyPhoneNumber: [null, [Validators.required]]
     }),
     // 4.0 Next of Kin
     nextOfKin: this.fb.group({

@@ -6,7 +6,7 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { SetupService } from 'src/app/shared/services/setup.service';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { NzNotificationService } from 'ng-zorro-antd';
-
+import * as dateFn from 'date-fns';
 @Component({
   selector: 'app-sponsorship-permit',
   templateUrl: './sponsorship-permit.component.html',
@@ -74,6 +74,11 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
           this.message = 'Please enter a valid folder number to fill this form.';
           this.searchInitialized = false;
         }
+      });
+
+    this.issueDateControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe((date: Date) => {
+        this.expiryDateControl.setValue(dateFn.addYears(date, 1));
       });
 
     this.fundingTypeControl.valueChanges.pipe(debounceTime(500), untilComponentDestroyed(this))
@@ -261,6 +266,23 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         this.isLoadingFundingTypes = false;
         console.log(error);
       });
+  }
+
+  disabledIssueDate = (issueDate: Date): boolean => {
+    if (!issueDate) {
+      return false;
+    }
+    // can only select days before today
+    return dateFn.isAfter(issueDate, new Date());
+  }
+
+  disabledExpiryDate = (expiryDate: Date): boolean => {
+    if (!expiryDate || !this.issueDateControl) {
+      return false;
+    }
+    const date = this.issueDateControl.value as Date;
+    // can only select days after the issue date
+    return dateFn.isBefore(expiryDate, date);
   }
 
   private getPolicies(sponsorId: number) {

@@ -67,7 +67,7 @@
               </nz-select>
             </nz-form-control>
           </nz-form-item>
-          <nz-form-item *ngIf="isPrivateCompany || isGovernmentCompany">
+          <nz-form-item *ngIf="isPrivateInsurance">
             <nz-form-label [nzXs]="6" nzRequired nzFor="company">Company Name</nz-form-label>
             <nz-form-control nzErrorTip="Select a company">
               <nz-input-group [nzAddOnAfter]="addOnBeforeTemplate">
@@ -230,26 +230,6 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="secondLanguage">Second Language</nz-form-label>
-          <nz-form-control nzErrorTip="Select second language">
-            <nz-select nzPlaceHolder="Second language" formControlName="secondLanguage" name="secondLanguage"
-              [nzLoading]="isLoadingLanguages | async">
-              <nz-option *ngFor="let language of languages" [nzValue]="language.id" [nzLabel]="language.name">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="officialLanguage">Official Language</nz-form-label>
-          <nz-form-control nzErrorTip="Select official language">
-            <nz-select nzPlaceHolder="Official language" formControlName="officialLanguage" name="officialLanguage"
-              [nzLoading]="isLoadingLanguages | async">
-              <nz-option *ngFor="let language of languages" [nzValue]="language.id" [nzLabel]="language.name">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="nationality">Nationality</nz-form-label>
           <nz-form-control nzErrorTip="Select nationality">
             <nz-select nzShowSearch formControlName="nationality" nzPlaceHolder="Select nationality"
@@ -388,37 +368,6 @@
             <input type="text" nz-input placeholder="Enter email address" formControlName="emailAddress" />
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="emergencyName">Emergency Name</nz-form-label>
-          <nz-form-control nzErrorTip="Enter emergency name">
-            <input type="text" nz-input placeholder="Enter emergency name" formControlName="emergencyName" />
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzXs]="6" nzRequired nzFor="emergencyRelationship">Emergency Relationship</nz-form-label>
-          <nz-form-control nzErrorTip="Select emergency relationship">
-            <nz-select formControlName="emergencyRelationship" nzAllowClear [nzLoading]="isLoadingRelationships|async"
-              nzPlaceHolder="Emergency contact relationship to patient">
-              <nz-option *ngFor="let relation of relationships" [nzValue]="relation.id" [nzLabel]="relation.name">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-        <nz-form-item>
-          <nz-form-label [nzXs]="6" nzRequired nzFor="emergencyPhoneNumber">Emergency Phone number</nz-form-label>
-          <nz-form-control nzErrorTip="Enter emergency phone number">
-            <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
-              <ng-template #addOnBeforeTemplate>
-                <nz-select formControlName="emergencyCountryCode" class="phone-select"
-                  [nzLoading]="isLoadingCountryCodes|async">
-                  <nz-option *ngFor="let code of countryCodes" [nzValue]="code" [nzLabel]="code"></nz-option>
-                </nz-select>
-              </ng-template>
-              <input type="text" nz-input placeholder="Phone number eg. 505429933"
-                formControlName="emergencyPhoneNumber" name="emergencyPhoneNumber" />
-            </nz-input-group>
-          </nz-form-control>
-        </nz-form-item>
       </div>
       <div *ngIf="stepIndex === 3" formGroupName="nextOfKin">
         <nz-form-item>
@@ -474,7 +423,8 @@
   <button nz-button nzType="default" (click)="next()" *ngIf="stepIndex < finalStepIndex">
     <span>Next</span>
   </button>
-  <button [nzLoading]="isCreatingPatient" nz-button nzType="primary" (click)="done()" *ngIf="stepIndex === finalStepIndex">
+  <button [nzLoading]="isCreatingPatient" nz-button nzType="primary" (click)="done()"
+    *ngIf="stepIndex === finalStepIndex">
     <span>Done</span>
   </button>
 </div>

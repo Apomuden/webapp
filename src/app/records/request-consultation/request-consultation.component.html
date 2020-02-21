@@ -14,15 +14,6 @@
         <nz-descriptions-item nzTitle="Age">
           {{patient.age}} year(s)
         </nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Member #">
-          2389298323898
-        </nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Staff #">
-          2389298323898
-        </nz-descriptions-item>
-        <nz-descriptions-item nzTitle="Card Status">
-          ACTIVE
-        </nz-descriptions-item>
         <nz-descriptions-item nzTitle="Patient Status">
           {{patient.reg_status}}
         </nz-descriptions-item>
@@ -72,7 +63,7 @@
         <nz-form-item>
           <nz-form-label nzRequired nzFor="attendanceDate">Attendance Date</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="Select a valid date">
-            <nz-date-picker formControlName="attendanceDate" nzPlaceHolder="Select attendance date">
+            <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="attendanceDate" nzPlaceHolder="Select attendance date">
             </nz-date-picker>
           </nz-form-control>
         </nz-form-item>
@@ -87,7 +78,7 @@
           <nz-form-control nzHasFeedback nzErrorTip="Please select service">
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Consultation Service"
               formControlName="consultationService" [nzLoading]="servicesLoading | async">
-              <nz-option *ngFor="let service of services" [nzLabel]="service.display_name" [nzValue]="service.id">
+              <nz-option *ngFor="let service of services" [nzLabel]="service.service_name" [nzValue]="service.service_id">
               </nz-option>
             </nz-select>
           </nz-form-control>
@@ -98,7 +89,8 @@
         <nz-form-item>
           <nz-form-label nzRequired nzFor="orderType">Order Type</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="Please select order type">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Order type" formControlName="orderType">
+            <nz-select [compareWith]="compareFn" nzShowSearch nzAllowClear nzPlaceHolder="Order type"
+              formControlName="orderType">
               <nz-option nzLabel="INTERNAL" nzValue="INTERNAL"></nz-option>
               <nz-option nzLabel="EXTERNAL" nzValue="EXTERNAL"></nz-option>
             </nz-select>
@@ -108,16 +100,11 @@
 
       <div nz-col [nzSpan]="6">
         <nz-form-item>
-          <nz-form-label nzRequired nzFor="qty">Service Qty and fee</nz-form-label>
+          <nz-form-label nzRequired nzFor="qty">Service fee</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="Enter a valid quantity">
-            <nz-input-group nzCompact>
-              <nz-input-number [nzDisabled]="true" formControlName="qty" [nzMin]="1" [nzMax]="200" [nzStep]="1"
-                [nzFormatter]="formatService" [nzParser]="parseService">
-              </nz-input-number>
-              <nz-input-number formControlName="fee" [nzMin]="0" [nzStep]="1" [nzFormatter]="formatFee"
-                [nzParser]="parseFee">
-              </nz-input-number>
-            </nz-input-group>
+            <nz-input-number formControlName="fee" [nzMin]="0.1" [nzStep]="1" [nzFormatter]="formatFee"
+              [nzParser]="parseFee">
+            </nz-input-number>
           </nz-form-control>
         </nz-form-item>
       </div>
