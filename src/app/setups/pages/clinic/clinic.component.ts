@@ -14,16 +14,19 @@ export class ClinicComponent implements OnInit {
   data = [];
   list = [];
   ageGroups = [];
+  clinicTypes = [];
   error = '';
   initLoading = true;
   isCreatingClinic = new BehaviorSubject(false);
   isAgeGroupsLoading = new BehaviorSubject(false);
+  isClinicTypesLoading = new BehaviorSubject(false);
 
   constructor(private setup: SetupService, private fb: FormBuilder, private notification: NzNotificationService) { }
   clinicForm: FormGroup;
   ngOnInit() {
     this.clinicForm = this.fb.group({
       name: [null, Validators.required],
+      clinicType: [null, Validators.required],
       age_group_id: [null, Validators.required],
       gender: [null, Validators.required],
       patient_status: [null, Validators.required]
@@ -31,6 +34,7 @@ export class ClinicComponent implements OnInit {
 
     this.getClinics();
     this.getAgeGroups();
+    this.getClinicTypes();
   }
   getAgeGroups() {
     this.isAgeGroupsLoading.next(true);
@@ -61,6 +65,25 @@ export class ClinicComponent implements OnInit {
           this.initLoading = false;
         }
       );
+
+  }
+
+  getClinicTypes() {
+    this.isClinicTypesLoading.next(true);
+    this.setup
+      .getClinicTypes()
+      .pipe(first())
+      .subscribe(
+        res => {
+          this.isClinicTypesLoading.next(false);
+          this.clinicTypes = res.data;
+        },
+        error => {
+          this.isClinicTypesLoading.next(false);
+          console.log(error);
+          this.initLoading = false;
+        }
+      );
   }
   submitForm() {
     if (this.clinicForm.invalid) {
@@ -69,8 +92,17 @@ export class ClinicComponent implements OnInit {
     } else {
       this.error = '';
       this.isCreatingClinic.next(true);
+      let payload = {
+        name: this.clinicForm.value.name,
+        clinic_type_id: this.clinicForm.value.clinicType,
+        age_group_id: this.clinicForm.value.age_group_id,
+        gender: this.clinicForm.value.gender.join(','),
+        patient_status: this.clinicForm.value.patient_status.join(',')
+      }
+
+
       this.setup
-        .createClinic(this.clinicForm.value)
+        .createClinic(payload)
         .pipe(first())
         .subscribe(
           success => {
