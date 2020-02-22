@@ -284,8 +284,23 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     this.attendanceDateControl.setValue(new Date());
   }
 
+  private validateForm(): boolean {
+    if (this.requestForm.valid) {
+      return true;
+    }
+    for (const i of Object.keys(this.requestForm.controls)) {
+      if (this.requestForm.controls[i].invalid) {
+        this.requestForm.controls[i].markAsDirty();
+        this.requestForm.controls[i].updateValueAndValidity();
+      }
+    }
+    return this.requestForm.valid;
+  }
+
   done(): void {
+    if (this.validateForm()) {
     this.submitForm();
+    }
   }
 
   submitForm() {

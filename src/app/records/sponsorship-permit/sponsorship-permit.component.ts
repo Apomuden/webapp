@@ -78,7 +78,16 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
 
     this.issueDateControl.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe((date: Date) => {
-        this.expiryDateControl.setValue(dateFn.addYears(date, 1));
+        if (date) {
+          this.expiryDateControl.setValue(dateFn.addYears(date, 1));
+        }
+      });
+
+    this.beneficiaryControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(benefitiary => {
+        if (benefitiary) {
+          this.updateBenefitValidators(benefitiary);
+        }
       });
 
     this.fundingTypeControl.valueChanges.pipe(debounceTime(500), untilComponentDestroyed(this))
@@ -86,6 +95,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         if (this.fundingTypeControl.valid) {
           this.sponsorNameControl.reset();
           this.getSponsors(this.getSelectedFundingType(id).sponsorship_type_id);
+          this.updateValidators(this.getSelectedFundingType(id));
         }
       });
 
@@ -120,20 +130,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   }
 
   get isBeneficiaryDependant(): boolean {
-    if (this.beneficiaryControl.value === 'DEPENDANT') {
-      if (this.isPrivateCompany || this.isGovernmentCompany) {
-        this.staffNameControl.setValidators([Validators.required]);
-      } else {
-        this.staffNameControl.clearValidators();
-        this.staffNameControl.reset();
-      }
-      this.relationControl.setValidators(Validators.required);
-      return true;
-    } else {
-      this.relationControl.clearValidators();
-      this.relationControl.reset();
-      return false;
-    }
+    return this.beneficiaryControl.value === 'DEPENDANT';
   }
 
   get isGovernmentCompany(): boolean {
@@ -141,17 +138,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (!fundType) {
       return false;
     }
-    const isGovernmentCom = fundType.sponsorship_type_name.toLocaleLowerCase() === 'government company';
-    if (isGovernmentCom) {
-      this.staffIDControl.setValidators(Validators.required);
-      this.memberIDControl.clearValidators();
-      this.memberIDControl.reset();
-      this.policyControl.clearValidators();
-      this.policyControl.reset();
-      this.cardSerialControl.clearValidators();
-      this.cardSerialControl.reset();
-    }
-    return isGovernmentCom;
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'government company';
   }
 
   get isPrivateCompany(): boolean {
@@ -159,17 +146,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (!fundType) {
       return false;
     }
-    const isPrivateCom = fundType.sponsorship_type_name.toLocaleLowerCase() === 'private company';
-    if (isPrivateCom) {
-      this.staffIDControl.setValidators(Validators.required);
-      this.policyControl.clearValidators();
-      this.policyControl.reset();
-      this.memberIDControl.clearValidators();
-      this.memberIDControl.reset();
-      this.cardSerialControl.clearValidators();
-      this.cardSerialControl.reset();
-    }
-    return isPrivateCom;
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'private company';
   }
 
   get isPrivateInsurance(): boolean {
@@ -177,18 +154,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (!fundType) {
       return false;
     }
-    const isPrivateIn = fundType.sponsorship_type_name.toLocaleLowerCase() === 'private insurance';
-    if (isPrivateIn) {
-      this.memberIDControl.setValidators(Validators.required);
-      // this.policyControl.setValidators(Validators.required);
-      this.staffIDControl.clearValidators();
-      this.staffIDControl.reset();
-      this.staffNameControl.clearValidators();
-      this.staffNameControl.reset();
-      this.cardSerialControl.clearValidators();
-      this.cardSerialControl.reset();
-    }
-    return isPrivateIn;
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'private insurance';
   }
 
   get isGovernmentInsurance(): boolean {
@@ -196,19 +162,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (!fundType) {
       return false;
     }
-    const isGovIn = fundType.sponsorship_type_name.toLocaleLowerCase() === 'government insurance';
-    if (isGovIn) {
-      this.memberIDControl.setValidators(Validators.required);
-      this.cardSerialControl.setValidators(Validators.required);
-      this.policyControl.clearValidators();
-      this.policyControl.reset();
-      this.staffNameControl.clearValidators();
-      this.staffNameControl.reset();
-      this.staffIDControl.reset();
-      this.staffIDControl.clearValidators();
-      return true;
-    }
-    return isGovIn;
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'government insurance';
   }
 
   get isCash(): boolean {
@@ -216,12 +170,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     if (!fundType) {
       return false;
     }
-    const isCash = fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
-    if (isCash) {
-      this.staffIDControl.setValidators(Validators.required);
-      this.staffNameControl.setValidators(Validators.required);
-    }
-    return isCash;
+    return fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
   }
 
   get companyControl(): FormControl {
@@ -254,6 +203,71 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
 
   get relationControl(): FormControl {
     return this.sponsorForm.get('relation') as FormControl;
+  }
+
+  updateBenefitValidators(beneficiary: any) {
+    if (beneficiary === 'DEPENDANT') {
+      if (this.isGovernmentCompany || this.isPrivateCompany) {
+        this.staffNameControl.setValidators([Validators.required]);
+      } else {
+        this.staffNameControl.clearValidators();
+        this.staffNameControl.reset();
+      }
+      this.relationControl.setValidators(Validators.required);
+    } else {
+      this.relationControl.clearValidators();
+      this.relationControl.reset();
+    }
+  }
+
+  updateValidators(fundType: any) {
+    if (!fundType) {
+      return;
+    }
+    const sponsorType = fundType.sponsorship_type_name.toLocaleLowerCase();
+
+    if (sponsorType === 'government company') {
+      this.staffIDControl.setValidators(Validators.required);
+      this.memberIDControl.clearValidators();
+      this.memberIDControl.reset();
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
+    } else if (sponsorType === 'private company') {
+      this.staffIDControl.setValidators(Validators.required);
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
+      this.memberIDControl.clearValidators();
+      this.memberIDControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
+    } else if (sponsorType === 'private insurance') {
+      this.memberIDControl.setValidators(Validators.required);
+      // this.policyControl.setValidators(Validators.required);
+      this.staffIDControl.clearValidators();
+      this.staffIDControl.reset();
+      this.staffNameControl.clearValidators();
+      this.staffNameControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
+    } else if (sponsorType === 'government insurance') {
+      this.memberIDControl.setValidators(Validators.required);
+      this.cardSerialControl.setValidators(Validators.required);
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
+      this.staffNameControl.clearValidators();
+      this.staffNameControl.reset();
+      this.staffIDControl.reset();
+      this.staffIDControl.clearValidators();
+    } else if (sponsorType.includes('patient')) {
+      this.memberIDControl.setValidators(Validators.required);
+    }
+    for (const i of Object.keys(this.sponsorForm.controls)) {
+      if (this.sponsorForm.get(i) !== this.sponsorNameControl && this.sponsorForm.get(i) !== this.fundingTypeControl) {
+        this.sponsorForm.get(i).updateValueAndValidity();
+      }
+    }
   }
 
   private getFundingTypes() {
@@ -423,7 +437,23 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
     this.sponsorForm.reset();
   }
 
+  private validateForm(): boolean {
+    if (this.sponsorForm.valid) {
+      return true;
+    }
+    for (const i of Object.keys(this.sponsorForm.controls)) {
+      if (this.sponsorForm.controls[i].invalid) {
+        this.sponsorForm.controls[i].markAsDirty();
+        this.sponsorForm.controls[i].updateValueAndValidity();
+      }
+    }
+    return this.sponsorForm.valid;
+  }
+
   addSponsor() {
+    if (!this.validateForm()) {
+      return;
+    }
     this.isCreatingSponsor = true;
     const data = this.processData();
     this.recordService.addSponsorPermit(data).pipe(first())

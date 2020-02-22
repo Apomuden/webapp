@@ -9,7 +9,7 @@ import { SetupService } from './../../shared/services/setup.service';
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-
+import * as dateFn from 'date-fns';
 
 @Component({
   selector: 'app-register-patient',
@@ -34,6 +34,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   regions = [];
   isVisible = false;
   districts = [];
+  folderTypes = [];
   patient: any;
   isLoadingFundingTypes = true;
   isLoadingTitles = true;
@@ -70,20 +71,20 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     billingInfo: this.fb.group({
       billingType: [null, [Validators.required]],
       folder_type: [null, [Validators.required]],
-      sponsored: this.fb.group({
-        sponsorName: [null],
-        company: [null], // some of the fields are conditionally required so must not set them as required here
-        memberId: [null],
-        cardSerialNumber: [null],
-        staffId: [null],
-        staffName: [null],
-        beneficiary: [null],
-        relation: [null], // the relation validator is not needed
-        // relation: [null],
-        policy: [null],
-        issuedDate: [null, [Validators.required]],
-        expiryDate: [null, [Validators.required]],
-      }),
+    }),
+    sponsored: this.fb.group({
+      sponsorName: [null, Validators.required],
+      company: [null],
+      memberId: [null],
+      cardSerialNumber: [null],
+      staffId: [null],
+      staffName: [null],
+      beneficiary: [null, Validators.required],
+      relation: [null], // the relation validator is not needed
+      // relation: [null],
+      policy: [null],
+      issuedDate: [null, [Validators.required]],
+      expiryDate: [null, [Validators.required]],
     }),
     // 2.0 Patient Information
     patientInfo: this.fb.group({
@@ -92,9 +93,6 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       middleName: [null],
       title: [null, [Validators.required]],
       dob: [null, [Validators.required]],
-      snnit: [null],
-      tin: [null],
-
       // todo add custom validator for when useAge is selected
       age: [0],
       useAge: [false],
@@ -131,6 +129,10 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       relationship: [null, [Validators.required]],
     }),
   });
+  noneIdType = {
+    id: 0,
+    name: 'NONE'
+  };
 
   formatterAge = (value: number) => `${value} yrs`;
   parserAge = (value: string) => value.replace('yrs', '');
@@ -142,11 +144,34 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     private notification: NzNotificationService) { }
 
   ngAfterViewInit() {
+    this.patientInfoForm.get('idtype').valueChanges.subscribe(id => {
+      if (id !== 0) {
+        this.patientInfoForm.get('idNumber').setValidators(Validators.required);
+      } else {
+        this.patientInfoForm.get('idNumber').clearValidators();
+      }
+    });
+
+    this.issueDateControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe((date: Date) => {
+        if (date) {
+          this.expiryDateControl.setValue(dateFn.addYears(date, 1));
+        }
+      });
+
+    this.beneficiaryControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(benefitiary => {
+        if (benefitiary) {
+          this.updateBenefitValidators(benefitiary);
+        }
+      });
+
     this.billingTypeControl.valueChanges.pipe(debounceTime(500), untilComponentDestroyed(this))
       .subscribe(id => {
         if (this.billingTypeControl.valid) {
           this.sponsorNameControl.reset();
           this.getSponsors(this.getSelectedFundingType(id).sponsorship_type_id);
+          this.updateValidators(this.getSelectedFundingType(id));
         }
       });
 
@@ -165,6 +190,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   ngOnDestroy(): void { }
 
   ngOnInit() {
+    this.getAllowedFolderTypes();
     this.getFundingTypes();
     this.getTitles();
     this.getReligions();
@@ -195,6 +221,15 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
         }
       });
   }
+  getAllowedFolderTypes() {
+    const facility = this.recordService.getFacilityDetails();
+    if (facility) {
+      this.folderTypes = facility.allowed_folder_type.split(',');
+      if (this.folderTypes.length === 1) {
+        this.folderTypeControl.setValue(this.folderTypes[0]);
+      }
+    }
+  }
 
   get billingTypeControl(): FormControl {
     return this.patientForm.get('billingInfo').get('billingType') as FormControl;
@@ -209,7 +244,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   get medicalSponsorControl(): FormControl {
-    return this.patientForm.get('billingInfo').get('sponsored').get('sponsorName') as FormControl;
+    return this.patientForm.get('sponsored').get('sponsorName') as FormControl;
   }
 
   get isBillingSponsored(): boolean {
@@ -217,7 +252,11 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   get sponsoredForm(): FormGroup {
-    return this.patientForm.get('billingInfo').get('sponsored') as FormGroup;
+    return this.patientForm.get('sponsored') as FormGroup;
+  }
+
+  get billingForm(): FormGroup {
+    return this.patientForm.get('billingInfo') as FormGroup;
   }
 
   get relationControl(): FormControl {
@@ -268,36 +307,15 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     if (!fundType) {
       return false;
     }
-    const isGovernmentCom = fundType.sponsorship_type_name.toLocaleLowerCase() === 'government company';
-    if (isGovernmentCom) {
-      this.staffIDControl.setValidators(Validators.required);
-      this.memberIDControl.clearValidators();
-      this.memberIDControl.reset();
-      this.policyControl.clearValidators();
-      this.policyControl.reset();
-      this.cardSerialControl.clearValidators();
-      this.cardSerialControl.reset();
-    }
-    return isGovernmentCom;
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'government company';
   }
 
   get isPrivateCompany(): boolean {
-
     const fundType = this.getSelectedFundingType(this.billingTypeControl.value);
     if (!fundType) {
       return false;
     }
-    const isPrivateCom = fundType.sponsorship_type_name.toLocaleLowerCase() === 'private company';
-    if (isPrivateCom) {
-      this.staffIDControl.setValidators(Validators.required);
-      this.policyControl.clearValidators();
-      this.policyControl.reset();
-      this.memberIDControl.clearValidators();
-      this.memberIDControl.reset();
-      this.cardSerialControl.clearValidators();
-      this.cardSerialControl.reset();
-    }
-    return isPrivateCom;
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'private company';
   }
 
   get isPrivateInsurance(): boolean {
@@ -305,18 +323,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     if (!fundType) {
       return false;
     }
-    const isPrivateIn = fundType.sponsorship_type_name.toLocaleLowerCase() === 'private insurance';
-    if (isPrivateIn) {
-      this.memberIDControl.setValidators(Validators.required);
-      // this.policyControl.setValidators(Validators.required);
-      this.staffIDControl.clearValidators();
-      this.staffIDControl.reset();
-      this.staffNameControl.clearValidators();
-      this.staffNameControl.reset();
-      this.cardSerialControl.clearValidators();
-      this.cardSerialControl.reset();
-    }
-    return isPrivateIn;
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'private insurance';
   }
 
   get isGovernmentInsurance(): boolean {
@@ -324,8 +331,64 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     if (!fundType) {
       return false;
     }
-    const isGovIn = fundType.sponsorship_type_name.toLocaleLowerCase() === 'government insurance';
-    if (isGovIn) {
+    return fundType.sponsorship_type_name.toLocaleLowerCase() === 'government insurance';
+  }
+
+  get isCash(): boolean {
+    const fundType = this.getSelectedFundingType(this.billingTypeControl.value);
+    if (!fundType) {
+      return false;
+    }
+    return fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
+  }
+
+  updateBenefitValidators(beneficiary: any) {
+    if (beneficiary === 'DEPENDANT') {
+      if (this.isGovernmentCompany || this.isPrivateCompany) {
+        this.staffNameControl.setValidators([Validators.required]);
+      } else {
+        this.staffNameControl.clearValidators();
+        this.staffNameControl.reset();
+      }
+      this.relationControl.setValidators(Validators.required);
+    } else {
+      this.relationControl.clearValidators();
+      this.relationControl.reset();
+    }
+  }
+
+  updateValidators(fundType: any) {
+    if (!fundType) {
+      return;
+    }
+    const sponsorType = fundType.sponsorship_type_name.toLocaleLowerCase();
+
+    if (sponsorType === 'government company') {
+      this.staffIDControl.setValidators(Validators.required);
+      this.memberIDControl.clearValidators();
+      this.memberIDControl.reset();
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
+    } else if (sponsorType === 'private company') {
+      this.staffIDControl.setValidators(Validators.required);
+      this.policyControl.clearValidators();
+      this.policyControl.reset();
+      this.memberIDControl.clearValidators();
+      this.memberIDControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
+    } else if (sponsorType === 'private insurance') {
+      this.memberIDControl.setValidators([Validators.required]);
+      // this.policyControl.setValidators(Validators.required);
+      this.staffIDControl.clearValidators();
+      this.staffIDControl.reset();
+      this.staffNameControl.clearValidators();
+      this.staffNameControl.reset();
+      this.cardSerialControl.clearValidators();
+      this.cardSerialControl.reset();
+    } else if (sponsorType === 'government insurance') {
       this.memberIDControl.setValidators(Validators.required);
       this.cardSerialControl.setValidators(Validators.required);
       this.policyControl.clearValidators();
@@ -334,23 +397,15 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       this.staffNameControl.reset();
       this.staffIDControl.reset();
       this.staffIDControl.clearValidators();
-      return true;
-    }
-    return isGovIn;
-  }
-
-  get isCash(): boolean {
-    const fundType = this.getSelectedFundingType(this.billingTypeControl.value);
-    if (!fundType) {
-      return false;
-    }
-    const isCash = fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
-    if (isCash) {
+    } /* else if (sponsorType.includes('patient')) {
       for (const i of Object.keys(this.sponsoredForm.controls)) {
-        // try to show errors on only invalid fields
         this.sponsoredForm.controls[i].clearValidators();
       }
-      return isCash;
+    } */
+    for (const i of Object.keys(this.sponsoredForm.controls)) {
+      if (this.sponsoredForm.get(i) !== this.sponsorNameControl) {
+        this.sponsoredForm.get(i).updateValueAndValidity();
+      }
     }
   }
 
@@ -379,20 +434,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   get isBeneficiaryDependant(): boolean {
-    if (this.beneficiaryControl.value === 'DEPENDANT') {
-      if (this.isPrivateCompany || this.isGovernmentCompany) {
-        this.staffNameControl.setValidators([Validators.required]);
-      } else {
-        this.staffNameControl.clearValidators();
-        this.staffNameControl.reset();
-      }
-      this.relationControl.setValidators(Validators.required);
-      return true;
-    } else {
-      this.relationControl.clearValidators();
-      this.relationControl.reset();
-      return false;
-    }
+    return this.beneficiaryControl.value === 'DEPENDANT';
   }
 
   get nextOfKinInfoForm(): FormGroup {
@@ -468,7 +510,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     const action = (valid: boolean) => mode === 'next' ? (valid) ? this.stepIndex++ : null : this.stepIndex--;
     switch (this.stepIndex) {
       case 0: {
-        action(this.validateBillingInfo());
+        action(this.validateBillingInfo() && this.validateSponsorInfo());
         break;
       }
       case 1: {
@@ -487,6 +529,23 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
         break;
       }
     }
+  }
+
+  disabledIssueDate = (issueDate: Date): boolean => {
+    if (!issueDate) {
+      return false;
+    }
+    // can only select days before today
+    return dateFn.isAfter(issueDate, new Date());
+  }
+
+  disabledExpiryDate = (expiryDate: Date): boolean => {
+    if (!expiryDate || !this.issueDateControl) {
+      return false;
+    }
+    const date = this.issueDateControl.value as Date;
+    // can only select days after the issue date
+    return dateFn.isBefore(expiryDate, date);
   }
 
   private createPatient(data: object) {
@@ -556,7 +615,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       'native_lang_id': patientData.nativeLanguage,
       'second_lang_id': patientData.secondLanguage,
       'official_lang_id': patientData.officialLanguage,
-      'id_type_id': patientData.idtype,
+      'id_type_id': (patientData.idtype === 0) ? null : patientData.idtype,
       'id_no': patientData.idNumber,
       'id_expiry_date': this.formatDate(patientData.IdExpiryDate),
       'religion_id': patientData.religion,
@@ -656,11 +715,26 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       );
   }
 
+  private validateBillingInfo(): boolean {
+    if (this.billingForm.valid) {
+      // no need to run validator if the form is valid
+      return true;
+    }
+    for (const i of Object.keys(this.billingForm.controls)) {
+      // try to show errors on only invalid fields
+      if (this.billingForm.controls[i].invalid) {
+        this.billingForm.controls[i].markAsDirty();
+        this.billingForm.controls[i].updateValueAndValidity();
+      }
+    }
+
+    return this.billingForm.valid;
+  }
   /*
   * Tracks validity status of form before moving to the
   * next step in patient registration*/
-  private validateBillingInfo(): boolean {
-    if (this.sponsoredForm.valid) {
+  private validateSponsorInfo(): boolean {
+    if (this.sponsoredForm.valid || this.isCash) {
       // no need to run validator if the form is valid
       return true;
     }
@@ -672,7 +746,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       }
     }
 
-    return this.sponsoredForm.valid && this.billingTypeControl.valid;
+    return this.sponsoredForm.valid;
   }
 
   ageChanged() {
@@ -920,8 +994,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     this.setups.getIdTypes().pipe(first()).subscribe(
       res => {
         this.isLoadingIdTypes.next(false);
-        this.idtypes = res.data;
-
+        this.idtypes.push(this.noneIdType, ...res.data);
       },
       err => {
         this.isLoadingIdTypes.next(false);

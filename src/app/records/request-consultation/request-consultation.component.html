@@ -63,7 +63,8 @@
         <nz-form-item>
           <nz-form-label nzRequired nzFor="attendanceDate">Attendance Date</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="Select a valid date">
-            <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="attendanceDate" nzPlaceHolder="Select attendance date">
+            <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="attendanceDate"
+              nzPlaceHolder="Select attendance date">
             </nz-date-picker>
           </nz-form-control>
         </nz-form-item>
@@ -78,7 +79,8 @@
           <nz-form-control nzHasFeedback nzErrorTip="Please select service">
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Consultation Service"
               formControlName="consultationService" [nzLoading]="servicesLoading | async">
-              <nz-option *ngFor="let service of services" [nzLabel]="service.service_name" [nzValue]="service.service_id">
+              <nz-option *ngFor="let service of services" [nzLabel]="service.service_name"
+                [nzValue]="service.service_id">
               </nz-option>
             </nz-select>
           </nz-form-control>
@@ -136,8 +138,7 @@
     <div nz-col nzOffset="7">
       <nz-button-group>
         <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="requesting">Cancel</button>
-        <button nz-button nzType="primary" (click)="done()" [nzLoading]="requesting"
-          [disabled]="requestForm.invalid">Done</button>
+        <button nz-button nzType="primary" (click)="done()" [nzLoading]="requesting">Done</button>
       </nz-button-group>
     </div>
   </div>

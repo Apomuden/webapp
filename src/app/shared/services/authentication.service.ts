@@ -3,7 +3,7 @@ import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, first } from 'rxjs/operators';
 
 import { User } from '../interfaces/user.type';
 import jwt_decode from 'jwt-decode';
@@ -44,10 +44,25 @@ export class AuthenticationService {
             );
 
             this.currentUserSubject.next(this.decodedUser);
+            this.getFacilityDetails().pipe(first()).subscribe();
           }
           return this.decodedUser;
         })
       );
+  }
+
+  getFacilityDetails(): Observable<any> {
+    const url = `${environment.apiBaseUrl}/setups/hospital`;
+    return this.http.get<any>(url).pipe(map(res => {
+      if (res && res.data) {
+        localStorage.setItem(
+          'facilityDetails',
+          JSON.stringify(res.data)
+        );
+      }
+      return res.data;
+    }
+    ));
   }
 
   logout() {
