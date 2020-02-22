@@ -46,6 +46,7 @@ import { OtherComponent } from './categories/other/other.component';
 import { ClinicComponent } from './pages/clinic/clinic.component';
 import { ServicePricingSetupComponent } from './pages/service-pricing-setup/service-pricing-setup.component';
 import { SponsorPolicySetupComponent } from './pages/sponsor-policy-setup/sponsor-policy-setup.component';
+import { ClinicTypeSetupComponent } from './pages/clinic-type-setup/clinic-type-setup.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import { SponsorPolicySetupComponent } from './pages/sponsor-policy-setup/sponso
     OtherComponent,
     ClinicComponent,
     ServicePricingSetupComponent,
-    SponsorPolicySetupComponent
+    SponsorPolicySetupComponent,
+    ClinicTypeSetupComponent
   ],
   imports: [
     CommonModule,
