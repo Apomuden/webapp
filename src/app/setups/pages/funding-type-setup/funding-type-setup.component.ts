@@ -96,7 +96,7 @@ export class FundingTypeSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
 
   getFundingTypes() {
     this.setup
@@ -207,5 +207,18 @@ export class FundingTypeSetupComponent implements OnInit {
     this.getPaymentChannels();
     this.getBillingSystems();
     this.getSponsorshipTypes();
+  }
+
+  toggleItem($event: any, funding: any) {
+    this.setup.toggleActive(`setups/fundingtypes/${funding.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(f => f.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(f => f.id === funding.id);
+        this.list[index].isActivated = !funding.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

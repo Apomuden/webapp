@@ -8,7 +8,7 @@
             <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
               <ng-template #editAction><a>edit</a></ng-template>
               <ng-template #moreAction>
-                <nz-switch [(ngModel)]="item.isActivated"></nz-switch>
+                <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
               <nz-list-item-meta [nzTitle]="nzTitle">
                 <ng-template #nzTitle>
@@ -24,7 +24,7 @@
   </nz-col>
   <nz-col nzSpan="8">
     <nz-card>
-      <h5>Create Service Pricing</h5>
+      <h5>Create Service</h5>
       <form (ngSubmit)="submitForm()" [formGroup]="servicePricingForm">
         <nz-alert *ngIf="error" nzType="error" nzMessage="Error" [nzDescription]="error">
         </nz-alert>

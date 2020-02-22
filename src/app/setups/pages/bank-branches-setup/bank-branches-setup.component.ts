@@ -90,7 +90,7 @@ export class BankBranchesSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
 
   getBankBranches() {
     this.setup
@@ -129,5 +129,19 @@ export class BankBranchesSetupComponent implements OnInit {
   ngOnInit() {
     this.getBankBranches();
     this.getBanks();
+  }
+
+  toggleItem($event: any, branch: any) {
+    this.setup.toggleActive(`setups/bankbranches/${branch.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        console.log(toggled);
+        const index = this.list.findIndex(b => b.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(b => b.id === branch.id);
+        this.list[index].isActivated = !branch.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

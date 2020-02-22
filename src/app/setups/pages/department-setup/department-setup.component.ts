@@ -73,4 +73,17 @@ export class DepartmentSetupComponent implements OnInit {
   ngOnInit() {
     this.getDepartments();
   }
+
+  toggleItem($event: any, department: any) {
+    this.setup.toggleActive(`setups/departments/${department.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(d => d.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(d => d.id === department.id);
+        this.list[index].isActivated = !department.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
+  }
 }

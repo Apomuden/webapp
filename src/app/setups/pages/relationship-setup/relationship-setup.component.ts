@@ -59,7 +59,7 @@ export class RelationshipSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getRelationships() {
     this.setup
       .getRelationships()
@@ -78,5 +78,18 @@ export class RelationshipSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getRelationships();
+  }
+
+  toggleItem($event: any, relationship: any) {
+    this.setup.toggleActive(`setups/relationships/${relationship.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(r => r.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(r => r.id === relationship.id);
+        this.list[index].isActivated = !relationship.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

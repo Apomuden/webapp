@@ -72,7 +72,7 @@ export class TownSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
 
   getTowns() {
     this.setup
@@ -111,5 +111,18 @@ export class TownSetupComponent implements OnInit {
   ngOnInit() {
     this.getTowns();
     this.getDistricts();
+  }
+
+  toggleItem($event: any, town: any) {
+    this.setup.toggleActive(`setups/towns/${town.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(i => i.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(i => i.id === town.id);
+        this.list[index].isActivated = !town.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }
