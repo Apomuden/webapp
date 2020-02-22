@@ -739,7 +739,7 @@ export class SetupService {
         }
         return false;
       })
-    )
+    );
   }
   /**
    * Relationship routes
@@ -1312,5 +1312,15 @@ export class SetupService {
         return this.medicalSponsors;
       })
     );
+  }
+
+  toggleActive(resourcePath: string, status: string) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.put<any>(url, {
+      status: status
+    }).pipe(map(res => {
+      res.data.isActivated = res.data.status === 'ACTIVE';
+      return res.data;
+    }));
   }
 }

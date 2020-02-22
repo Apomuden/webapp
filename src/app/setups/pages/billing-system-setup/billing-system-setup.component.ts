@@ -59,7 +59,7 @@ export class BillingSystemSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getBillingSystems() {
     this.setup
       .getBillingSystems()
@@ -78,5 +78,19 @@ export class BillingSystemSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getBillingSystems();
+  }
+
+  toggleItem($event: any, system: any) {
+    this.setup.toggleActive(`setups/billingsystems/${system.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        console.log(toggled);
+        const index = this.list.findIndex(s => s.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(s => s.id === system.id);
+        this.list[index].isActivated = !system.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

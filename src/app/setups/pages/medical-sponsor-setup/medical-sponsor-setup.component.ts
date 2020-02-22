@@ -70,7 +70,7 @@ export class MedicalSponsorSetupComponent implements OnInit {
                 `Successfully created ${this.componentLabel}`
               );
               this.getMedicalSponsors();
-              this.medicalSponsorForm.reset()
+              this.medicalSponsorForm.reset();
             } else {
               this.notification.blank(
                 'Error',
@@ -202,5 +202,18 @@ export class MedicalSponsorSetupComponent implements OnInit {
     this.getPaymentChannels();
     this.getSponsorshipTypes();
 
+  }
+
+  toggleItem($event: any, sponsor: any) {
+    this.setup.toggleActive(`setups/billingsponsors/${sponsor.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(b => b.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(b => b.id === sponsor.id);
+        this.list[index].isActivated = !sponsor.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

@@ -99,4 +99,17 @@ export class SponsorPolicySetupComponent implements OnInit {
     this.getSponsorPolicies();
     this.getMedicalSponsors();
   }
+
+  toggleItem($event: any, policy: any) {
+    this.setup.toggleActive(`setups/sponsorpolicies/${policy.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(i => i.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(i => i.id === policy.id);
+        this.list[index].isActivated = !policy.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
+  }
 }

@@ -8,7 +8,7 @@
             <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
               <ng-template #editAction><a>edit</a></ng-template>
               <ng-template #moreAction>
-                <nz-switch [(ngModel)]="item.isActivated"></nz-switch>
+                <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
               <nz-list-item-meta [nzTitle]="nzTitle">
                 <ng-template #nzTitle>

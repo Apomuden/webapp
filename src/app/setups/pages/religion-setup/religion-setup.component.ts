@@ -59,7 +59,7 @@ export class ReligionSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getReligions() {
     this.setup
       .getReligions()
@@ -78,5 +78,18 @@ export class ReligionSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getReligions();
+  }
+
+  toggleItem($event: any, religion: any) {
+    this.setup.toggleActive(`setups/religions/${religion.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(i => i.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(i => i.id === religion.id);
+        this.list[index].isActivated = !religion.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }
