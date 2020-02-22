@@ -33,17 +33,24 @@
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="clinicType" nzPlaceHolder="Clinic type"
+            [nzLoading]="isClinicTypesLoading | async">
+            <nz-option *ngFor="let clinicType of clinicTypes" [nzLabel]="clinicType.name" [nzValue]="clinicType.id">
+            </nz-option>
+          </nz-select>
+        </nz-row>
+        <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select nzAllowSearch="false" nzAllowClear="false" name="gender" formControlName="gender"
+            <nz-select nzAllowSearch="false" nzMode="tags" nzAllowClear="false" name="gender" formControlName="gender"
               nzPlaceHolder="Select gender">
-              <nz-option nzLabel="Male" nzMale="MALE"></nz-option>
+              <nz-option nzLabel="Male" nzValue="MALE"></nz-option>
               <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
               <nz-option nzLabel="Bigender" nzValue="BIGENDER"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
-          <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="patient_status"
+          <nz-select nzAllowSearch="false" nzMode="tags" nzAllowClear="false" formControlName="patient_status"
             nzPlaceHolder="Patient status">
             <nz-option nzLabel="IN-PATIENT" nzValue="IN-PATIENT"></nz-option>
             <nz-option nzLabel="OUT-PATIENT" nzValue="OUT-PATIENT"></nz-option>

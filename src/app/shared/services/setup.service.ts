@@ -150,6 +150,7 @@ export class SetupService {
       .pipe(
         map(res => {
           if (res) {
+            console.log(res);
             return true;
           }
           return false;
