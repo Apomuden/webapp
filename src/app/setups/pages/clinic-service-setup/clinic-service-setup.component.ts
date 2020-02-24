@@ -125,7 +125,7 @@ export class ClinicServiceSetupComponent implements OnInit {
                 `Successfully created Clinic Service`
               );
               this.getClinicServices();
-              this.clinicForm.reset();
+              this.clinicServiceForm.reset();
             } else {
               this.notification.blank(
                 'Error',
