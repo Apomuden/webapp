@@ -43,7 +43,7 @@ const SPECIALITY_API_URL = environment.apiBaseUrl + '/setups/specialties';
 const RELATIONSHIP_API_URL = environment.apiBaseUrl + '/setups/relationships';
 const CLINICS_API_URL = environment.apiBaseUrl + '/setups/clinics';
 const RELIGION_API_URL = environment.apiBaseUrl + '/setups/religions';
-const SERVICE_PRICING_API_URL = environment.apiBaseUrl + '/pricing/serviceprices';
+const SERVICE_PRICING_API_URL = environment.apiBaseUrl + '/pricing/services';
 const SERVICE_CATEGORY_API_URL =
   environment.apiBaseUrl + '/setups/servicecategories';
 const FUNDING_TYPE_API_URL = environment.apiBaseUrl + '/setups/fundingtypes';
@@ -1254,6 +1254,28 @@ export class SetupService {
         }
         return data;
       }));
+  }
+
+  getClinicServices() {
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinicservices`)
+      .pipe(map(data => {
+        if (!data) {
+          return { data: [] };
+        }
+        return data;
+      }));
+  }
+
+
+  createClinicService(fields: any) {
+    return this.http.post<any>(`${environment.apiBaseUrl}/setups/clinicservices`, fields).pipe(
+      map(res => {
+        if (res) {
+          return true;
+        }
+        return false;
+      })
+    );
   }
 
   getServicePrice(serviceId: number) {
