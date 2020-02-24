@@ -37,5 +37,13 @@ export const CommonLayout_ROUTES: Routes = [
         m => m.RecordsModule
       ),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'opd',
+    loadChildren: () =>
+      import('../../opd/opd.module').then(
+        m => m.OpdModule
+      ),
+    canActivate: [AuthGuard]
   }
 ];
