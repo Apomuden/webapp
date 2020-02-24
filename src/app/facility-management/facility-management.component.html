@@ -1,4 +1,26 @@
-<nz-steps [nzCurrent]="current">
+<nz-row nzGutter="30">
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToDetails()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Facility Details</div>
+    </nz-card>
+  </nz-col>
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToNumberingSetting()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Numbering Setting</div>
+    </nz-card>
+  </nz-col>
+  <nz-col nzMd="8" nzLg="6" nzXs="24">
+    <nz-card class="setup-category" (click)="goToFundingSetting()">
+      <i nz-icon nzType="setting" class="m-r-20" nzTheme="twotone"></i>
+      <div>Funding Setting</div>
+    </nz-card>
+  </nz-col>
+</nz-row>
+
+
+<!-- <nz-steps [nzCurrent]="current">
   <nz-step nzTitle="Hospital Data"></nz-step>
   <nz-step nzTitle="Registration Info"></nz-step>
   <nz-step nzTitle="Creation of Admin"></nz-step>
@@ -216,4 +238,4 @@
   <button nz-button nzType="primary" (click)="done()" *ngIf="current === 4">
     <span>Done</span>
   </button>
-</div>
+</div> -->
