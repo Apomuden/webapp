@@ -595,7 +595,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     }
     this.isLoading = true;
     // TODO: submit details to backend
-    const formData = this.prepareToSubmit();
+    const formData = this.processData();
     this.userService.createUser(formData)
       .pipe(first())
       .subscribe(response => {
@@ -628,7 +628,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     });
   }
 
-  private prepareToSubmit() {
+  private processData() {
     let emerg_phone1: string;
     if (this.emergencyForm.get('number').value) {
       emerg_phone1 = `${this.emergencyForm.get('countryCode').value.replace('+', '')}${this.emergencyForm.get('number').value}`;
