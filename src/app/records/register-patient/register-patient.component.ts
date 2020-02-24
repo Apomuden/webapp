@@ -592,6 +592,17 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
 
   private processPatientData() {
     const patientData = this.patientInfoForm.value;
+
+    let emerg_phone: string;
+    if (this.contactInfoForm.value.emergencyPhoneNumber) {
+      emerg_phone = `${this.contactInfoForm.value.emergencyCountryCode.replace('+', '')}${this.contactInfoForm.value.emergencyPhoneNumber}`;
+    }
+
+    let active_cell: string;
+    if (this.contactInfoForm.value.cellPhoneNumber) {
+      active_cell = `${this.contactInfoForm.value.countryCode.replace('+', '')}${this.contactInfoForm.value.cellPhoneNumber}`;
+    }
+
     return {
       'title_id': patientData.title,
       'funding_type_id': this.billingTypeControl.value,
@@ -620,10 +631,10 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       'id_expiry_date': this.formatDate(patientData.IdExpiryDate),
       'religion_id': patientData.religion,
       'educational_level_id': patientData.educationalLevel,
-      'active_cell': `${this.contactInfoForm.value.countryCode}${this.contactInfoForm.value.cellPhoneNumber}`,
+      'active_cell': active_cell,
       'email': this.contactInfoForm.value.emailAddress,
       'emerg_name': this.contactInfoForm.value.emergencyName,
-      'emerg_phone': `${this.contactInfoForm.value.emergencyCountryCode}${this.contactInfoForm.value.emergencyPhoneNumber}`,
+      'emerg_phone': emerg_phone,
       'emerg_relation_id': this.contactInfoForm.value.emergencyRelationship,
       'mortality': 'ALIVE',
       'reg_status': 'OUT-PATIENT',
@@ -633,13 +644,18 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
 
   private processNextOfKinData(patientId: number) {
     const nextOfKinData = this.nextOfKinInfoForm.value;
+    let phone: string;
+    if (nextOfKinData.cellPhoneNumber) {
+      phone = `${nextOfKinData.countryCode.replace('+', '')}${nextOfKinData.cellPhoneNumber}`;
+    }
+
     return {
       'name': nextOfKinData.name,
-      'phone': `${nextOfKinData.countryCode}${nextOfKinData.cellPhoneNumber}`,
+      'phone': phone,
       'email': nextOfKinData.emailAddress,
       'patient_id': patientId,
       'relation_id': nextOfKinData.relationship,
-      'alternate_phone': `${nextOfKinData.countryCode}${nextOfKinData.cellPhoneNumber}`
+      // 'alternate_phone': `${nextOfKinData.countryCode}${nextOfKinData.cellPhoneNumber}`
     };
   }
 
