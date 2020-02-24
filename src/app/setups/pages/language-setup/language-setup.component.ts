@@ -59,7 +59,7 @@ export class LanguageSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getLanguages() {
     this.setup
       .getLanguages()
@@ -78,5 +78,18 @@ export class LanguageSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getLanguages();
+  }
+
+  toggleItem($event: any, language: any) {
+    this.setup.toggleActive(`setups/languages/${language.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(l => l.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(l => l.id === language.id);
+        this.list[index].isActivated = !language.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

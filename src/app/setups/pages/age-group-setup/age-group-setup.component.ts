@@ -13,24 +13,26 @@ export class AgeGroupSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
   isCreatingAgeGroup = new BehaviorSubject(false);
-  data = [];
-  list = [];
-  error = '';
+  ageGroups = [];
   name = '';
   minAge: number;
   maxAge: number;
   componentLabel = 'age group';
 
+  constructor(
+    private setup: SetupService,
+    private notification: NzNotificationService
+  ) { }
+
+  ngOnInit() {
+    this.getAgeGroups();
+  }
+
   submitForm(): void {
-    if (
-      this.name == null ||
-      this.name === '' ||
-      this.minAge == null ||
-      this.maxAge == null
-    ) {
-      this.error = `All fields are required!`;
+    if (this.validateForm()) {
+      this.notification.error(`Please fill the form correctly!`,
+        `Check and make sure you've provided all fields and min age is not greater than max age`);
     } else {
-      this.error = '';
       this.isCreatingAgeGroup.next(true);
       this.setup
         .createAgeGroup(this.name, this.minAge, this.maxAge)
@@ -39,7 +41,7 @@ export class AgeGroupSetupComponent implements OnInit {
           success => {
             this.isCreatingAgeGroup.next(false);
             if (success) {
-              this.notification.blank(
+              this.notification.success(
                 'Success',
                 `Successfully created ${this.componentLabel}`
               );
@@ -48,7 +50,7 @@ export class AgeGroupSetupComponent implements OnInit {
               this.minAge = null;
               this.maxAge = null;
             } else {
-              this.notification.blank(
+              this.notification.error(
                 'Error',
                 `Could not create ${this.componentLabel}`
               );
@@ -64,28 +66,38 @@ export class AgeGroupSetupComponent implements OnInit {
         );
     }
   }
+  validateForm() {
+    return (!this.name ||
+      !this.minAge ||
+      !this.maxAge || this.minAge > this.maxAge);
+  }
 
-  constructor(
-    private setup: SetupService,
-    private notification: NzNotificationService
-  ) {}
   getAgeGroups() {
     this.setup
       .getAgeGroups()
       .pipe(first())
       .subscribe(
         data => {
-          this.data = data.data;
-          this.list = data.data;
+          this.ageGroups = data.data;
           this.initLoading = false;
-          console.log(this.data);
         },
         error => {
           console.log(error);
         }
       );
   }
-  ngOnInit() {
-    this.getAgeGroups();
+
+  toggleItem($event: any, ageGroup: any) {
+    this.setup.toggleActive(`setups/agegroups/${ageGroup.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        console.log(toggled);
+        const index = this.ageGroups.findIndex(group => group.id === toggled.id);
+        this.ageGroups[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.ageGroups.findIndex(group => group.id === ageGroup.id);
+        this.ageGroups[index].isActivated = !ageGroup.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

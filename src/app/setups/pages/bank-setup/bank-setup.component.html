@@ -1,26 +1,15 @@
 <div nz-row nzGutter="10">
   <nz-col nzSpan="12">
     <nz-card>
-      <nz-list
-        style="min-height: 350px;"
-        [nzDataSource]="list"
-        [nzItemLayout]="'horizontal'"
-        [nzLoading]="initLoading"
-        [nzRenderItem]="item"
-      >
+      <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
+        [nzRenderItem]="item">
         <ng-template #item let-item>
-          <nz-list-item
-            [nzActions]="item.loading ? [] : [editAction, moreAction]"
-          >
-            <nz-skeleton
-              [nzActive]="true"
-              [nzTitle]="false"
-              [nzLoading]="item.loading"
-            >
+          <nz-list-item [nzActions]="item.loading ? [] : [editAction, moreAction]">
+            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
               <ng-template #editAction><a>edit</a></ng-template>
-              <ng-template #moreAction
-                ><nz-switch [(ngModel)]="item.isActivated"></nz-switch
-              ></ng-template>
+              <ng-template #moreAction>
+                <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
+              </ng-template>
               <nz-list-item-meta [nzTitle]="nzTitle">
                 <ng-template #nzTitle>
                   <a>{{ item.name }}</a>
@@ -39,61 +28,28 @@
         <div *ngIf="error">{{ error }}</div>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="name"
-              name="name"
-              placeholder="Input bank name"
-            />
+            <input type="text" nz-input [(ngModel)]="name" name="name" placeholder="Input bank name" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="sortCode"
-              name="short_code"
-              placeholder="Input sort code"
-            />
+            <input type="text" nz-input [(ngModel)]="sortCode" name="short_code" placeholder="Input sort code" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="email"
-              name="email"
-              placeholder="Input email"
-            />
+            <input type="text" nz-input [(ngModel)]="email" name="email" placeholder="Input email" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="phone"
-              name="phone"
-              placeholder="Input phone"
-            />
+            <input type="text" nz-input [(ngModel)]="phone" name="phone" placeholder="Input phone" />
           </nz-form-control>
         </nz-row>
         <nz-row>
-          <nz-form-control
-            nzSpan="24"
-            style="text-align: right;"
-            class="m-t-10"
-          >
-            <button
-              nz-button
-              nzType="primary"
-              type="submit"
-              [nzLoading]="isCreatingBank | async"
-            >
+          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingBank | async">
               Submit
             </button>
           </nz-form-control>

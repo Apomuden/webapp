@@ -71,7 +71,7 @@ export class ServiceSubcategorySetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
 
   getServiceSubcategories() {
     this.setup
@@ -110,5 +110,18 @@ export class ServiceSubcategorySetupComponent implements OnInit {
   ngOnInit() {
     this.getServiceSubcategories();
     this.getServiceCategories();
+  }
+
+  toggleItem($event: any, sub: any) {
+    this.setup.toggleActive(`setups/servicesubcategories/${sub.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(i => i.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(i => i.id === sub.id);
+        this.list[index].isActivated = !sub.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

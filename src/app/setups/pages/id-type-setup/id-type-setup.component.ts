@@ -59,7 +59,7 @@ export class IdTypeSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getIdTypes() {
     this.setup
       .getIdTypes()
@@ -78,5 +78,18 @@ export class IdTypeSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getIdTypes();
+  }
+
+  toggleItem($event: any, type: any) {
+    this.setup.toggleActive(`setups/idtypes/${type.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(t => t.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(t => t.id === type.id);
+        this.list[index].isActivated = !type.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

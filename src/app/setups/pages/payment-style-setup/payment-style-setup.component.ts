@@ -55,7 +55,7 @@ export class PaymentStyleSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getPaymentStyles() {
     this.setup
       .getPaymentStyles()
@@ -74,5 +74,18 @@ export class PaymentStyleSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getPaymentStyles();
+  }
+
+  toggleItem($event: any, style: any) {
+    this.setup.toggleActive(`setups/paymentstyles/${style.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(s => s.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(s => s.id === style.id);
+        this.list[index].isActivated = !style.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

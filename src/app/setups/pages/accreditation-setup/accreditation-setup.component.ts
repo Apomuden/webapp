@@ -23,22 +23,19 @@ export class AccreditationSetupComponent implements OnInit {
   registrationDate = null;
   componentLabel = 'accreditation';
 
+  constructor(
+    private setup: SetupService,
+    private notification: NzNotificationService
+  ) { }
+
+  ngOnInit() {
+    this.getAccreditations();
+  }
+
   submitForm(): void {
-    if (
-      this.regBody == null ||
-      this.regBody === '' ||
-      this.tin == null ||
-      this.tin === '' ||
-      this.registrationDate == null ||
-      this.registrationDate === '' ||
-      this.expDate == null ||
-      this.expDate === '' ||
-      this.regNumber == null ||
-      this.regNumber === ''
-    ) {
-      this.error = `All fields are required!`;
+    if (this.validateForm()) {
+      this.notification.error(`All fields are required!`, `Make sure you've finished the form.`);
     } else {
-      this.error = '';
       this.isCreatingAccreditation.next(true);
       this.setup
         .createAccreditation(
@@ -53,7 +50,7 @@ export class AccreditationSetupComponent implements OnInit {
           success => {
             this.isCreatingAccreditation.next(false);
             if (success) {
-              this.notification.blank(
+              this.notification.success(
                 'Success',
                 `Successfully created ${this.componentLabel}`
               );
@@ -64,7 +61,7 @@ export class AccreditationSetupComponent implements OnInit {
               this.expDate = null;
               this.registrationDate = null;
             } else {
-              this.notification.blank(
+              this.notification.error(
                 'Error',
                 `Could not create ${this.componentLabel}`
               );
@@ -72,7 +69,7 @@ export class AccreditationSetupComponent implements OnInit {
           },
           error => {
             this.isCreatingAccreditation.next(false);
-            this.notification.blank(
+            this.notification.error(
               'Error',
               `Could not create ${this.componentLabel}`
             );
@@ -81,17 +78,27 @@ export class AccreditationSetupComponent implements OnInit {
     }
   }
 
+  validateForm() {
+    return (this.regBody == null ||
+      this.regBody === '' ||
+      this.tin == null ||
+      this.tin === '' ||
+      this.registrationDate == null ||
+      this.registrationDate === '' ||
+      this.expDate == null ||
+      this.expDate === '' ||
+      this.regNumber == null ||
+      this.regNumber === '');
+  }
+
   onRegistrationDateChanged(result: Date): void {
     this.registrationDate = result;
   }
+
   onExpiryDateChanged(result: Date): void {
     this.expDate = result;
   }
 
-  constructor(
-    private setup: SetupService,
-    private notification: NzNotificationService
-  ) {}
   getAccreditations() {
     this.setup
       .getAccreditations()
@@ -109,7 +116,16 @@ export class AccreditationSetupComponent implements OnInit {
       );
   }
 
-  ngOnInit() {
-    this.getAccreditations();
+  toggleItem($event: any, accreditation: any) {
+    this.setup.toggleActive(`setups/accreditations/${accreditation.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(accred => accred.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(accred => accred.id === accreditation.id);
+        this.list[index].isActivated = !accreditation.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

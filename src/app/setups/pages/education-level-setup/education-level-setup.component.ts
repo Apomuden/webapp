@@ -59,7 +59,7 @@ export class EducationLevelSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getEducationalLevels() {
     this.setup
       .getEducationalLevels()
@@ -78,5 +78,18 @@ export class EducationLevelSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getEducationalLevels();
+  }
+
+  toggleItem($event: any, level: any) {
+    this.setup.toggleActive(`setups/educationallevels/${level.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(e => e.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(e => e.id === level.id);
+        this.list[index].isActivated = !level.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

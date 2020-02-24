@@ -68,7 +68,7 @@ export class TitleSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
 
   getTitles() {
     this.setup
@@ -92,5 +92,18 @@ export class TitleSetupComponent implements OnInit {
   }
   log(input: any) {
     console.log(input.toString());
+  }
+
+  toggleItem($event: any, title: any) {
+    this.setup.toggleActive(`setups/titles/${title.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(i => i.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(i => i.id === title.id);
+        this.list[index].isActivated = !title.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

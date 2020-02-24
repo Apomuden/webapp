@@ -59,7 +59,7 @@ export class StaffCategorySetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getStaffCategories() {
     this.setup
       .getStaffCategories()
@@ -78,5 +78,18 @@ export class StaffCategorySetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getStaffCategories();
+  }
+
+  toggleItem($event: any, staffcat: any) {
+    this.setup.toggleActive(`setups/staffcategories/${staffcat.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(i => i.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(i => i.id === staffcat.id);
+        this.list[index].isActivated = !staffcat.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

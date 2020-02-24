@@ -71,7 +71,7 @@ export class ProfessionSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
 
   getProfessions() {
     this.setup
@@ -110,5 +110,18 @@ export class ProfessionSetupComponent implements OnInit {
   ngOnInit() {
     this.getProfessions();
     this.getStaffCategories();
+  }
+
+  toggleItem($event: any, profession: any) {
+    this.setup.toggleActive(`setups/professions/${profession.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(p => p.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(p => p.id === profession.id);
+        this.list[index].isActivated = !profession.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

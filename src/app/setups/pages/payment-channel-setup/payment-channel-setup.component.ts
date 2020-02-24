@@ -58,7 +58,7 @@ export class PaymentChannelSetupComponent implements OnInit {
   constructor(
     private setup: SetupService,
     private notification: NzNotificationService
-  ) {}
+  ) { }
   getPaymentChannels() {
     this.setup
       .getPaymentChannels()
@@ -77,5 +77,18 @@ export class PaymentChannelSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getPaymentChannels();
+  }
+
+  toggleItem($event: any, channel: any) {
+    this.setup.toggleActive(`setups/paymentchannels/${channel.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(c => c.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(c => c.id === channel.id);
+        this.list[index].isActivated = !channel.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
   }
 }

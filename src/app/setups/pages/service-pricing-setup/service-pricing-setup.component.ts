@@ -56,9 +56,9 @@ export class ServicePricingSetupComponent implements OnInit {
     this.getServiceSubCategories();
     this.getHospitalServices();
 
-    this.servicePricingForm.get("service_category_id").valueChanges.subscribe(val => {
+    this.servicePricingForm.get('service_category_id').valueChanges.subscribe(val => {
       if (val == null) {
-        this.servicePricingForm.get("service_subcategory_id").setValue(null);
+        this.servicePricingForm.get('service_subcategory_id').setValue(null);
       }
     });
   }
@@ -165,12 +165,12 @@ export class ServicePricingSetupComponent implements OnInit {
               'Success',
               `Successfully created service pricing`
             );
-            this.getServicePricings()
+            this.getServicePricings();
 
           } else {
             this.notification.blank(
               'Error',
-              `Could not create service pricing`
+              `Could not create service`
             );
 
           }
@@ -180,10 +180,10 @@ export class ServicePricingSetupComponent implements OnInit {
 
           this.notification.blank(
             'Error',
-            `Could not create service pricing`
+            `Could not create service`
           );
         }
-      )
+      );
     } else {
       this.error = 'Please fill required fields';
     }
@@ -191,9 +191,9 @@ export class ServicePricingSetupComponent implements OnInit {
   }
 
   submitForm() {
-    let tempPatientStatus = this.servicePricingForm.controls['patient_status'].value;
-    let tempGender = this.servicePricingForm.controls['gender'].value;
-    let fields = this.servicePricingForm.value;
+    const tempPatientStatus = this.servicePricingForm.controls['patient_status'].value;
+    const tempGender = this.servicePricingForm.controls['gender'].value;
+    const fields = this.servicePricingForm.value;
 
     if (tempPatientStatus instanceof Array) {
       fields.patient_status = tempPatientStatus.join(',');
@@ -205,4 +205,16 @@ export class ServicePricingSetupComponent implements OnInit {
     this.createServicePricing(fields);
   }
 
+  toggleItem($event: any, service: any) {
+    this.setup.toggleActive(`pricing/services/${service.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(i => i.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(i => i.id === service.id);
+        this.list[index].isActivated = !service.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
+  }
 }
