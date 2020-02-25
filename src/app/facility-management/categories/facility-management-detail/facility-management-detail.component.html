@@ -1,4 +1,16 @@
-<form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+<nz-row style="max-width: 600px;" class="m-b-30">
+
+  <nz-col [nzOffset]="6">
+    <img *ngIf="logo" style="width: 128px;" [src]="logo" />
+    <nz-avatar *ngIf="!logo" nzIcon="user" [nzSize]="128" [nzShape]="'square'"></nz-avatar>
+  </nz-col>
+  <nz-col>
+    <nz-upload [nzCustomRequest]="handleUpload" [nzShowUploadList]="false" class="m-l-20">
+      <button nz-button><i nz-icon nzType="upload"></i><span>Update logo</span></button>
+    </nz-upload>
+  </nz-col>
+</nz-row>
+<form nz-form [formGroup]="updateFacilityDetailsForm" (ngSubmit)="submitForm()">
   <!-- "id": 1,
         "name": "Apomuden Dev. Hospital",
         "staff_id_prefix": "ADH",
@@ -26,12 +38,7 @@
         "created_at": "2019-12-19 19:09:19",
         "updated_at": "2020-01-02 14:46:20" -->
 
-  <nz-row>
 
-    <nz-col [nzOffset]="6">
-      <nz-avatar [nzSize]="128" nzIcon="user" class="m-b-10"></nz-avatar>
-    </nz-col>
-  </nz-row>
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Name</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Name field is required">
@@ -81,7 +88,7 @@
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="country_id">Country</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Country is required">
       <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="country_id" nzPlaceHolder="Country"
-        [nzLoading]="isCountriesLoading | async">
+        [nzLoading]="isLoadingCountries | async">
         <nz-option *ngFor="let country of countries" [nzLabel]="country.name" [nzValue]="country.id">
         </nz-option>
       </nz-select>
@@ -91,8 +98,8 @@
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="region_id">Region</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Region is required">
       <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="region_id" nzPlaceHolder="Region"
-        [nzLoading]="isRegionsLoading | async">
-        <nz-option *ngFor="let reigion of regions" [nzLabel]="region.name" [nzValue]="region.id">
+        [nzLoading]="isLoadingRegions | async">
+        <nz-option *ngFor="let region of regions" [nzLabel]="region.name" [nzValue]="region.id">
         </nz-option>
       </nz-select>
     </nz-form-control>
@@ -100,7 +107,7 @@
   <nz-form-item>
     <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ownership_type">Ownership type</nz-form-label>
     <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ownership type is required">
-      <nz-select nzAllowSearch="false" nzMode="multiple" nzAllowClear="false" formControlName="ownership_type"
+      <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="ownership_type"
         nzPlaceHolder="Ownership type">
         <nz-option nzLabel="Private" nzValue="PRIVATE"></nz-option>
         <nz-option nzLabel="Mission" nzValue="MISSION"></nz-option>
@@ -108,9 +115,15 @@
       </nz-select>
     </nz-form-control>
   </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gps_location">Ghana post address</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="GPS location is required">
+      <input nz-input formControlName="gps_location" placeholder="Ghana post address" id="gps_location" />
+    </nz-form-control>
+  </nz-form-item>
   <nz-form-item nz-row class="register-area">
     <nz-form-control [nzSpan]="14" [nzOffset]="6">
-      <button nz-button nzType="primary">Update</button>
+      <button nz-button nzType="primary" [nzLoading]="isUpdatingFacility|async">Update</button>
     </nz-form-control>
   </nz-form-item>
 

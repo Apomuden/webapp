@@ -1337,6 +1337,18 @@ export class SetupService {
     );
   }
 
+  updateFacility(fields: any) {
+    const url = `${environment.apiBaseUrl}/setups/hospital`;
+    return this.http.put<any>(url, fields).pipe(map(
+      res => {
+        if (res) {
+          return true;
+        }
+        return false;
+      }
+    ))
+  }
+
   toggleActive(resourcePath: string, status: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.put<any>(url, {
