@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { ViewChild } from '@angular/core';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
@@ -127,8 +128,9 @@ export class FacilityManagementComponent implements OnInit {
   }
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
-  ) {}
+    private notification: NzNotificationService,
+    private router: Router
+  ) { }
 
   ngOnInit() {
     this.countriesloading.next(true);
@@ -146,5 +148,16 @@ export class FacilityManagementComponent implements OnInit {
           this.countriesloading.next(false);
         }
       );
+  }
+  goToDetails() {
+    this.router.navigate(['facility-management/details']);
+  }
+
+  goToNumberingSetting() {
+    this.router.navigate(['facility-management/numbering-setting']);
+  }
+
+  goToFundingSetting() {
+    this.router.navigate(['facility-management/funding-setting'])
   }
 }

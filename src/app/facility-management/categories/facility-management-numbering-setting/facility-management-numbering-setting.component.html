@@ -1,0 +1,76 @@
+<form nz-form [formGroup]="updateFacilityDetailsForm" (ngSubmit)="submitForm()">
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staff_id_prefix">Staff id prefix</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input formControlName="staff_id_prefix" placeholder="Staff Id Prefix" id="staff_id_prefix" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="folder_id_prefix">Folder id prefix</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input formControlName="folder_id_prefix" placeholder="Folder Id Prefix" id="folder_id_prefix" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="folder_id_seperator">Folder Id Seperator</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input formControlName="folder_id_seperator" placeholder="Folder Id Seperator"
+        id="folder_id_seperator" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="digits_after_staff_prefix">Digits after staff prefix
+    </nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input type="number" nz-input formControlName="digits_after_staff_prefix" placeholder="Digits after staff prefix"
+        id="digits_after_staff_prefix" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="digits_after_folder_prefix">Digits after folder prefix
+    </nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input type="number" nz-input formControlName="digits_after_folder_prefix"
+        placeholder="Digits after folder prefix" id="digits_after_folder_prefix" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="year_digits">Year digits</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input type="number" nz-input formControlName="year_digits" placeholder="Year digits" id="year_digits" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="allowed_folder_type">Allowed folder type</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-select nzAllowSearch="false" nzMode="multiple" nzAllowClear="false" formControlName="allowed_folder_type"
+        nzPlaceHolder="Allowed Folder Type">
+        <nz-option nzLabel="Individual" nzValue="INDIVIDUAL"></nz-option>
+        <nz-option nzLabel="Family" nzValue="FAMILY"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="allowed_installment_type">Allowed installment type
+    </nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-select nzAllowSearch="false" nzMode="multiple" nzAllowClear="false" formControlName="allowed_installment_type"
+        nzPlaceHolder="Allowed Installment Type">
+        <nz-option nzLabel="Full Payment" nzValue="FULL_PAYMENT"></nz-option>
+        <nz-option nzLabel="Part Payment" nzValue="PART_PAYMENT"></nz-option>
+        <nz-option nzLabel="Deposit" nzValue="DEPOSIT"></nz-option>
+        <nz-option nzLabel="Credit" nzValue="CREDIT "></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <button nz-button nzType="primary" [nzLoading]="isUpdatingFacility|async">Update</button>
+    </nz-form-control>
+  </nz-form-item>
+
+</form>

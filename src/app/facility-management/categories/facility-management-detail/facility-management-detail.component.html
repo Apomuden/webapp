@@ -1,0 +1,130 @@
+<nz-row style="max-width: 600px;" class="m-b-30">
+
+  <nz-col [nzOffset]="6">
+    <img *ngIf="logo" style="width: 128px;" [src]="logo" />
+    <nz-avatar *ngIf="!logo" nzIcon="user" [nzSize]="128" [nzShape]="'square'"></nz-avatar>
+  </nz-col>
+  <nz-col>
+    <nz-upload [nzCustomRequest]="handleUpload" [nzShowUploadList]="false" class="m-l-20">
+      <button nz-button><i nz-icon nzType="upload"></i><span>Update logo</span></button>
+    </nz-upload>
+  </nz-col>
+</nz-row>
+<form nz-form [formGroup]="updateFacilityDetailsForm" (ngSubmit)="submitForm()">
+  <!-- "id": 1,
+        "name": "Apomuden Dev. Hospital",
+        "staff_id_prefix": "ADH",
+        "staff_id_seperator": "/",
+        "folder_id_prefix": "A",
+        "folder_id_seperator": "/",
+        "digits_after_staff_prefix": 4,
+        "digits_after_folder_prefix": 7,
+        "year_digits": 7,
+        "allowed_folder_type": "INDIVIDUAL,FAMILY",
+        "allowed_installment_type": "INDIVIDUAL,FAMILY",
+        "active_cell": null,
+        "alternate_cell": null,
+        "email1": "oconnell.alverta@example.net",
+        "email2": null,
+        "postal_address": null,
+        "physical_address": null,
+        "country_name": "Ghana",
+        "country_id": 83,
+        "region_name": "Ashanti",
+        "region_id": 1793,
+        "gps_location": null,
+        "ownership_type": "PRIVATE",
+        "logo": null,
+        "created_at": "2019-12-19 19:09:19",
+        "updated_at": "2020-01-02 14:46:20" -->
+
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email">Name</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Name field is required">
+      <input nz-input formControlName="name" placeholder="Name" id="name" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="active_cell">Active cell</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Active cell is required">
+      <input nz-input formControlName="active_cell" placeholder="Active cell" id="active_cell" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="alternate_cell">Alternate cell</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <input nz-input formControlName="alternate_cell" placeholder="Alternate cell" id="alternate_cell" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email1">E-mail</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
+      <input nz-input formControlName="email1" placeholder="Email" id="email1" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="email2">Secondary E-mail</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="The input is not valid E-mail!">
+      <input nz-input formControlName="email2" placeholder="Secondary email" id="email2" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="postal_address">Postal address</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Postal address is required">
+      <input nz-input formControlName="postal_address" placeholder="Postal address" id="postal_address" />
+    </nz-form-control>
+  </nz-form-item>
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="physical_address">Physical address</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Physical address is required">
+      <input nz-input formControlName="physical_address" placeholder="Physical address" id="physical_address" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="country_id">Country</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Country is required">
+      <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="country_id" nzPlaceHolder="Country"
+        [nzLoading]="isLoadingCountries | async">
+        <nz-option *ngFor="let country of countries" [nzLabel]="country.name" [nzValue]="country.id">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="region_id">Region</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Region is required">
+      <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="region_id" nzPlaceHolder="Region"
+        [nzLoading]="isLoadingRegions | async">
+        <nz-option *ngFor="let region of regions" [nzLabel]="region.name" [nzValue]="region.id">
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="ownership_type">Ownership type</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="Ownership type is required">
+      <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="ownership_type"
+        nzPlaceHolder="Ownership type">
+        <nz-option nzLabel="Private" nzValue="PRIVATE"></nz-option>
+        <nz-option nzLabel="Mission" nzValue="MISSION"></nz-option>
+        <nz-option nzLabel="Government" nzValue="GOVERNMENT"></nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="gps_location">Ghana post address</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="GPS location is required">
+      <input nz-input formControlName="gps_location" placeholder="Ghana post address" id="gps_location" />
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item nz-row class="register-area">
+    <nz-form-control [nzSpan]="14" [nzOffset]="6">
+      <button nz-button nzType="primary" [nzLoading]="isUpdatingFacility|async">Update</button>
+    </nz-form-control>
+  </nz-form-item>
+
+</form>
