@@ -6,12 +6,7 @@ import { CommonModule } from '@angular/common';
 import { SetupsRoutingModule } from './setups-routing.module';
 import { SetupsComponent } from './setups.component';
 import { DepartmentSetupComponent } from './pages/department-setup/department-setup.component';
-import { FundingTypeSetupComponent } from './pages/funding-type-setup/funding-type-setup.component';
-import { PaymentChannelSetupComponent } from './pages/payment-channel-setup/payment-channel-setup.component';
 import { SponsershipTypeSetupComponent } from './pages/sponsership-type-setup/sponsership-type-setup.component';
-import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-style-setup.component';
-import { BillingSystemSetupComponent } from './pages/billing-system-setup/billing-system-setup.component';
-import { BillingCycleSetupComponent } from './pages/billing-cycle-setup/billing-cycle-setup.component';
 import { HospitalServiceSetupComponent } from './pages/hospital-service-setup/hospital-service-setup.component';
 import { ServiceCategorySetupComponent } from './pages/service-category-setup/service-category-setup.component';
 import { StaffTypeSetupComponent } from './pages/staff-type-setup/staff-type-setup.component';
@@ -53,12 +48,7 @@ import { ClinicServiceSetupComponent } from './pages/clinic-service-setup/clinic
   declarations: [
     SetupsComponent,
     DepartmentSetupComponent,
-    FundingTypeSetupComponent,
-    PaymentChannelSetupComponent,
     SponsershipTypeSetupComponent,
-    PaymentStyleSetupComponent,
-    BillingSystemSetupComponent,
-    BillingCycleSetupComponent,
     HospitalServiceSetupComponent,
     ServiceCategorySetupComponent,
     StaffTypeSetupComponent,
@@ -103,4 +93,4 @@ import { ClinicServiceSetupComponent } from './pages/clinic-service-setup/clinic
     FormsModule
   ]
 })
-export class SetupsModule {}
+export class SetupsModule { }

@@ -5,7 +5,6 @@ import { FullLayoutComponent } from './../layouts/full-layout/full-layout.compon
 import { MedicalSponsorSetupComponent } from './pages/medical-sponsor-setup/medical-sponsor-setup.component';
 import { AuthGuard } from './../shared/guard/auth.guard';
 import { ReligionSetupComponent } from './pages/religion-setup/religion-setup.component';
-import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-style-setup.component';
 import { CompanySetupComponent } from './pages/company-setup/company-setup.component';
 import { CountrySetupComponent } from './pages/country-setup/country-setup.component';
 import { AccreditationSetupComponent } from './pages/accreditation-setup/accreditation-setup.component';
@@ -27,11 +26,7 @@ import { ProfessionSetupComponent } from './pages/profession-setup/profession-se
 import { StaffTypeSetupComponent } from './pages/staff-type-setup/staff-type-setup.component';
 import { ServiceCategorySetupComponent } from './pages/service-category-setup/service-category-setup.component';
 import { HospitalServiceSetupComponent } from './pages/hospital-service-setup/hospital-service-setup.component';
-import { BillingCycleSetupComponent } from './pages/billing-cycle-setup/billing-cycle-setup.component';
-import { BillingSystemSetupComponent } from './pages/billing-system-setup/billing-system-setup.component';
 import { SponsershipTypeSetupComponent } from './pages/sponsership-type-setup/sponsership-type-setup.component';
-import { PaymentChannelSetupComponent } from './pages/payment-channel-setup/payment-channel-setup.component';
-import { FundingTypeSetupComponent } from './pages/funding-type-setup/funding-type-setup.component';
 import { DepartmentSetupComponent } from './pages/department-setup/department-setup.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
@@ -79,34 +74,11 @@ const routes: Routes = [
           title: 'Others'
         }
       },
-      {
-        path: 'funding-types',
-        component: FundingTypeSetupComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'payment-channels',
-        component: PaymentChannelSetupComponent,
-        canActivate: [AuthGuard]
-      },
+
+
       {
         path: 'sponsorship-types',
         component: SponsershipTypeSetupComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'payment-styles',
-        component: PaymentStyleSetupComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'billing-systems',
-        component: BillingSystemSetupComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'billing-cycles',
-        component: BillingCycleSetupComponent,
         canActivate: [AuthGuard]
       },
       {

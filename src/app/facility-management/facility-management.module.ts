@@ -1,8 +1,3 @@
-import { PaymentStyleSetupComponent } from './../setups/pages/payment-style-setup/payment-style-setup.component';
-import { FundingTypeSetupComponent } from './../setups/pages/funding-type-setup/funding-type-setup.component';
-import { PaymentChannelSetupComponent } from './../setups/pages/payment-channel-setup/payment-channel-setup.component';
-import { BillingSystemSetupComponent } from './../setups/pages/billing-system-setup/billing-system-setup.component';
-import { BillingCycleSetupComponent } from './../setups/pages/billing-cycle-setup/billing-cycle-setup.component';
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { SharedModule } from './../shared/shared.module';
 import { NgModule } from '@angular/core';
@@ -14,6 +9,11 @@ import { FacilityManagementDetailComponent } from './categories/facility-managem
 import { FacilityManagementNumberingSettingComponent } from './categories/facility-management-numbering-setting/facility-management-numbering-setting.component';
 import { FacilityManagementFundingSettingComponent } from './categories/facility-management-funding-setting/facility-management-funding-setting.component';
 import { SetupsModule } from '../setups/setups.module';
+import { BillingCycleSetupComponent } from './pages/billing-cycle-setup/billing-cycle-setup.component';
+import { BillingSystemSetupComponent } from './pages/billing-system-setup/billing-system-setup.component';
+import { PaymentChannelSetupComponent } from './pages/payment-channel-setup/payment-channel-setup.component';
+import { FundingTypeSetupComponent } from './pages/funding-type-setup/funding-type-setup.component';
+import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-style-setup.component';
 
 @NgModule({
   declarations: [
