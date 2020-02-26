@@ -299,7 +299,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   done(): void {
     if (this.validateForm()) {
-    this.submitForm();
+      this.submitForm();
     }
   }
 
@@ -333,7 +333,9 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       sponsorship_type: this.permit.billing_sponsor.sponsorship_type_name,
       ccc: this.cccControl.value,
       patient_status: this.patient.reg_status,
-      billing_sponsor_id: (this.billedControl.value === 0) ? null : this.billedControl.value,
+      patient_sponsor_id: (this.billedControl.value === 0) ? null : this.billedControl.value,
+      billing_sponsor_id: (this.billedControl.value === 0) ? null :
+        this.getSelectedSponsorPermit(this.billedControl.value).billing_sponsor.id,
       attendance_date: this.formatDate(this.attendanceDateControl.value),
       card_serial_no: this.permit.card_serial_no,
       member_id: this.permit.member_id,
