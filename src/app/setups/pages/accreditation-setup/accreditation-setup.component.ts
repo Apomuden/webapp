@@ -13,11 +13,13 @@ export class AccreditationSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
   isCreatingAccreditation = new BehaviorSubject(false);
+  isUpdatingAccreditation = new BehaviorSubject(false);
   data = [];
   list = [];
   error = '';
   regBody = '';
   regNumber = '';
+  isVisible = true;
   tin = '';
   expDate = null;
   registrationDate = null;
@@ -78,6 +80,9 @@ export class AccreditationSetupComponent implements OnInit {
     }
   }
 
+  update(accreditation: any) {
+
+  }
   validateForm() {
     return (this.regBody == null ||
       this.regBody === '' ||
@@ -127,5 +132,17 @@ export class AccreditationSetupComponent implements OnInit {
         this.list[index].isActivated = !accreditation.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  deleteAccreditation(accreditation: any) {
+    this.setup.deleteSetup(`setups/accreditations/${accreditation.id}`).pipe(first()).subscribe(
+      res => {
+        this.getAccreditations();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
   }
 }

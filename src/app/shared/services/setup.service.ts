@@ -104,6 +104,7 @@ export class SetupService {
   getRegionsByCountryApi(countryId: String) {
     return REGIONS_BY_COUNTRY_ID_API_URL + countryId + '/regions';
   }
+
   getRegionsByCountryId(countryId: string) {
     return this.http.get<any>(this.getRegionsByCountryApi(countryId)).pipe(
       map(res => {
@@ -1358,4 +1359,13 @@ export class SetupService {
       return res.data;
     }));
   }
+  deleteSetup(resourcePath: string) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.delete<any>(url).pipe(
+      map(res => {
+        return res ? true : false;
+      }));
+  }
 }
+
+

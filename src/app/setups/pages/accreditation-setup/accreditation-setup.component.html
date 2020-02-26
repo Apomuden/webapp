@@ -4,10 +4,15 @@
       <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
         [nzRenderItem]="item">
         <ng-template #item let-item>
-          <nz-list-item [nzActions]="item.loading ? [] : [editAction, moreAction]">
+          <nz-list-item [nzActions]="item.loading ? [] : [deleteAction,editAction, toggle]">
             <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
               <ng-template #editAction><a>edit</a></ng-template>
-              <ng-template #moreAction>
+              <ng-template #deleteAction>
+                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="deleteAccreditation(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                    style="color:red;font-size: 16px;"></i></a>
+              </ng-template>
+              <ng-template #toggle>
                 <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
               <nz-list-item-meta [nzTitle]="nzTitle">
@@ -17,6 +22,55 @@
               </nz-list-item-meta>
             </nz-skeleton>
           </nz-list-item>
+
+          <nz-modal [(nzVisible)]="isVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"
+            [nzFooter]="modalFooter">
+            <ng-template #modalTitle>
+              Update Accreditation
+            </ng-template>
+
+            <ng-template #modalContent>
+              <form>
+                <div *ngIf="error">{{ error }}</div>
+                <nz-row class="m-b-10">
+                  <nz-form-control [nzSpan]="24">
+                    <input type="text" nz-input formControlName="reg_body" name="reg_body"
+                      placeholder="Input registration body" />
+                  </nz-form-control>
+                </nz-row>
+                <nz-row class="m-b-10">
+                  <nz-form-control [nzSpan]="24">
+                    <input type="text" nz-input formControlName="reg_no" name="reg_no"
+                      placeholder="Input registration number" />
+                  </nz-form-control>
+                </nz-row>
+                <nz-row class="m-b-10">
+                  <nz-form-control [nzSpan]="24">
+                    <input type="text" nz-input formControlName="tin" name="tin" placeholder="Input tin number" />
+                  </nz-form-control>
+                </nz-row>
+                <nz-row class="m-b-10">
+                  <nz-form-control [nzSpan]="24">
+                    <nz-date-picker style="width: 100%; min-width: 400px;" formControlName="reg_date"
+                      nzPlaceHolder="Registration Date" name="reg_date">
+                    </nz-date-picker>
+                  </nz-form-control>
+                </nz-row>
+                <nz-row class="m-b-10">
+                  <nz-form-control [nzSpan]="24">
+                    <nz-date-picker style="min-width: 400px;" name="expiry_date" formControlName="expiry_date"
+                      nzPlaceHolder="Expiry Date"></nz-date-picker>
+                  </nz-form-control>
+                </nz-row>
+              </form>
+            </ng-template>
+
+            <ng-template #modalFooter>
+              <span>Modal Footer: </span>
+              <button nz-button nzType="primary" (click)="update()"
+                [nzLoading]="isUpdatingAccreditation|async">Save</button>
+            </ng-template>
+          </nz-modal>
         </ng-template>
       </nz-list>
     </nz-card>

@@ -26,7 +26,6 @@ import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-
     PaymentChannelSetupComponent,
     FundingTypeSetupComponent,
     PaymentStyleSetupComponent
-
   ],
   imports: [
     CommonModule,
