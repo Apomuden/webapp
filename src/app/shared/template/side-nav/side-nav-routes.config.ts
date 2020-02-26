@@ -150,9 +150,9 @@ export const ROUTES: SideNavInterface[] = [
   {
     path: '/opd',
     title: 'OPD Management',
-    iconType: 'fontawesome',
-    iconTheme: 'far',
-    icon: 'fa-hospital',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'folder-open',
     submenu: [
       {
         path: '/opd/vitals',

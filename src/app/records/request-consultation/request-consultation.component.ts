@@ -299,7 +299,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   done(): void {
     if (this.validateForm()) {
-    this.submitForm();
+      this.submitForm();
     }
   }
 

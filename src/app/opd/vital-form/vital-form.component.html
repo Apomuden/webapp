@@ -1,182 +1,223 @@
-<form nz-form nzLayout="vertical" [formGroup]="vitalsForm">
-  <div nz-row *ngIf="patient">
-    <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
-      <nz-descriptions-item nzTitle="Folder #">
-        {{patient.folder_no}}
-      </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Name">
-        {{patient.firstname}} {{patient.middlename}} {{patient.surname}}
-      </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Gender">
-        {{patient.gender}}
-      </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Age">
-        {{patient.age}} year(s)
-      </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Patient Status">
-        {{patient.reg_status}}
-      </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Funding Type">
-        {{patient.funding_type_name}}
-      </nz-descriptions-item>
-      <nz-descriptions-item nzTitle="Sponsor">
-        {{patient.sponsorship_type_name}}
-      </nz-descriptions-item>
+<nz-card nz-row *ngIf="patient">
+  <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+    <nz-descriptions-item nzTitle="Folder #">
+      {{patient.folder_no}}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Name">
+      {{patient.firstname}} {{patient.middlename}} {{patient.surname}}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Gender">
+      {{patient.gender}}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Age">
+      {{patient.age}} year(s)
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Age Group">
+      {{attendance.age_group_name}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Funding Type">
+      {{attendance.funding_type}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance && attendance.sponsor_name" nzTitle="Sponsor">
+      {{attendance.sponsor_name}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Patient Status">
+      {{attendance.patient_status}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Attendance Status">
+      {{attendance.request_type}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Clinic">
+      {{attendance.clinic_name}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Attendance Date">
+      {{attendance.attendance_date | date}}
+    </nz-descriptions-item>
 
-    </nz-descriptions>
+  </nz-descriptions>
+</nz-card>
+<nz-card nz-row [nzGutter]="24" *ngIf="!patient">
+  <div nz-col [nzSpan]="6">
+    <nz-form-item>
+      <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
+      <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
+        <input type="text" nz-input placeholder="A0000001/20a" [formControl]="folderNumb" />
+      </nz-form-control>
+    </nz-form-item>
   </div>
-  <div nz-row [nzGutter]="24" *ngIf="!patient">
-    <div nz-col [nzSpan]="6">
-      <nz-form-item>
-        <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
-        <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
-          <input type="text" nz-input placeholder="A0000001/20a" formControlName="folderNumber" />
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-  </div>
-  <nz-divider></nz-divider>
+</nz-card>
 
-  <nz-card *ngIf="patient">
-    <nz-table nzTemplateMode nzBordered nzSize="small">
-      <thead>
-        <tr>
-          <th>Vital</th>
-          <th>Value</th>
-        </tr>
-      </thead>
+<nz-card *ngIf="patient">
+  <nz-table nzTemplateMode nzBordered nzSize="small">
+    <thead>
+      <tr>
+        <th nzWidth="34%">Vital</th>
+        <th nzWidth="33%">Value</th>
+        <th nzWidth="33%">Flag</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let vital of vitals" class="editable-row">
+        <td>
+          {{vital.name}}
+        </td>
+        <td>
+          <div class="editable-cell" *ngIf="editName !== vital.name; else editTpl">
+            <div class="editable-cell-value-wrap" (click)="startEdit(vital.name, $event)">
+              <span *ngIf="vital.name !== 'BMI'">
+                {{ (vital.form.valid) ? vital.form.value + ' ' + vital.unit : 'Click to enter valid value' }}
+              </span>
+              <span *ngIf="vital.name === 'BMI'">
+                {{ (vital.form.value) ? vital.form.value + ' ' + vital.unit : 'Enter valid height and weight to evaluate' }}
+              </span>
+            </div>
+          </div>
+          <ng-template #editTpl>
+            <input nz-input [placeholder]="(vital.name === 'Blood Pressure' ? 'eg: 70/109': 'eg: 10')"
+              [type]="(vital.name === 'Blood Pressure') ? 'text': 'number'" [formControl]="vital.form" />
+          </ng-template>
+        </td>
 
-      <tbody>
-        <tr>
-          <td>Temp - C</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-number [nzPlaceHolder]="'Temperature'" nzSize="small" formControlName="temp" [nzStep]="1">
+        <td>{{ vital.flag }}</td>
+      </tr>
+      <tr>
+        <td [attr.colspan]="3">
+          <nz-form-control>
+            <textarea [formControl]="commentControl" nz-input placeholder="Extra comments"></textarea>
+          </nz-form-control>
+        </td>
+      </tr>
+    </tbody>
+    <!--  <tbody>
+      <tr>
+        <td>Temp - C</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-number [nzPlaceHolder]="'Temperature'" nzSize="small" formControlName="temp" [nzStep]="1">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Pulse - BPM</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-number [nzPlaceHolder]="'Pulse'" nzSize="small" formControlName="pulse" [nzStep]="1">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
+
+      <tr>
+        <td>B.P(Systolic/Diastolic) - mmHg</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-group>
+                <nz-input-number [nzPlaceHolder]="'Systolic'" nzSize="small" formControlName="systolic" [nzStep]="1">
                 </nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
-
-        <tr>
-          <td>Pulse - BPM</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-number [nzPlaceHolder]="'Pulse'" nzSize="small" formControlName="pulse" [nzStep]="1">
+                <nz-input-number [nzPlaceHolder]="'Diastolic'" nzSize="small" formControlName="diastolic" [nzStep]="1">
                 </nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
+              </nz-input-group>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
 
-        <tr>
-          <td>B.P(Systolic/Diastolic) - mmHg</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-group>
-                  <nz-input-number [nzPlaceHolder]="'Systolic'" nzSize="small" formControlName="systolic" [nzStep]="1">
-                  </nz-input-number>
-                  <nz-input-number [nzPlaceHolder]="'Diastolic'" nzSize="small" formControlName="diastolic"
-                    [nzStep]="1">
-                  </nz-input-number>
-                </nz-input-group>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
+      <tr>
+        <td>Respiratory - CPM</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-number [nzPlaceHolder]="'Respiratory'" nzSize="small" formControlName="respiratory"
+                [nzStep]="1">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
 
-        <tr>
-          <td>Respiratory - CPM</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-number [nzPlaceHolder]="'Respiratory'" nzSize="small" formControlName="respiratory"
-                  [nzStep]="1">
-                </nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
+      <tr>
+        <td>Weight - kg</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-number [nzPlaceHolder]="'Weight'" nzSize="small" formControlName="weight" [nzStep]="1">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
 
-        <tr>
-          <td>Weight - kg</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-number [nzPlaceHolder]="'Weight'" nzSize="small" formControlName="weight" [nzStep]="1">
-                </nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
+      <tr>
+        <td>Height - cm</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-number [nzPlaceHolder]="'Height'" nzSize="small" formControlName="height" [nzStep]="1">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
 
-        <tr>
-          <td>Height - cm</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-number [nzPlaceHolder]="'Height'" nzSize="small" formControlName="height" [nzStep]="1">
-                </nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
+      <tr>
+        <td>BMI - kg/m2</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-number [nzPlaceHolder]="'BMI'" nzSize="small" formControlName="bmi" [nzStep]="0.1">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
 
-        <tr>
-          <td>BMI - kg/m2</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-number [nzPlaceHolder]="'BMI'" nzSize="small" formControlName="bmi" [nzStep]="0.1">
-                </nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
+      <tr>
+        <td>SPO2 - %</td>
+        <td>
+          <nz-form-item>
+            <nz-form-control nzErrorTip="Not valid">
+              <nz-input-number [nzPlaceHolder]="'SPO'" nzSize="small" formControlName="spo" [nzStep]="1">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
 
-        <tr>
-          <td>SPO2 - %</td>
-          <td>
-            <nz-form-item>
-              <nz-form-control nzErrorTip="Not valid">
-                <nz-input-number [nzPlaceHolder]="'SPO'" nzSize="small" formControlName="spo" [nzStep]="1">
-                </nz-input-number>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
+      <tr>
+        <td [attr.colspan]="3">
+          <nz-form-item>
+            <nz-form-control>
+              <textarea formControlName="comment" nz-input placeholder="Extra comments"></textarea>
+            </nz-form-control>
+          </nz-form-item>
+        </td>
+      </tr>
+    </tbody> -->
+  </nz-table>
+</nz-card>
 
-        <tr>
-          <td [attr.colspan]="3">
-            <nz-form-item>
-              <nz-form-control>
-                <textarea formControlName="comment" nz-input placeholder="Extra comments"></textarea>
-              </nz-form-control>
-            </nz-form-item>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </nz-card>
-
-  <div nz-row>
-    <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
-        class="m-r-5"></i> {{message}}
-    </div>
-  </div>
-
-  <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
-  </nz-skeleton>
-</form>
-
-<div nz-row *ngIf="searchInitialized && !isLoadingData">
-  <div nz-col nzOffset="7">
-    <nz-button-group>
-      <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="submiting">Cancel</button>
-      <button nz-button nzType="primary" (click)="done()" [nzLoading]="submiting">Done</button>
-    </nz-button-group>
+<div nz-row>
+  <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
+      class="m-r-5"></i> {{message}}
   </div>
 </div>
+
+<nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
+</nz-skeleton>
+
+<nz-row nzJustify="center" nzType="flex" *ngIf="searchInitialized && !isLoadingData">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="submiting">Cancel</button>
+      <button nz-button nzType="primary" (click)="done()" [disabled]="!validateForm()"
+        [nzLoading]="submiting">Done</button>
+    </nz-button-group>
+  </nz-col>
+</nz-row>

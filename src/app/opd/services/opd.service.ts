@@ -8,9 +8,29 @@ export class OpdService {
 
   constructor(private http: HttpClient) { }
 
-  getPatient(query = '') {
-    const url = `${environment.apiBaseUrl}/registry/patients/single?${query}`;
-    return this.http.get<any>(url).pipe(map(
+  getAttendance(folderNo = '') {
+    const url = `${environment.apiBaseUrl}/registry/attendance/byfolder`;
+    return this.http.get<any>(url, {
+      params: {
+        'folder_no': folderNo
+      }
+    }).pipe(map(
+      res => {
+        if (res && res.data.length > 0) {
+          return res.data[0];
+        }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+
+  getPatient(folderNo = '') {
+    const url = `${environment.apiBaseUrl}/registry/patients/single`;
+    return this.http.get<any>(url, {
+      params: {
+        'folder_no': folderNo
+      }
+    }).pipe(map(
       res => {
         if (res) {
           return res.data;

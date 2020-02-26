@@ -1,8 +1,9 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { debounceTime, first } from 'rxjs/operators';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { OpdService } from '../services/opd.service';
+import { NzInputDirective, NzNotificationService, NzInputGroupComponent } from 'ng-zorro-antd';
 
 @Component({
   selector: 'app-vital-form',
@@ -10,20 +11,65 @@ import { OpdService } from '../services/opd.service';
   styleUrls: ['./vital-form.component.css']
 })
 export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
+  editName: string | null;
+  @ViewChild(NzInputDirective, { static: false, read: ElementRef }) inputElement: ElementRef;
 
-  vitalsForm: FormGroup = this.fb.group({
-    folderNumber: [null, [Validators.minLength(11), Validators.maxLength(12)]],
-    temp: [null, [Validators.required]],
-    pulse: [null, [Validators.required, Validators.min(0)]],
-    systolic: [null, [Validators.required, Validators.min(0)]],
-    diastolic: [null, [Validators.required, Validators.min(0)]],
-    respiratory: [null, [Validators.required, Validators.min(0)]],
-    spo: [null, [Validators.required, Validators.min(0)]],
-    weight: [null, [Validators.required, Validators.min(0)]],
-    height: [null, [Validators.required, Validators.min(0)]],
-    bmi: [{ value: null, disabled: true }, [Validators.required]],
-    comment: [null],
-  });
+  folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
+
+  vitals = [
+    {
+      name: 'Temperature', form: this.fb.control(null, [Validators.required]),
+      flag: 'Provide value to evalute',
+      unit: '˚C',
+      min: 36.0,
+      max: 37.3
+    },
+    {
+      name: 'Pulse', form: this.fb.control(null, [Validators.required, Validators.min(0)]),
+      flag: 'Provide value to evalute',
+      unit: 'BPM',
+      min: 60,
+      max: 100,
+    },
+    {
+      name: 'Blood Pressure',
+      flag: 'Provide value to evalute', unit: 'mmHG',
+      form: this.fb.control(null, [Validators.required,
+      Validators.pattern(/^\d{1,3}\/\d{1,3}$/)]),
+      min: [90, 60],
+      max: [120, 80]
+    },
+    {
+      name: 'Respiratory', form: this.fb.control(null, [Validators.required, Validators.min(0)]),
+      flag: 'Provide value to evalute',
+      unit: 'cpm',
+      min: 12,
+      max: 24
+    },
+    {
+      name: 'SPO', form: this.fb.control(null, [Validators.required, Validators.min(0)]),
+      flag: 'Provide value to evalute',
+      unit: '%',
+      min: 95,
+      max: 100
+    },
+    {
+      name: 'Weight', form: this.fb.control(null, [Validators.required, Validators.min(0)]),
+      flag: 'N/A', unit: 'kg'
+    },
+    {
+      name: 'Height', form: this.fb.control(null, [Validators.required, Validators.min(0)]),
+      flag: 'N/A', unit: 'cm'
+    },
+    {
+      name: 'BMI', form: this.fb.control(null, [Validators.required]),
+      flag: 'Provide value to evalute',
+      unit: 'kg/m2',
+      min: 18.5,
+      max: 24.9
+    },
+  ];
+  commentControl = this.fb.control(null);
 
   isLoadingData = false;
   searchInitialized = false;
@@ -31,23 +77,25 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
 
   patient: any;
   message = 'Please enter a valid folder number to fill this form.';
+  attendance: any;
 
-  constructor(private fb: FormBuilder, private opdService: OpdService) { }
+  constructor(private fb: FormBuilder, private opdService: OpdService, private notificationS: NzNotificationService) { }
 
 
   private get folderNoControl(): FormControl {
-    return this.vitalsForm.get('folderNumber') as FormControl;
+    return this.folderNumb as FormControl;
   }
+
   private get weightControl(): FormControl {
-    return this.vitalsForm.get('weight') as FormControl;
+    return this.vitals.find(v => v.name === 'Weight').form as FormControl;
   }
 
   private get heightControl(): FormControl {
-    return this.vitalsForm.get('height') as FormControl;
+    return this.vitals.find(v => v.name === 'Height').form as FormControl;
   }
 
   private get bmiControl(): FormControl {
-    return this.vitalsForm.get('bmi') as FormControl;
+    return this.vitals.find(v => v.name === 'BMI').form as FormControl;
   }
 
   ngOnInit() {
@@ -57,7 +105,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
       .subscribe(folderNo => {
         if (folderNo && this.folderNoControl.valid) {
-          this.getPatient(folderNo);
+          this.getAttendance(folderNo);
         } else {
           this.message = 'Please enter a valid folder number to fill this form.';
           this.searchInitialized = false;
@@ -67,26 +115,44 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.weightControl.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe(weight => {
         if (weight && this.weightControl.valid && this.heightControl.valid) {
-          const bmi = (weight / Math.pow(this.heightControl.value / 100, 2));
-          this.bmiControl.setValue(bmi);
+          this.evaluateBmi(weight, this.heightControl.value);
         }
       });
 
     this.heightControl.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe(height => {
         if (height && this.weightControl.valid && this.heightControl.valid) {
-          const bmi = (this.weightControl.value / Math.pow((height / 100), 2));
-          this.bmiControl.setValue(bmi);
+          this.evaluateBmi(height, this.weightControl.value);
         }
       });
+
+    this.vitals.forEach(vital => {
+      if (vital.name !== 'Weight' && vital.name !== 'Height') {
+        vital.form.valueChanges.pipe(untilComponentDestroyed(this)).subscribe(value => {
+          this.evaluateFlag(vital, value);
+        });
+      }
+    });
+  }
+
+  private evaluateBmi(height: number, weight: number) {
+    const bmi = (weight / Math.pow((height / 100), 2));
+    this.bmiControl.setValue(parseFloat(bmi.toFixed(1)));
   }
 
   ngOnDestroy() { }
 
+  @HostListener('window:click', ['$event'])
+  handleClick(e: MouseEvent): void {
+    if (this.editName && this.inputElement && this.inputElement.nativeElement !== e.target) {
+      this.editName = null;
+    }
+  }
+
   getPatient(folderNo: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    this.opdService.getPatient(`folder_no=${folderNo}`).pipe(first())
+    this.opdService.getPatient(folderNo).pipe(first())
       .subscribe(data => {
         this.isLoadingData = false;
         this.patient = data;
@@ -94,6 +160,23 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
       }, e => {
         console.log(e);
         this.message = 'Folder not found';
+        this.attendance = null;
+        this.searchInitialized = false;
+      });
+  }
+
+  getAttendance(folderNo: string) {
+    this.isLoadingData = true;
+    this.searchInitialized = true;
+    this.opdService.getAttendance(folderNo).pipe(first())
+      .subscribe(data => {
+        this.isLoadingData = false;
+        this.attendance = data;
+        this.getPatient(folderNo);
+      }, e => {
+        console.log(e);
+        this.patient = null;
+        this.message = 'Attendance not found';
         this.searchInitialized = false;
       });
   }
@@ -104,27 +187,69 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
+  startEdit(name: string, event: MouseEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    if (name === 'BMI') {
+      return;
+    }
+    this.editName = name;
+  }
+
+  finishEdit(event: MouseEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.editName = null;
+  }
+
+  private evaluateFlag(vital, value: any) {
+    if (vital.form.valid) {
+      if (vital.name !== 'Blood Pressure') {
+        if (value < vital.min) {
+          vital.flag = 'LOW';
+        } else if (value > vital.max) {
+          vital.flag = 'HIGH';
+        } else if (value >= vital.min && value <= vital.max) {
+          vital.flag = 'NORMAL';
+        }
+      } else {
+        const systolic = value.split('/')[0];
+        const diastolic = value.split('/')[1];
+        vital.flag = '';
+        if (systolic < vital.min[0]) {
+          vital.flag = vital.flag + 'LOW SYSTOLIC. ';
+        } else if (systolic > vital.max[0]) {
+          vital.flag = vital.flag + 'HIGH SYSTOLIC. ';
+        } else if (systolic >= vital.min[0] && systolic <= vital.max[0]) {
+          vital.flag = vital.flag + 'NORMAL SYSTOLIC. ';
+        }
+        if (diastolic < vital.min[1]) {
+          vital.flag = vital.flag + 'LOW DIASTOLIC. ';
+        } else if (diastolic > vital.max[1]) {
+          vital.flag = vital.flag + 'HIGH DIASTOLIC. ';
+        } else if (diastolic >= vital.min[1] && diastolic <= vital.max[1]) {
+          vital.flag = vital.flag + 'NORMAL DIASTOLIC. ';
+        }
+      }
+    }
+  }
+
   cancel() {
     this.patient = null;
     this.searchInitialized = false;
-    this.vitalsForm.reset();
+    for (let i = 0; i < this.vitals.length; i++) {
+      this.vitals[i].form.reset();
+    }
   }
 
   done() {
-    if (this.validateForm()) {
-
-    }
   }
 
   validateForm() {
-    if (this.vitalsForm.valid) {
-      return true;
+    let valid = true;
+    for (let i = 0; i < this.vitals.length; i++) {
+      valid = valid && this.vitals[i].form.valid;
     }
-    for (const i of Object.keys(this.vitalsForm.controls)) {
-      if (this.vitalsForm.controls[i].invalid) {
-        this.vitalsForm.controls[i].markAsDirty();
-        this.vitalsForm.controls[i].updateValueAndValidity();
-      }
-    }
+    return valid;
   }
 }
