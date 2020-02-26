@@ -3,7 +3,7 @@ import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { GooglePlaceDirective } from 'ngx-google-places-autocomplete';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from './../record.service';
-import { NzNotificationService } from 'ng-zorro-antd';
+import { NzNotificationService, UploadFile } from 'ng-zorro-antd';
 import { first, map, retry, debounceTime } from 'rxjs/operators';
 import { SetupService } from './../../shared/services/setup.service';
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
@@ -55,7 +55,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   isCreatingSponsor = false;
   googleAddress: string = null;
   stepIndex = 0;
-  readonly finalStepIndex = 3;
+  readonly finalStepIndex = 4;
   @ViewChild('placesRef', { static: false }) placesRef: GooglePlaceDirective;
   createdPatient: any;
   createdNextofKin: any;
@@ -128,11 +128,16 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       emailAddress: [null, [Validators.email]],
       relationship: [null, [Validators.required]],
     }),
+    attachments: this.fb.group({
+      photo: [null, [Validators.required]],
+    }),
   });
+
   noneIdType = {
     id: 0,
     name: 'NONE'
   };
+  photo: string;
 
   formatterAge = (value: number) => `${value} yrs`;
   parserAge = (value: string) => value.replace('yrs', '');
@@ -221,15 +226,6 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
         }
       });
   }
-  getAllowedFolderTypes() {
-    const facility = this.recordService.getFacilityDetails();
-    if (facility) {
-      this.folderTypes = facility.allowed_folder_type.split(',');
-      if (this.folderTypes.length === 1) {
-        this.folderTypeControl.setValue(this.folderTypes[0]);
-      }
-    }
-  }
 
   get billingTypeControl(): FormControl {
     return this.patientForm.get('billingInfo').get('billingType') as FormControl;
@@ -302,6 +298,10 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     return this.sponsoredForm.get('memberId') as FormControl;
   }
 
+  get attachmentsForm(): FormGroup {
+    return this.patientForm.get('attachments') as FormGroup;
+  }
+
   get isGovernmentCompany(): boolean {
     const fundType = this.getSelectedFundingType(this.billingTypeControl.value);
     if (!fundType) {
@@ -340,6 +340,39 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       return false;
     }
     return fundType.sponsorship_type_name.toLocaleLowerCase().includes('patient');
+  }
+
+  beforeUploadPhoto = (uploadFile: UploadFile): boolean => {
+    if (this.isCreatingPatient || this.isCreatingSponsor) {
+      return false;
+    }
+    this.toBase64(uploadFile).then((file: string) => {
+      this.photo = file;
+      this.attachmentsForm.get('photo').patchValue(this.photo);
+    });
+    return false;
+  }
+
+  toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  })
+
+  clearPhoto() {
+    this.photo = null;
+    this.attachmentsForm.get('photo').reset();
+  }
+
+  getAllowedFolderTypes() {
+    const facility = this.recordService.getFacilityDetails();
+    if (facility) {
+      this.folderTypes = facility.allowed_folder_type.split(',');
+      if (this.folderTypes.length === 1) {
+        this.folderTypeControl.setValue(this.folderTypes[0]);
+      }
+    }
   }
 
   updateBenefitValidators(beneficiary: any) {
@@ -478,7 +511,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
 
   done(): void {
     this.isCreatingPatient = true;
-    if (this.validateNextOfKinInfo()) {
+    if (this.patientForm.valid) {
       this.submitForm();
     }
   }
@@ -605,6 +638,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
 
     return {
       'title_id': patientData.title,
+      'photo': this.attachmentsForm.get('photo').value,
       'funding_type_id': this.billingTypeControl.value,
       'folder_type': this.folderTypeControl.value,
       'ssnit_no': patientData.snnit,
@@ -655,7 +689,6 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       'email': nextOfKinData.emailAddress,
       'patient_id': patientId,
       'relation_id': nextOfKinData.relationship,
-      // 'alternate_phone': `${nextOfKinData.countryCode}${nextOfKinData.cellPhoneNumber}`
     };
   }
 
@@ -1029,6 +1062,18 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   private addSponsor(data: object) {
+    if (!this.isBillingSponsored) {
+      this.notification.success(
+        'Success',
+        `Folder number is ${this.createdPatient.folder_no}. Write it for the patient and close this!`,
+        { nzDuration: 0 }
+      );
+      this.isCreatingSponsor = false;
+      this.isCreatingPatient = false;
+      this.stepIndex = 0;
+      this.patientForm.reset();
+      return;
+    }
     this.isCreatingSponsor = true;
     this.recordService.addSponsorPermit(data).pipe(first())
       .subscribe(res => {
@@ -1063,6 +1108,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
 
   submitForm() {
     const patientData = this.processPatientData();
+    console.log(patientData);
     if (this.createdPatient) {
       /* at this point, the patient had been created but an error occured while
       adding the nok, so resume here */
