@@ -3,6 +3,7 @@
   <nz-step nzTitle="Patient Info"></nz-step>
   <nz-step nzTitle="Contact Info"></nz-step>
   <nz-step nzTitle="Next of Kin"></nz-step>
+  <nz-step nzTitle="Attachments"></nz-step>
 </nz-steps>
 <nz-card class="form-content">
   <div class="steps-content">
@@ -35,7 +36,7 @@
         <button nz-button nzType="primary" (click)="createCompany()" [nzLoading]="isCreatingCompany">Submit</button>
       </div>
     </nz-modal>
-    <form nz-form [formGroup]="patientForm" (ngSubmit)="submitForm()">
+    <form nz-form [formGroup]="patientForm">
       <div *ngIf="stepIndex === 0" nz-row>
         <div formGroupName="billingInfo">
           <nz-form-item>
@@ -224,7 +225,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="nativeLanguage">Language</nz-form-label>
+          <nz-form-label nzShowSearch [nzSm]="6" [nzXs]="24" nzRequired nzFor="nativeLanguage">Language</nz-form-label>
           <nz-form-control nzErrorTip="Select language">
             <nz-select nzPlaceHolder="Native language" formControlName="nativeLanguage" name="nativeLanguage"
               [nzLoading]="isLoadingLanguages | async">
@@ -245,7 +246,7 @@
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="region">Region</nz-form-label>
           <nz-form-control nzErrorTip="Select region">
-            <nz-select formControlName="region" nzPlaceHolder="Select region" [nzLoading]="isLoadingRegions | async">
+            <nz-select nzShowSearch formControlName="region" nzPlaceHolder="Select region" [nzLoading]="isLoadingRegions | async">
               <nz-option *ngFor="let region of regions" [nzValue]="region.id" [nzLabel]="region.name"></nz-option>
             </nz-select>
           </nz-form-control>
@@ -328,6 +329,7 @@
           </nz-form-control>
         </nz-form-item>
       </div>
+
       <div *ngIf="stepIndex === 2" formGroupName="contactInfo">
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="homeAddress">Residential Address</nz-form-label>
@@ -361,6 +363,7 @@
           </nz-form-control>
         </nz-form-item>
       </div>
+
       <div *ngIf="stepIndex === 3" formGroupName="nextOfKin">
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="name">Full Name</nz-form-label>
@@ -405,6 +408,22 @@
           </nz-form-control>
         </nz-form-item>
       </div>
+
+      <div *ngIf="stepIndex == 4" formGroupName="attachments">
+        <nz-form-item>
+          <nz-form-control nzErrorTip="Please add photo">
+            <input type="hidden" placeholder="signature" nz-input formControlName="photo" />
+            <nz-upload [nzBeforeUpload]="beforeUploadPhoto">
+              <ng-container *ngIf="!photo" class="avatar-uploader">
+                <button nz-button nzType="primary"><i nz-icon nzType="upload"></i>Attach photo</button>
+              </ng-container>
+              <img *ngIf="photo" [src]="photo" class="avatar" />
+            </nz-upload>
+            <button [nzLoading]="isCreatingPatient || isCreatingSponsor" *ngIf="photo" (click)="clearPhoto()" nz-button nzType="danger"><i nz-icon
+                nzType="close"></i></button>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
     </form>
   </div>
 </nz-card>
@@ -415,7 +434,7 @@
   <button nz-button nzType="default" (click)="next()" *ngIf="stepIndex < finalStepIndex">
     <span>Next</span>
   </button>
-  <button [nzLoading]="isCreatingPatient" nz-button nzType="primary" (click)="done()"
+  <button [nzLoading]="isCreatingPatient || isCreatingSponsor" nz-button nzType="primary" (click)="done()"
     *ngIf="stepIndex === finalStepIndex">
     <span>Done</span>
   </button>

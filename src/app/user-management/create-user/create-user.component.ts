@@ -99,6 +99,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
   });
 
   isLoading = false;
+  finalStepIndex = 7;
 
   attachedFiles: UploadFile[] = [];
 

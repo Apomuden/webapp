@@ -414,38 +414,9 @@
               <input type="number" placeholder="TIN Number" nz-input formControlName="tinNumber" />
             </nz-form-control>
           </nz-form-item>
-
-          <!-- <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="thirdPartyContribution">3rd Party Contribution
-            </nz-form-label>
-            <nz-form-control nzErrorTip="Please this is required">
-              <input type="text" placeholder="3rd Party Contribution" nz-input
-                formControlName="thirdPartyContribution" />
-            </nz-form-control>
-          </nz-form-item> -->
-
-          <!--  <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="taxOnSalary">Tax on salary</nz-form-label>
-            <nz-form-control nzErrorTip="Please enter tax on salary">
-              <input type="text" placeholder="Tax on Salary" nz-input formControlName="taxOnSalary" />
-            </nz-form-control>
-          </nz-form-item>
-
-          <nz-form-item>
-            <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="signatory">Signatory</nz-form-label>
-            <nz-form-control nzErrorTip="Please select signatory">
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Signatory" formControlName="signatory">
-                <nz-option nzValue="doctor" nzLabel="Doctor"></nz-option>
-                <nz-option nzValue="nurse" nzLabel="Nurse"></nz-option>
-                <nz-option nzValue="other" nzLabel="Other"></nz-option>
-              </nz-select>
-            </nz-form-control>
-          </nz-form-item> -->
         </div>
 
         <div *ngIf="stepIndex == 7" formGroupName="attachments">
-
-
           <nz-form-item>
             <nz-form-control nzErrorTip="Please add photo">
               <input type="hidden" placeholder="signature" nz-input formControlName="photo" />
@@ -461,7 +432,8 @@
           </nz-form-item>
 
           <nz-upload [(nzFileList)]="attachedFiles" [nzBeforeUpload]="beforeUploadDocs">
-            <button [nzLoading]="isLoading" nz-button nzType="primary" class="attach_doc_btn"><i nz-icon nzType="upload"></i>Attach
+            <button [nzLoading]="isLoading" nz-button nzType="primary" class="attach_doc_btn"><i nz-icon
+                nzType="upload"></i>Attach
               documents</button>
           </nz-upload>
 
@@ -483,7 +455,7 @@
       <button [nzLoading]="isLoading" nz-button nzType="default" (click)="pre()" *ngIf="stepIndex > 0">
         <span>Previous</span>
       </button>
-      <button nz-button nzType="default" (click)="next()" *ngIf="stepIndex < 7">
+      <button nz-button nzType="default" (click)="next()" *ngIf="stepIndex < finalStepIndex">
         <span>Next</span>
       </button>
       <button [nzLoading]="isLoading" nz-button nzType="primary" (click)="done()" *ngIf="stepIndex === 7">
