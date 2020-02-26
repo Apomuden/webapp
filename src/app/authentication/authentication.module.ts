@@ -5,6 +5,7 @@ import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationRoutingModule } from './authentication-routing.module';
 import { LoginComponent } from './login/login.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 @NgModule({
   imports: [
@@ -13,6 +14,6 @@ import { LoginComponent } from './login/login.component';
     ReactiveFormsModule,
     AuthenticationRoutingModule
   ],
-  declarations: [LoginComponent]
+  declarations: [LoginComponent, ChangePasswordComponent]
 })
 export class AuthenticationModule {}
