@@ -1347,8 +1347,9 @@ export class SetupService {
         }
         return false;
       }
-    ))
+    ));
   }
+
 
   toggleActive(resourcePath: string, status: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
@@ -1362,6 +1363,13 @@ export class SetupService {
   deleteSetup(resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.delete<any>(url).pipe(
+      map(res => {
+        return res ? true : false;
+      }));
+  }
+  updateSetup(fields: any, resourcePath: string) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.put<any>(url, fields).pipe(
       map(res => {
         return res ? true : false;
       }));

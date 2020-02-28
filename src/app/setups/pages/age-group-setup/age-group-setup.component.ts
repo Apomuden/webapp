@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -12,8 +13,13 @@ import { BehaviorSubject } from 'rxjs';
 export class AgeGroupSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  isVisible = false;
+  modalError = '';
+  updateForm: FormGroup;
+  isUpdatingAgeGroup = new BehaviorSubject(false);
   isCreatingAgeGroup = new BehaviorSubject(false);
   ageGroups = [];
+  ageGroupId = null;
   name = '';
   minAge: number;
   maxAge: number;
@@ -21,10 +27,16 @@ export class AgeGroupSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
 
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      min_age: [null, Validators.required],
+      max_age: [null]
+    });
     this.getAgeGroups();
   }
 
@@ -65,6 +77,62 @@ export class AgeGroupSetupComponent implements OnInit {
           }
         );
     }
+  }
+
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'All fields are required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingAgeGroup.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/agegroups/${this.ageGroupId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingAgeGroup.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getAgeGroups();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingAgeGroup.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+  }
+  showModal(ageGroup: any) {
+    this.isVisible = true;
+    const { name, min_age, max_age } = ageGroup;
+    this.ageGroupId = ageGroup.id as number;
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('min_age').setValue(min_age);
+    this.updateForm.get('max_age').setValue(max_age);
+  }
+
+  closeModal() {
+    this.ageGroupId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingAgeGroup.next(false);
+  }
+
+
+  deleteAgeGroup(agegroup: any) {
+    this.setup.deleteSetup(`setups/agegroups/${agegroup.id}`).pipe(first()).subscribe(
+      res => {
+        this.getAgeGroups();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
   }
   validateForm() {
     return (!this.name ||
