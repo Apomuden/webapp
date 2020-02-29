@@ -10,7 +10,7 @@ import jwt_decode from 'jwt-decode';
 
 const USER_AUTH_API_URL = environment.apiBaseUrl + '/auth/login';
 const LOGOUT_API = environment.apiBaseUrl + '/auth/logout';
-const USER_UPDATE_API = environment.apiBaseUrl + '/auth/profile/update';
+const USER_UPDATE_API = environment.apiBaseUrl + '/auth/profiles/';
 
 @Injectable()
 export class AuthenticationService {
@@ -83,7 +83,11 @@ export class AuthenticationService {
   }
 
   changePassword(password: string): Observable<any> {
-    return this.http.put<any>(USER_UPDATE_API, {password})
+    console.log('current user value', this.currentUserValue);
+    return this.http.put<any>(
+      `${USER_UPDATE_API}${(this.currentUserValue.details as any).id}`,
+      {password}
+    )
       .pipe(
         map(res => {
           console.log(res);

@@ -18,7 +18,7 @@ const routes: Routes = [
     data: {
       title: 'Change Password'
     },
-    // canActivate: [AuthGuard]
+    canActivate: [AuthGuard]
   }
 ];
 
