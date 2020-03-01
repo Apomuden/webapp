@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -13,12 +14,16 @@ export class BankSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
   isCreatingBank = new BehaviorSubject(false);
-
+  isUpdatingBank = new BehaviorSubject(false);
+  bankId = null;
   data = [];
   list = [];
+  updateForm: FormGroup;
   error = '';
+  modalError = '';
   name = '';
   sortCode = '';
+  isVisible = false;
   email = '';
   phone = '';
 
@@ -75,8 +80,70 @@ export class BankSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
+
+
+  showModal(bank: any) {
+
+    this.isVisible = true;
+    const { name, sort_code, phone, email } = bank;
+    this.bankId = bank.id as number;
+    console.log(this.bankId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('sort_code').setValue(sort_code);
+    this.updateForm.get('phone').setValue(phone);
+    this.updateForm.get('email').setValue(email);
+
+
+  }
+
+  closeModal() {
+    this.bankId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingBank.next(false);
+  }
+
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'all fields are required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingBank.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/banks/${this.bankId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingBank.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getBanks();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+        },
+        error => {
+          this.isUpdatingBank.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+  deleteBank(bank: any) {
+    this.setup.deleteSetup(`setups/banks/${bank.id}`).pipe(first()).subscribe(
+      res => {
+        this.getBanks();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
 
   getBanks() {
     this.setup
@@ -96,6 +163,12 @@ export class BankSetupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      sort_code: [null],
+      email: [null],
+      phone: [null]
+    });
     this.getBanks();
   }
 

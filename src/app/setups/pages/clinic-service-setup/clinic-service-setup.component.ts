@@ -14,14 +14,20 @@ export class ClinicServiceSetupComponent implements OnInit {
   data = [];
   list = [];
   billingCycles = [];
+  clinicServiceId = null;
+  isVisible = false;
   clinics = [];
+  modalError = '';
   servicePricings = [];
   error = '';
   initLoading = true;
   isCreatingClinicService = new BehaviorSubject(false);
   isBillingCyclesLoading = new BehaviorSubject(false);
+  isUpdatingClinicService = new BehaviorSubject(false);
   isServicePricingsLoading = new BehaviorSubject(false);
   isClinicsLoading = new BehaviorSubject(false);
+  updateForm: FormGroup;
+
 
   constructor(private setup: SetupService, private fb: FormBuilder, private notification: NzNotificationService) { }
   clinicServiceForm: FormGroup;
@@ -32,7 +38,12 @@ export class ClinicServiceSetupComponent implements OnInit {
       billing_cycle_id: [null, Validators.required],
       billing_duration: [null, Validators.required]
     });
-
+    this.updateForm = this.fb.group({
+      clinic_id: [null, Validators.required],
+      service_id: [null, Validators.required],
+      billing_cycle_id: [null, Validators.required],
+      billing_duration: [null, Validators.required]
+    });
     this.getClinicServices();
     this.getBillingCycles();
     this.getClinics();
@@ -146,5 +157,71 @@ export class ClinicServiceSetupComponent implements OnInit {
   }
 
 
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingClinicService.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/clinicservices/${this.clinicServiceId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingClinicService.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getClinics();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
 
+        },
+        error => {
+          this.isUpdatingClinicService.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+  toggleItem($event: any, clinic: any) {
+    this.setup.toggleActive(`setups/clinicservices/${clinic.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+      .subscribe(toggled => {
+        const index = this.list.findIndex(c => c.id === toggled.id);
+        this.list[index].isActivated = toggled.isActivated;
+      }, error => {
+        console.error(error);
+        const index = this.list.findIndex(c => c.id === clinic.id);
+        this.list[index].isActivated = !clinic.isActivated;
+        this.notification.error('Toggle failed', 'Unable to toggle this item.');
+      });
+  }
+  deleteClinicService(clinicService: any) {
+    this.setup.deleteSetup(`setups/clinicservices/${clinicService.id}`).pipe(first()).subscribe(
+      res => {
+        this.getClinics();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.clinicServiceId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingClinicService.next(false);
+  }
+  showModal(clinicService: any) {
+    this.isVisible = true;
+    const { clinic_id, service_id, billing_cycle_id, billing_duration } = clinicService;
+    this.clinicServiceId = clinicService.id as number;
+    console.log(this.clinicServiceId);
+    this.updateForm.get('clinic_id').setValue(clinic_id);
+    this.updateForm.get('service_id').setValue(service_id);
+    this.updateForm.get('billing_cycle_id').setValue(billing_cycle_id);
+    this.updateForm.get('billing_duration').setValue(billing_duration);
+  }
 }
