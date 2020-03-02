@@ -1,15 +1,16 @@
-import { Router } from '@angular/router';
-import { environment } from './../../../environments/environment';
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import {Router} from '@angular/router';
+import {environment} from './../../../environments/environment';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {map, first} from 'rxjs/operators';
 
-import { User } from '../interfaces/user.type';
+import {User} from '../interfaces/user.type';
 import jwt_decode from 'jwt-decode';
 
 const USER_AUTH_API_URL = environment.apiBaseUrl + '/auth/login';
 const LOGOUT_API = environment.apiBaseUrl + '/auth/logout';
+const USER_UPDATE_API = environment.apiBaseUrl + '/auth/profiles/';
 
 @Injectable()
 export class AuthenticationService {
@@ -30,7 +31,7 @@ export class AuthenticationService {
 
   login(username: string, password: string) {
     return this.http
-      .post<any>(USER_AUTH_API_URL, { username, password })
+      .post<any>(USER_AUTH_API_URL, {username, password})
       .pipe(
         map(res => {
           if (res && res.data.access_token) {
@@ -54,14 +55,14 @@ export class AuthenticationService {
   getFacilityDetails(): Observable<any> {
     const url = `${environment.apiBaseUrl}/setups/hospital`;
     return this.http.get<any>(url).pipe(map(res => {
-      if (res && res.data) {
-        localStorage.setItem(
-          'facilityDetails',
-          JSON.stringify(res.data)
-        );
+        if (res && res.data) {
+          localStorage.setItem(
+            'facilityDetails',
+            JSON.stringify(res.data)
+          );
+        }
+        return res.data;
       }
-      return res.data;
-    }
     ));
   }
 
@@ -79,5 +80,18 @@ export class AuthenticationService {
         })
       )
       .subscribe();
+  }
+
+  changePassword(password: string): Observable<any> {
+    console.log('current user value', this.currentUserValue);
+    return this.http.put<any>(
+      `${USER_UPDATE_API}${(this.currentUserValue.details as any).id}`,
+      {password}
+    )
+      .pipe(
+        map(res => {
+          console.log(res);
+        })
+      );
   }
 }
