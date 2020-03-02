@@ -8,11 +8,12 @@ export class OpdService {
 
   constructor(private http: HttpClient) { }
 
-  getAttendance(folderNo = '') {
+  getAttendance(folderNo = '', attendanceDate: string) {
     const url = `${environment.apiBaseUrl}/registry/attendance/byfolder`;
     return this.http.get<any>(url, {
       params: {
-        'folder_no': folderNo
+        'folder_no': folderNo,
+        'attendance_date': attendanceDate
       }
     }).pipe(map(
       res => {
@@ -38,5 +39,10 @@ export class OpdService {
         throw new HttpErrorResponse({ status: 404 });
       }
     ));
+  }
+
+  saveVitals(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/patientvitals`;
+    return this.http.post(url, data);
   }
 }
