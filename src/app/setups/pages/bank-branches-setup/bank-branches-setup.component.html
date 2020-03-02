@@ -28,7 +28,7 @@
     <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="closeModal()" [nzTitle]="modalTitle" [nzContent]="modalContent"
       [nzFooter]="modalFooter">
       <ng-template #modalTitle>
-        Update Accreditation
+        Update Bank Branch
       </ng-template>
 
       <ng-template #modalContent>
@@ -54,15 +54,6 @@
             </nz-form-item>
           </nz-row>
           <nz-row>
-            <nz-form-item>
-              <nz-form-label [nzXs]="8" nzRequired nzFor="bank_id">Bank</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Bank" style="width:100%;" name="bank_id"
-                  formControlName="bank_id" [nzLoading]="banksLoading | async">
-                  <nz-option *ngFor="let bank of banks" [nzValue]="bank.id" [nzLabel]="bank.name"></nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
           </nz-row>
           <nz-row>
             <nz-form-item>
@@ -76,9 +67,7 @@
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzRequired nzFor="phone">Phone</nz-form-label>
               <nz-form-control [nzSpan]="16">
-                <nz-date-picker style="width: 100%; min-width: 400px;" formControlName="phone" nzPlaceHolder="Phone"
-                  name="phone">
-                </nz-date-picker>
+                <input type="text" nz-input formControlName="phone" name="phone" placeholder="Input phone" />
               </nz-form-control>
             </nz-form-item>
           </nz-row>

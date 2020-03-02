@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -13,8 +14,13 @@ export class LanguageSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
   isCreatingLanguage = new BehaviorSubject(false);
+  isUpdatingLanguage = new BehaviorSubject(false);
   data = [];
   list = [];
+  isVisible = false;
+  languageId = null;
+  updateForm: FormGroup;
+  modalError = '';
   error = '';
   language = '';
   componentLabel = 'language';
@@ -58,7 +64,8 @@ export class LanguageSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getLanguages() {
     this.setup
@@ -77,6 +84,9 @@ export class LanguageSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getLanguages();
   }
 
@@ -91,5 +101,58 @@ export class LanguageSetupComponent implements OnInit {
         this.list[index].isActivated = !language.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingLanguage.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/languages/${this.languageId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingLanguage.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getLanguages();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingLanguage.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteLanguage(language: any) {
+    this.setup.deleteSetup(`setups/languages/${language.id}`).pipe(first()).subscribe(
+      res => {
+        this.getLanguages();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.languageId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingLanguage.next(false);
+  }
+  showModal(language: any) {
+    this.isVisible = true;
+    const { name } = language;
+    this.languageId = language.id as number;
+    console.log(this.languageId);
+    this.updateForm.get('name').setValue(name);
   }
 }

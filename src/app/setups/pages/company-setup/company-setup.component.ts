@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { SetupService } from './../../../shared/services/setup.service';
 import { NzNotificationService } from 'ng-zorro-antd';
@@ -15,7 +16,8 @@ export class CompanySetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   @ViewChild('placesRef', { static: false }) placesRef: GooglePlaceDirective;
   initLoading = true; // bug
@@ -23,6 +25,12 @@ export class CompanySetupComponent implements OnInit {
   isCreatingCompany = new BehaviorSubject(false);
   data = [];
   list = [];
+
+  companyId = null;
+  modalError = '';
+  isVisible = false;
+  isUpdatingCompany = new BehaviorSubject(false);
+  updateForm: FormGroup;
 
   error = '';
   googleAddress = null;
@@ -64,6 +72,7 @@ export class CompanySetupComponent implements OnInit {
               this.email = '';
               this.name = '';
               this.phone = '';
+              this.googleAddress = '';
             } else {
               this.notification.blank(
                 'Error',
@@ -99,6 +108,13 @@ export class CompanySetupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      phone: [null, Validators.required],
+      email: [null, Validators.required],
+      gps_location: [null, Validators.required],
+
+    });
     this.getCompanies();
   }
 
@@ -113,5 +129,61 @@ export class CompanySetupComponent implements OnInit {
         this.list[index].isActivated = !company.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  deleteCompany(company: any) {
+    this.setup.deleteSetup(`setups/companies/${company.id}`).pipe(first()).subscribe(
+      res => {
+        this.getCompanies();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.companyId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingCompany.next(false);
+  }
+  showModal(company: any) {
+    this.isVisible = true;
+    const { name, phone, email, gps_location } = company;
+    this.companyId = company.id as number;
+    console.log(this.companyId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('phone').setValue(phone);
+    this.updateForm.get('email').setValue(email);
+    this.updateForm.get('gps_location').setValue(gps_location);
+  }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingCompany.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/companies/${this.companyId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingCompany.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getCompanies();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingCompany.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
   }
 }

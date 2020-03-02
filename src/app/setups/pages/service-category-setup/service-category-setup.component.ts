@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -12,13 +13,17 @@ import { BehaviorSubject } from 'rxjs';
 export class ServiceCategorySetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  isVisible = false;
   isCreatingServiceCategory = new BehaviorSubject(false);
   hospitalServicesLoading = new BehaviorSubject(false);
-
+  isUpdatingServiceCategory = new BehaviorSubject(false);
+  serviceCategoryId = null;
+  modalError = '';
   data = [];
   list = [];
   error = '';
   name = '';
+  updateForm: FormGroup;
 
   hospitalService = null;
 
@@ -70,7 +75,8 @@ export class ServiceCategorySetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
 
   getServiceCategories() {
@@ -110,6 +116,10 @@ export class ServiceCategorySetupComponent implements OnInit {
   ngOnInit() {
     this.getServiceCategories();
     this.getHospitalServices();
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      hospital_service_id: [null, Validators.required]
+    });
   }
 
   toggleItem($event: any, category: any) {
@@ -124,4 +134,59 @@ export class ServiceCategorySetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingServiceCategory.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/servicecategories/${this.serviceCategoryId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingServiceCategory.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getServiceCategories();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingServiceCategory.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteServiceCategory(serviceCategory: any) {
+    this.setup.deleteSetup(`setups/servicecategories/${serviceCategory.id}`).pipe(first()).subscribe(
+      res => {
+        this.getServiceCategories();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.serviceCategoryId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingServiceCategory.next(false);
+  }
+  showModal(language: any) {
+    this.isVisible = true;
+    const { name, hospital_service_id } = language;
+    this.serviceCategoryId = language.id as number;
+    console.log(this.serviceCategoryId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('hospital_service_id').setValue(hospital_service_id);
+  }
 }
+

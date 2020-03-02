@@ -3,6 +3,7 @@ import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd';
+import { Form, FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-hospital-service-setup',
@@ -12,8 +13,13 @@ import { NzNotificationService } from 'ng-zorro-antd';
 export class HospitalServiceSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  modalError = '';
+  updateForm: FormGroup;
+  isVisible = false;
   isCreatingHospitalService = new BehaviorSubject(false);
+  isUpdatingHospitalService = new BehaviorSubject(false);
   data = [];
+  hospitalServiceId = null;
   list = [];
   error = '';
   hospitalService = '';
@@ -58,7 +64,8 @@ export class HospitalServiceSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getHospitalServices() {
     this.setup
@@ -77,6 +84,9 @@ export class HospitalServiceSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getHospitalServices();
   }
 
@@ -91,5 +101,55 @@ export class HospitalServiceSetupComponent implements OnInit {
         this.list[index].isActivated = !service.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  deleteHospitalService(hospitalService: any) {
+    this.setup.deleteSetup(`setups/hospitalservices/${hospitalService.id}`).pipe(first()).subscribe(
+      res => {
+        this.getHospitalServices();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.hospitalServiceId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingHospitalService.next(false);
+  }
+  showModal(hospitalService: any) {
+    this.isVisible = true;
+    const { name } = hospitalService;
+    this.hospitalServiceId = hospitalService.id as number;
+    console.log(this.hospitalServiceId);
+    this.updateForm.get('name').setValue(name);
+  }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingHospitalService.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/hospitalservices/${this.hospitalServiceId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingHospitalService.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getHospitalServices();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+        },
+        error => {
+          this.isUpdatingHospitalService.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
   }
 }

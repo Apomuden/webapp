@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { first } from 'rxjs/operators';
 import { SetupService } from './../../../shared/services/setup.service';
 import { Component, OnInit } from '@angular/core';
@@ -16,6 +17,11 @@ export class DepartmentSetupComponent implements OnInit {
   data = [];
   list = [];
   error = '';
+  updateForm: FormGroup;
+  departmentId = null;
+  modalError = '';
+  isVisible = false;
+  isUpdatingDepartment = new BehaviorSubject(false);
   department = '';
 
   submitForm(): void {
@@ -54,7 +60,8 @@ export class DepartmentSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getDepartments() {
     this.setup
@@ -71,6 +78,9 @@ export class DepartmentSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    })
     this.getDepartments();
   }
 
@@ -85,5 +95,57 @@ export class DepartmentSetupComponent implements OnInit {
         this.list[index].isActivated = !department.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  deleteDepartment(department: any) {
+    this.setup.deleteSetup(`setups/departments/${department.id}`).pipe(first()).subscribe(
+      res => {
+        this.getDepartments();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.departmentId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingDepartment.next(false);
+  }
+  showModal(department: any) {
+    this.isVisible = true;
+    const { name } = department;
+    this.departmentId = department.id as number;
+    this.updateForm.get('name').setValue(name);
+  }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingDepartment.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/departments/${this.departmentId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingDepartment.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getDepartments();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingDepartment.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
   }
 }

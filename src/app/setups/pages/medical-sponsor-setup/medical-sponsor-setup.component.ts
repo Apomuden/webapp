@@ -1,4 +1,4 @@
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -19,14 +19,18 @@ export class MedicalSponsorSetupComponent implements OnInit {
   billingCyclesLoading = new BehaviorSubject(false);
   paymentStylesLoading = new BehaviorSubject(false);
   paymentChannelsLoading = new BehaviorSubject(false);
+  isUpdatingMedicalSponsor = new BehaviorSubject(false);
 
   data = [];
   list = [];
   error = '';
+  modalError = '';
+  medicalSponsorId = null;
   name = '';
   sortCode = '';
   email = '';
   phone = '';
+  isVisible = false;
   sponsorshipTypes = [];
   billingSystems = [];
   billingCycles = [];
@@ -36,6 +40,22 @@ export class MedicalSponsorSetupComponent implements OnInit {
   componentLabel = 'medical sponsor';
 
   medicalSponsorForm = this.fb.group({
+    'name': [null, Validators.required],
+    'active_cell': [null, Validators.required],
+    'alternate_cell': [''],
+    'address': [''],
+    'email1': [''],
+    'email2': [''],
+    'website': [''],
+    'sponsor_code': [null, Validators.required],
+    'sponsorship_type_id': [null, Validators.required],
+    'billing_system_id': [null, Validators.required],
+    'billing_cycle_id': [null, Validators.required],
+    'payment_style_id': [null, Validators.required],
+    'payment_channel_id': [null, Validators.required]
+  });
+
+  updateForm = this.fb.group({
     'name': [null, Validators.required],
     'active_cell': [null, Validators.required],
     'alternate_cell': [''],
@@ -215,5 +235,74 @@ export class MedicalSponsorSetupComponent implements OnInit {
         this.list[index].isActivated = !sponsor.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Fill all required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingMedicalSponsor.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/billingsponsors/${this.medicalSponsorId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingMedicalSponsor.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getMedicalSponsors();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingMedicalSponsor.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteMedicalSponsor(medicalSponsor: any) {
+    this.setup.deleteSetup(`setups/billingsponsors/${medicalSponsor.id}`).pipe(first()).subscribe(
+      res => {
+        this.getMedicalSponsors();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.medicalSponsorId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingMedicalSponsor.next(false);
+  }
+  showModal(medicalSponsor: any) {
+
+    this.isVisible = true;
+    const { name, active_cell, alternate_cell, address, email1, email2, website,
+      sponsor_code, sponsorship_type_id, billing_system_id,
+      billing_cycle_id, payment_style_id, payment_channel_id
+    } = medicalSponsor;
+    this.medicalSponsorId = medicalSponsor.id as number;
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('active_cell').setValue(active_cell);
+    this.updateForm.get('alternate_cell').setValue(alternate_cell);
+    this.updateForm.get('address').setValue(address);
+    this.updateForm.get('email1').setValue(email1);
+    this.updateForm.get('email2').setValue(email2);
+    this.updateForm.get('website').setValue(website);
+    this.updateForm.get('sponsor_code').setValue(sponsor_code);
+    this.updateForm.get('sponsorship_type_id').setValue(sponsorship_type_id);
+    this.updateForm.get('billing_system_id').setValue(billing_system_id);
+    this.updateForm.get('billing_cycle_id').setValue(billing_cycle_id);
+    this.updateForm.get('payment_style_id').setValue(payment_style_id);
+    this.updateForm.get('payment_channel_id').setValue(payment_channel_id);
+
   }
 }

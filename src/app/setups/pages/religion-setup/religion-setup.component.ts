@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -12,7 +13,12 @@ import { NzNotificationService } from 'ng-zorro-antd';
 export class ReligionSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  modalError = '';
+  isVisible = false;
   isCreatingReligion = new BehaviorSubject(false);
+  isUpdatingReligion = new BehaviorSubject(false);
+  updateForm: FormGroup;
+  religionId = null;
   data = [];
   list = [];
   error = '';
@@ -58,7 +64,8 @@ export class ReligionSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getReligions() {
     this.setup
@@ -78,6 +85,9 @@ export class ReligionSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getReligions();
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    })
   }
 
   toggleItem($event: any, religion: any) {
@@ -92,4 +102,59 @@ export class ReligionSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingReligion.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/religions/${this.religionId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingReligion.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getReligions();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingReligion.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteReligion(idtype: any) {
+    this.setup.deleteSetup(`setups/religions/${idtype.id}`).pipe(first()).subscribe(
+      res => {
+        this.getReligions();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.religionId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingReligion.next(false);
+  }
+  showModal(religion: any) {
+    this.isVisible = true;
+    const { name } = religion;
+    this.religionId = religion.id as number;
+    console.log(this.religionId);
+    this.updateForm.get('name').setValue(name);
+
+  }
 }
+

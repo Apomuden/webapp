@@ -4,11 +4,16 @@
       <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
         [nzRenderItem]="item">
         <ng-template #item let-item>
-          <nz-list-item [nzActions]="item.loading ? [] : [editAction, moreAction]">
+          <nz-list-item [nzActions]="item.loading ? [] : [deleteAction,editAction, moreAction]">
             <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
-              <ng-template #editAction><a>edit</a></ng-template>
+              <ng-template #editAction><a (click)="showModal(item)">edit</a></ng-template>
+              <ng-template #deleteAction>
+                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="deleteClinicService(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                    style="color:red;font-size: 16px;"></i></a>
+              </ng-template>
               <ng-template #moreAction>
-                <nz-switch [(ngModel)]="item.isActivated"></nz-switch>
+                <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
               <nz-list-item-meta [nzTitle]="nzTitle">
                 <ng-template #nzTitle>
@@ -20,6 +25,73 @@
         </ng-template>
       </nz-list>
     </nz-card>
+    <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="closeModal()" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter">
+      <ng-template #modalTitle>
+        Update Clinic Service
+      </ng-template>
+
+      <ng-template #modalContent>
+        <form [formGroup]="updateForm">
+          <nz-alert *ngIf="modalError" nzType="error" [nzMessage]="modalError" class="m-b-10" nzShowIcon>
+          </nz-alert>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="clinic_id">Clinic</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="clinic_id" nzPlaceHolder="Clinic"
+                  [nzLoading]="isClinicsLoading | async">
+                  <nz-option *ngFor="let clinic of clinics" [nzLabel]="clinic.name" [nzValue]="clinic.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row>
+          </nz-row>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="service_id">Service</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="service_id"
+                  nzPlaceHolder="Service" [nzLoading]="isServicePricingsLoading | async">
+                  <nz-option *ngFor="let servicePricing of servicePricings" [nzLabel]="servicePricing.description"
+                    [nzValue]="servicePricing.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="billing_cycle_id">Billing Cycle</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="billing_cycle_id"
+                  nzPlaceHolder="Billing cycle" [nzLoading]="isBillingCyclesLoading | async">
+                  <nz-option *ngFor="let billingCycle of billingCycles" [nzLabel]="billingCycle.name"
+                    [nzValue]="billingCycle.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="billing_duration">Billing duration</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="number" nz-input formControlName="billing_duration" placeholder="Billing duration" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+
+        </form>
+      </ng-template>
+
+      <ng-template #modalFooter>
+        <button nz-button (click)="closeModal()">Cancel</button>
+        <button nz-button nzType="primary" (click)="update()" [nzLoading]="isUpdatingClinicService|async">Save</button>
+      </ng-template>
+    </nz-modal>
   </nz-col>
   <nz-col nzSpan="8">
     <nz-card>

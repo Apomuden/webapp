@@ -1,26 +1,15 @@
 <div nz-row nzGutter="10">
   <nz-col nzSpan="12">
     <nz-card>
-      <nz-list
-        style="min-height: 350px;"
-        [nzDataSource]="list"
-        [nzItemLayout]="'horizontal'"
-        [nzLoading]="initLoading"
-        [nzRenderItem]="item"
-      >
+      <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
+        [nzRenderItem]="item">
         <ng-template #item let-item>
-          <nz-list-item
-            [nzActions]="item.loading ? [] : [editAction, moreAction]"
-          >
-            <nz-skeleton
-              [nzActive]="true"
-              [nzTitle]="false"
-              [nzLoading]="item.loading"
-            >
+          <nz-list-item [nzActions]="item.loading ? [] : [editAction, moreAction]">
+            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
               <ng-template #editAction><a>edit</a></ng-template>
-              <ng-template #moreAction
-                ><nz-switch [(ngModel)]="item.isActivated"></nz-switch
-              ></ng-template>
+              <ng-template #moreAction>
+                <nz-switch [(ngModel)]="item.isActivated"></nz-switch>
+              </ng-template>
               <nz-list-item-meta [nzTitle]="nzTitle">
                 <ng-template #nzTitle>
                   <a>{{ item.name }}</a>
@@ -39,104 +28,56 @@
         <div *ngIf="error">{{ error }}</div>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="name"
-              name="name"
-              placeholder="Input facility name"
-            />
+            <input type="text" nz-input [(ngModel)]="name" name="name" placeholder="Input facility name" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="staffIDPrefix"
-              name="staffidprefix"
-              placeholder="Input staff Id prefix"
-            />
+            <input type="text" nz-input [(ngModel)]="staffIDPrefix" name="staffidprefix"
+              placeholder="Input staff Id prefix" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="staffIdSeperator"
-              name="staffIdSeperator"
-              placeholder="Input staff id seperator"
-            />
+            <input type="text" nz-input [(ngModel)]="staffIdSeperator" name="staffIdSeperator"
+              placeholder="Input staff id seperator" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="folderIdPrefix"
-              name="folderidprefix"
-              placeholder="Input folder id prefix"
-            />
+            <input type="text" nz-input [(ngModel)]="folderIdPrefix" name="folderidprefix"
+              placeholder="Input folder id prefix" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="folderIdSeperator"
-              name="folderidseperator"
-              placeholder="Input folder id seperator"
-            />
+            <input type="text" nz-input [(ngModel)]="folderIdSeperator" name="folderidseperator"
+              placeholder="Input folder id seperator" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="number"
-              nz-input
-              [(ngModel)]="digitsAfterStaffPrefix"
-              name="digitsafterstaffprefix"
-              placeholder="Input digits after staff prefix"
-            />
+            <input type="number" nz-input [(ngModel)]="digitsAfterStaffPrefix" name="digitsafterstaffprefix"
+              placeholder="Input digits after staff prefix" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="number"
-              nz-input
-              [(ngModel)]="digitsAfterFolderPrefix"
-              name="digitsafterfolderprefix"
-              placeholder="Input digits after folder prefix"
-            />
+            <input type="number" nz-input [(ngModel)]="digitsAfterFolderPrefix" name="digitsafterfolderprefix"
+              placeholder="Input digits after folder prefix" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="number"
-              nz-input
-              [(ngModel)]="yearDigits"
-              name="yearDigits"
-              placeholder="Input year digits"
-            />
+            <input type="number" nz-input [(ngModel)]="yearDigits" name="yearDigits" placeholder="Input year digits" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control>
-            <nz-select
-              style="width: 100%;"
-              [(ngModel)]="allowedFolderType"
-              nzAllowClear
-              nzPlaceHolder="Choose allowed folder type"
-              name="allowedfoldertype"
-              nzMode="multiple"
-            >
+            <nz-select style="width: 100%;" [(ngModel)]="allowedFolderType" nzAllowClear
+              nzPlaceHolder="Choose allowed folder type" name="allowedfoldertype" nzMode="multiple">
               <nz-option nzValue="INDIVIDUAL" nzLabel="INDIVIDUAL"></nz-option>
               <nz-option nzValue="FAMILY" nzLabel="FAMILY"></nz-option>
             </nz-select>
@@ -145,161 +86,80 @@
 
         <nz-row class="m-b-10">
           <nz-form-control>
-            <nz-select
-              style="width: 100%;"
-              [(ngModel)]="allowedInstallmentType"
-              nzAllowClear
-              nzPlaceHolder="Choose allowed installment type"
-              name="allowedinstallmenttype"
-              nzMode="multiple"
-            >
-              <nz-option
-                nzValue="FULL_PAYMENT"
-                nzLabel="FULL_PAYMENT"
-              ></nz-option>
-              <nz-option
-                nzValue="PART_PAYMENT"
-                nzLabel="PART_PAYMENT"
-              ></nz-option>
+            <nz-select style="width: 100%;" [(ngModel)]="allowedInstallmentType" nzAllowClear
+              nzPlaceHolder="Choose allowed installment type" name="allowedinstallmenttype" nzMode="multiple">
+              <nz-option nzValue="FULL_PAYMENT" nzLabel="FULL_PAYMENT"></nz-option>
+              <nz-option nzValue="PART_PAYMENT" nzLabel="PART_PAYMENT"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="activeCell"
-              name="activecell"
-              placeholder="Input phone number"
-            />
+            <input type="text" nz-input [(ngModel)]="activeCell" name="activecell" placeholder="Input phone number" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="alternateCell"
-              name="alternatecell"
-              placeholder="Input alternate phone number (Optional)"
-            />
+            <input type="text" nz-input [(ngModel)]="alternateCell" name="alternatecell"
+              placeholder="Input alternate phone number (Optional)" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="email1"
-              name="email1"
-              placeholder="Input email"
-            />
+            <input type="text" nz-input [(ngModel)]="email1" name="email1" placeholder="Input email" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="email2"
-              name="email2"
-              placeholder="Input second email (Optional)"
-            />
+            <input type="text" nz-input [(ngModel)]="email2" name="email2"
+              placeholder="Input second email (Optional)" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="postalAddress"
-              name="postaladdress"
-              placeholder="Input postal address"
-            />
+            <input type="text" nz-input [(ngModel)]="postalAddress" name="postaladdress"
+              placeholder="Input postal address" />
           </nz-form-control>
         </nz-row>
 
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input
-              type="text"
-              nz-input
-              [(ngModel)]="physicalAddress"
-              name="physicaladdress"
-              placeholder="Input physical address"
-            />
+            <input type="text" nz-input [(ngModel)]="physicalAddress" name="physicaladdress"
+              placeholder="Input physical address" />
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              nzPlaceHolder="Country"
-              style="width:100%;"
-              [(ngModel)]="country"
-              name="country"
-              (ngModelChange)="getRegionsByCountryId(country)"
-              [nzLoading]="countriesLoading | async"
-            >
-              <nz-option
-                *ngFor="let country of countries"
-                selected="country.name == 'Ghana'"
-                [nzValue]="country.id"
-                [nzLabel]="country.name"
-              ></nz-option>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Country" style="width:100%;" [(ngModel)]="country"
+              name="country" (ngModelChange)="getRegionsByCountryId(country)" [nzLoading]="countriesLoading | async">
+              <nz-option *ngFor="let country of countries" selected="country.name == 'Ghana'" [nzValue]="country.id"
+                [nzLabel]="country.name"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <nz-select
-              nzShowSearch
-              nzAllowClear
-              nzPlaceHolder="Region"
-              style="width:100%;"
-              [(ngModel)]="region"
-              name="region"
-              [nzLoading]="regionsLoading | async"
-            >
-              <nz-option
-                *ngFor="let region of regions"
-                [nzValue]="region.id"
-                [nzLabel]="region.name"
-              ></nz-option>
+            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Region" style="width:100%;" [(ngModel)]="region"
+              name="region" [nzLoading]="regionsLoading | async">
+              <nz-option *ngFor="let region of regions" [nzValue]="region.id" [nzLabel]="region.name"></nz-option>
             </nz-select>
           </nz-form-control>
         </nz-row>
         <div nz-row>
           <div nz-col style="width: 100%;">
-            <input
-              nz-input
-              ngx-google-places-autocomplete
-              #placesRef="ngx-places"
-              placeholder="Google Location"
-              (onAddressChange)="handleAddressChange($event)"
-            />
+            <input nz-input ngx-google-places-autocomplete #placesRef="ngx-places" placeholder="Google Location"
+              (onAddressChange)="handleAddressChange($event)" />
           </div>
         </div>
 
         <nz-row>
-          <nz-form-control
-            nzSpan="24"
-            style="text-align: right;"
-            class="m-t-10"
-          >
-            <button
-              nz-button
-              nzType="primary"
-              type="submit"
-              [nzLoading]="isCreatingFacility | async"
-            >
+          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingFacility | async">
               Submit
             </button>
           </nz-form-control>

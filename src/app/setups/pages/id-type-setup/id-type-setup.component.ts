@@ -1,3 +1,4 @@
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -13,11 +14,16 @@ export class IdTypeSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
   isCreatingIdType = new BehaviorSubject(false);
+  isUpdatingIdType = new BehaviorSubject(false);
+  isVisible = false;
+  idTypeId = null;
   data = [];
   list = [];
   error = '';
+  modalError = '';
   idType = '';
   componentLabel = 'id type';
+  updateForm: FormGroup;
 
   submitForm(): void {
     if (this.idType == null || this.idType === '') {
@@ -58,7 +64,8 @@ export class IdTypeSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getIdTypes() {
     this.setup
@@ -77,6 +84,9 @@ export class IdTypeSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getIdTypes();
   }
 
@@ -91,5 +101,60 @@ export class IdTypeSetupComponent implements OnInit {
         this.list[index].isActivated = !type.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingIdType.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/idtypes/${this.idTypeId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingIdType.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getIdTypes();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingIdType.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteIdType(idtype: any) {
+    this.setup.deleteSetup(`setups/idtypes/${idtype.id}`).pipe(first()).subscribe(
+      res => {
+        this.getIdTypes();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.idTypeId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingIdType.next(false);
+  }
+  showModal(idtype: any) {
+    this.isVisible = true;
+    const { name } = idtype;
+    this.idTypeId = idtype.id as number;
+    console.log(this.idTypeId);
+    this.updateForm.get('name').setValue(name);
+
   }
 }

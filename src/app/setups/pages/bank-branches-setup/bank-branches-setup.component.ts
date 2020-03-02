@@ -103,14 +103,14 @@ export class BankBranchesSetupComponent implements OnInit {
   showModal(bankBranch: any) {
 
     this.isVisible = true;
-    const { name, sort_code, phone, email, bank_id } = bankBranch;
+    const { name, sort_code, phone, email } = bankBranch;
     this.branchId = bankBranch.id as number;
     console.log(this.branchId);
     this.updateForm.get('name').setValue(name);
     this.updateForm.get('sort_code').setValue(sort_code);
     this.updateForm.get('phone').setValue(phone);
     this.updateForm.get('email').setValue(email);
-    this.updateForm.get('bank_id').setValue(bank_id);
+
 
   }
 
@@ -160,7 +160,6 @@ export class BankBranchesSetupComponent implements OnInit {
       sort_code: [null],
       email: [null],
       phone: [null],
-      bank_id: [null, Validators.required]
     });
     this.getBankBranches();
     this.getBanks();
@@ -181,7 +180,7 @@ export class BankBranchesSetupComponent implements OnInit {
   }
   update() {
     if (!this.updateForm.valid) {
-      this.modalError = 'Name and bank are required';
+      this.modalError = 'Name is required';
     } else {
       this.modalError = '';
       this.isUpdatingBranch.next(true);
