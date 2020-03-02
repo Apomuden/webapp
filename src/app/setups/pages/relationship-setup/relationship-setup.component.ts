@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -14,7 +15,12 @@ export class RelationshipSetupComponent implements OnInit {
   loadingMore = false;
   isCreatingRelationship = new BehaviorSubject(false);
   data = [];
+  relationshipId = null;
   list = [];
+  isVisible = false;
+  modalError = '';
+  isUpdatingRelationship = new BehaviorSubject(false);
+  updateForm: FormGroup;
   error = '';
   relationship = '';
   componentLabel = 'relationship';
@@ -58,7 +64,8 @@ export class RelationshipSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getRelationships() {
     this.setup
@@ -78,6 +85,9 @@ export class RelationshipSetupComponent implements OnInit {
   }
   ngOnInit() {
     this.getRelationships();
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
   }
 
   toggleItem($event: any, relationship: any) {
@@ -92,4 +102,59 @@ export class RelationshipSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingRelationship.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/relationships/${this.relationshipId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingRelationship.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getRelationships();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingRelationship.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteRelationship(idtype: any) {
+    this.setup.deleteSetup(`setups/relationships/${idtype.id}`).pipe(first()).subscribe(
+      res => {
+        this.getRelationships();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.relationshipId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingRelationship.next(false);
+  }
+  showModal(idtype: any) {
+    this.isVisible = true;
+    const { name } = idtype;
+    this.relationshipId = idtype.id as number;
+    console.log(this.relationshipId);
+    this.updateForm.get('name').setValue(name);
+
+  }
 }
+

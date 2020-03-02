@@ -15,22 +15,24 @@ export class ClinicServiceSetupComponent implements OnInit {
   list = [];
   billingCycles = [];
   clinicServiceId = null;
-  isVisible = false;
-  clinics = [];
   modalError = '';
+  isVisible = false;
+  isUpdatingClinicService = new BehaviorSubject(false);
+  clinics = [];
+
   servicePricings = [];
   error = '';
   initLoading = true;
   isCreatingClinicService = new BehaviorSubject(false);
   isBillingCyclesLoading = new BehaviorSubject(false);
-  isUpdatingClinicService = new BehaviorSubject(false);
   isServicePricingsLoading = new BehaviorSubject(false);
   isClinicsLoading = new BehaviorSubject(false);
   updateForm: FormGroup;
+  clinicServiceForm: FormGroup;
 
 
   constructor(private setup: SetupService, private fb: FormBuilder, private notification: NzNotificationService) { }
-  clinicServiceForm: FormGroup;
+
   ngOnInit() {
     this.clinicServiceForm = this.fb.group({
       clinic_id: [null, Validators.required],

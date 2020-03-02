@@ -1,20 +1,24 @@
-import { Component } from '@angular/core';
+import { first } from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
 import { ThemeConstantService } from '../../services/theme-constant.service';
 import { AuthenticationService } from '../../services/authentication.service';
+import { SetupService } from '../../services/setup.service';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html'
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
   constructor(
     private themeService: ThemeConstantService,
-    private auth: AuthenticationService
-  ) {}
+    private auth: AuthenticationService,
+    private setup: SetupService
+  ) { }
   searchVisible = false;
   quickViewVisible = false;
   isFolded: boolean;
   isExpand: boolean;
+  facility: any;
   details;
 
   notificationList = [
@@ -51,6 +55,21 @@ export class HeaderComponent {
     );
     this.themeService.isExpandChanges.subscribe(
       isExpand => (this.isExpand = isExpand)
+    );
+    this.facility = JSON.parse(localStorage.getItem('facilityDetails'));
+
+
+    this.setup.getFacilities().pipe(first()).subscribe(
+      res => {
+        if (res) {
+          console.log(res.data);
+          localStorage.setItem('facilityDetails', JSON.stringify(res.data));
+          this.facility = res.data;
+        }
+      },
+      err => {
+        console.log(err);
+      }
     );
   }
 

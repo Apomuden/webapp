@@ -16,8 +16,13 @@ export class ClinicTypeSetupComponent implements OnInit {
   clinicTypeForm: FormGroup;
   error: String;
   initLoading = true;
+  modalError = '';
+  updateForm: FormGroup;
+  clinicTypeId = null;
+  isVisible = false;
   loadingMore = false;
   isCreatingClinicType = new BehaviorSubject(false);
+  isUpdatingClinicType = new BehaviorSubject(false);
 
   data = [];
   list = [];
@@ -25,6 +30,9 @@ export class ClinicTypeSetupComponent implements OnInit {
   ngOnInit() {
     this.getClinicTypes();
     this.clinicTypeForm = this.fb.group({
+      name: [null, [Validators.required]]
+    });
+    this.updateForm = this.fb.group({
       name: [null, [Validators.required]]
     });
   }
@@ -90,5 +98,57 @@ export class ClinicTypeSetupComponent implements OnInit {
         this.list[index].isActivated = !type.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  deleteClinicType(clinicType: any) {
+    this.setup.deleteSetup(`setups/clinictypes/${clinicType.id}`).pipe(first()).subscribe(
+      res => {
+        this.getClinicTypes();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.clinicTypeId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingClinicType.next(false);
+  }
+  showModal(clinicType: any) {
+    this.isVisible = true;
+    const { name } = clinicType;
+    this.clinicTypeId = clinicType.id as number;
+    this.updateForm.get('name').setValue(name);
+  }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingClinicType.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/clinictypes/${this.clinicTypeId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingClinicType.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getClinicTypes();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingClinicType.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
   }
 }

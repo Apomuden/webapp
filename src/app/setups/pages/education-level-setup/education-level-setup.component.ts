@@ -1,3 +1,4 @@
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -15,7 +16,13 @@ export class EducationLevelSetupComponent implements OnInit {
   isCreatingEducationalLevel = new BehaviorSubject(false);
   data = [];
   list = [];
+  educationLevelId = null;
   error = '';
+  updateForm: FormGroup;
+  educationLevel = null;
+  modalError = '';
+  isVisible = false;
+  isUpdatingEducationLevel = new BehaviorSubject(false);
   educationalLevel = '';
   componentLabel = 'educational level';
 
@@ -58,7 +65,8 @@ export class EducationLevelSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getEducationalLevels() {
     this.setup
@@ -77,6 +85,9 @@ export class EducationLevelSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getEducationalLevels();
   }
 
@@ -92,4 +103,58 @@ export class EducationLevelSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingEducationLevel.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/educationallevels/${this.educationLevelId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingEducationLevel.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getEducationalLevels();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingEducationLevel.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteEducationLevel(educationLevel: any) {
+    this.setup.deleteSetup(`setups/educationallevels/${educationLevel.id}`).pipe(first()).subscribe(
+      res => {
+        this.getEducationalLevels();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.educationLevelId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingEducationLevel.next(false);
+  }
+  showModal(educationLevel: any) {
+    this.isVisible = true;
+    const { name } = educationLevel;
+    this.educationLevelId = educationLevel.id as number;
+    console.log(this.educationLevelId);
+    this.updateForm.get('name').setValue(name);
+  }
+
 }

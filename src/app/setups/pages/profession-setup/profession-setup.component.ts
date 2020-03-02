@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -12,8 +13,13 @@ import { BehaviorSubject } from 'rxjs';
 export class ProfessionSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  professionId = null;
+  isVisible = false;
   isCreatingProfession = new BehaviorSubject(false);
   staffCategoriesLoading = new BehaviorSubject(false);
+  isUpdatingProfession = new BehaviorSubject(false);
+  updateForm: FormGroup;
+  modalError = '';
 
   data = [];
   list = [];
@@ -70,7 +76,8 @@ export class ProfessionSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
 
   getProfessions() {
@@ -110,6 +117,10 @@ export class ProfessionSetupComponent implements OnInit {
   ngOnInit() {
     this.getProfessions();
     this.getStaffCategories();
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      staff_category_id: [null, Validators.required]
+    });
   }
 
   toggleItem($event: any, profession: any) {
@@ -123,5 +134,61 @@ export class ProfessionSetupComponent implements OnInit {
         this.list[index].isActivated = !profession.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Name is required';
+    } else {
+      this.modalError = '';
+      this.isUpdatingProfession.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/professions/${this.professionId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingProfession.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getProfessions();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingProfession.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteProfession(profession: any) {
+    this.setup.deleteSetup(`setups/professions/${profession.id}`).pipe(first()).subscribe(
+      res => {
+        this.getProfessions();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.professionId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingProfession.next(false);
+  }
+  showModal(profession: any) {
+    this.isVisible = true;
+    const { name, staff_category_id } = profession;
+    this.professionId = profession.id as number;
+    console.log(this.professionId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('staff_category_id').setValue(staff_category_id);
+
   }
 }
