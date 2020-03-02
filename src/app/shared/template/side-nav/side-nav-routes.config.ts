@@ -121,7 +121,7 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
       {
-        path: '',
+        path: '/records/appointments',
         title: 'Appointments',
         iconType: '',
         icon: '',
@@ -145,6 +145,23 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       }
+    ]
+  },
+  {
+    path: '/opd',
+    title: 'OPD Management',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'folder-open',
+    submenu: [
+      {
+        path: '/opd/vitals',
+        title: 'Vitals',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
     ]
   }
 ];
