@@ -83,7 +83,7 @@ export const ROUTES: SideNavInterface[] = [
   },
   {
     path: '/records',
-    title: 'Records',
+    title: 'Records Management',
     iconType: 'nzIcon',
     iconTheme: 'outline',
     icon: 'book',

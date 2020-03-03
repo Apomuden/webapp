@@ -33,8 +33,10 @@
         </nz-drawer>
       </li>
     </ul>
+    <span style="font-size:1.5em;text-transform: uppercase;margin-top: 16px;" *ngIf="facility"
+      [innerHTML]="facility.name"></span>
     <ul class="nav-right">
-      <li style="font-size:1.5em;text-transform: uppercase;" *ngIf="facility" [innerHTML]="facility.name"></li>
+
       <li>
         <span class="p-h-10 pointer" nz-dropdown [nzDropdownMenu]="profile" [nzTrigger]="'click'"
           [nzPlacement]="'bottomRight'">
