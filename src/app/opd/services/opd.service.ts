@@ -8,6 +8,18 @@ export class OpdService {
 
   constructor(private http: HttpClient) { }
 
+  getQueue(queuePath: string) {
+    const url = `${environment.apiBaseUrl}${queuePath}`;
+    return this.http.get<any>(url).pipe(map(
+      res => {
+        if (res && res.data) {
+          return res.data;
+        }
+        throw new HttpErrorResponse({ status: 500 });
+      }
+    ));
+  }
+
   getAttendance(folderNo = '', attendanceDate: string) {
     const url = `${environment.apiBaseUrl}/registry/attendance/byfolder`;
     return this.http.get<any>(url, {

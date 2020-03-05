@@ -1,0 +1,17 @@
+<nz-card nzTitle="Patient Queue">
+  <nz-list style="max-height: 55%; overflow-x: auto;" [nzDataSource]="attendances" [nzItemLayout]="'horizontal'" [nzLoading]="isLoading"
+    [nzRenderItem]="item">
+    <ng-template #item let-attendance>
+      <nz-list-item [nzActions]="[Action]">
+        <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="attendance.loading">
+          <ng-template #Action><a (click)="doAction(attendance)">{{action}}</a></ng-template>
+          <nz-list-item-meta [nzDescription]="attendance.attendance_date | date:'M/d/yy, h:mm a'" [nzTitle]="title">
+            <ng-template #title>
+              <a>{{ attendance.patient_name }}</a>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-skeleton>
+      </nz-list-item>
+    </ng-template>
+  </nz-list>
+</nz-card>

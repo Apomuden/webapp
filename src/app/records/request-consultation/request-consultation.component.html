@@ -63,7 +63,7 @@
         <nz-form-item>
           <nz-form-label nzRequired nzFor="attendanceDate">Attendance Date</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="Select a valid date">
-            <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="attendanceDate"
+            <nz-date-picker [nzShowTime]="true" [nzDisabledDate]="disabledDate" formControlName="attendanceDate"
               nzPlaceHolder="Select attendance date">
             </nz-date-picker>
           </nz-form-control>
