@@ -16,23 +16,23 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
 
   stepIndex = 0;
 
-  walkinForm: FormGroup = this.fb.group({
-    title: this.fb.control(null, [Validators.required]),
-    lastName: this.fb.control(null, [Validators.required]),
-    firstName: this.fb.control(null, [Validators.required]),
-    middleName: this.fb.control(null),
-    gender: this.fb.control(null, [Validators.required]),
-    dob: this.fb.control(null, [Validators.required]),
-    age: this.fb.control(0),
-    useAge: this.fb.control(false, [Validators.required]),
-    phone: this.fb.control(null, [Validators.required, Validators.minLength(9), Validators.maxLength(9)]),
-    countryCode: this.fb.control('+233', [Validators.required]),
-    originCountry: [null],
-    originRegion: [null],
-    homeTown: [null],
+  appointmentForm: FormGroup = this.fb.group({
+    patient_id: [null, [Validators.required]],
+    clinic_id: [null, [Validators.required]],
+    doctor_id: [null, [Validators.required]],
+    comment: [null],
+    appointment_date: [null, [Validators.required]],
+    isExistingPatient: [true],
+    enquirer_name: [null],
+    enquirer_country_code: ['+233'],
+    enquirer_phone: [null],
+    enquirer_residence: [null],
+    enquirer_email: [null],
   });
 
   countriesloading = new BehaviorSubject(false);
+  isLoadingClinics = new BehaviorSubject(false);
+  isLoadingDoctors = new BehaviorSubject(false);
   titlesLoading = new BehaviorSubject(false);
   townsLoading = new BehaviorSubject(false);
   regionsLoading = new BehaviorSubject(false);
@@ -43,7 +43,9 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
   countries = [];
   titles = [];
   towns = [];
+  clinics = [];
   regions = [];
+  doctors = [];
 
   formatterAge = (value: number) => `${value} yrs`;
   parserAge = (value: string) => value.replace('yrs', '');
@@ -57,41 +59,77 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   ngOnInit() {
-    this.fetchTitles();
+    this.getClinics();
     this.fetchCountries();
   }
 
   ngAfterViewInit() {
-    this.walkinForm.get('originCountry').valueChanges.pipe(untilComponentDestroyed(this), debounceTime(500))
-      .subscribe(countryId => this.fetchRegions(countryId));
-    this.walkinForm.get('originRegion').valueChanges.pipe(untilComponentDestroyed(this), debounceTime(500))
-      .subscribe((regionId: string) => this.fetchTowns(regionId));
+    this.appointmentForm.get('isExistingPatient').valueChanges.pipe(untilComponentDestroyed(this), debounceTime(100))
+      .subscribe(boolVal => {
+        this.updateFormValidations(boolVal);
+      });
+
+    this.appointmentForm.get('clinic_id').valueChanges.pipe(untilComponentDestroyed(this), debounceTime(100))
+      .subscribe(id => {
+        this.getDoctorsForClinic(id);
+      });
   }
 
   ngOnDestroy() {
   }
 
-  private fetchTowns(regionId: string) {
-    this.walkinForm.get('homeTown').reset();
-    this.towns = [];
-    if (!regionId) {
-      return;
+  private updateFormValidations(isExistingPatient: Boolean) {
+    if (isExistingPatient) {
+
+      this.appointmentForm.get('patient_id').setValidators([Validators.required]);
+      this.appointmentForm.get('enquirer_name').setValidators(null);
+      this.appointmentForm.get('enquirer_country_code').setValidators(null);
+      this.appointmentForm.get('enquirer_phone').setValidators(null);
+      this.appointmentForm.get('enquirer_residence').setValidators(null);
+      this.appointmentForm.get('enquirer_email').setValidators(null);
+
+    } else {
+      this.appointmentForm.get('patient_id').setValidators(null);
+      this.appointmentForm.get('enquirer_name').setValidators([Validators.required]);
+      this.appointmentForm.get('enquirer_country_code').setValidators([Validators.required]);
+      this.appointmentForm.get('enquirer_phone').setValidators([Validators.required]);
+      this.appointmentForm.get('enquirer_residence').setValidators([Validators.required]);
+      this.appointmentForm.get('enquirer_email').setValidators([Validators.required]);
     }
-    this.townsLoading.next(true);
+  }
+
+
+  private getDoctorsForClinic(id: number) {
+    this.appointmentForm.get('doctor_id').reset();
+    this.doctors = [];
+
+    this.isLoadingDoctors.next(true);
     this.setup
-      .getTownsByReigion(regionId)
+      .getDoctorsForClinic(id)
       .pipe(first())
       .subscribe(data => {
-        this.townsLoading.next(false);
-        this.towns = data.data;
-        console.log(this.towns);
+        this.regionsLoading.next(false);
+        this.regions = data.data;
       }, error => {
-        this.townsLoading.next(false);
+        this.regionsLoading.next(false);
+      });
+  }
+  private getClinics() {
+    this.isLoadingClinics.next(true);
+    this.setup
+      .getClinics()
+      .pipe(first())
+      .subscribe(data => {
+        this.isLoadingClinics.next(false);
+        this.clinics = data.data;
+        console.log(this.clinics);
+      }, error => {
+        this.isLoadingClinics.next(false);
       });
   }
 
   private fetchRegions(countryId: string) {
-    this.walkinForm.get('originRegion').reset();
+    this.appointmentForm.get('originRegion').reset();
     this.regions = [];
     if (!countryId) {
       return;
@@ -144,15 +182,15 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   get dobControl(): FormControl {
-    return this.walkinForm.get('dob') as FormControl;
+    return this.appointmentForm.get('dob') as FormControl;
   }
 
   get ageControl(): FormControl {
-    return this.walkinForm.get('age') as FormControl;
+    return this.appointmentForm.get('age') as FormControl;
   }
 
   get useAge(): boolean {
-    return this.walkinForm.get('useAge').value as boolean;
+    return this.appointmentForm.get('useAge').value as boolean;
   }
 
   ageChanged() {
@@ -187,9 +225,9 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   clearForm() {
-    this.walkinForm.reset();
+    this.appointmentForm.reset();
     this.ageControl.patchValue(0);
-    this.walkinForm.get('countryCode').patchValue('+233');
+    this.appointmentForm.get('countryCode').patchValue('+233');
   }
 
   compareFn(c1: any, c2: any): boolean {
@@ -198,22 +236,22 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
 
   private processData() {
     let active_cell: string;
-    if (this.walkinForm.get('phone').value) {
-      active_cell = `${this.walkinForm.get('countryCode').value.replace('+', '')}${this.walkinForm.get('phone').value}`;
+    if (this.appointmentForm.get('phone').value) {
+      active_cell = `${this.appointmentForm.get('countryCode').value.replace('+', '')}${this.appointmentForm.get('phone').value}`;
     }
 
     return {
       funding_type_id: 1,
       active_cell: active_cell ? parseInt(active_cell, 10) : null,
-      title_id: this.walkinForm.get('title').value as number,
-      surname: this.walkinForm.get('lastName').value,
-      firstname: this.walkinForm.get('firstName').value,
-      middlename: this.walkinForm.get('middleName').value,
-      dob: this.formatDate(this.walkinForm.get('dob').value),
-      gender: this.walkinForm.get('gender').value,
-      origin_country_id: this.walkinForm.get('originCountry').value,
-      origin_region_id: this.walkinForm.get('originRegion').value,
-      hometown_id: this.walkinForm.get('homeTown').value,
+      title_id: this.appointmentForm.get('title').value as number,
+      surname: this.appointmentForm.get('lastName').value,
+      firstname: this.appointmentForm.get('firstName').value,
+      middlename: this.appointmentForm.get('middleName').value,
+      dob: this.formatDate(this.appointmentForm.get('dob').value),
+      gender: this.appointmentForm.get('gender').value,
+      origin_country_id: this.appointmentForm.get('originCountry').value,
+      origin_region_id: this.appointmentForm.get('originRegion').value,
+      hometown_id: this.appointmentForm.get('homeTown').value,
       reg_status: 'WALK-IN',
       // folder_type: 'INDIVIDUAL',
     };

@@ -1,25 +1,52 @@
 <nz-card>
-  <form nz-form [formGroup]="walkinForm">
+  <form nz-form [formGroup]="appointmentForm">
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="title">Title</nz-form-label>
-      <nz-form-control nzErrorTip="Select a title">
-        <nz-select formControlName="title" nzPlaceHolder="Select title" nzShowSearch nzAllowClear
-          [nzLoading]="titlesLoading | async">
-          <nz-option *ngFor="let title of titles" [nzLabel]="title.name" [nzValue]="title.id"></nz-option>
-        </nz-select>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="isExistingPatient">Is existing patient</nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="isExistingPatient" class="isExistingPatient"></nz-switch>
       </nz-form-control>
     </nz-form-item>
+    <!-- patient_id: [null, [Validators.required]],
+    clinic_id: [null, [Validators.required]],
+    doctor_id: [null, [Validators.required]],
+    comment: [null],
+    appointment_date: [null, [Validators.required]],
+    isExistingPatient: [true],
+    enquirer_name: [null],
+    enquirer_country_code: ['+233'],
+    enquirer_phone: [null],
+    enquirer_residence: [null],
+    enquirer_email: [null], -->
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="firstName">First Name</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid name">
-        <input type="text" nz-input placeholder="First Name eg. (John)" formControlName="firstNaot me" />
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="patient_id">Patient Number</nz-form-label>
+      <nz-form-control nzErrorTip="Enter patient number">
+        <input type="text" nz-input placeholder="Eg. A0000001/20a" formControlName="patient_id" />
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Middle Name</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid name">
-        <input type="text" nz-input placeholder="Middle Name eg. (Agyare)" formControlName="middleName" />
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="clinic_id">Clinic</nz-form-label>
+      <nz-form-control nzErrorTip="Select Clinic">
+        <nz-select formControlName="clinic_id" [nzLoading]="isLoadingClinics|async">
+          <nz-option *ngFor="let clinic of clinics" [nzLabel]="clinic.name" [nzValue]="clinic.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="clinic_id">Clinic</nz-form-label>
+      <nz-form-control nzErrorTip="Select Clinic">
+        <nz-select formControlName="clinic_id" [nzLoading]="isLoadingClinics|async">
+          <nz-option *ngFor="let clinic of clinics" [nzLabel]="clinic.name" [nzValue]="clinic.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="doctor_id">Doctor</nz-form-label>
+      <nz-form-control nzErrorTip="Select Doctor">
+        <nz-select formControlName="doctor_id" [nzLoading]="isLoadingDoctors|async">
+          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.name" [nzValue]="doctor.id"></nz-option>
+        </nz-select>
       </nz-form-control>
     </nz-form-item>
 
