@@ -62,7 +62,6 @@ export class HeaderComponent implements OnInit {
     this.setup.getFacilities().pipe(first()).subscribe(
       res => {
         if (res) {
-          console.log(res.data);
           localStorage.setItem('facilityDetails', JSON.stringify(res.data));
           this.facility = res.data;
         }

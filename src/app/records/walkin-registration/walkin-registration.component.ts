@@ -6,6 +6,7 @@ import { first, retry, debounceTime } from 'rxjs/operators';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from '../record.service';
 import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
+import * as dateFns from 'date-fns';
 
 @Component({
   selector: 'app-walkin-registration',
@@ -180,6 +181,14 @@ export class WalkinRegistrationComponent implements OnInit, AfterViewInit, OnDes
         this.notificationS.error('Oops', 'Could not create patient. Please try again');
         this.creating.next(false);
       });
+  }
+
+  disabledDate(current: Date): boolean {
+    if (!current) {
+      return false;
+    }
+    // can only select days before today
+    return dateFns.isAfter(current, new Date());
   }
 
   closeModal() {

@@ -189,7 +189,7 @@
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
           <nz-form-control nzErrorTip="Select a valid date">
-            <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
+            <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
             </nz-date-picker>
           </nz-form-control>
         </nz-form-item>
