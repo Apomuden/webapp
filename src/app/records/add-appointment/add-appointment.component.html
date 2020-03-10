@@ -1,0 +1,93 @@
+<nz-card>
+  <form nz-form [formGroup]="appointmentForm">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="isExistingPatient">Is existing patient</nz-form-label>
+      <nz-form-control>
+        <nz-switch formControlName="isExistingPatient" class="isExistingPatient"></nz-switch>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item *ngIf="isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="patient_id">Patient Number</nz-form-label>
+      <nz-form-control nzErrorTip="Enter valid folder number" [nzValidateStatus]="folderValidationState" nzHasFeedback>
+        <input type="text" nz-input placeholder="Eg. A0000001/20a" formControlName="patient_id" />
+      </nz-form-control>
+
+    </nz-form-item>
+    <nz-form-item *ngIf="!isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="enquirer_name">Enquirer name</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid name">
+        <input type="text" nz-input placeholder="Enquirer Name" formControlName="enquirer_name" />
+      </nz-form-control>
+    </nz-form-item>
+
+
+    <nz-form-item *ngIf="!isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phone">Mobile Number</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid phone number">
+        <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
+          <ng-template #addOnBeforeTemplate>
+            <nz-select formControlName="enquirer_country_code" [compareWith]="compareFn" class="phone-select"
+              nzShowSearch [nzLoading]="countriesloading | async">
+              <nz-option *ngFor="let country of countries" [nzValue]="country.call_code" [nzLabel]="country.call_code">
+              </nz-option>
+            </nz-select>
+          </ng-template>
+          <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="enquirer_phone" />
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+
+
+    <nz-form-item *ngIf="!isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="enquirer_residence">Enquirer residence</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a residence">
+        <input type="text" nz-input placeholder="Enquirer residence" formControlName="enquirer_residence" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="!isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="enquirer_email">Enquirer email</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a email">
+        <input type="text" nz-input placeholder="Enquirer email" formControlName="enquirer_email" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staff_specialty_id">Speciality</nz-form-label>
+      <nz-form-control nzErrorTip="Select Specialty">
+        <nz-select formControlName="staff_specialty_id" [nzLoading]="isLoadingSpecialities|async"
+          nzPlaceHolder="Staff Speciality">
+          <nz-option *ngFor="let specialty of specialties" [nzLabel]="specialty.name" [nzValue]="specialty.id">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="doctor_id">Doctor</nz-form-label>
+      <nz-form-control nzErrorTip="Select Doctor">
+        <nz-select formControlName="doctor_id" [nzLoading]="isLoadingDoctors|async" nzPlaceHolder="Doctor">
+          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.name" [nzValue]="doctor.id"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="comment">Comment</nz-form-label>
+      <nz-form-control nzErrorTip="Enter comment">
+        <textarea rows="4" nz-input formControlName="comment"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="appointment_date">Appointment Date</nz-form-label>
+      <nz-form-control nzErrorTip="Please select appointment date">
+        <nz-date-picker formControlName="appointment_date" nzPlaceHolder="Appointment Date"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzOffset="6">
+        <button nz-button nzType="primary" (click)="submitForm()" [nzLoading]="creating | async"
+          [disabled]="appointmentForm.invalid">Done</button>
+      </nz-form-control>
+    </nz-form-item>
+
+  </form>
+</nz-card>

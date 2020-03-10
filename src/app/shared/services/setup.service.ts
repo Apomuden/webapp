@@ -1173,6 +1173,23 @@ export class SetupService {
       })
     );
   }
+  getDoctorsBySpecialty(id: string) {
+    const url = `${environment.apiBaseUrl}/auth/profiles?staff_specialty_id=${id}&role_id=3`;
+
+    return this.http.get<any>(url).pipe(
+      map(res => {
+        if (res) {
+          for (let i = 0; i < res.data.length; i++) {
+            res.data[i].isActivated =
+              res.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        console.log(res);
+        return res ? res : null;
+      })
+    );
+  }
+
 
   createFacility(
     name: string,

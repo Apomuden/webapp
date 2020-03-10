@@ -1,16 +1,17 @@
-import {WalkinRegistrationComponent} from './walkin-registration/walkin-registration.component';
-import {RecordsReportComponent} from './records-report/records-report.component';
-import {SearchPatientComponent} from './search-patient/search-patient.component';
-import {RegisterPatientComponent} from './register-patient/register-patient.component';
-import {AuthGuard} from '../shared/guard/auth.guard';
-import {NgModule} from '@angular/core';
-import {RouterModule, Routes} from '@angular/router';
-import {RequestConsultationComponent} from './request-consultation/request-consultation.component';
-import {FullLayoutComponent} from '../layouts/full-layout/full-layout.component';
-import {AllFoldersComponent} from './all-folders/all-folders.component';
-import {ViewFolderComponent} from './view-folder/view-folder.component';
-import {AddPatientComponent} from './add-patient/add-patient.component';
-import {SponsorshipPermitComponent} from './sponsorship-permit/sponsorship-permit.component';
+import { AddAppointmentComponent } from './add-appointment/add-appointment.component';
+import { WalkinRegistrationComponent } from './walkin-registration/walkin-registration.component';
+import { RecordsReportComponent } from './records-report/records-report.component';
+import { SearchPatientComponent } from './search-patient/search-patient.component';
+import { RegisterPatientComponent } from './register-patient/register-patient.component';
+import { AuthGuard } from '../shared/guard/auth.guard';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { RequestConsultationComponent } from './request-consultation/request-consultation.component';
+import { FullLayoutComponent } from '../layouts/full-layout/full-layout.component';
+import { AllFoldersComponent } from './all-folders/all-folders.component';
+import { ViewFolderComponent } from './view-folder/view-folder.component';
+import { AddPatientComponent } from './add-patient/add-patient.component';
+import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-permit.component';
 
 const routes: Routes = [
   {
@@ -21,23 +22,23 @@ const routes: Routes = [
       {
         path: 'all',
         component: AllFoldersComponent,
-        data: {title: 'All'}
+        data: { title: 'All' }
       },
       {
         path: 'view',
         component: FullLayoutComponent,
-        data: {title: 'View'},
+        data: { title: 'View' },
         children: [
-          {path: ':id', component: ViewFolderComponent},
+          { path: ':id', component: ViewFolderComponent },
           {
             path: ':id/add-patient',
             component: AddPatientComponent,
-            data: {title: 'Add Patient'}
+            data: { title: 'Add Patient' }
           }
         ]
       }
     ],
-    data: {title: 'Folders'}
+    data: { title: 'Folders' }
   },
   {
     path: 'patients',
@@ -48,29 +49,45 @@ const routes: Routes = [
         path: 'search-patient',
         component: SearchPatientComponent,
         canActivate: [AuthGuard],
-        data: {title: 'Search Patient'},
+        data: { title: 'Search Patient' },
       },
       {
         path: 'register-patient',
         component: RegisterPatientComponent,
         canActivate: [AuthGuard],
-        data: {title: 'Register New Patient'}
+        data: { title: 'Register New Patient' }
       },
-      { path: '', pathMatch: 'full', redirectTo: 'search-patient'}
+      { path: '', pathMatch: 'full', redirectTo: 'search-patient' }
     ],
-    data: {title: 'Patients'}
+    data: { title: 'Patients' }
   },
+  {
+    path: 'appointments',
+    component: FullLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      {
+        path: 'add-appointment',
+        component: AddAppointmentComponent,
+        canActivate: [AuthGuard],
+        data: { title: 'Add Appointment' },
+      },
+      { path: '', pathMatch: 'full', redirectTo: 'add-appointment' }
+    ],
+    data: { title: 'Apointments' }
+  }
+  ,
   {
     path: 'sponsorship-permit',
     component: SponsorshipPermitComponent,
     canActivate: [AuthGuard],
-    data: {title: 'Sponsorship Permit'}
+    data: { title: 'Sponsorship Permit' }
   },
   {
     path: 'request-consultation',
     component: RequestConsultationComponent,
     canActivate: [AuthGuard],
-    data: {title: 'Request Consultation'}
+    data: { title: 'Request Consultation' }
   }, {
     path: 'records-report',
     component: RecordsReportComponent,

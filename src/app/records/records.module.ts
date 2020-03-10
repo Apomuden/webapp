@@ -14,6 +14,7 @@ import { SponsorshipPermitComponent } from './sponsorship-permit/sponsorship-per
 import { GooglePlaceModule } from 'ngx-google-places-autocomplete';
 import { NzNotificationModule } from 'ng-zorro-antd';
 import { RecordsReportComponent } from './records-report/records-report.component';
+import { AddAppointmentComponent } from './add-appointment/add-appointment.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { RecordsReportComponent } from './records-report/records-report.componen
     SponsorshipPermitComponent,
     RequestConsultationComponent,
     RecordsReportComponent,
+    AddAppointmentComponent,
   ],
   imports: [
     CommonModule,

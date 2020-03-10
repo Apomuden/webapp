@@ -79,6 +79,18 @@ export class RecordService {
         })
       );
   }
+  createAppointment(data: object) {
+    return this.http
+      .post<any>(`${environment.apiBaseUrl}/registry/appointments`, data)
+      .pipe(
+        map(res => {
+          if (res) {
+            return res.data;
+          }
+          return false;
+        })
+      );
+  }
   createNextOfKin(data: object) {
     return this.http
       .post<any>(`${environment.apiBaseUrl}/registry/patientnextofkins`, data)
