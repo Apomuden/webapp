@@ -6,155 +6,88 @@
         <nz-switch formControlName="isExistingPatient" class="isExistingPatient"></nz-switch>
       </nz-form-control>
     </nz-form-item>
-    <!-- patient_id: [null, [Validators.required]],
-    clinic_id: [null, [Validators.required]],
-    doctor_id: [null, [Validators.required]],
-    comment: [null],
-    appointment_date: [null, [Validators.required]],
-    isExistingPatient: [true],
-    enquirer_name: [null],
-    enquirer_country_code: ['+233'],
-    enquirer_phone: [null],
-    enquirer_residence: [null],
-    enquirer_email: [null], -->
-    <nz-form-item>
+
+    <nz-form-item *ngIf="isExistingPatientValue">
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="patient_id">Patient Number</nz-form-label>
-      <nz-form-control nzErrorTip="Enter patient number">
+      <nz-form-control nzErrorTip="Enter valid folder number" [nzValidateStatus]="folderValidationState" nzHasFeedback>
         <input type="text" nz-input placeholder="Eg. A0000001/20a" formControlName="patient_id" />
       </nz-form-control>
-    </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="clinic_id">Clinic</nz-form-label>
-      <nz-form-control nzErrorTip="Select Clinic">
-        <nz-select formControlName="clinic_id" [nzLoading]="isLoadingClinics|async">
-          <nz-option *ngFor="let clinic of clinics" [nzLabel]="clinic.name" [nzValue]="clinic.id"></nz-option>
-        </nz-select>
-      </nz-form-control>
     </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="clinic_id">Clinic</nz-form-label>
-      <nz-form-control nzErrorTip="Select Clinic">
-        <nz-select formControlName="clinic_id" [nzLoading]="isLoadingClinics|async">
-          <nz-option *ngFor="let clinic of clinics" [nzLabel]="clinic.name" [nzValue]="clinic.id"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="doctor_id">Doctor</nz-form-label>
-      <nz-form-control nzErrorTip="Select Doctor">
-        <nz-select formControlName="doctor_id" [nzLoading]="isLoadingDoctors|async">
-          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.name" [nzValue]="doctor.id"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="lastName">Last Name</nz-form-label>
+    <nz-form-item *ngIf="!isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="enquirer_name">Enquirer name</nz-form-label>
       <nz-form-control nzErrorTip="Enter a valid name">
-        <input type="text" nz-input placeholder="Last Name eg. (Anim)" formControlName="lastName" />
+        <input type="text" nz-input placeholder="Enquirer Name" formControlName="enquirer_name" />
       </nz-form-control>
     </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="middleName">Gender</nz-form-label>
-      <nz-form-control nzErrorTip="Select a gender">
-        <nz-select nzPlaceHolder="Gender" formControlName="gender" nzShowSearch>
-          <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
-          <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
-          <nz-option nzValue="OTHER" nzLabel="Other"></nz-option>
-        </nz-select>
-      </nz-form-control>
-    </nz-form-item>
 
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
-      <nz-form-control nzErrorTip="Select a valid date">
-        <nz-date-picker formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
-        </nz-date-picker>
-      </nz-form-control>
-    </nz-form-item>
-
-    <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="middleName">Age</nz-form-label>
-      <nz-form-control nzErrorTip="Enter a valid name">
-        <nz-input-number formControlName="age" (ngModelChange)="ageChanged()" [nzMin]="0" [nzMax]="200" [nzStep]="1"
-          [nzFormatter]="formatterAge" [nzParser]="parserAge" [nzDisabled]="!useAge"></nz-input-number>
-      </nz-form-control>
-      <nz-switch formControlName="useAge" class="age-switch"></nz-switch>
-    </nz-form-item>
-
-    <nz-form-item>
+    <nz-form-item *ngIf="!isExistingPatientValue">
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="phone">Mobile Number</nz-form-label>
       <nz-form-control nzErrorTip="Enter a valid phone number">
         <nz-input-group [nzAddOnBefore]="addOnBeforeTemplate">
           <ng-template #addOnBeforeTemplate>
-            <nz-select formControlName="countryCode" [compareWith]="compareFn" class="phone-select" nzShowSearch
-              [nzLoading]="countriesloading | async">
+            <nz-select formControlName="enquirer_country_code" [compareWith]="compareFn" class="phone-select"
+              nzShowSearch [nzLoading]="countriesloading | async">
               <nz-option *ngFor="let country of countries" [nzValue]="country.call_code" [nzLabel]="country.call_code">
               </nz-option>
             </nz-select>
           </ng-template>
-          <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="phone" />
+          <input type="text" nz-input placeholder="Phone number eg. 505429933" formControlName="enquirer_phone" />
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>
 
+
+    <nz-form-item *ngIf="!isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="enquirer_residence">Enquirer residence</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a residence">
+        <input type="text" nz-input placeholder="Enquirer residence" formControlName="enquirer_residence" />
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="!isExistingPatientValue">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="enquirer_email">Enquirer email</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a email">
+        <input type="text" nz-input placeholder="Enquirer email" formControlName="enquirer_email" />
+      </nz-form-control>
+    </nz-form-item>
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originCountry">Origin country</nz-form-label>
-      <nz-form-control nzErrorTip="Please select a country">
-        <nz-select nzShowSearch [nzLoading]="countriesloading | async" nzPlaceHolder="Select a country"
-          formControlName="originCountry">
-          <nz-option *ngFor="let country of countries" [nzLabel]="country.name" [nzValue]="country.id">
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="staff_specialty_id">Speciality</nz-form-label>
+      <nz-form-control nzErrorTip="Select Specialty">
+        <nz-select formControlName="staff_specialty_id" [nzLoading]="isLoadingSpecialities|async"
+          nzPlaceHolder="Staff Speciality">
+          <nz-option *ngFor="let specialty of specialties" [nzLabel]="specialty.name" [nzValue]="specialty.id">
           </nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
 
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Origin region</nz-form-label>
-      <nz-form-control nzErrorTip="Please select a region">
-        <nz-select nzShowSearch nzAllowClear [nzLoading]="regionsLoading | async" nzPlaceHolder="Select a region"
-          formControlName="originRegion">
-          <nz-option *ngFor="let region of regions" [nzLabel]="region.name" [nzValue]="region.id">
-          </nz-option>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="doctor_id">Doctor</nz-form-label>
+      <nz-form-control nzErrorTip="Select Doctor">
+        <nz-select formControlName="doctor_id" [nzLoading]="isLoadingDoctors|async" nzPlaceHolder="Doctor">
+          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.name" [nzValue]="doctor.id"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
-
     <nz-form-item>
-      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="originRegion">Home town</nz-form-label>
-      <nz-form-control nzErrorTip="Please select a town">
-        <nz-select nzShowSearch nzAllowClear [nzLoading]="townsLoading | async" nzPlaceHolder="Select a town"
-          formControlName="homeTown">
-          <nz-option *ngFor="let town of towns" [nzLabel]="town.name" [nzValue]="town.id">
-          </nz-option>
-        </nz-select>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="comment">Comment</nz-form-label>
+      <nz-form-control nzErrorTip="Enter comment">
+        <textarea rows="4" nz-input formControlName="comment"></textarea>
       </nz-form-control>
     </nz-form-item>
-  </form>
-
-  <div nz-row>
-    <div nz-col nzOffset="7">
-      <nz-button-group>
-        <button nz-button nzType="danger" (click)="clearForm()" [nzLoading]="creating | async">Cancel</button>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="appointment_date">Appointment Date</nz-form-label>
+      <nz-form-control nzErrorTip="Please select appointment date">
+        <nz-date-picker formControlName="appointment_date" nzPlaceHolder="Appointment Date"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-control nzOffset="6">
         <button nz-button nzType="primary" (click)="submitForm()" [nzLoading]="creating | async"
-          [disabled]="walkinForm.invalid">Done</button>
-      </nz-button-group>
-    </div>
-  </div>
-</nz-card>
+          [disabled]="appointmentForm.invalid">Done</button>
+      </nz-form-control>
+    </nz-form-item>
 
-<nz-modal *ngIf="patient" [(nzVisible)]="showModal" nzTitle="Take Note of Folder Number" (nzOnCancel)="closeModal()">
-  <nz-descriptions nzBordered nzLayout="vertical" [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
-    <nz-descriptions-item nzTitle="Folder No">{{patient.folder_no}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Name">
-      {{patient.firstname}} {{patient.middlename}}
-      {{patient.surname}}
-    </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Funding Type">{{patient.funding_type_name}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Gender">{{patient.gender}}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="DOB">{{patient.dob}}</nz-descriptions-item>
-  </nz-descriptions>
-</nz-modal>
+  </form>
+</nz-card>
