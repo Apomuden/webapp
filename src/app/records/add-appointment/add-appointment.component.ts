@@ -127,6 +127,9 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
         if (res && res.data) {
           this.folderValidationState = 'success';
           this.patient = res.data;
+          this.patient.name = `${this.patient.title}
+          ${this.patient.middlename ? this.patient.middlename : ''}
+          ${this.patient.surname}`;
           this.appointmentForm.get('patient_id').setErrors(null);
           this.appointmentForm.get('patient_id').markAsDirty();
 

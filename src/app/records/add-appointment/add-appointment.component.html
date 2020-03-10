@@ -11,6 +11,7 @@
       <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="patient_id">Patient Number</nz-form-label>
       <nz-form-control nzErrorTip="Enter valid folder number" [nzValidateStatus]="folderValidationState" nzHasFeedback>
         <input type="text" nz-input placeholder="Eg. A0000001/20a" formControlName="patient_id" />
+        <nz-alert class="m-t-10" *ngIf="patient" nzType="info" [nzMessage]="patient.name" nzShowIcon></nz-alert>
       </nz-form-control>
 
     </nz-form-item>
