@@ -43,23 +43,48 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
+
           <nz-row>
-            <nz-form-item>
-              <nz-form-label [nzXs]="8" nzRequired nzFor="min_age">Min age</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <input type="number" nz-input formControlName="min_age" name="min_age" placeholder="Input min age" />
+            <nz-form-item nz-col [nzSpan]="12">
+              <nz-form-control nzErrorTip="Invalid age">
+                <nz-form-label>Min Age</nz-form-label>
+                <input type="number" nz-input formControlName="min_age" name="minAge" placeholder="Input minimum age" />
               </nz-form-control>
             </nz-form-item>
-          </nz-row>
-          <nz-row>
-            <nz-form-item>
-              <nz-form-label [nzXs]="8" nzRequired nzFor="max_age">Max age</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <input type="number" nz-input formControlName="max_age" name="max_age" placeholder="Input max age" />
+
+            <nz-form-item nz-col [nzSpan]="12">
+              <nz-form-control>
+                <nz-form-label>Min Age Unit</nz-form-label>
+                <nz-select formControlName="min_age_unit">
+                  <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
+                  <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
+                  <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
+                  <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+                </nz-select>
               </nz-form-control>
             </nz-form-item>
           </nz-row>
 
+          <nz-row>
+            <nz-form-item nz-col [nzSpan]="12">
+              <nz-form-control nzErrorTip="Invalid age">
+                <nz-form-label>Max Age</nz-form-label>
+                <input type="number" nz-input formControlName="max_age" name="maxAge" placeholder="Input maximum age" />
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item nz-col [nzSpan]="12">
+              <nz-form-control>
+                <nz-form-label>Max Age Unit</nz-form-label>
+                <nz-select formControlName="max_age_unit">
+                  <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
+                  <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
+                  <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
+                  <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
         </form>
       </ng-template>
 
@@ -72,23 +97,55 @@
   <nz-col nzSpan="8">
     <nz-card>
       <h5>Create Age Group</h5>
-      <form (ngSubmit)="submitForm()">
+      <form nz-form [nzLayout]="'horizontal'" [formGroup]="ageGroupForm" (ngSubmit)="submitForm()">
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input type="text" nz-input [(ngModel)]="name" name="name" placeholder="Input age group name" />
+            <input type="text" nz-input formControlName="name" name="name" placeholder="Input age group name" />
           </nz-form-control>
         </nz-row>
+
         <nz-row>
-          <nz-form-control [nzSpan]="12">
-            <nz-form-label>Min Age</nz-form-label>
-            <nz-input-number [(ngModel)]="minAge" name="minAge" placeholder="Input minimum age"></nz-input-number>
-          </nz-form-control>
-          <nz-form-control [nzSpan]="12">
-            <nz-form-label>Max Age</nz-form-label>
-            <nz-input-number [nzMin]="minAge + 1" [(ngModel)]="maxAge" name="maxAge" placeholder="Input maximum age">
-            </nz-input-number>
-          </nz-form-control>
+          <nz-form-item nz-col [nzSpan]="12">
+            <nz-form-control nzErrorTip="Invalid age">
+              <nz-form-label>Min Age</nz-form-label>
+              <input type="number" nz-input formControlName="min_age" name="minAge" placeholder="Input minimum age" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item nz-col [nzSpan]="12">
+            <nz-form-control>
+              <nz-form-label>Min Age Unit</nz-form-label>
+              <nz-select formControlName="min_age_unit">
+                <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
+                <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
+                <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
+                <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
         </nz-row>
+
+        <nz-row>
+          <nz-form-item nz-col [nzSpan]="12">
+            <nz-form-control nzErrorTip="Invalid age">
+              <nz-form-label>Max Age</nz-form-label>
+              <input type="number" nz-input formControlName="max_age" name="maxAge" placeholder="Input maximum age" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item nz-col [nzSpan]="12">
+            <nz-form-control>
+              <nz-form-label>Max Age Unit</nz-form-label>
+              <nz-select formControlName="max_age_unit">
+                <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
+                <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
+                <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
+                <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-row>
+
         <nz-row>
           <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
             <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingAgeGroup | async">

@@ -1,29 +1,40 @@
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 
 @Component({
   selector: 'app-age-group-setup',
   templateUrl: './age-group-setup.component.html',
   styleUrls: ['./age-group-setup.component.css']
 })
-export class AgeGroupSetupComponent implements OnInit {
+export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy {
   initLoading = true; // bug
   loadingMore = false;
   isVisible = false;
   modalError = '';
-  updateForm: FormGroup;
   isUpdatingAgeGroup = new BehaviorSubject(false);
   isCreatingAgeGroup = new BehaviorSubject(false);
   ageGroups = [];
-  ageGroupId = null;
-  name = '';
-  minAge: number;
-  maxAge: number;
   componentLabel = 'age group';
+  ageGroupId: number;
+  updateForm = this.fb.group({
+    name: [null, Validators.required],
+    min_age: [null, [Validators.required]],
+    min_age_unit: ['YEARS', Validators.required],
+    max_age: [null],
+    max_age_unit: ['YEARS'],
+  });
+  ageGroupForm = this.fb.group({
+    name: [null, Validators.required],
+    min_age: [null, [Validators.required]],
+    min_age_unit: ['YEARS', Validators.required],
+    max_age: [null],
+    max_age_unit: ['YEARS'],
+  });
 
   constructor(
     private setup: SetupService,
@@ -32,22 +43,64 @@ export class AgeGroupSetupComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.updateForm = this.fb.group({
-      name: [null, Validators.required],
-      min_age: [null, Validators.required],
-      max_age: [null]
-    });
     this.getAgeGroups();
   }
 
+  ngAfterViewInit() {
+    this.ageGroupForm.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(value => this.validateAge(value, this.ageGroupForm));
+
+    this.updateForm.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(value => this.validateAge(value, this.updateForm));
+  }
+
+  private validateAge(value: any, ageGroupForm: FormGroup): void {
+    const minAge: number = value.min_age;
+    const maxAge: number = value.max_age;
+    const maxAgeUnit: string = value.max_age_unit;
+    const minAgeUnit: string = value.min_age_unit;
+    if (maxAge && !maxAgeUnit) {
+      ageGroupForm.get('max_age_unit').setValidators(Validators.required);
+    }
+    if (!maxAge && maxAgeUnit) {
+      ageGroupForm.get('max_age').setValidators(Validators.required);
+    }
+    if (minAgeUnit === 'YEARS' &&
+      ((maxAgeUnit === 'DAYS' && maxAge < 365 * minAge)
+        || (maxAgeUnit === 'MONTHS' && maxAge < 12 * minAge)
+        || (maxAgeUnit === 'WEEKS' && maxAge < 52 * minAge))) {
+      ageGroupForm.get('max_age').setErrors({ invalid: true });
+    } else if (minAgeUnit === 'MONTHS' &&
+      ((maxAgeUnit === 'DAYS' && maxAge < 31 * minAge) || (maxAgeUnit === 'WEEKS' && maxAge < 4 * minAge))) {
+      ageGroupForm.get('max_age').setErrors({ invalid: true });
+    } else if (minAgeUnit === 'WEEKS' && (maxAgeUnit === 'DAYS' && maxAge < 31 * minAge)) {
+      ageGroupForm.get('max_age').setErrors({ invalid: true });
+    } else if (minAgeUnit === 'DAYS' && (maxAgeUnit === 'WEEKS' || maxAgeUnit === 'MONTHS' || maxAgeUnit === 'YEARS')) {
+      ageGroupForm.get('max_age').setErrors(null);
+    } else if (minAgeUnit === 'WEEKS' && (maxAgeUnit === 'MONTHS' || maxAgeUnit === 'YEARS')) {
+      ageGroupForm.get('max_age').setErrors(null);
+    } else if (minAgeUnit === 'MONTHS' && (maxAgeUnit === 'YEARS')) {
+      ageGroupForm.get('max_age').setErrors(null);
+    } else {
+      if (minAge >= maxAge) {
+        ageGroupForm.get('max_age').setErrors({ invalid: true });
+      } else {
+        ageGroupForm.get('max_age').setErrors(null);
+      }
+    }
+  }
+
+  ngOnDestroy() {
+  }
+
   submitForm(): void {
-    if (this.validateForm()) {
+    if (!this.validateForm()) {
       this.notification.error(`Please fill the form correctly!`,
         `Check and make sure you've provided all fields and min age is not greater than max age`);
     } else {
       this.isCreatingAgeGroup.next(true);
       this.setup
-        .createAgeGroup(this.name, this.minAge, this.maxAge)
+        .createAgeGroup(this.ageGroupForm.value)
         .pipe(first())
         .subscribe(
           success => {
@@ -58,9 +111,9 @@ export class AgeGroupSetupComponent implements OnInit {
                 `Successfully created ${this.componentLabel}`
               );
               this.getAgeGroups();
-              this.name = '';
-              this.minAge = null;
-              this.maxAge = null;
+              this.ageGroupForm.reset();
+              this.ageGroupForm.get('max_age_unit').setValue('YEARS');
+              this.ageGroupForm.get('min_age_unit').setValue('YEARS');
             } else {
               this.notification.error(
                 'Error',
@@ -135,9 +188,7 @@ export class AgeGroupSetupComponent implements OnInit {
     );
   }
   validateForm() {
-    return (!this.name ||
-      !this.minAge ||
-      !this.maxAge || this.minAge > this.maxAge);
+    return this.ageGroupForm.valid;
   }
 
   getAgeGroups() {

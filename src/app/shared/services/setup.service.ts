@@ -1080,13 +1080,9 @@ export class SetupService {
     );
   }
 
-  createAgeGroup(name: string, minAge: number, maxAge: number) {
+  createAgeGroup(data: any) {
     return this.http
-      .post<any>(AGE_GROUP_API_URL, {
-        name,
-        min_age: minAge,
-        max_age: maxAge
-      })
+      .post<any>(AGE_GROUP_API_URL, data)
       .pipe(
         map(res => {
           if (res) {
