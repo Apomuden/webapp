@@ -45,7 +45,8 @@ export class ServicePricingSetupComponent implements OnInit {
       funding_type_id: [null, Validators.required],
       status: [null, Validators.required],
       patient_status: [null, Validators.required],
-      amount: [null, Validators.required]
+      prepaid_amount: [null, Validators.required],
+      postpaid_amount: [null, Validators.required]
     });
 
 
