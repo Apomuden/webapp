@@ -63,16 +63,6 @@
             </nz-select>
           </nz-form-control>
         </nz-row>
-        <nz-row class="m-b-10">
-          <nz-form-control [nzSpan]="24">
-            <nz-select nzAllowSearch="false" nzAllowClear="false" name="funding_type_id"
-              [nzLoading]="isFundingTypesLoading | async" formControlName="funding_type_id"
-              nzPlaceHolder="Funding Type">
-              <nz-option *ngFor="let fundingType of fundingTypes" [nzLabel]="fundingType.name"
-                [nzValue]="fundingType.id"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-row>
 
         <nz-row class="m-b-10">
           <nz-select nzAllowSearch="false" nzMode="tags" nzAllowClear="false" [nzTokenSeparators]="[',']"
@@ -82,6 +72,7 @@
             <nz-option nzLabel="WALK-IN" nzValue="WALK-IN"></nz-option>
           </nz-select>
         </nz-row>
+
         <nz-row class="m-b-10">
           <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="status" nzPlaceHolder="Status">
             <nz-option nzLabel="ACTIVE" nzValue="ACTIVE"></nz-option>
