@@ -13,7 +13,8 @@
               <nz-list-item-meta [nzTitle]="nzTitle">
                 <ng-template #nzTitle>
                   <a>{{item.description}} </a>
-                  <div>GHS {{item.amount}}</div>
+                  <div>GHS {{item.prepaid_amount}} Prepaid</div>
+                  <div>GHS {{item.postpaid_amount}} Postpaid</div>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>
@@ -62,16 +63,6 @@
             </nz-select>
           </nz-form-control>
         </nz-row>
-        <nz-row class="m-b-10">
-          <nz-form-control [nzSpan]="24">
-            <nz-select nzAllowSearch="false" nzAllowClear="false" name="funding_type_id"
-              [nzLoading]="isFundingTypesLoading | async" formControlName="funding_type_id"
-              nzPlaceHolder="Funding Type">
-              <nz-option *ngFor="let fundingType of fundingTypes" [nzLabel]="fundingType.name"
-                [nzValue]="fundingType.id"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-row>
 
         <nz-row class="m-b-10">
           <nz-select nzAllowSearch="false" nzMode="tags" nzAllowClear="false" [nzTokenSeparators]="[',']"
@@ -81,6 +72,7 @@
             <nz-option nzLabel="WALK-IN" nzValue="WALK-IN"></nz-option>
           </nz-select>
         </nz-row>
+
         <nz-row class="m-b-10">
           <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="status" nzPlaceHolder="Status">
             <nz-option nzLabel="ACTIVE" nzValue="ACTIVE"></nz-option>
@@ -89,7 +81,13 @@
         </nz-row>
         <nz-row class="m-b-10">
           <nz-form-control [nzSpan]="24">
-            <input nz-input type="number" formControlName="amount" placeholder="Amount in GHS" />
+            <input nz-input type="number" formControlName="prepaid_amount" placeholder="prepaid amount in GHS" />
+          </nz-form-control>
+
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input nz-input type="number" formControlName="postpaid_amount" placeholder="Postpaid amount in GHS" />
           </nz-form-control>
 
         </nz-row>
