@@ -375,6 +375,21 @@ export class SetupService {
       })
     );
   }
+  getServiceCategoriesByHospitalService(hospitalServiceId: number) {
+
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/hospitalservices/${hospitalServiceId}/servicecategories`).pipe(
+      map(res => {
+        if (res) {
+          this.serviceCategories = res;
+          for (let i = 0; i < this.serviceCategories.data.length; i++) {
+            this.serviceCategories.data[i].isActivated =
+              this.serviceCategories.data[i].status === 'ACTIVE';
+          }
+        }
+        return this.serviceCategories;
+      })
+    );
+  }
 
   /**
    * Service Category routes

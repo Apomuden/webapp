@@ -12,20 +12,36 @@ import { SetupService } from 'src/app/shared/services/setup.service';
 })
 export class ServicePricingSetupComponent implements OnInit {
 
-
-
   constructor(private fb: FormBuilder, private setup: SetupService, private notification: NzNotificationService) { }
   initLoading = true;
   loadingMore = false;
   servicePricingForm: FormGroup;
+  updateForm: FormGroup;
   error = '';
   data = [];
   list = [];
   services = [];
   serviceSubCategories = [];
+  serviceSubCategoriesForModal = [];
   serviceCategories = [];
+  serviceCategoriesForModal = [];
   ageGroups = [];
   fundingTypes = [];
+  isVisible = false;
+  modalError = null;
+  servicePricingId = null;
+
+
+  //for update modal
+  isLoadingServiceCategories = new BehaviorSubject(false);
+  isLoadingServiceSubCategories = new BehaviorSubject(false);
+  isUpdatingServicePricing = new BehaviorSubject(false);
+
+
+
+
+
+  //for creation form
   isHospitalServicesLoading = new BehaviorSubject(false);
   isServiceSubCategoriesLoading = new BehaviorSubject(false);
   isServiceCategoriesLoading = new BehaviorSubject(false);
@@ -36,6 +52,19 @@ export class ServicePricingSetupComponent implements OnInit {
 
   ngOnInit() {
     this.servicePricingForm = this.fb.group({
+      description: [null, Validators.required],
+      hospital_service_id: [null, Validators.required],
+      service_category_id: [null, Validators.required],
+      service_subcategory_id: [null],
+      age_group_id: [null, Validators.required],
+      gender: [null, Validators.required],
+      status: [null, Validators.required],
+      patient_status: [null, Validators.required],
+      prepaid_amount: [null, Validators.required],
+      postpaid_amount: [null, Validators.required]
+    });
+
+    this.updateForm = this.fb.group({
       description: [null, Validators.required],
       hospital_service_id: [null, Validators.required],
       service_category_id: [null, Validators.required],
@@ -59,6 +88,16 @@ export class ServicePricingSetupComponent implements OnInit {
       this.getServiceSubCategoriesByCategory(val);
       this.servicePricingForm.get('service_subcategory_id').setValue(null);
     });
+
+    this.updateForm.get('hospital_service_id').valueChanges.subscribe(val => {
+      this.getServiceCategoriesByHospitalServiceForModal(val);
+      this.updateForm.get('service_category_id').setValue(null);
+    });
+    this.updateForm.get('service_category_id').valueChanges.subscribe(val => {
+      this.getServiceSubCategoriesByCategoryForModal(val);
+      this.updateForm.get('service_subcategory_id').setValue(null);
+    });
+
   }
 
 
@@ -106,6 +145,50 @@ export class ServicePricingSetupComponent implements OnInit {
         }
       );
   }
+  getServiceCategoriesForModal() {
+    this.isLoadingServiceCategories.next(true);
+    this.setup.getServiceCategories()
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.isLoadingServiceCategories.next(false);
+          this.serviceCategoriesForModal = data.data;
+        }, error => {
+          this.isLoadingServiceCategories.next(false);
+          console.log(error);
+        }
+      );
+  }
+
+  getServiceSubCategoriesByCategoryForModal(id: number) {
+    this.isLoadingServiceSubCategories.next(true);
+    this.setup.getServiceSubcategoriesByCategory(id)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.isLoadingServiceSubCategories.next(false);
+          this.serviceSubCategoriesForModal = data.data;
+        }, error => {
+          this.isLoadingServiceSubCategories.next(false);
+          console.log(error);
+        }
+      );
+  }
+  getServiceCategoriesByHospitalServiceForModal(id: number) {
+    this.isLoadingServiceCategories.next(true);
+    this.setup.getServiceCategoriesByHospitalService(id)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.isLoadingServiceCategories.next(false);
+          this.serviceCategoriesForModal = data.data;
+        }, error => {
+          this.isLoadingServiceCategories.next(false);
+          console.log(error);
+        }
+      );
+  }
+
 
   getServiceSubCategoriesByCategory(id: number) {
     this.isServiceSubCategoriesLoading.next(true);
@@ -216,5 +299,79 @@ export class ServicePricingSetupComponent implements OnInit {
         this.list[index].isActivated = !service.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingServicePricing.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value,
+        patient_status: this.updateForm.get('patient_status').value.join(','),
+        gender: this.updateForm.get('gender').value.join(',')
+      }, `pricing/services/${this.servicePricingId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingServicePricing.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getServicePricings();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingServicePricing.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+  deleteServicePricing(servicePricing: any) {
+    this.setup.deleteSetup(`pricing/services/${servicePricing.id}`).pipe(first()).subscribe(
+      res => {
+        this.getServicePricings();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.servicePricingId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingServicePricing.next(false);
+  }
+  showModal(servicePricing: any) {
+    this.isVisible = true;
+    const { description,
+      hospital_service_id,
+      service_category_id,
+      service_subcategory_id,
+      age_group_id,
+      gender,
+      status,
+      patient_status,
+      prepaid_amount,
+      postpaid_amount
+    } = servicePricing;
+    this.servicePricingId = servicePricing.id as number;
+    console.log(this.servicePricingId);
+    this.updateForm.get('description').setValue(description);
+    this.updateForm.get('hospital_service_id').setValue(hospital_service_id);
+    this.updateForm.get('service_category_id').setValue(service_category_id);
+    this.updateForm.get('service_subcategory_id').setValue(service_subcategory_id);
+    this.updateForm.get('age_group_id').setValue(age_group_id);
+    this.updateForm.get('gender').setValue(gender.split(','));
+    this.updateForm.get('status').setValue(status);
+    this.updateForm.get('patient_status').setValue(patient_status.split(','));
+    this.updateForm.get('prepaid_amount').setValue(prepaid_amount);
+    this.updateForm.get('postpaid_amount').setValue(postpaid_amount);
   }
 }
