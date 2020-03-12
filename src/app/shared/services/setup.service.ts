@@ -380,6 +380,20 @@ export class SetupService {
       })
     );
   }
+  getServiceSubcategoriesByCategory(categoryId: number) {
+    return this.http.get<any>(`${environment.apiBaseUrl}/setups/servicecategories/${categoryId}/servicesubcategories`).pipe(
+      map(res => {
+        if (res) {
+          this.serviceSubCategories = res;
+          for (let i = 0; i < this.serviceSubCategories.data.length; i++) {
+            this.serviceSubCategories.data[i].isActivated =
+              this.serviceSubCategories.data[i].status === 'ACTIVE';
+          }
+        }
+        return this.serviceSubCategories;
+      })
+    );
+  }
 
   /**
    * Service Category routes
@@ -1099,13 +1113,9 @@ export class SetupService {
     );
   }
 
-  createAgeGroup(name: string, minAge: number, maxAge: number) {
+  createAgeGroup(data: any) {
     return this.http
-      .post<any>(AGE_GROUP_API_URL, {
-        name,
-        min_age: minAge,
-        max_age: maxAge
-      })
+      .post<any>(AGE_GROUP_API_URL, data)
       .pipe(
         map(res => {
           if (res) {

@@ -53,15 +53,14 @@ export class ServicePricingSetupComponent implements OnInit, OnDestroy {
     this.getServicePricings();
     this.getAgeGroups();
     this.getFundingTypes();
-    this.getServiceSubCategories();
+    this.getHospitalServices();
     this.getHospitalServices();
 
-    this.servicePricingForm.get('service_category_id').valueChanges.pipe(untilComponentDestroyed(this))
-      .subscribe(val => {
-        if (!val) {
-          this.servicePricingForm.get('service_subcategory_id').setValue(null);
-        }
-      });
+    this.servicePricingForm.get('service_category_id').valueChanges.subscribe(val => {
+      this.getServiceSubCategoriesByCategory(val);
+      this.servicePricingForm.get('service_subcategory_id').setValue(null);
+    });
+
     this.servicePricingForm.get('hospital_service_id').valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe(val => {
         this.servicePricingForm.get('service_category_id').reset();
@@ -119,9 +118,9 @@ export class ServicePricingSetupComponent implements OnInit, OnDestroy {
       );
   }
 
-  getServiceSubCategories() {
+  getServiceSubCategoriesByCategory(id: number) {
     this.isServiceSubCategoriesLoading.next(true);
-    this.setup.getServiceSubcategories()
+    this.setup.getServiceSubcategoriesByCategory(id)
       .pipe(first())
       .subscribe(
         data => {
