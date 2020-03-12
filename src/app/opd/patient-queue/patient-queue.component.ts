@@ -34,8 +34,9 @@ export class PatientQueueComponent implements OnInit {
     if (!this.client) {
       this.client = new faye.Client(environment.queueUrl); // not connecting
 
-      this.client.subscribe('laravel_database_consultation', attendanceData => this.socketUpdate)
-        .then(_ => console.log('connected'));
+      const subscription = this.client.subscribe('/laravel_database_consultation', attendanceData => this.socketUpdate);
+
+      subscription.then(_ => console.log('connected'));
     }
   }
 
