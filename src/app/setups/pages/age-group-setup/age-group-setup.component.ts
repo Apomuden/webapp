@@ -5,7 +5,10 @@ import { first } from 'rxjs/operators';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-
+const DAY = 'DAY';
+const WEEK = 'WEEK';
+const MONTH = 'MONTH';
+const YEAR = 'YEAR';
 @Component({
   selector: 'app-age-group-setup',
   templateUrl: './age-group-setup.component.html',
@@ -19,21 +22,22 @@ export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy 
   isUpdatingAgeGroup = new BehaviorSubject(false);
   isCreatingAgeGroup = new BehaviorSubject(false);
   ageGroups = [];
+  units = [DAY, WEEK, MONTH, YEAR];
   componentLabel = 'age group';
   ageGroupId: number;
   updateForm = this.fb.group({
     name: [null, Validators.required],
     min_age: [null, [Validators.required]],
-    min_age_unit: ['YEARS', Validators.required],
+    min_age_unit: [YEAR, Validators.required],
     max_age: [null],
-    max_age_unit: ['YEARS'],
+    max_age_unit: [YEAR],
   });
   ageGroupForm = this.fb.group({
     name: [null, Validators.required],
     min_age: [null, [Validators.required]],
-    min_age_unit: ['YEARS', Validators.required],
+    min_age_unit: [YEAR, Validators.required],
     max_age: [null],
-    max_age_unit: ['YEARS'],
+    max_age_unit: [YEAR],
   });
 
   constructor(
@@ -65,21 +69,21 @@ export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy 
     if (!maxAge && maxAgeUnit) {
       ageGroupForm.get('max_age').setValidators(Validators.required);
     }
-    if (minAgeUnit === 'YEARS' &&
-      ((maxAgeUnit === 'DAYS' && maxAge < 365 * minAge)
-        || (maxAgeUnit === 'MONTHS' && maxAge < 12 * minAge)
-        || (maxAgeUnit === 'WEEKS' && maxAge < 52 * minAge))) {
+    if (minAgeUnit === YEAR &&
+      ((maxAgeUnit === DAY && maxAge < 365 * minAge)
+        || (maxAgeUnit === MONTH && maxAge < 12 * minAge)
+        || (maxAgeUnit === WEEK && maxAge < 52 * minAge))) {
       ageGroupForm.get('max_age').setErrors({ invalid: true });
-    } else if (minAgeUnit === 'MONTHS' &&
-      ((maxAgeUnit === 'DAYS' && maxAge < 31 * minAge) || (maxAgeUnit === 'WEEKS' && maxAge < 4 * minAge))) {
+    } else if (minAgeUnit === MONTH &&
+      ((maxAgeUnit === DAY && maxAge < 31 * minAge) || (maxAgeUnit === WEEK && maxAge < 4 * minAge))) {
       ageGroupForm.get('max_age').setErrors({ invalid: true });
-    } else if (minAgeUnit === 'WEEKS' && (maxAgeUnit === 'DAYS' && maxAge < 31 * minAge)) {
+    } else if (minAgeUnit === WEEK && (maxAgeUnit === DAY && maxAge < 31 * minAge)) {
       ageGroupForm.get('max_age').setErrors({ invalid: true });
-    } else if (minAgeUnit === 'DAYS' && (maxAgeUnit === 'WEEKS' || maxAgeUnit === 'MONTHS' || maxAgeUnit === 'YEARS')) {
+    } else if (minAgeUnit === DAY && (maxAgeUnit === WEEK || maxAgeUnit === MONTH || maxAgeUnit === YEAR)) {
       ageGroupForm.get('max_age').setErrors(null);
-    } else if (minAgeUnit === 'WEEKS' && (maxAgeUnit === 'MONTHS' || maxAgeUnit === 'YEARS')) {
+    } else if (minAgeUnit === WEEK && (maxAgeUnit === MONTH || maxAgeUnit === YEAR)) {
       ageGroupForm.get('max_age').setErrors(null);
-    } else if (minAgeUnit === 'MONTHS' && (maxAgeUnit === 'YEARS')) {
+    } else if (minAgeUnit === MONTH && (maxAgeUnit === YEAR)) {
       ageGroupForm.get('max_age').setErrors(null);
     } else {
       if (minAge >= maxAge) {
@@ -112,8 +116,8 @@ export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy 
               );
               this.getAgeGroups();
               this.ageGroupForm.reset();
-              this.ageGroupForm.get('max_age_unit').setValue('YEARS');
-              this.ageGroupForm.get('min_age_unit').setValue('YEARS');
+              this.ageGroupForm.get('max_age_unit').setValue(YEAR);
+              this.ageGroupForm.get('min_age_unit').setValue(YEAR);
             } else {
               this.notification.error(
                 'Error',
@@ -145,6 +149,8 @@ export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy 
           this.isUpdatingAgeGroup.next(false);
           if (response) {
             this.notification.success('Success', 'Update successful');
+            this.updateForm.reset();
+            this.closeModal();
             this.getAgeGroups();
           } else {
             this.notification.error('Error', 'Update failed');
@@ -157,15 +163,17 @@ export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy 
         }
       );
     }
-
   }
+
   showModal(ageGroup: any) {
     this.isVisible = true;
-    const { name, min_age, max_age } = ageGroup;
+    const { name, min_age, max_age, min_age_unit, max_age_unit } = ageGroup;
     this.ageGroupId = ageGroup.id as number;
     this.updateForm.get('name').setValue(name);
     this.updateForm.get('min_age').setValue(min_age);
     this.updateForm.get('max_age').setValue(max_age);
+    this.updateForm.get('min_age_unit').setValue(min_age_unit || YEAR);
+    this.updateForm.get('max_age_unit').setValue(max_age_unit || YEAR);
   }
 
   closeModal() {

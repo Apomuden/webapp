@@ -56,10 +56,7 @@
               <nz-form-control>
                 <nz-form-label>Min Age Unit</nz-form-label>
                 <nz-select formControlName="min_age_unit">
-                  <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
-                  <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
-                  <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
-                  <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+                  <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -77,10 +74,7 @@
               <nz-form-control>
                 <nz-form-label>Max Age Unit</nz-form-label>
                 <nz-select formControlName="max_age_unit">
-                  <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
-                  <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
-                  <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
-                  <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+                  <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
                 </nz-select>
               </nz-form-control>
             </nz-form-item>
@@ -116,10 +110,7 @@
             <nz-form-control>
               <nz-form-label>Min Age Unit</nz-form-label>
               <nz-select formControlName="min_age_unit">
-                <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
-                <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
-                <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
-                <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+                <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -137,10 +128,7 @@
             <nz-form-control>
               <nz-form-label>Max Age Unit</nz-form-label>
               <nz-select formControlName="max_age_unit">
-                <nz-option nzValue="DAYS" nzLabel="Days"></nz-option>
-                <nz-option nzValue="WEEKS" nzLabel="Weeks"></nz-option>
-                <nz-option nzValue="MONTHS" nzLabel="Months"></nz-option>
-                <nz-option nzValue="YEARS" nzLabel="Years"></nz-option>
+                <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
