@@ -1,16 +1,17 @@
 import { NzNotificationService } from 'ng-zorro-antd';
 import { first } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SetupService } from 'src/app/shared/services/setup.service';
+import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 
 @Component({
   selector: 'app-service-pricing-setup',
   templateUrl: './service-pricing-setup.component.html',
   styleUrls: ['./service-pricing-setup.component.css']
 })
-export class ServicePricingSetupComponent implements OnInit {
+export class ServicePricingSetupComponent implements OnInit, OnDestroy {
 
   constructor(private fb: FormBuilder, private setup: SetupService, private notification: NzNotificationService) { }
   initLoading = true;
@@ -80,26 +81,33 @@ export class ServicePricingSetupComponent implements OnInit {
 
     this.getServicePricings();
     this.getAgeGroups();
-    this.getFundingTypes();
-    this.getServiceCategories();
     this.getHospitalServices();
 
-    this.servicePricingForm.get('service_category_id').valueChanges.subscribe(val => {
+
+    this.servicePricingForm.get('service_category_id').valueChanges.pipe(untilComponentDestroyed(this)).subscribe(val => {
       this.getServiceSubCategoriesByCategory(val);
       this.servicePricingForm.get('service_subcategory_id').setValue(null);
     });
 
-    this.updateForm.get('hospital_service_id').valueChanges.subscribe(val => {
+    this.updateForm.get('hospital_service_id').valueChanges.pipe(untilComponentDestroyed(this)).subscribe(val => {
       this.getServiceCategoriesByHospitalServiceForModal(val);
       this.updateForm.get('service_category_id').setValue(null);
     });
-    this.updateForm.get('service_category_id').valueChanges.subscribe(val => {
+    this.updateForm.get('service_category_id').valueChanges.pipe(untilComponentDestroyed(this)).subscribe(val => {
       this.getServiceSubCategoriesByCategoryForModal(val);
       this.updateForm.get('service_subcategory_id').setValue(null);
     });
 
+    this.servicePricingForm.get('hospital_service_id').valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(val => {
+        this.servicePricingForm.get('service_category_id').reset();
+        if (val) {
+          this.getServiceCategories(val);
+        }
+      });
   }
 
+  ngOnDestroy() { }
 
   getAgeGroups() {
     this.isAgeGroupsLoading.next(true);
@@ -116,24 +124,12 @@ export class ServicePricingSetupComponent implements OnInit {
       );
   }
 
-  getFundingTypes() {
-    this.isFundingTypesLoading.next(true);
-    this.setup.getFundingTypes()
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.isFundingTypesLoading.next(false);
-          this.fundingTypes = data.data;
-        }, error => {
-          this.isFundingTypesLoading.next(false);
-          console.log(error);
-        }
-      );
-  }
 
-  getServiceCategories() {
+
+  getServiceCategories(hospital_service_id: number) {
+    this.serviceCategories = [];
     this.isServiceCategoriesLoading.next(true);
-    this.setup.getServiceCategories()
+    this.setup.getServiceCatByServiceId(hospital_service_id)
       .pipe(first())
       .subscribe(
         data => {
@@ -145,20 +141,7 @@ export class ServicePricingSetupComponent implements OnInit {
         }
       );
   }
-  getServiceCategoriesForModal() {
-    this.isLoadingServiceCategories.next(true);
-    this.setup.getServiceCategories()
-      .pipe(first())
-      .subscribe(
-        data => {
-          this.isLoadingServiceCategories.next(false);
-          this.serviceCategoriesForModal = data.data;
-        }, error => {
-          this.isLoadingServiceCategories.next(false);
-          console.log(error);
-        }
-      );
-  }
+
 
   getServiceSubCategoriesByCategoryForModal(id: number) {
     this.isLoadingServiceSubCategories.next(true);
