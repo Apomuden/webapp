@@ -1,7 +1,7 @@
 import { NzNotificationService } from 'ng-zorro-antd';
 import { first } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { SetupService } from 'src/app/shared/services/setup.service';
 
@@ -53,15 +53,14 @@ export class ServicePricingSetupComponent implements OnInit {
     this.getAgeGroups();
     this.getFundingTypes();
     this.getServiceCategories();
-    this.getServiceSubCategories();
     this.getHospitalServices();
 
     this.servicePricingForm.get('service_category_id').valueChanges.subscribe(val => {
-      if (val == null) {
-        this.servicePricingForm.get('service_subcategory_id').setValue(null);
-      }
+      this.getServiceSubCategoriesByCategory(val);
+      this.servicePricingForm.get('service_subcategory_id').setValue(null);
     });
   }
+
 
   getAgeGroups() {
     this.isAgeGroupsLoading.next(true);
@@ -77,6 +76,7 @@ export class ServicePricingSetupComponent implements OnInit {
         }
       );
   }
+
   getFundingTypes() {
     this.isFundingTypesLoading.next(true);
     this.setup.getFundingTypes()
@@ -107,9 +107,9 @@ export class ServicePricingSetupComponent implements OnInit {
       );
   }
 
-  getServiceSubCategories() {
+  getServiceSubCategoriesByCategory(id: number) {
     this.isServiceSubCategoriesLoading.next(true);
-    this.setup.getServiceSubcategories()
+    this.setup.getServiceSubcategoriesByCategory(id)
       .pipe(first())
       .subscribe(
         data => {
