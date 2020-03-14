@@ -14,6 +14,7 @@ import { BillingSystemSetupComponent } from './pages/billing-system-setup/billin
 import { PaymentChannelSetupComponent } from './pages/payment-channel-setup/payment-channel-setup.component';
 import { FundingTypeSetupComponent } from './pages/funding-type-setup/funding-type-setup.component';
 import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-style-setup.component';
+import { AllowedInstallmentTypeSetupComponent } from './pages/allowed-installment-type-setup/allowed-installment-type-setup.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { PaymentStyleSetupComponent } from './pages/payment-style-setup/payment-
     BillingSystemSetupComponent,
     PaymentChannelSetupComponent,
     FundingTypeSetupComponent,
-    PaymentStyleSetupComponent
+    PaymentStyleSetupComponent,
+    AllowedInstallmentTypeSetupComponent
   ],
   imports: [
     CommonModule,
