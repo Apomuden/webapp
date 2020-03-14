@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { first, retry } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -14,13 +15,18 @@ export class SponsorPolicySetupComponent implements OnInit {
   loadingMore = false;
   isCreatingSponsorPolicy = new BehaviorSubject(false);
   isLoadingMedicalSponsors = new BehaviorSubject(false);
+  isUpdatingSponsorPolicies = new BehaviorSubject(false);
   data = [];
   list = [];
   error = '';
+  modalError = '';
   sponsorPolicy = '';
   medicalSponsor = null;
+  sponsorPolicyId = null;
+  isVisible = false;
   medicalSponsors = [];
   componentLabel = 'sponsor policy';
+  updateForm: FormGroup;
 
   submitForm(): void {
     if (this.sponsorPolicy == null || this.sponsorPolicy === '') {
@@ -62,7 +68,8 @@ export class SponsorPolicySetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getSponsorPolicies() {
     this.setup
@@ -96,6 +103,10 @@ export class SponsorPolicySetupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      billing_sponsor_id: [null, Validators.required]
+    });
     this.getSponsorPolicies();
     this.getMedicalSponsors();
   }
@@ -112,4 +123,66 @@ export class SponsorPolicySetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingSponsorPolicies.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/sponsorpolicies/${this.sponsorPolicyId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingSponsorPolicies.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getSponsorPolicies();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingSponsorPolicies.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteSponsorPolicy(sponsorPolicy: any) {
+    this.setup.deleteSetup(`setups/sponsorpolicies/${sponsorPolicy.id}`).pipe(first()).subscribe(
+      res => {
+        this.getSponsorPolicies();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.sponsorPolicyId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingSponsorPolicies.next(false);
+  }
+  showModal(sponsorPolicy: any) {
+    this.isVisible = true;
+    const {
+      name,
+      billing_sponsor_id,
+    } = sponsorPolicy;
+    this.sponsorPolicyId = sponsorPolicy.id as number;
+    console.log(this.sponsorPolicyId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('billing_sponsor_id').setValue(billing_sponsor_id);
+
+  }
 }
+
+
+
+

@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -14,11 +15,16 @@ export class ServiceSubcategorySetupComponent implements OnInit {
   loadingMore = false;
   isCreatingServiceSubcategory = new BehaviorSubject(false);
   serviceCategoriesLoading = new BehaviorSubject(false);
+  isUpdatingServiceSubCategory = new BehaviorSubject(false);
+  updateForm: FormGroup;
 
   data = [];
   list = [];
   error = '';
   name = '';
+  isVisible = false;
+  modalError = null;
+  serviceSubCategoryId = null;
 
   serviceCategory = null;
 
@@ -70,7 +76,8 @@ export class ServiceSubcategorySetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
 
   getServiceSubcategories() {
@@ -108,6 +115,10 @@ export class ServiceSubcategorySetupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      service_category_id: [null, Validators.required]
+    })
     this.getServiceSubcategories();
     this.getServiceCategories();
   }
@@ -124,4 +135,63 @@ export class ServiceSubcategorySetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingServiceSubCategory.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/servicesubcategories/${this.serviceSubCategoryId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingServiceSubCategory.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getServiceSubcategories();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingServiceSubCategory.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteServiceSubCategory(serviceSubCategory: any) {
+    this.setup.deleteSetup(`setups/servicesubcategories/${serviceSubCategory.id}`).pipe(first()).subscribe(
+      res => {
+        this.getServiceSubcategories();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.serviceSubCategoryId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingServiceSubCategory.next(false);
+  }
+  showModal(serviceSubCategory: any) {
+    this.isVisible = true;
+    const {
+      name,
+      service_category_id,
+    } = serviceSubCategory;
+    this.serviceSubCategoryId = serviceSubCategory.id as number;
+    console.log(this.serviceSubCategoryId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('service_category_id').setValue(service_category_id)
+  }
 }
+
