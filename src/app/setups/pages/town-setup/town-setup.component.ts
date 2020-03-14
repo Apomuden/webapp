@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -12,14 +13,20 @@ import { BehaviorSubject } from 'rxjs';
 export class TownSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  isVisible = false;
   isCreatingTown = new BehaviorSubject(false);
   districtsLoading = new BehaviorSubject(false);
+  isUpdatingTown = new BehaviorSubject(false);
+  modalError = '';
+  townId = null;
+
+
 
   data = [];
   list = [];
   error = '';
   name = '';
-
+  updateForm: FormGroup;
   district = null;
 
   districts = null;
@@ -71,7 +78,8 @@ export class TownSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
 
   getTowns() {
@@ -109,6 +117,10 @@ export class TownSetupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      district_id: [null, Validators.required]
+    })
     this.getTowns();
     this.getDistricts();
   }
@@ -125,4 +137,67 @@ export class TownSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingTown.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/towns/${this.townId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingTown.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getTowns();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingTown.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteTown(town: any) {
+    this.setup.deleteSetup(`setups/towns/${town.id}`).pipe(first()).subscribe(
+      res => {
+        this.getTowns();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.townId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingTown.next(false);
+  }
+  showModal(town: any) {
+    this.isVisible = true;
+    const {
+      name,
+      district_id
+    } = town;
+    this.townId = town.id as number;
+    console.log(this.townId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('district_id').setValue(district_id);
+
+  }
 }
+
+
+
+
+

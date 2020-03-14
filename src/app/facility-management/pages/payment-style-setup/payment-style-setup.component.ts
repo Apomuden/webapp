@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -12,9 +13,14 @@ import { NzNotificationService } from 'ng-zorro-antd';
 export class PaymentStyleSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  isVisible = false;
+  paymentStyleId = null;
+  updateForm: FormGroup;
   isCreatingPaymentStyle = new BehaviorSubject(false);
+  isUpdatingPaymentStyles = new BehaviorSubject(false);
   data = [];
   list = [];
+  modalError = '';
   error = '';
   paymentStyle = '';
 
@@ -54,7 +60,8 @@ export class PaymentStyleSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getPaymentStyles() {
     this.setup
@@ -73,6 +80,9 @@ export class PaymentStyleSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getPaymentStyles();
   }
 
@@ -87,5 +97,61 @@ export class PaymentStyleSetupComponent implements OnInit {
         this.list[index].isActivated = !style.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
+  }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingPaymentStyles.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/paymentstyles/${this.paymentStyleId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingPaymentStyles.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getPaymentStyles();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingPaymentStyles.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deletePaymentStyle(paymentStyle: any) {
+    this.setup.deleteSetup(`setups/paymentstyles/${paymentStyle.id}`).pipe(first()).subscribe(
+      res => {
+        this.getPaymentStyles();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.paymentStyleId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingPaymentStyles.next(false);
+  }
+  showModal(paymentStyle: any) {
+    this.isVisible = true;
+    const {
+      name
+    } = paymentStyle;
+    this.paymentStyleId = paymentStyle.id as number;
+    console.log(this.paymentStyleId);
+    this.updateForm.get('name').setValue(name);
+
   }
 }

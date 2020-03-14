@@ -157,6 +157,7 @@ export class ServicePricingSetupComponent implements OnInit, OnDestroy {
         }
       );
   }
+
   getServiceCategoriesByHospitalServiceForModal(id: number) {
     this.isLoadingServiceCategories.next(true);
     this.setup.getServiceCategoriesByHospitalService(id)

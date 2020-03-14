@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -13,11 +14,16 @@ export class SpecialitySetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
   isCreatingSpecialty = new BehaviorSubject(false);
+  isUpdatingSpecialty = new BehaviorSubject(false);
+  specialtyId = null;
   data = [];
   list = [];
   error = '';
+  modalError = '';
+  isVisible = false;
   specialty = '';
   componentLabel = 'specialty';
+  updateForm: FormGroup;
 
   submitForm(): void {
     if (this.specialty == null || this.specialty === '') {
@@ -36,7 +42,7 @@ export class SpecialitySetupComponent implements OnInit {
                 'Success',
                 `Successfully created ${this.componentLabel}`
               );
-              this.getSpecialities();
+              this.getSpecialties();
               this.specialty = '';
             } else {
               this.notification.blank(
@@ -58,9 +64,10 @@ export class SpecialitySetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
-  getSpecialities() {
+  getSpecialties() {
     this.setup
       .getSpecialities()
       .pipe(first())
@@ -77,7 +84,10 @@ export class SpecialitySetupComponent implements OnInit {
       );
   }
   ngOnInit() {
-    this.getSpecialities();
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
+    this.getSpecialties();
   }
 
   toggleItem($event: any, speciality: any) {
@@ -92,4 +102,64 @@ export class SpecialitySetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingSpecialty.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/specialties/${this.specialtyId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingSpecialty.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getSpecialties();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingSpecialty.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteSpecialty(specialty: any) {
+    this.setup.deleteSetup(`setups/specialties/${specialty.id}`).pipe(first()).subscribe(
+      res => {
+        this.getSpecialties();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.specialtyId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingSpecialty.next(false);
+  }
+  showModal(specialty: any) {
+    this.isVisible = true;
+    const {
+      name,
+      service_category_id,
+    } = specialty;
+    this.specialtyId = specialty.id as number;
+    console.log(this.specialtyId);
+    this.updateForm.get('name').setValue(name);
+
+  }
 }
+
+

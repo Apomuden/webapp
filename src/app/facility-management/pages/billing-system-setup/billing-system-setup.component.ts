@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -12,10 +13,15 @@ import { BehaviorSubject } from 'rxjs';
 export class BillingSystemSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  isVisible = false;
   isCreatingBillingSystem = new BehaviorSubject(false);
+  isUpdatingBillingSystem = new BehaviorSubject(false);
   data = [];
+  billingSystemId = null;
   list = [];
   error = '';
+  modalError = '';
+  updateForm: FormGroup;
   billingSystem = '';
   componentLabel = 'billing system';
 
@@ -58,7 +64,8 @@ export class BillingSystemSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getBillingSystems() {
     this.setup
@@ -77,6 +84,9 @@ export class BillingSystemSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getBillingSystems();
   }
 
@@ -93,4 +103,66 @@ export class BillingSystemSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingBillingSystem.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/billingsystems/${this.billingSystemId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingBillingSystem.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getBillingSystems();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingBillingSystem.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteBillingSystem(billingSystem: any) {
+    this.setup.deleteSetup(`setups/billingsystems/${billingSystem.id}`).pipe(first()).subscribe(
+      res => {
+        this.getBillingSystems();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.billingSystemId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingBillingSystem.next(false);
+  }
+  showModal(billingSystem: any) {
+    this.isVisible = true;
+    const {
+      name
+    } = billingSystem;
+    this.billingSystemId = billingSystem.id as number;
+    console.log(this.billingSystemId);
+    this.updateForm.get('name').setValue(name);
+
+  }
 }
+
+
+
+
+
+

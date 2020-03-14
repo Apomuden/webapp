@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { SetupService } from './../../../shared/services/setup.service';
@@ -12,7 +13,12 @@ import { NzNotificationService } from 'ng-zorro-antd';
 export class PaymentChannelSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  paymentChannelId = null;
+  modalError = '';
+  isVisible = false;
+  updateForm: FormGroup;
   isCreatingInputChannel = new BehaviorSubject(false);
+  isUpdatingPaymentChannel = new BehaviorSubject(false);
   data = [];
   list = [];
   error = '';
@@ -57,7 +63,8 @@ export class PaymentChannelSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getPaymentChannels() {
     this.setup
@@ -76,6 +83,9 @@ export class PaymentChannelSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getPaymentChannels();
   }
 
@@ -91,4 +101,66 @@ export class PaymentChannelSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingPaymentChannel.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/paymentchannels/${this.paymentChannelId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingPaymentChannel.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getPaymentChannels();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingPaymentChannel.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deletePaymentChannel(paymentChannel: any) {
+    this.setup.deleteSetup(`setups/paymentchannels/${paymentChannel.id}`).pipe(first()).subscribe(
+      res => {
+        this.getPaymentChannels();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.paymentChannelId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingPaymentChannel.next(false);
+  }
+  showModal(paymentChannel: any) {
+    this.isVisible = true;
+    const {
+      name
+    } = paymentChannel;
+    this.paymentChannelId = paymentChannel.id as number;
+    console.log(this.paymentChannelId);
+    this.updateForm.get('name').setValue(name);
+
+  }
 }
+
+
+
+
+
+

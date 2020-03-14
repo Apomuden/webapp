@@ -1,3 +1,4 @@
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
@@ -12,11 +13,16 @@ import { NzNotificationService } from 'ng-zorro-antd';
 export class SponsershipTypeSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
+  sponsorshipTypeId = null;
   isCreatingSponsorshipType = new BehaviorSubject(false);
+  isUpdatingSponsorshipType = new BehaviorSubject(false);
   data = [];
   list = [];
+  updateForm: FormGroup;
+  isVisible = false;
   error = '';
   sponsorshipType = '';
+  modalError = '';
 
   submitForm(): void {
     if (this.sponsorshipType == null || this.sponsorshipType === '') {
@@ -57,7 +63,8 @@ export class SponsershipTypeSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
   getSponsorshipTypes() {
     this.setup
@@ -76,6 +83,9 @@ export class SponsershipTypeSetupComponent implements OnInit {
       );
   }
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required]
+    });
     this.getSponsorshipTypes();
   }
 
@@ -91,4 +101,63 @@ export class SponsershipTypeSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingSponsorshipType.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value
+      }, `setups/sponsorshiptypes/${this.sponsorshipTypeId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingSponsorshipType.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getSponsorshipTypes();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+
+        },
+        error => {
+          this.isUpdatingSponsorshipType.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteSponsorshipType(specialty: any) {
+    this.setup.deleteSetup(`setups/sponsorshiptypes/${specialty.id}`).pipe(first()).subscribe(
+      res => {
+        this.getSponsorshipTypes();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.sponsorshipTypeId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingSponsorshipType.next(false);
+  }
+  showModal(specialty: any) {
+    this.isVisible = true;
+    const {
+      name
+    } = specialty;
+    this.sponsorshipTypeId = specialty.id as number;
+    console.log(this.sponsorshipTypeId);
+    this.updateForm.get('name').setValue(name);
+
+  }
 }
+
+
+

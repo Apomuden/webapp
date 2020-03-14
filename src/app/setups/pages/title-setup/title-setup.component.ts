@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
@@ -13,10 +14,14 @@ export class TitleSetupComponent implements OnInit {
   initLoading = true; // bug
   loadingMore = false;
   isCreatingTitle = new BehaviorSubject(false);
-
+  isUpdatingTitle = new BehaviorSubject(false);
+  isVisible = false;
+  titleId = null;
+  updateForm: FormGroup;
   data = [];
   list = [];
   error = '';
+  modalError = '';
   name = '';
 
   gender = null;
@@ -28,14 +33,15 @@ export class TitleSetupComponent implements OnInit {
       this.name == null ||
       this.name === '' ||
       this.gender == null ||
-      this.gender === ''
+      this.gender === '' ||
+      this.gender === []
     ) {
       this.error = 'All Fields are required!';
     } else {
       this.error = '';
       this.isCreatingTitle.next(true);
       this.setup
-        .createTitle(this.name, this.gender)
+        .createTitle(this.name, this.gender.join(','))
         .pipe(first())
         .subscribe(
           success => {
@@ -67,7 +73,8 @@ export class TitleSetupComponent implements OnInit {
 
   constructor(
     private setup: SetupService,
-    private notification: NzNotificationService
+    private notification: NzNotificationService,
+    private fb: FormBuilder
   ) { }
 
   getTitles() {
@@ -88,6 +95,10 @@ export class TitleSetupComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.updateForm = this.fb.group({
+      name: [null, Validators.required],
+      gender: [null, Validators.required]
+    });
     this.getTitles();
   }
   log(input: any) {
@@ -106,4 +117,67 @@ export class TitleSetupComponent implements OnInit {
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });
   }
+  update() {
+    if (!this.updateForm.valid) {
+      this.modalError = 'Please fill required fields';
+    } else {
+      this.modalError = '';
+      this.isUpdatingTitle.next(true);
+      this.setup.updateSetup({
+        ...this.updateForm.value,
+        gender: this.updateForm.get('gender').value.join(',')
+      }, `setups/titles/${this.titleId}`).pipe(first()).subscribe(
+        response => {
+          this.isUpdatingTitle.next(false);
+          if (response) {
+            this.notification.success('Success', 'Update successful');
+            this.getTitles();
+          } else {
+            this.notification.error('Error', 'Update failed');
+          }
+        },
+        error => {
+          this.isUpdatingTitle.next(false);
+          this.notification.error('Error', 'Update failed');
+        }
+      );
+    }
+
+
+  }
+
+  deleteTitle(title: any) {
+    this.setup.deleteSetup(`setups/titles/${title.id}`).pipe(first()).subscribe(
+      res => {
+        this.getTitles();
+        this.notification.success('Success', 'Deleted');
+      },
+      error => {
+        this.notification.error('Error', 'Could not delete');
+      }
+    );
+  }
+  closeModal() {
+    this.titleId = null;
+    this.updateForm.reset();
+    this.isVisible = false;
+    this.isUpdatingTitle.next(false);
+  }
+  showModal(title: any) {
+    this.isVisible = true;
+    const {
+      name,
+      gender
+    } = title;
+    this.titleId = title.id as number;
+    console.log(this.titleId);
+    this.updateForm.get('name').setValue(name);
+    this.updateForm.get('gender').setValue(gender.split(','));
+
+  }
 }
+
+
+
+
+
