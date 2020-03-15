@@ -27,8 +27,7 @@ export class FacilityManagementNumberingSettingComponent implements OnInit {
       digits_after_staff_prefix: [null, Validators.required],
       digits_after_folder_prefix: [null, Validators.required],
       year_digits: [null, [Validators.required, Validators.min(2), Validators.max(4)]],
-      allowed_folder_type: [null, Validators.required],
-      allowed_installment_type: [null, Validators.required]
+      allowed_folder_type: [null, Validators.required]
     });
     this.getFacilityDetails();
   }
@@ -47,7 +46,6 @@ export class FacilityManagementNumberingSettingComponent implements OnInit {
           this.updateFacilityDetailsForm.get('digits_after_folder_prefix').setValue(this.facility.digits_after_folder_prefix);
           this.updateFacilityDetailsForm.get('year_digits').setValue(this.facility.year_digits);
           this.updateFacilityDetailsForm.get('allowed_folder_type').setValue(this.facility.allowed_folder_type.split(','));
-          this.updateFacilityDetailsForm.get('allowed_installment_type').setValue(this.facility.allowed_installment_type.split(','));
         }
       }
     );
@@ -59,8 +57,7 @@ export class FacilityManagementNumberingSettingComponent implements OnInit {
     if (this.updateFacilityDetailsForm.valid) {
       const payload = {
         ...this.updateFacilityDetailsForm.value,
-        allowed_folder_type: this.updateFacilityDetailsForm.get('allowed_folder_type').value.join(),
-        allowed_installment_type: this.updateFacilityDetailsForm.get('allowed_installment_type').value.join()
+        allowed_folder_type: this.updateFacilityDetailsForm.get('allowed_folder_type').value.join()
       };
       console.log(payload);
       this.isUpdatingFacility.next(true);
