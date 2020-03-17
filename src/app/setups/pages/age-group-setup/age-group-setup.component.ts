@@ -209,7 +209,6 @@ export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy 
           this.initLoading = false;
         },
         error => {
-          console.log(error);
         }
       );
   }
@@ -217,11 +216,9 @@ export class AgeGroupSetupComponent implements OnInit, AfterViewInit, OnDestroy 
   toggleItem($event: any, ageGroup: any) {
     this.setup.toggleActive(`setups/agegroups/${ageGroup.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
       .subscribe(toggled => {
-        console.log(toggled);
         const index = this.ageGroups.findIndex(group => group.id === toggled.id);
         this.ageGroups[index].isActivated = toggled.isActivated;
       }, error => {
-        console.error(error);
         const index = this.ageGroups.findIndex(group => group.id === ageGroup.id);
         this.ageGroups[index].isActivated = !ageGroup.isActivated;
         this.notification.error('Toggle failed', 'Unable to toggle this item.');

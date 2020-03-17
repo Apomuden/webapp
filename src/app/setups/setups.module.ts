@@ -43,6 +43,8 @@ import { ServicePricingSetupComponent } from './pages/service-pricing-setup/serv
 import { SponsorPolicySetupComponent } from './pages/sponsor-policy-setup/sponsor-policy-setup.component';
 import { ClinicTypeSetupComponent } from './pages/clinic-type-setup/clinic-type-setup.component';
 import { ClinicServiceSetupComponent } from './pages/clinic-service-setup/clinic-service-setup.component';
+import { AgeCategorySetupComponent } from './pages/age-category-setup/age-category-setup.component';
+import { AgeClassificationSetupComponent } from './pages/age-classification-setup/age-classification-setup.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +63,8 @@ import { ClinicServiceSetupComponent } from './pages/clinic-service-setup/clinic
     IdTypeSetupComponent,
     EducationLevelSetupComponent,
     AgeGroupSetupComponent,
+    AgeCategorySetupComponent,
+    AgeClassificationSetupComponent,
     TitleSetupComponent,
     RelationshipSetupComponent,
     TownSetupComponent,
