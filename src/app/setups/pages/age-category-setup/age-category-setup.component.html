@@ -1,0 +1,245 @@
+<div nz-row nzGutter="10">
+  <nz-col nzSpan="14">
+    <nz-card>
+      <nz-list style="min-height: 350px;" [nzDataSource]="ageCategories" [nzItemLayout]="'horizontal'"
+        [nzLoading]="initLoading" [nzRenderItem]="item">
+        <ng-template #item let-item>
+          <nz-list-item [nzActions]="item.loading ? [] : [deleteAction,editAction, moreAction]">
+            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
+              <ng-template #editAction><a (click)="showModal(item)">edit</a></ng-template>
+              <ng-template #deleteAction>
+                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="deleteAgeCat(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                    style="color:red;font-size: 16px;"></i></a>
+              </ng-template>
+              <ng-template #moreAction>
+                <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
+              </ng-template>
+              <nz-list-item-meta [nzTitle]="item.age_classification_name" [nzDescription]="nzDescription">
+                <ng-template #nzDescription>
+                  <a href="#"> {{ item.description }} </a>
+                </ng-template>
+              </nz-list-item-meta>
+            </nz-skeleton>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+    </nz-card>
+    <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="closeModal()" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter">
+      <ng-template #modalTitle>
+        Update Age Category
+      </ng-template>
+
+      <ng-template #modalContent>
+        <form [formGroup]="updateForm">
+          <nz-alert *ngIf="modalError" nzType="error" [nzMessage]="modalError" class="m-b-10" nzShowIcon>
+          </nz-alert>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="description">Description</nz-form-label>
+              <nz-form-control>
+                <input type="text" nz-input formControlName="description" name="description"
+                  placeholder="Input description" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="classification">Age Classification</nz-form-label>
+              <nz-form-control nzErrorTip="Please select a classification">
+                <nz-select nzShowSearch [nzLoading]="loadingClasses" nzPlaceHolder="Age Classification"
+                  formControlName="age_classification_id">
+                  <nz-option *ngFor="let class of ageClassifications" [nzLabel]="class.name" [nzValue]="class.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="agegroup">Age Group</nz-form-label>
+              <nz-form-control nzErrorTip="Please select an age group">
+                <nz-select nzShowSearch [nzLoading]="loadingClasses" nzPlaceHolder="Age Group"
+                  formControlName="age_group_id">
+                  <nz-option *ngFor="let group of ageGroups" [nzLabel]="group.name" [nzValue]="group.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+
+          <nz-row>
+            <nz-form-item nz-col [nzSpan]="8">
+              <nz-form-control nzErrorTip="Invalid age">
+                <nz-form-label>Min Age</nz-form-label>
+                <input type="number" nz-input formControlName="min_age" name="minAge" placeholder="Input minimum age" />
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item nz-col [nzSpan]="8">
+              <nz-form-control>
+                <nz-form-label>Min Age Unit</nz-form-label>
+                <nz-select formControlName="min_unit">
+                  <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item nz-col [nzSpan]="8">
+              <nz-form-control>
+                <nz-form-label>Min Age Comparator</nz-form-label>
+                <nz-select formControlName="min_comparator">
+                  <nz-option *ngFor="let comparator of comparators" [nzValue]="comparator.value"
+                    [nzLabel]="comparator.name"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+
+          <nz-row>
+            <nz-form-item nz-col [nzSpan]="8">
+              <nz-form-control nzErrorTip="Invalid age">
+                <nz-form-label>Max Age</nz-form-label>
+                <input type="number" nz-input formControlName="max_age" name="maxAge" placeholder="Input maximum age" />
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item nz-col [nzSpan]="8">
+              <nz-form-control>
+                <nz-form-label>Max Age Unit</nz-form-label>
+                <nz-select formControlName="max_unit">
+                  <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item nz-col [nzSpan]="8">
+              <nz-form-control>
+                <nz-form-label>Max Age Comparator</nz-form-label>
+                <nz-select formControlName="max_comparator">
+                  <nz-option *ngFor="let comparator of comparators" [nzValue]="comparator.value"
+                    [nzLabel]="comparator.name"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+        </form>
+      </ng-template>
+
+      <ng-template #modalFooter>
+        <button nz-button (click)="closeModal()">Cancel</button>
+        <button nz-button nzType="primary" (click)="update()" [nzLoading]="isUpdatingAgeCat|async">Save</button>
+      </ng-template>
+    </nz-modal>
+  </nz-col>
+
+  <nz-col nzSpan="10">
+    <nz-card>
+      <h5>Create Age Category</h5>
+      <form nz-form [nzLayout]="'horizontal'" [formGroup]="ageCategoryForm" (ngSubmit)="submitForm()">
+        <nz-row>
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="description">Description</nz-form-label>
+            <nz-form-control>
+              <input type="text" nz-input formControlName="description" name="description"
+                placeholder="Input description" />
+            </nz-form-control>
+          </nz-form-item>
+        </nz-row>
+
+        <nz-row>
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="classification">Age Classification</nz-form-label>
+            <nz-form-control nzErrorTip="Please select a classification">
+              <nz-select nzShowSearch [nzLoading]="loadingClasses" nzPlaceHolder="Age Classification"
+                formControlName="age_classification_id">
+                <nz-option *ngFor="let class of ageClassifications" [nzLabel]="class.name" [nzValue]="class.id">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-row>
+
+        <nz-row>
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="agegroup">Age Group</nz-form-label>
+            <nz-form-control nzErrorTip="Please select an age group">
+              <nz-select nzShowSearch [nzLoading]="loadingClasses" nzPlaceHolder="Age Group"
+                formControlName="age_group_id">
+                <nz-option *ngFor="let group of ageGroups" [nzLabel]="group.name" [nzValue]="group.id">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-row>
+
+        <nz-row>
+          <nz-form-item nz-col [nzSpan]="8">
+            <nz-form-control nzErrorTip="Invalid age">
+              <nz-form-label>Min Age</nz-form-label>
+              <input type="number" nz-input formControlName="min_age" name="minAge" placeholder="Input minimum age" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item nz-col [nzSpan]="8">
+            <nz-form-control>
+              <nz-form-label>Min Age Unit</nz-form-label>
+              <nz-select formControlName="min_unit">
+                <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item nz-col [nzSpan]="8">
+            <nz-form-control>
+              <nz-form-label>Min Age Comparator</nz-form-label>
+              <nz-select formControlName="min_comparator">
+                <nz-option *ngFor="let comparator of comparators" [nzValue]="comparator.value"
+                  [nzLabel]="comparator.name"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-row>
+
+        <nz-row>
+          <nz-form-item nz-col [nzSpan]="8">
+            <nz-form-control nzErrorTip="Invalid age">
+              <nz-form-label>Max Age</nz-form-label>
+              <input type="number" nz-input formControlName="max_age" name="maxAge" placeholder="Input maximum age" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item nz-col [nzSpan]="8">
+            <nz-form-control>
+              <nz-form-label>Max Age Unit</nz-form-label>
+              <nz-select formControlName="max_unit">
+                <nz-option *ngFor="let unit of units" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item nz-col [nzSpan]="8">
+            <nz-form-control>
+              <nz-form-label>Max Age Comparator</nz-form-label>
+              <nz-select formControlName="max_comparator">
+                <nz-option *ngFor="let comparator of comparators" [nzValue]="comparator.value"
+                  [nzLabel]="comparator.name"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </nz-row>
+
+        <nz-row>
+          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingAgeCat | async">
+              Submit
+            </button>
+          </nz-form-control>
+        </nz-row>
+      </form>
+    </nz-card>
+  </nz-col>
+</div>

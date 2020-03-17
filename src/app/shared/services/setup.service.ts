@@ -29,6 +29,8 @@ const SPONSORSHIP_TYPE_API_URL =
 const PAYMENT_STYLE_API_URL = environment.apiBaseUrl + '/setups/paymentstyles';
 const BILLING_CYCLE_API_URL = environment.apiBaseUrl + '/setups/billingcycles';
 const AGE_GROUP_API_URL = environment.apiBaseUrl + '/setups/agegroups';
+const AGE_CATEGORY_API_URL = environment.apiBaseUrl + '/setups/agecategories';
+const AGE_CLASSIFICATION_API_URL = environment.apiBaseUrl + '/setups/ageclassifications';
 const BILLING_SYSTEM_API_URL =
   environment.apiBaseUrl + '/setups/billingsystems';
 const HOSPITAL_SERVICE_API_URL =
@@ -77,6 +79,8 @@ export class SetupService {
   private idTypes;
   private educationalLevels;
   private ageGroups;
+  private ageCategories;
+  private ageClassifications;
   private titles;
   private regions;
   private districts;
@@ -1128,9 +1132,65 @@ export class SetupService {
     );
   }
 
+  getAgeCategories() {
+    return this.http.get<any>(AGE_CATEGORY_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.ageCategories = res;
+          for (let i = 0; i < this.ageCategories.data.length; i++) {
+            this.ageCategories.data[i].isActivated =
+              this.ageCategories.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.ageCategories;
+      })
+    );
+  }
+
+  getAgeClassifications() {
+    return this.http.get<any>(AGE_CLASSIFICATION_API_URL).pipe(
+      map(res => {
+        if (res) {
+          this.ageClassifications = res;
+          for (let i = 0; i < this.ageClassifications.data.length; i++) {
+            this.ageClassifications.data[i].isActivated =
+              this.ageClassifications.data[i].status === 'ACTIVE' ? true : false;
+          }
+        }
+        return this.ageClassifications;
+      })
+    );
+  }
+
   createAgeGroup(data: any) {
     return this.http
       .post<any>(AGE_GROUP_API_URL, data)
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  createAgeCategory(data: any) {
+    return this.http
+      .post<any>(AGE_CATEGORY_API_URL, data)
+      .pipe(
+        map(res => {
+          if (res) {
+            return true;
+          }
+          return false;
+        })
+      );
+  }
+
+  createAgeClassification(data: any) {
+    return this.http
+      .post<any>(AGE_CLASSIFICATION_API_URL, data)
       .pipe(
         map(res => {
           if (res) {
