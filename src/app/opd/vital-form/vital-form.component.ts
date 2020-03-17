@@ -12,6 +12,7 @@ import * as datefn from 'date-fns';
   styleUrls: ['./vital-form.component.css']
 })
 export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
+  today: string;
   editName: string | null;
   @ViewChild(NzInputDirective, { static: false, read: ElementRef }) inputElement: ElementRef;
 
@@ -131,6 +132,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
+    this.today = this.formatDate(new Date());
   }
 
   ngAfterViewInit() {

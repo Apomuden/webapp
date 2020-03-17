@@ -121,7 +121,7 @@
   </nz-col>
 
   <nz-col [nzSpan]="8">
-    <app-patient-queue queuePath="/registry/attendance" action="Check Vital" (queueClick)="attendanceClick($event)"></app-patient-queue>
+    <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Check Vital" (queueClick)="attendanceClick($event)"></app-patient-queue>
   </nz-col>
 </nz-row>
 <nz-modal [nzMaskClosable]="false" [nzClosable]="true" [nzVisible]="doctorsModalVisible" *ngIf="attendance"
