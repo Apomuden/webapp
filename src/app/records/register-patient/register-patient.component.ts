@@ -9,7 +9,7 @@ import { SetupService } from './../../shared/services/setup.service';
 import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular/core';
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import * as dateFn from 'date-fns';
+import * as dateFns from 'date-fns';
 
 @Component({
   selector: 'app-register-patient',
@@ -160,7 +160,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     this.issueDateControl.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe((date: Date) => {
         if (date) {
-          this.expiryDateControl.setValue(dateFn.addYears(date, 1));
+          this.expiryDateControl.setValue(dateFns.addYears(date, 1));
         }
       });
 
@@ -564,12 +564,20 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     }
   }
 
+  disabledDate(current: Date): boolean {
+    if (!current) {
+      return false;
+    }
+    // can only select days before today
+    return dateFns.isAfter(current, new Date());
+  }
+
   disabledIssueDate = (issueDate: Date): boolean => {
     if (!issueDate) {
       return false;
     }
     // can only select days before today
-    return dateFn.isAfter(issueDate, new Date());
+    return dateFns.isAfter(issueDate, new Date());
   }
 
   disabledExpiryDate = (expiryDate: Date): boolean => {
@@ -578,7 +586,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
     }
     const date = this.issueDateControl.value as Date;
     // can only select days after the issue date
-    return dateFn.isBefore(expiryDate, date);
+    return dateFns.isBefore(expiryDate, date);
   }
 
   private createPatient(data: object) {

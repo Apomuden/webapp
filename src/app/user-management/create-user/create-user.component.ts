@@ -8,6 +8,7 @@ import { SignaturePad } from 'angular2-signaturepad/signature-pad';
 import { UploadFile, NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import { Router } from '@angular/router';
 import { componentDestroyed, untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import * as dateFns from 'date-fns';
 
 @Component({
   selector: 'app-create-user',
@@ -700,6 +701,14 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       signature: this.attachmentsForm.get('signature').value,
       photo: this.attachmentsForm.get('photo').value,
     };
+  }
+
+  disabledDate(current: Date): boolean {
+    if (!current) {
+      return false;
+    }
+    // can only select days before today
+    return dateFns.isAfter(current, new Date());
   }
 
   formatDate(date: Date): string {
