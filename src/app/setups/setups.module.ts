@@ -45,6 +45,8 @@ import { ClinicTypeSetupComponent } from './pages/clinic-type-setup/clinic-type-
 import { ClinicServiceSetupComponent } from './pages/clinic-service-setup/clinic-service-setup.component';
 import { AgeCategorySetupComponent } from './pages/age-category-setup/age-category-setup.component';
 import { AgeClassificationSetupComponent } from './pages/age-classification-setup/age-classification-setup.component';
+import { ConsultationComponent } from './categories/consultation/consultation.component';
+import { MedicalHistoryCategoryComponent } from './pages/medical-history-category/medical-history-category.component';
 
 @NgModule({
   declarations: [
@@ -87,7 +89,9 @@ import { AgeClassificationSetupComponent } from './pages/age-classification-setu
     ServicePricingSetupComponent,
     SponsorPolicySetupComponent,
     ClinicTypeSetupComponent,
-    ClinicServiceSetupComponent
+    ClinicServiceSetupComponent,
+    ConsultationComponent,
+    MedicalHistoryCategoryComponent
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,4 @@
+import { ConsultationComponent } from './categories/consultation/consultation.component';
 import { AccountComponent } from './categories/account/account.component';
 import { OtherComponent } from './categories/other/other.component';
 import { RecordComponent } from './categories/record/record.component';
@@ -64,6 +65,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           title: 'Others'
+        }
+      },
+      {
+        path: 'consultation',
+        component: ConsultationComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Consultation'
         }
       },
       {
