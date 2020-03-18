@@ -199,7 +199,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   getAttendance(folderNo: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    const today = this.formatDate(datefn.subDays(datefn.startOfYesterday(), 4));
+    const today = this.formatDate(datefn.startOfToday());
     this.opdService.getAttendance(folderNo, today).pipe(first())
       .subscribe(data => {
         this.isLoadingData = false;
