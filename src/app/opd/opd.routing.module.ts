@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {FullLayoutComponent} from '../layouts/full-layout/full-layout.component';
 import { VitalFormComponent } from './vital-form/vital-form.component';
+import { ConsultationComponent } from './consultation/consultation.component';
 
 const routes: Routes = [
   {
@@ -10,6 +11,12 @@ const routes: Routes = [
     component: VitalFormComponent,
     canActivate: [AuthGuard],
     data: {title: 'Vitals'}
+  },
+  {
+    path: 'consultation',
+    component: ConsultationComponent,
+    canActivate: [AuthGuard],
+    data: {title: 'Consultation'}
   },
 ];
 

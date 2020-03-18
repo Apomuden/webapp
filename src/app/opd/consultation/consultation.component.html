@@ -1,0 +1,145 @@
+<nz-row>
+  <nz-col [nzSpan]="16">
+    <nz-card nz-row *ngIf="patient">
+      <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+        <nz-descriptions-item nzTitle="Folder #">
+          {{patient.folder_no}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Name">
+          {{patient.firstname}} {{patient.middlename}} {{patient.surname}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Gender">
+          {{patient.gender}}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Age">
+          {{patient.age}} year(s)
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="attendance" nzTitle="Age Group">
+          {{attendance.age_group_name}}
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="attendance" nzTitle="Funding Type">
+          {{attendance.funding_type}}
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="attendance && attendance.sponsor_name" nzTitle="Sponsor">
+          {{attendance.sponsor_name}}
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="attendance" nzTitle="Patient Status">
+          {{attendance.patient_status}}
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="attendance" nzTitle="Attendance Status">
+          {{attendance.request_type}}
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="attendance" nzTitle="Clinic">
+          {{attendance.clinic_name}}
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="attendance" nzTitle="Attendance Date">
+          {{attendance.attendance_date | date}}
+        </nz-descriptions-item>
+
+      </nz-descriptions>
+    </nz-card>
+    <nz-card>
+      <div nz-row [nzGutter]="24" *ngIf="!patient">
+        <nz-form-item nz-col [nzSpan]="6">
+          <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
+            <input type="text" nz-input placeholder="A0000001/20a" [formControl]="folderNumb" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <nz-table *ngIf="patient" nzTemplateMode nzBordered nzSize="small">
+        <thead>
+          <tr>
+            <th nzWidth="34%">Vital</th>
+            <th nzWidth="33%">Value</th>
+            <th nzWidth="33%">Flag</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let vital of vitals" class="editable-row">
+            <td>
+              {{vital.name}}
+            </td>
+            <td>
+              <div class="editable-cell" *ngIf="editName !== vital.name; else editTpl">
+                <div class="editable-cell-value-wrap" (click)="startEdit(vital.name, $event)">
+                  <span *ngIf="vital.name !== 'BMI'">
+                    {{ (vital.form.value != null && vital.form.valid) ? vital.form.value + ' ' + vital.unit : 'Click to enter value' }}
+                  </span>
+                  <span *ngIf="vital.name === 'BMI'">
+                    {{ (vital.form.value) ? vital.form.value + ' ' + vital.unit : 'Enter valid height and weight to evaluate' }}
+                  </span>
+                </div>
+              </div>
+              <ng-template #editTpl>
+                <input nz-input [placeholder]="(vital.name === 'Blood Pressure' ? 'eg: 70/109': 'eg: 10')"
+                  [type]="(vital.name === 'Blood Pressure') ? 'text': 'number'" [formControl]="vital.form" />
+              </ng-template>
+            </td>
+
+            <td>{{ vital.flag }}</td>
+          </tr>
+          <tr>
+            <td [attr.colspan]="3">
+              <nz-form-control>
+                <textarea [formControl]="commentControl" nz-input placeholder="Extra comments"></textarea>
+              </nz-form-control>
+            </td>
+          </tr>
+
+          <tr>
+            <td [attr.colspan]="3">
+              <nz-row nzJustify="center" nzType="flex">
+                <nz-col>
+                  <nz-button-group>
+                    <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="submiting">Cancel</button>
+                    <button nz-button nzType="primary" (click)="done()" [disabled]="!validateForm()"
+                      [nzLoading]="submiting">Done</button>
+                  </nz-button-group>
+                </nz-col>
+              </nz-row>
+            </td>
+          </tr>
+
+        </tbody>
+      </nz-table>
+
+      <nz-divider></nz-divider>
+      <div nz-row>
+        <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
+            class="m-r-5"></i> {{message}}
+        </div>
+      </div>
+
+      <nz-row>
+        <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
+        </nz-skeleton>
+      </nz-row>
+
+    </nz-card>
+  </nz-col>
+
+  <nz-col [nzSpan]="8">
+    <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Check Vital" (queueClick)="attendanceClick($event)"></app-patient-queue>
+  </nz-col>
+</nz-row>
+<nz-modal [nzMaskClosable]="false" [nzClosable]="true" [nzVisible]="doctorsModalVisible" *ngIf="attendance"
+  [nzTitle]="'Assign Prescriber from ' + attendance.clinic_name" (nzOnCancel)="handleCancel()">
+  <form>
+    <nz-form-item>
+      <nz-form-control>
+        <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Prescriber" [formControl]="doctorControl"
+          [nzLoading]="doctorsLoading">
+          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.name" [nzValue]="doctor.id">
+          </nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+  <div *nzModalFooter>
+    <!-- <button nz-button nzType="default" (click)="handleCancel()">Cancel</button> -->
+    <button nz-button [disabled]="doctorControl.invalid" nzType="primary" (click)="assignDoctor()"
+      [nzLoading]="isAssigning">Submit</button>
+  </div>
+</nz-modal>
