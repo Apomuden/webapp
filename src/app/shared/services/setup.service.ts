@@ -1502,6 +1502,26 @@ export class SetupService {
       }
     ));
   }
+  genericGet(resourcePath: string) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.get<any>(url).pipe(map(res => {
+      return res ? res.data : [];
+    },
+      err => {
+        return [];
+      }
+    ));
+  }
+  genericPost(resourcePath: string, fields: object) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.post<any>(url, fields).pipe(map(res => {
+      return res ? true : false;
+    },
+      err => {
+        return false;
+      }
+    ));
+  }
   deleteSetup(resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.delete<any>(url).pipe(

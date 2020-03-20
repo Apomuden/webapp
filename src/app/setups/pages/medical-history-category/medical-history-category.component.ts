@@ -11,17 +11,19 @@ import { SetupService } from 'src/app/shared/services/setup.service';
 })
 export class MedicalHistoryCategoryComponent implements OnInit {
   createCategoryModalVisible = false;
+  isLoadingItems = false;
+  addItemModalVisible = false;
   isCreatingCategory = false;
+  isCreatingItem = false;
   loadingCategories = false;
   isLoadingCategories = false;
   createCategoryForm: FormGroup;
+  createItemForm: FormGroup;
   createModalError = '';
+  addItemModalError = '';
+  selectedCategory = null;
   categories = [];
-  data = [
-    'Red Eye',
-    'Blurred Vision',
-    'Pain in Eye'
-  ]
+  categoryList = [];
   constructor(private setup: SetupService,
     private fb: FormBuilder,
     private notification: NzNotificationService
@@ -31,6 +33,10 @@ export class MedicalHistoryCategoryComponent implements OnInit {
     this.createCategoryForm = this.fb.group({
       name: [null, Validators.required]
     });
+    this.createItemForm = this.fb.group({
+      name: [null, Validators.required]
+    });
+
     this.getMedicalHistoryCategories();
   }
 
@@ -44,6 +50,10 @@ export class MedicalHistoryCategoryComponent implements OnInit {
           this.isLoadingCategories = false;
           if (res) {
             this.categories = res;
+            if ((this.selectedCategory == null) && (this.categories.length > 0)) {
+
+              this.getHistoryItems(this.categories[0]);
+            }
           }
 
         }, err => {
@@ -52,8 +62,26 @@ export class MedicalHistoryCategoryComponent implements OnInit {
       );
   }
 
+
+
+  getHistoryItems(selectedCategory: any) {
+    this.selectedCategory = selectedCategory;
+    this.isLoadingItems = true;
+    this.setup.genericGet('setups/medicalhistories').pipe(first()).subscribe(
+      res => {
+        this.isLoadingItems = false;
+        this.categoryList = res;
+      },
+      err => {
+        this.isLoadingItems = false;
+      }
+    );
+  }
   closeCreateModal() {
     this.createCategoryModalVisible = false;
+  }
+  closeAddItemModal() {
+    this.addItemModalVisible = false;
   }
   createCategory() {
     if (this.createCategoryForm.valid) {
@@ -77,5 +105,38 @@ export class MedicalHistoryCategoryComponent implements OnInit {
   }
   showCreateCategoryModal() {
     this.createCategoryModalVisible = true;
+  }
+  showAddItemModal(category: any) {
+    this.getHistoryItems(category);
+    this.addItemModalVisible = true;
+  }
+  createItem() {
+    if (this.createItemForm.valid) {
+      this.isCreatingItem = true;
+      this.setup.genericPost('setups/medicalhistories',
+        {
+          ...this.createItemForm.value, status: 'ACTIVE',
+          medical_history_category_id: this.selectedCategory.id
+        }).pipe(first()).subscribe(
+          res => {
+            this.isCreatingItem = false;
+            this.notification.success('Success', 'Item Created');
+            this.getHistoryItems(this.selectedCategory.id);
+            this.addItemModalVisible = false;
+          },
+          err => {
+            this.isCreatingItem = false;
+            this.notification.error('Error', 'Item could not be created');
+          }
+        )
+    } else {
+      this.addItemModalError = 'Name is required!';
+    }
+  }
+  deleteCategory(category) {
+    console.log(category);
+  }
+  deleteItem(item) {
+
   }
 }

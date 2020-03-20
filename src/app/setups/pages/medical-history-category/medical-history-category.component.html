@@ -30,6 +30,33 @@
           <button nz-button nzType="primary" (click)="createCategory()" [nzLoading]="isCreatingCategory">Save</button>
         </ng-template>
       </nz-modal>
+      <nz-modal [(nzVisible)]="addItemModalVisible" [nzTitle]="modalTitle" [nzContent]="modalContent"
+        [nzFooter]="modalFooter" (nzOnCancel)="closeAddItemModal()">
+        <ng-template #modalTitle>
+          Create Item
+        </ng-template>
+
+        <ng-template #modalContent>
+          <form [formGroup]="createItemForm">
+            <nz-alert *ngIf="addItemModalError" nzType="error" [nzMessage]="addItemModalError" class="m-b-10"
+              nzShowIcon>
+            </nz-alert>
+            <nz-row>
+              <nz-form-item>
+                <nz-form-label [nzXs]="8" nzRequired nzFor="name">Name</nz-form-label>
+                <nz-form-control [nzSpan]="16">
+                  <input type="text" nz-input formControlName="name" name="name" placeholder="Name" />
+                </nz-form-control>
+              </nz-form-item>
+            </nz-row>
+          </form>
+        </ng-template>
+
+        <ng-template #modalFooter>
+          <button nz-button nzType="default" (click)="closeAddItemModal()">Cancel</button>
+          <button nz-button nzType="primary" (click)="createItem()" [nzLoading]="isCreatingItem">Save</button>
+        </ng-template>
+      </nz-modal>
       <nz-skeleton [nzActive]="true" [nzLoading]="isLoadingCategories">
         <nz-table #categoriesTable [nzData]="categories" nzBordered [nzShowPagination]="'false'"
           [nzLoading]="isLoadingCategories">
@@ -41,8 +68,17 @@
           </thead>
           <tbody>
             <tr *ngFor="let data of categoriesTable.data; index as i">
-              <td>{{ data.name }}</td>
-              <td><i style="cursor: pointer;" nz-icon nzType="plus" nzTheme="outline"></i></td>
+              <td style="cursor: pointer;" (click)="getHistoryItems(data)">{{ data.name }}</td>
+              <td>
+
+                <button nz-button nzType="primary" (click)="showAddItemModal(data)" [nzSize]="'small'" class="m-r-10">
+                  Add <i style="cursor: pointer;" nz-icon nzType="plus" nzTheme="outline" style="cursor: pointer;"
+                    nzBlock></i></button>
+                <button nz-button nzType="default" [nzSize]="'small'" nz-popconfirm
+                  nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="deleteCategory(data)">Delete <i nz-icon nzType="delete" nzTheme="fill"
+                    style="color:red;font-size: 16px;"></i></button>
+              </td>
             </tr>
           </tbody>
         </nz-table>
@@ -50,13 +86,15 @@
     </nz-card>
   </div>
   <div nz-col [nzXs]="{ span: 24}" [nzLg]="{ span: 11 }">
-    <nz-card>
-      <h3 [ngStyle]="{ margin: '16px 0' }">History List For General</h3>
-      <nz-list [nzDataSource]="data" nzBordered nzSize="small" [nzRenderItem]="smallItem">
-        <ng-template #smallItem let-item>
-          <nz-list-item [nzContent]="item"></nz-list-item>
-        </ng-template>
-      </nz-list>
+    <nz-card *ngIf="selectedCategory">
+      <h3 [ngStyle]="{ margin: '16px 0' }">Medical History List For {{selectedCategory.name}}</h3>
+      <nz-skeleton [nzActive]="true" [nzLoading]="isLoadingItems">
+        <nz-list [nzDataSource]="categoryList" nzBordered nzSize="small" [nzRenderItem]="smallItem">
+          <ng-template #smallItem let-item>
+            <nz-list-item [nzContent]="item.name"></nz-list-item>
+          </ng-template>
+        </nz-list>
+      </nz-skeleton>
     </nz-card>
   </div>
 </div>
