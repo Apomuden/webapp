@@ -14,6 +14,7 @@ import * as datefn from 'date-fns';
 export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   today: string;
   editName: string | null;
+  isQueueVisible = true;
   @ViewChild(NzInputDirective, { static: false, read: ElementRef }) inputElement: ElementRef;
 
   folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
@@ -202,6 +203,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     const today = this.formatDate(datefn.startOfToday());
     this.opdService.getAttendance(folderNo, today).pipe(first())
       .subscribe(data => {
+        this.isQueueVisible = false;
         this.isLoadingData = false;
         this.attendance = data;
         this.getPatient(folderNo);
@@ -307,6 +309,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   cancel() {
     this.patient = null;
     this.searchInitialized = false;
+    this.isQueueVisible = true;
     this.folderNoControl.reset();
     for (let i = 0; i < this.vitals.length; i++) {
       this.vitals[i].form.reset();
@@ -319,6 +322,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log(data);
     this.opdService.saveVitals(data).pipe(first())
       .subscribe(res => {
+        this.isQueueVisible = true;
         this.submiting = false;
         console.log(res);
         this.doctorsModalVisible = true;
