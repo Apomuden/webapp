@@ -4,7 +4,7 @@ import { debounceTime, first } from 'rxjs/operators';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { OpdService } from '../services/opd.service';
 import { NzInputDirective, NzNotificationService, NzInputGroupComponent, NzModalRef, NzModalService } from 'ng-zorro-antd';
-import * as datefn from 'date-fns';
+import * as datefns from 'date-fns';
 
 @Component({
   selector: 'app-vital-form',
@@ -22,14 +22,14 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     {
       name: 'Temperature', form: this.fb.control(null),
       flag: 'Provide value to evalute',
-      unit: '˚C',
+      unit: '℃',
       min: 36.0,
       max: 37.3
     },
     {
       name: 'Pulse', form: this.fb.control(null, [Validators.min(0)]),
       flag: 'Provide value to evalute',
-      unit: 'BPM',
+      unit: 'bpm',
       min: 60,
       max: 100,
     },
@@ -66,7 +66,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     {
       name: 'BMI', form: this.fb.control(null),
       flag: 'Provide value to evalute',
-      unit: 'kg/m2',
+      unit: 'Kg/m²',
       min: 18.5,
       max: 24.9
     },
@@ -132,7 +132,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.today = this.formatDate(new Date());
+    this.today = this.formatDate(datefns.startOfToday());
   }
 
   ngAfterViewInit() {
@@ -199,8 +199,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   getAttendance(folderNo: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    const today = this.formatDate(datefn.startOfToday());
-    this.opdService.getAttendance(folderNo, today).pipe(first())
+    this.opdService.getAttendance(folderNo, this.today).pipe(first())
       .subscribe(data => {
         this.isLoadingData = false;
         this.attendance = data;

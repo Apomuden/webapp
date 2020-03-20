@@ -21,6 +21,7 @@ export class OpdService {
   }
 
   getAttendance(folderNo = '', attendanceDate: string) {
+    console.log(attendanceDate);
     const url = `${environment.apiBaseUrl}/registry/attendance/byfolder`;
     return this.http.get<any>(url, {
       params: {
@@ -37,11 +38,45 @@ export class OpdService {
     ));
   }
 
+  getConsultation(folderNo = '', attendanceDate: string) {
+    const url = `${environment.apiBaseUrl}/registry/consultationservicerequests`;
+    return this.http.get<any>(url, {
+      params: {
+        'folder_no': folderNo,
+        'attendance_date': attendanceDate
+      },
+    }).pipe(map(
+      res => {
+        if (res && res.data.length > 0) {
+          return res.data[0];
+        }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+
   getPatient(folderNo = '') {
     const url = `${environment.apiBaseUrl}/registry/patients/single`;
     return this.http.get<any>(url, {
       params: {
         'folder_no': folderNo
+      }
+    }).pipe(map(
+      res => {
+        if (res) {
+          return res.data;
+        }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+
+  getPatientVitals(patient_id = '', attendance_date: string) {
+    const url = `${environment.apiBaseUrl}/registry/patientvitals`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patient_id,
+        'created_at': attendance_date,
       }
     }).pipe(map(
       res => {
