@@ -4,29 +4,29 @@ import { ThemeConstantService } from "./services/theme-constant.service";
 import { SearchPipe } from "./pipes/search.pipe";
 
 @NgModule({
-    exports: [
-        NzGridModule,
-        NzFormModule,
-        NzInputModule,
-        NzSelectModule,
-        NzDatePickerModule,
-        NzIconModule,
-        NzInputNumberModule,
-        NzSwitchModule,
-        NzStepsModule,
-        NzButtonModule,
-    ],
-    imports: [
-        NzStepsModule,
-        NzButtonModule,
-        NzGridModule,
-        NzFormModule,
-        NzInputModule,
-        NzSelectModule,
-        NzDatePickerModule,
-        NzIconModule,
-        NzInputNumberModule,
-        NzSwitchModule,
-    ],
+  exports: [
+    NzGridModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzDatePickerModule,
+    NzIconModule,
+    NzInputNumberModule,
+    NzSwitchModule,
+    NzStepsModule,
+    NzButtonModule,
+  ],
+  imports: [
+    NzStepsModule,
+    NzButtonModule,
+    NzGridModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzDatePickerModule,
+    NzIconModule,
+    NzInputNumberModule,
+    NzSwitchModule,
+  ],
 })
 export class AntModule { }

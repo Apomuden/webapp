@@ -1,3 +1,4 @@
+import { CustomAutoFocusDirective } from './custom-auto-focus.directive';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VitalFormComponent } from './vital-form/vital-form.component';
@@ -7,7 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { PatientQueueComponent } from './patient-queue/patient-queue.component';
 
 @NgModule({
-  declarations: [VitalFormComponent, PatientQueueComponent],
+  declarations: [VitalFormComponent, PatientQueueComponent, CustomAutoFocusDirective],
   imports: [
     CommonModule,
     OpdRoutingModule,
