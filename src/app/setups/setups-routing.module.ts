@@ -72,7 +72,7 @@ const routes: Routes = [
         component: ClinicsComponent,
         canActivate: [AuthGuard],
         data: {
-          title: 'Consultation'
+          title: 'Clinics'
         }
       },
       {
