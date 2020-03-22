@@ -47,6 +47,15 @@ import { AgeCategorySetupComponent } from './pages/age-category-setup/age-catego
 import { AgeClassificationSetupComponent } from './pages/age-classification-setup/age-classification-setup.component';
 import { ConsultationComponent } from './categories/consultation/consultation.component';
 import { MedicalHistoryCategoryComponent } from './pages/medical-history-category/medical-history-category.component';
+import { AllergyHistoryCategoryComponent } from './pages/allergy-history-category/allergy-history-category.component';
+import { FamilyHistoryCategoryComponent } from './pages/family-history-category/family-history-category.component';
+import { MedicineHistoryCategoryComponent } from './pages/medicine-history-category/medicine-history-category.component';
+import { SocialHistoryCategoryComponent } from './pages/social-history-category/social-history-category.component';
+import { SurgicalHistoryCategoryComponent } from './pages/surgical-history-category/surgical-history-category.component';
+import { IllnessTypeComponent } from './pages/illness-type/illness-type.component';
+import { DischargeReasonComponent } from './pages/discharge-reason/discharge-reason.component';
+import { ComplainTypeComponent } from './pages/complain-type/complain-type.component';
+import { ComplaintComponent } from './pages/complaint/complaint.component';
 
 @NgModule({
   declarations: [
@@ -91,7 +100,16 @@ import { MedicalHistoryCategoryComponent } from './pages/medical-history-categor
     ClinicTypeSetupComponent,
     ClinicServiceSetupComponent,
     ConsultationComponent,
-    MedicalHistoryCategoryComponent
+    MedicalHistoryCategoryComponent,
+    AllergyHistoryCategoryComponent,
+    FamilyHistoryCategoryComponent,
+    MedicineHistoryCategoryComponent,
+    SocialHistoryCategoryComponent,
+    SurgicalHistoryCategoryComponent,
+    IllnessTypeComponent,
+    DischargeReasonComponent,
+    ComplainTypeComponent,
+    ComplaintComponent
   ],
   imports: [
     CommonModule,

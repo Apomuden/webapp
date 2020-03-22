@@ -1505,6 +1505,13 @@ export class SetupService {
   genericGet(resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.get<any>(url).pipe(map(res => {
+      if (res) {
+        for (let i = 0; i < res.data.length; i++) {
+          res.data[i].isActivated =
+            res.data[i].status === 'ACTIVE' ? true : false;
+        }
+      }
+
       return res ? res.data : [];
     },
       err => {

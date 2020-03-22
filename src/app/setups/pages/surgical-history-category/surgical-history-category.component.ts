@@ -5,11 +5,11 @@ import { Component, OnInit } from '@angular/core';
 import { SetupService } from 'src/app/shared/services/setup.service';
 
 @Component({
-  selector: 'app-medical-history-category',
-  templateUrl: './medical-history-category.component.html',
-  styleUrls: ['./medical-history-category.component.css']
+  selector: 'app-surgical-history-category',
+  templateUrl: './surgical-history-category.component.html',
+  styleUrls: ['./surgical-history-category.component.css']
 })
-export class MedicalHistoryCategoryComponent implements OnInit {
+export class SurgicalHistoryCategoryComponent implements OnInit {
   createCategoryModalVisible = false;
   isLoadingItems = false;
   addItemModalVisible = false;
@@ -46,13 +46,13 @@ export class MedicalHistoryCategoryComponent implements OnInit {
     this.updateForm = this.fb.group({
       name: [null, Validators.required]
     });
-    this.getMedicalHistoryCategories();
+    this.getSurgicalHistoryCategories();
   }
 
 
-  getMedicalHistoryCategories() {
+  getSurgicalHistoryCategories() {
     this.isLoadingCategories = true;
-    this.setup.getHistoryCategories('setups/medicalhistorycategories')
+    this.setup.getHistoryCategories('setups/surgicalhistorycategories')
       .pipe(first())
       .subscribe(
         res => {
@@ -76,10 +76,10 @@ export class MedicalHistoryCategoryComponent implements OnInit {
   getHistoryItems(selectedCategory: any) {
     this.selectedCategory = selectedCategory;
     this.isLoadingItems = true;
-    this.setup.genericGet('setups/medicalhistories').pipe(first()).subscribe(
+    this.setup.genericGet('setups/surgicalhistories').pipe(first()).subscribe(
       res => {
         this.isLoadingItems = false;
-        this.categoryList = res.filter(item => item.medical_history_category_id === selectedCategory.id);
+        this.categoryList = res.filter(item => item.surgical_history_category_id === selectedCategory.id);
       },
       err => {
         this.isLoadingItems = false;
@@ -95,12 +95,12 @@ export class MedicalHistoryCategoryComponent implements OnInit {
   createCategory() {
     if (this.createCategoryForm.valid) {
       this.isCreatingCategory = true;
-      this.setup.createHistoryCategory('setups/medicalhistorycategories',
+      this.setup.createHistoryCategory('setups/surgicalhistorycategories',
         { ...this.createCategoryForm.value, status: 'ACTIVE' }).pipe(first()).subscribe(
           res => {
             this.isCreatingCategory = false;
             this.notification.success('Success', 'Category Created');
-            this.getMedicalHistoryCategories();
+            this.getSurgicalHistoryCategories();
             this.createCategoryModalVisible = false;
             this.createCategoryForm.reset();
           },
@@ -123,10 +123,10 @@ export class MedicalHistoryCategoryComponent implements OnInit {
   createItem() {
     if (this.createItemForm.valid) {
       this.isCreatingItem = true;
-      this.setup.genericPost('setups/medicalhistories',
+      this.setup.genericPost('setups/surgicalhistories',
         {
           ...this.createItemForm.value, status: 'ACTIVE',
-          medical_history_category_id: this.selectedCategory.id
+          surgical_history_category_id: this.selectedCategory.id
         }).pipe(first()).subscribe(
           res => {
             this.isCreatingItem = false;
@@ -146,12 +146,12 @@ export class MedicalHistoryCategoryComponent implements OnInit {
   }
   deleteCategory(category) {
     if (category) {
-      this.setup.deleteSetup(`setups/medicalhistorycategories/${category.id}`).pipe(first()).subscribe(
+      this.setup.deleteSetup(`setups/surgicalhistorycategories/${category.id}`).pipe(first()).subscribe(
         res => {
           if (res) {
             this.notification.success('Success', 'Category deleted');
             this.selectedCategory = null;
-            this.getMedicalHistoryCategories();
+            this.getSurgicalHistoryCategories();
           } else {
             this.notification.error('Error', 'Category could not be deleted');
           }
@@ -165,7 +165,7 @@ export class MedicalHistoryCategoryComponent implements OnInit {
   }
   deleteItem(item) {
     if (item) {
-      this.setup.deleteSetup(`setups/medicalhistories/${item.id}`).pipe(first()).subscribe(
+      this.setup.deleteSetup(`setups/surgicalhistories/${item.id}`).pipe(first()).subscribe(
         res => {
           if (res) {
             this.notification.success('Success', 'Item deleted');
@@ -197,14 +197,14 @@ export class MedicalHistoryCategoryComponent implements OnInit {
   update() {
     if (this.updateForm.valid) {
       this.isUpdating = true;
-      this.setup.updateSetup(this.updateForm.value, `setups/medicalhistorycategories/${this.categoryId}`)
+      this.setup.updateSetup(this.updateForm.value, `setups/surgicalhistorycategories/${this.categoryId}`)
         .pipe(first()).subscribe(
           res => {
             this.isUpdating = false;
             this.updateModalVisible = false;
             if (res) {
               this.notification.success('Success', 'Successfully updated');
-              this.getMedicalHistoryCategories();
+              this.getSurgicalHistoryCategories();
               this.updateForm.reset();
             } else {
               this.notification.error('Error', 'Could not update');

@@ -3,7 +3,7 @@
     <nz-card>
       <button nz-button nzType="primary" (click)="showCreateCategoryModal()" class="m-t-10" style="float:right;">New <i
           nz-icon nzType="plus" nzTheme="outline"></i></button>
-      <h3 [ngStyle]="{ margin: '16px 0' }">Medical History Category</h3>
+      <h3 [ngStyle]="{ margin: '16px 0' }">Surgical History Category</h3>
       <nz-modal [(nzVisible)]="createCategoryModalVisible" [nzTitle]="addCategoryModalTitle"
         [nzContent]="addCategoryModalContent" [nzFooter]="addCategoryModalFooter" (nzOnCancel)="closeCreateModal()">
         <ng-template #addCategoryModalTitle>
@@ -115,7 +115,7 @@
   </div>
   <div nz-col [nzXs]="{ span: 24}" [nzLg]="{ span: 11 }">
     <nz-card *ngIf="selectedCategory">
-      <h3 [ngStyle]="{ margin: '16px 0' }">Medical History List For {{selectedCategory.name}}</h3>
+      <h3 [ngStyle]="{ margin: '16px 0' }">Surgical History List For {{selectedCategory.name}}</h3>
       <nz-skeleton [nzActive]="true" [nzLoading]="isLoadingItems">
         <nz-list [nzDataSource]="categoryList" nzBordered [nzItemLayout]="'horizontal'" [nzRenderItem]="item"
           nzSize="small">
