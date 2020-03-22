@@ -321,6 +321,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   processData() {
+    console.log(this.formatDateTime(this.attendanceDateControl.value));
     return {
       order_type: this.requestForm.get('orderType').value as string,
       service_quantity: this.qtyControl.value as number,
@@ -336,28 +337,39 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       patient_sponsor_id: (this.billedControl.value === 0) ? null : this.billedControl.value,
       billing_sponsor_id: (this.billedControl.value === 0) ? null :
         this.getSelectedSponsorPermit(this.billedControl.value).billing_sponsor.id,
-      attendance_date: this.formatDate(this.attendanceDateControl.value),
+      attendance_date: this.formatDateTime(this.attendanceDateControl.value),
       card_serial_no: this.permit.card_serial_no,
       member_id: this.permit.member_id,
       staff_id: this.permit.staff_id,
     };
   }
 
-  formatDate(date: Date): string {
+  formatDateTime(date: Date): string {
     if (!date) {
       return null;
     }
+    let minute = '' + (date.getUTCMinutes());
+    let hour = '' + (date.getUTCHours());
+    let seconds = '' + (date.getUTCSeconds());
     let month = '' + (date.getMonth() + 1);
     let day = '' + date.getDate();
     const year = date.getFullYear();
 
+    if (minute.length < 2) {
+      minute = '0' + minute;
+    }
+    if (hour.length < 2) {
+      hour = '0' + hour;
+    }
+    if (seconds.length < 2) {
+      seconds = '0' + seconds;
+    }
     if (month.length < 2) {
       month = '0' + month;
     }
     if (day.length < 2) {
       day = '0' + day;
     }
-
-    return [year, month, day].join('-');
+    return `${[year, month, day].join('-')} ${[hour, minute, seconds].join(':')}`;
   }
 }

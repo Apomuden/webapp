@@ -136,7 +136,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
       .subscribe(folderNo => {
         if (folderNo && this.folderNoControl.valid) {
-          this.getAttendance(folderNo);
+          this.getPatient(folderNo);
         } else {
           this.message = 'Please enter a valid folder number to fill this form.';
           this.searchInitialized = false;
@@ -153,14 +153,14 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  getAttendance(folderNo: string) {
+  getConsultation(patientId: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    this.opdService.getAttendance(folderNo, this.today).pipe(first())
+    this.opdService.getConsultation(patientId, this.today).pipe(first())
       .subscribe(data => {
         this.isLoadingData = false;
         this.attendance = data;
-        this.getPatient(folderNo);
+        this.getPatientVitals(this.patient.id);
       }, e => {
         console.log(e);
         this.patient = null;
@@ -177,7 +177,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isLoadingData = false;
         this.patient = data;
         this.patient.age = this.calculateAge(this.patient.dob);
-        this.getPatientVitals(this.patient.id);
+        this.getConsultation(this.patient.id);
       }, e => {
         console.log(e);
         this.message = 'Folder not found';
@@ -200,6 +200,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
             unit: 'mmHg'
           };
         }
+        // this.getHistory();
       }, e => {
         console.log(e);
         this.isLoadingData = false;
@@ -210,22 +211,10 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     if (!date) {
       return null;
     }
-    let minute = '' + (date.getUTCMinutes());
-    let hour = '' + (date.getUTCHours());
-    let seconds = '' + (date.getUTCSeconds());
     let month = '' + (date.getMonth() + 1);
     let day = '' + date.getDate();
     const year = date.getFullYear();
 
-    if (minute.length < 2) {
-      minute = '0' + month;
-    }
-    if (hour.length < 2) {
-      hour = '0' + month;
-    }
-    if (seconds.length < 2) {
-      seconds = '0' + month;
-    }
     if (month.length < 2) {
       month = '0' + month;
     }
@@ -272,6 +261,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     this.patient = null;
     this.searchInitialized = false;
     this.folderNoControl.reset();
+    this.vitals = null;
   }
 
   previous() {

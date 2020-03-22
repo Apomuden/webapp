@@ -38,16 +38,17 @@ export class OpdService {
     ));
   }
 
-  getConsultation(folderNo = '', attendanceDate: string) {
+  getConsultation(patientId = '', attendanceDate: string) {
     const url = `${environment.apiBaseUrl}/registry/consultationservicerequests`;
     return this.http.get<any>(url, {
       params: {
-        'folder_no': folderNo,
+        'patient_id': patientId,
         'attendance_date': attendanceDate
       },
     }).pipe(map(
       res => {
         if (res && res.data.length > 0) {
+          console.log(res.data);
           return res.data[0];
         }
         throw new HttpErrorResponse({ status: 404 });
@@ -72,16 +73,16 @@ export class OpdService {
   }
 
   getPatientVitals(patient_id = '', attendance_date: string) {
-    const url = `${environment.apiBaseUrl}/registry/patientvitals`;
+    const url = `${environment.apiBaseUrl}/registry/patientvitals/byattendancedate`;
     return this.http.get<any>(url, {
       params: {
         'patient_id': patient_id,
-        'created_at': attendance_date,
+        'attendance_date': attendance_date,
       }
     }).pipe(map(
       res => {
-        if (res) {
-          return res.data;
+        if (res && res.data && res.data.length > 0) {
+          return res.data[0];
         }
         throw new HttpErrorResponse({ status: 404 });
       }

@@ -1,10 +1,9 @@
 <nz-row>
   <nz-col [nzSpan]="patient ? 24 : 16">
-    <nz-card nz-row *ngIf="patient">
-
+    <nz-card nz-row *ngIf="patient && attendance">
       <nz-collapse nzAccordion>
         <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active">
-          <div *ngIf="panel.name === 'Vitals'; then vitalDetails else patientDetals">here is ignored</div>
+          <div *ngIf="panel.name === 'Vitals'; then vitalDetails else patientDetals"></div>
         </nz-collapse-panel>
       </nz-collapse>
     </nz-card>
@@ -20,7 +19,7 @@
       </div>
 
       <!-- consultation steps -->
-      <nz-steps *ngIf="patient" nzSize="small" [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
+      <nz-steps *ngIf="patient && attendance" nzSize="small" [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
         <nz-step nzTitle="PATIENT HISTORY"></nz-step>
         <nz-step nzTitle="PHYSICAL EXAMINATION"></nz-step>
         <nz-step nzTitle="DIAGNOSIS"></nz-step>
@@ -31,12 +30,25 @@
       </nz-steps>
 
       <ng-template #progressTemplate let-dot let-status="status" let-index="index">
-        <span nz-popover nzContent="steps {{ index }} status: {{ status }}" style="margin-left: -100%;">
+        <span nz-popover nzContent="{{ status }}" style="margin-left: -100%;">
           <ng-template [ngTemplateOutlet]="dot"></ng-template>
         </span>
       </ng-template>
 
-      <div *ngIf="patient" class="steps-content">
+      <div *ngIf="patient && attendance" class="steps-content">
+        <div *ngIf="stepIndex === 0">
+          <nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
+            <nz-tab nzTitle="Previous History">
+              <p>Content of previous history tab</p>
+            </nz-tab>
+
+            <nz-tab nzTitle="Current Entry">
+              <p>Content of current entry tab</p>
+            </nz-tab>
+          </nz-tabset>
+        </div>
+
+
         <nz-row nzType="flex" nzJustify="center">
           <nz-col>
             <nz-button-group>
@@ -51,7 +63,7 @@
           </nz-col>
         </nz-row>
       </div>
-      <!-- <nz-table *ngIf="patient" nzTemplateMode nzBordered nzSize="small">
+      <!-- <nz-table *ngIf="patient && attendance" nzTemplateMode nzBordered nzSize="small">
         <thead>
           <tr>
             <th nzWidth="34%">Vital</th>
@@ -149,7 +161,8 @@
 </ng-template>
 
 <ng-template #patientDetals>
-  <nz-descriptions nzSize="small" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+  <nz-descriptions *ngIf="patient && attendance" nzSize="small" nzBordered
+    [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
     <nz-descriptions-item nzTitle="Folder #">
       {{patient.folder_no}}
     </nz-descriptions-item>
@@ -160,10 +173,10 @@
       {{patient.gender}}
     </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Age">
-      {{patient.age}} year(s)
+      {{attendance.age}} year(s)
     </nz-descriptions-item>
     <nz-descriptions-item *ngIf="attendance" nzTitle="Funding Type">
-      {{attendance.funding_type}}
+      {{attendance.funding_type_name}}
     </nz-descriptions-item>
     <nz-descriptions-item *ngIf="attendance" nzTitle="Patient Status">
       {{attendance.patient_status}}

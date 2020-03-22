@@ -359,6 +359,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   attendanceClick(attendance: any) {
+    console.log(attendance);
     this.folderNoControl.setValue(attendance.folder_no);
   }
 }
