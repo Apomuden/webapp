@@ -321,7 +321,6 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   processData() {
-    console.log(this.formatDateTime(this.attendanceDateControl.value));
     return {
       order_type: this.requestForm.get('orderType').value as string,
       service_quantity: this.qtyControl.value as number,

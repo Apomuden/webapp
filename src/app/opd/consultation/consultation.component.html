@@ -36,14 +36,170 @@
       </ng-template>
 
       <div *ngIf="patient && attendance" class="steps-content">
+        <!-- patient history step -->
         <div *ngIf="stepIndex === 0">
           <nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
-            <nz-tab nzTitle="Previous History">
-              <p>Content of previous history tab</p>
+            <nz-tab *ngIf="previousHistory" nzTitle="Previous History">
+              <nz-comment nzAuthor="Presenting Complaints">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.presenting_complaints }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="History of Complaints">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.presenting_complaints_history }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="On Direct Questioning">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.direct_questions }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="Past Medical History">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.past_medical_history }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="Surgical History">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.surgical_history }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="Medicine History">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.medicine_history }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="Allergies History">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.allergies_history }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="Family History">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.family_history }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
+
+              <nz-comment nzAuthor="Social History">
+                <nz-comment-content>
+                  <p>
+                    {{ previousHistory.social_history }}
+                  </p>
+                </nz-comment-content>
+              </nz-comment>
             </nz-tab>
 
             <nz-tab nzTitle="Current Entry">
-              <p>Content of current entry tab</p>
+              <form nz-form nzLayout="horizontal" [formGroup]="patientHistoryForm">
+
+                <nz-form-item>
+                  <nz-form-label nzRequired nzFor="religion">Relationship</nz-form-label>
+                  <nz-form-control nzErrorTip="Please select relationship">
+                    <nz-select nzShowSearch nzPlaceHolder="Select a relationship" formControlName="complaintRelation">
+                      <nz-option *ngFor="let relationship of relationships" [nzLabel]="relationship.name"
+                        [nzValue]="relationship.id">
+                      </nz-option>
+                    </nz-select>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="presentComplaints">Presenting Complaints <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="presentComplaints" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="historyComplaints">History of Complaints <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="historyComplaints" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="directQuestioning">On Direct Questioning <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="directQuestioning" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="pastMedicalHistory">Past Medical History <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="pastMedicalHistory" nz-input
+                      placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="medicineHistory">Medicine History <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="medicineHistory" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="surgicalHistory">Surgical History <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="surgicalHistory" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="allergiesHistory">Allergy History <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="allergiesHistory" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="familyHistory">Family History <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="familyHistory" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+
+                <nz-form-item nz-row>
+                  <nz-form-label nzFor="socialHistory">Social History <button nz-button nzType="primary"
+                      nzShape="circle"><i nz-icon nzType="edit" nzTheme="twotone"></i></button></nz-form-label>
+                  <nz-form-control>
+                    <textarea formControlName="socialHistory" nz-input placeholder="Enter findings here"></textarea>
+                  </nz-form-control>
+                </nz-form-item>
+              </form>
             </nz-tab>
           </nz-tabset>
         </div>

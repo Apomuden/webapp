@@ -93,4 +93,29 @@ export class OpdService {
     const url = `${environment.apiBaseUrl}/registry/patientvitals`;
     return this.http.post(url, data);
   }
+
+  savePatientHistory(data: any, isUpdating: boolean) {
+    const url = `${environment.apiBaseUrl}/registry/patienthistories`;
+    if (isUpdating) {
+      return this.http.put(url, data);
+    } else {
+      return this.http.post(url, data);
+    }
+  }
+
+  getPatientHistory(patient_id: any) {
+    const url = `${environment.apiBaseUrl}/registry/patienthistories`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patient_id,
+      }
+    }).pipe(map(
+      res => {
+        if (res && res.data && res.data.length > 0) {
+          return res.data[0];
+        }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
 }

@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { debounceTime, first } from 'rxjs/operators';
+import { debounceTime, first, take } from 'rxjs/operators';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { OpdService } from '../services/opd.service';
 import { NzInputDirective, NzNotificationService, NzInputGroupComponent, NzModalRef, NzModalService } from 'ng-zorro-antd';
 import * as datefns from 'date-fns';
+import { AuthenticationService } from 'src/app/shared/services/authentication.service';
+import { User } from 'src/app/shared/interfaces/user.type';
+import { SetupService } from 'src/app/shared/services/setup.service';
 
 @Component({
   selector: 'app-vital-form',
@@ -18,29 +21,19 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
 
   folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
 
-  steps = [
-    {
-      name: 'Patient History',
-    },
-    {
-      name: 'Physical Examination',
-    },
-    {
-      name: 'Diagnosis',
-    },
-    {
-      name: 'Investigation',
-    },
-    {
-      name: 'Prescription',
-    },
-    {
-      name: 'Procedure',
-    },
-    {
-      name: 'Clinical Notes',
-    },
-  ];
+  patientHistoryForm = this.fb.group({
+    presentComplaints: [null],
+    historyComplaints: [null],
+    directQuestioning: [null],
+    pastMedicalHistory: [null],
+    medicineHistory: [null],
+    surgicalHistory: [null],
+    allergiesHistory: [null],
+    familyHistory: [null],
+    socialHistory: [null],
+    complaintRelation: [0],
+  });
+  previousHistory: any;
   panels = [
     {
       active: true,
@@ -51,6 +44,11 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
       name: 'Vitals'
     },
   ];
+  defaultRelationship = {
+    name: 'Self',
+    id: 0,
+  };
+  relationships = [this.defaultRelationship];
   commentControl = this.fb.control(null);
   doctorControl = this.fb.control(null, Validators.required);
 
@@ -115,11 +113,14 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
       max: 24.9
     },
   ];
+  user: User;
 
   constructor(
     private fb: FormBuilder,
     private opdService: OpdService,
     private notificationS: NzNotificationService,
+    private authService: AuthenticationService,
+    private setUpService: SetupService,
     private modalService: NzModalService,
   ) { }
 
@@ -130,18 +131,27 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     this.today = this.formatDate(datefns.startOfToday());
+    this.setUpService.getRelationships().pipe(first())
+      .subscribe(res => {
+        this.relationships.push(...res.data);
+      });
   }
 
   ngAfterViewInit() {
-    this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
-      .subscribe(folderNo => {
-        if (folderNo && this.folderNoControl.valid) {
-          this.getPatient(folderNo);
-        } else {
-          this.message = 'Please enter a valid folder number to fill this form.';
-          this.searchInitialized = false;
-        }
-      });
+    this.user = this.authService.currentUserValue;
+    if (this.user) {
+      this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
+        .subscribe(folderNo => {
+          if (folderNo && this.folderNoControl.valid) {
+            this.getPatient(folderNo);
+          } else {
+            this.message = 'Please enter a valid folder number to fill this form.';
+            this.searchInitialized = false;
+          }
+        });
+    } else {
+      this.notificationS.error('Error', 'Could not initialize this page.');
+    }
   }
 
   ngOnDestroy() { }
@@ -200,10 +210,18 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
             unit: 'mmHg'
           };
         }
-        // this.getHistory();
+        this.getPatientHistory(this.patient.id);
       }, e => {
         console.log(e);
         this.isLoadingData = false;
+      });
+  }
+
+  getPatientHistory(patientId: number) {
+    this.opdService.getPatientHistory(patientId).pipe(first())
+      .subscribe(history => {
+        console.log(history);
+        this.previousHistory = history;
       });
   }
 
@@ -269,7 +287,21 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   next() {
-    this.stepIndex += 1;
+    if (this.stepIndex === 0) {
+      const data = this.processPatientHistoryData();
+      const isUpdating = this.previousHistory !== null;
+      this.opdService.savePatientHistory(data, isUpdating).pipe(first())
+        .subscribe(res => {
+          if (res) {
+            this.stepIndex += 1;
+            this.patientHistoryForm.reset();
+            this.getPatientHistory(this.patient.id);
+          }
+        }, error => {
+          console.error(error);
+          this.notificationS.error('Error', 'Unable to proceed');
+        });
+    }
   }
 
   done() {
@@ -289,6 +321,55 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
 
   processData() {
     return null;
+  }
+
+  processPatientHistoryData() {
+    return {
+      'patient_id': this.patient.id,
+      'consultation_id': this.attendance.id,
+      'patient_status': this.attendance.patient_status,
+      'consultation_date': this.formatDateTime(new Date()),
+      'presenting_complaints': this.patientHistoryForm.get('presentComplaints').value,
+      'presenting_complaints_history': this.patientHistoryForm.get('historyComplaints').value,
+      'direct_questions': this.patientHistoryForm.get('directQuestioning').value,
+      'past_medical_history': this.patientHistoryForm.get('pastMedicalHistory').value,
+      'surgical_history': this.patientHistoryForm.get('surgicalHistory').value,
+      'medicine_history': this.patientHistoryForm.get('medicineHistory').value,
+      'allergies_history': this.patientHistoryForm.get('allergiesHistory').value,
+      'family_history': this.patientHistoryForm.get('familyHistory').value,
+      'social_history': this.patientHistoryForm.get('socialHistory').value,
+      'consultant_id': this.user.id,
+      'chief_complaint_relation_id': (this.patientHistoryForm.get('complaintRelation').value === 0) ? null : this.patientHistoryForm.get('complaintRelation').value,
+    };
+  }
+
+  formatDateTime(date: Date): string {
+    if (!date) {
+      return null;
+    }
+    let minute = '' + (date.getUTCMinutes());
+    let hour = '' + (date.getUTCHours());
+    let seconds = '' + (date.getUTCSeconds());
+    let month = '' + (date.getMonth() + 1);
+    let day = '' + date.getDate();
+    const year = date.getFullYear();
+
+    if (minute.length < 2) {
+      minute = '0' + minute;
+    }
+    if (hour.length < 2) {
+      hour = '0' + hour;
+    }
+    if (seconds.length < 2) {
+      seconds = '0' + seconds;
+    }
+    if (month.length < 2) {
+      month = '0' + month;
+    }
+    if (day.length < 2) {
+      day = '0' + day;
+    }
+    return `${[year, month, day].join('-')} ${[hour, minute, seconds].join(':')}`;
   }
 
   attendanceClick(attendance: any) {

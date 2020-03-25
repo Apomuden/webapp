@@ -319,10 +319,10 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.opdService.saveVitals(data).pipe(first())
       .subscribe(res => {
         this.submiting = false;
-        console.log(res);
         this.doctorsModalVisible = true;
       }, e => {
         this.submiting = false;
+        this.notificationS.error('Error', 'Could not save vitals');
         console.error(e);
       });
   }
