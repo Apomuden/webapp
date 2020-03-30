@@ -1,7 +1,11 @@
 <nz-row>
+<<<<<<< HEAD
   <nz-col [nzSpan]="isQueueVisible?16:24">
+=======
+  <nz-col [nzSpan]="patient ? 24 : 16">
+>>>>>>> Feature/consultation
     <nz-card nz-row *ngIf="patient">
-      <nz-descriptions nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+      <nz-descriptions nzSize="small" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
         <nz-descriptions-item nzTitle="Folder #">
           {{patient.folder_no}}
         </nz-descriptions-item>
@@ -123,11 +127,17 @@
     </nz-card>
   </nz-col>
 
+<<<<<<< HEAD
   <nz-col [nzSpan]="8">
     <app-patient-queue *ngIf="today && isQueueVisible" [queuePath]="'/registry/attendance?attendance_date=' + today"
       action="Check Vital" (queueClick)="attendanceClick($event)"></app-patient-queue>
+=======
+  <nz-col *ngIf="!patient" [nzSpan]="8">
+    <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Check Vital" (queueClick)="attendanceClick($event)"></app-patient-queue>
+>>>>>>> Feature/consultation
   </nz-col>
 </nz-row>
+
 <nz-modal [nzMaskClosable]="false" [nzClosable]="true" [nzVisible]="doctorsModalVisible" *ngIf="attendance"
   [nzTitle]="'Assign Prescriber from ' + attendance.clinic_name" (nzOnCancel)="handleCancel()">
   <form>

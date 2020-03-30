@@ -162,6 +162,14 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       },
+      {
+        path: '/opd/consultation',
+        title: 'Consultation',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
     ]
   }
 ];

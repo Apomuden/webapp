@@ -21,6 +21,7 @@ export class OpdService {
   }
 
   getAttendance(folderNo = '', attendanceDate: string) {
+    console.log(attendanceDate);
     const url = `${environment.apiBaseUrl}/registry/attendance/byfolder`;
     return this.http.get<any>(url, {
       params: {
@@ -30,6 +31,24 @@ export class OpdService {
     }).pipe(map(
       res => {
         if (res && res.data.length > 0) {
+          return res.data[0];
+        }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+
+  getConsultation(patientId = '', attendanceDate: string) {
+    const url = `${environment.apiBaseUrl}/registry/consultationservicerequests`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patientId,
+        'attendance_date': attendanceDate
+      },
+    }).pipe(map(
+      res => {
+        if (res && res.data.length > 0) {
+          console.log(res.data);
           return res.data[0];
         }
         throw new HttpErrorResponse({ status: 404 });
@@ -53,8 +72,50 @@ export class OpdService {
     ));
   }
 
+  getPatientVitals(patient_id = '', attendance_date: string) {
+    const url = `${environment.apiBaseUrl}/registry/patientvitals/byattendancedate`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patient_id,
+        'attendance_date': attendance_date,
+      }
+    }).pipe(map(
+      res => {
+        if (res && res.data && res.data.length > 0) {
+          return res.data[0];
+        }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+
   saveVitals(data: any) {
     const url = `${environment.apiBaseUrl}/registry/patientvitals`;
     return this.http.post(url, data);
+  }
+
+  savePatientHistory(data: any, isUpdating: boolean) {
+    const url = `${environment.apiBaseUrl}/registry/patienthistories`;
+    if (isUpdating) {
+      return this.http.put(url, data);
+    } else {
+      return this.http.post(url, data);
+    }
+  }
+
+  getPatientHistory(patient_id: any) {
+    const url = `${environment.apiBaseUrl}/registry/patienthistories`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patient_id,
+      }
+    }).pipe(map(
+      res => {
+        if (res && res.data && res.data.length > 0) {
+          return res.data[0];
+        }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
   }
 }
