@@ -9,11 +9,7 @@ import { PatientQueueComponent } from './patient-queue/patient-queue.component';
 import { ConsultationComponent } from './consultation/consultation.component';
 
 @NgModule({
-<<<<<<< HEAD
-  declarations: [VitalFormComponent, PatientQueueComponent, CustomAutoFocusDirective],
-=======
   declarations: [VitalFormComponent, PatientQueueComponent, ConsultationComponent],
->>>>>>> Feature/consultation
   imports: [
     CommonModule,
     OpdRoutingModule,
