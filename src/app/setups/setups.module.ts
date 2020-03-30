@@ -56,6 +56,7 @@ import { DischargeReasonComponent } from './pages/discharge-reason/discharge-rea
 import { ComplainTypeComponent } from './pages/complain-type/complain-type.component';
 import { ComplaintComponent } from './pages/complaint/complaint.component';
 import { ClinicsComponent } from './categories/clinics/clinics.component';
+import { PhysicalExaminationCategoryComponent } from './pages/physical-examination-category/physical-examination-category.component';
 
 @NgModule({
   declarations: [
@@ -109,7 +110,8 @@ import { ClinicsComponent } from './categories/clinics/clinics.component';
     DischargeReasonComponent,
     ComplainTypeComponent,
     ComplaintComponent,
-    ClinicsComponent
+    ClinicsComponent,
+    PhysicalExaminationCategoryComponent
   ],
   imports: [
     CommonModule,
