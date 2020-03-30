@@ -117,7 +117,7 @@
               <form nz-form nzLayout="horizontal" [formGroup]="patientHistoryForm">
 
                 <nz-form-item>
-                  <nz-form-label nzRequired nzFor="religion">Relationship</nz-form-label>
+                  <nz-form-label nzRequired nzFor="religion">Chief Complaint By</nz-form-label>
                   <nz-form-control nzErrorTip="Please select relationship">
                     <nz-select nzShowSearch nzPlaceHolder="Select a relationship" formControlName="complaintRelation">
                       <nz-option *ngFor="let relationship of relationships" [nzLabel]="relationship.name"
