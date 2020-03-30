@@ -115,7 +115,7 @@
   </div>
   <div nz-col [nzXs]="{ span: 24}" [nzLg]="{ span: 11 }">
     <nz-card *ngIf="selectedCategory">
-      <h3 [ngStyle]="{ margin: '16px 0' }">Physical Examination List For {{selectedCategory.name}}</h3>
+      <h3 [ngStyle]="{ margin: '16px 0' }">Physical Examination Types For {{selectedCategory.name}}</h3>
       <nz-skeleton [nzActive]="true" [nzLoading]="isLoadingItems">
         <nz-list [nzDataSource]="categoryList" nzBordered [nzItemLayout]="'horizontal'" [nzRenderItem]="item"
           nzSize="small">

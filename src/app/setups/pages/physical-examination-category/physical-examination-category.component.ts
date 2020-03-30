@@ -58,6 +58,7 @@ export class PhysicalExaminationCategoryComponent implements OnInit {
         res => {
           this.isLoadingCategories = false;
           if (res) {
+            console.log(res);
             this.categories = res;
             if ((this.selectedCategory == null) && (this.categories.length > 0)) {
               this.selectedCategory = this.categories[0];
@@ -76,10 +77,12 @@ export class PhysicalExaminationCategoryComponent implements OnInit {
   getHistoryItems(selectedCategory: any) {
     this.selectedCategory = selectedCategory;
     this.isLoadingItems = true;
-    this.setup.genericGet('setups/physicalexaminations').pipe(first()).subscribe(
+    this.setup.genericGet('setups/physicalexaminationtypes').pipe(first()).subscribe(
       res => {
         this.isLoadingItems = false;
-        this.categoryList = res.filter(item => item.physical_examination_category_id === selectedCategory.id);
+        console.log(res);
+        // this.categoryList = res.filter(item => item.category_id === selectedCategory.id);
+        this.categoryList = res;
       },
       err => {
         this.isLoadingItems = false;
@@ -123,10 +126,10 @@ export class PhysicalExaminationCategoryComponent implements OnInit {
   createItem() {
     if (this.createItemForm.valid) {
       this.isCreatingItem = true;
-      this.setup.genericPost('setups/physicalexaminations',
+      this.setup.genericPost('setups/physicalexaminationtypes',
         {
           ...this.createItemForm.value, status: 'ACTIVE',
-          physical_examination_category_id: this.selectedCategory.id
+          category_id: this.selectedCategory.id
         }).pipe(first()).subscribe(
           res => {
             this.isCreatingItem = false;
@@ -165,7 +168,7 @@ export class PhysicalExaminationCategoryComponent implements OnInit {
   }
   deleteItem(item) {
     if (item) {
-      this.setup.deleteSetup(`setups/physicalexaminations/${item.id}`).pipe(first()).subscribe(
+      this.setup.deleteSetup(`setups/physicalexaminationtypes/${item.id}`).pipe(first()).subscribe(
         res => {
           if (res) {
             this.notification.success('Success', 'Item deleted');
