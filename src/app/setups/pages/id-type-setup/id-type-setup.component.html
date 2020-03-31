@@ -15,9 +15,12 @@
               <ng-template #moreAction>
                 <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
-              <nz-list-item-meta [nzTitle]="nzTitle">
+              <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDescription">
                 <ng-template #nzTitle>
                   <a>{{ item.name }}</a>
+                </ng-template>
+                <ng-template #nzDescription>
+                  <a>{{ item.expires ? 'Expires' : 'Does not expire' }}</a>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>
@@ -43,6 +46,11 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
+          <nz-row>
+            <nz-form-control [nzSpan]="16" [nzOffset]="8">
+              <label nz-checkbox formControlName="expires" name="expires">Expires?</label>
+            </nz-form-control>
+          </nz-row>
         </form>
       </ng-template>
 
@@ -60,6 +68,11 @@
         <nz-row>
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input [(ngModel)]="idType" name="name" placeholder="Input id type name" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row>
+          <nz-form-control [nzSpan]="24">
+            <label nz-checkbox [(ngModel)]="expires" name="expires">Expires?</label>
           </nz-form-control>
         </nz-row>
         <nz-row>
