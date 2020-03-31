@@ -83,7 +83,8 @@
         </ng-template>
       </nz-modal>
       <nz-skeleton [nzActive]="true" [nzLoading]="isLoadingCategories">
-        <nz-table #categoriesTable [nzData]="categories" nzBordered [nzShowPagination]="'false'">
+        <nz-table #categoriesTable [nzData]="categories" nzBordered [nzFrontPagination]="'false'"
+          [nzShowPagination]="'false'">
           <thead>
             <tr>
               <th>Category Name</th>

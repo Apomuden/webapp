@@ -58,14 +58,12 @@ export class PhysicalExaminationCategoryComponent implements OnInit {
         res => {
           this.isLoadingCategories = false;
           if (res) {
-            console.log(res);
             this.categories = res;
             if ((this.selectedCategory == null) && (this.categories.length > 0)) {
               this.selectedCategory = this.categories[0];
               this.getHistoryItems(this.categories[0]);
             }
           }
-
         }, err => {
           this.isLoadingCategories = false;
         }
@@ -80,9 +78,7 @@ export class PhysicalExaminationCategoryComponent implements OnInit {
     this.setup.genericGet('setups/physicalexaminationtypes').pipe(first()).subscribe(
       res => {
         this.isLoadingItems = false;
-        console.log(res);
-        // this.categoryList = res.filter(item => item.category_id === selectedCategory.id);
-        this.categoryList = res;
+        this.categoryList = res.filter(item => item.category_id === selectedCategory.id);
       },
       err => {
         this.isLoadingItems = false;
