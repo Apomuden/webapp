@@ -57,6 +57,8 @@ import { ComplainTypeComponent } from './pages/complain-type/complain-type.compo
 import { ComplaintComponent } from './pages/complaint/complaint.component';
 import { ClinicsComponent } from './categories/clinics/clinics.component';
 import { PhysicalExaminationCategoryComponent } from './pages/physical-examination-category/physical-examination-category.component';
+import { MohghsgroupingsComponent } from './pages/mohghsgroupings/mohghsgroupings.component';
+import { Icd10groupingsComponent } from './pages/icd10groupings/icd10groupings.component';
 
 @NgModule({
   declarations: [
@@ -111,7 +113,9 @@ import { PhysicalExaminationCategoryComponent } from './pages/physical-examinati
     ComplainTypeComponent,
     ComplaintComponent,
     ClinicsComponent,
-    PhysicalExaminationCategoryComponent
+    PhysicalExaminationCategoryComponent,
+    MohghsgroupingsComponent,
+    Icd10groupingsComponent
   ],
   imports: [
     CommonModule,
