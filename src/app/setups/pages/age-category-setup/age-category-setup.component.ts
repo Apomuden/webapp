@@ -249,6 +249,7 @@ export class AgeCategorySetupComponent implements OnInit, AfterViewInit, OnDestr
       .pipe(first())
       .subscribe(
         data => {
+          console.log(data.data);
           this.ageCategories = data.data;
           this.initLoading = false;
         },

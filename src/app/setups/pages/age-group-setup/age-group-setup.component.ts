@@ -237,7 +237,6 @@ export class AgeGroupSetupComponent
       .pipe(first())
       .subscribe(
         data => {
-          console.log(data.data);
           this.ageGroups = data.data;
           this.initLoading = false;
         },
