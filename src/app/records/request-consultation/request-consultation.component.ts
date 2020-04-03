@@ -7,6 +7,7 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from '../record.service';
 import { NzNotificationService } from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-request-consultation',
@@ -29,12 +30,12 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   clinicsloading = new BehaviorSubject(false);
   servicesLoading = new BehaviorSubject(false);
+  sponsorLoading = false;
   isLoadingData = false;
   searchInitialized = false;
   requesting = false;
 
   clinics = [];
-  sponsorPermits = [];
   services = [];
   patient: any;
   message = 'Please enter a valid folder number to fill this form.';
@@ -47,9 +48,11 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     member_id: null,
     staff_id: null,
     billing_sponsor: {
+      id: 0,
       sponsorship_type_name: 'Patient'
     }
   };
+  sponsorPermits = [this.patientSponsor];
   servicePrice: any;
   formatFee = (value: number) => `GHC ${value}`;
   parseFee = (value: string) => value.replace('GHC', '');
@@ -60,8 +63,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     private setupService: SetupService) {
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   ngAfterViewInit() {
     this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
@@ -198,14 +200,13 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   getPatientSponsorPermits(id: number) {
-    this.sponsorPermits = [];
+    this.sponsorLoading = true;
     this.recordService.getPatientSponsors(id)
       .pipe(first()).subscribe(res => {
         if (res && res.data) {
-          this.sponsorPermits.push(this.patientSponsor, ...res.data);
-        } else {
-          this.sponsorPermits.push(this.patientSponsor);
+          this.sponsorPermits.push(...res.data);
         }
+        this.sponsorLoading = false;
       }, error => {
       });
   }
@@ -273,8 +274,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   cancel(): void {
     this.patient = null;
-    this.sponsorPermits = [];
-    this.sponsorPermits.push(this.patientSponsor);
+    this.sponsorPermits = [this.patientSponsor];
     this.searchInitialized = false;
     this.requestForm.reset();
     this.requestForm.get('orderType').setValue('INTERNAL');
@@ -316,7 +316,6 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
         this.requesting = false;
         this.notificationS.error('Oops',
           `Failed to request consultation for ${this.patient.folder_no}. Consultation has probably been requested already.`);
-        console.log(error);
       });
   }
 
@@ -336,39 +335,10 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       patient_sponsor_id: (this.billedControl.value === 0) ? null : this.billedControl.value,
       billing_sponsor_id: (this.billedControl.value === 0) ? null :
         this.getSelectedSponsorPermit(this.billedControl.value).billing_sponsor.id,
-      attendance_date: this.formatDateTime(this.attendanceDateControl.value),
+      attendance_date: formatDate(this.attendanceDateControl.value, 'yyyy-MM-dd HH:mm:ss', 'en'),
       card_serial_no: this.permit.card_serial_no,
       member_id: this.permit.member_id,
       staff_id: this.permit.staff_id,
     };
-  }
-
-  formatDateTime(date: Date): string {
-    if (!date) {
-      return null;
-    }
-    let minute = '' + (date.getUTCMinutes());
-    let hour = '' + (date.getUTCHours());
-    let seconds = '' + (date.getUTCSeconds());
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (minute.length < 2) {
-      minute = '0' + minute;
-    }
-    if (hour.length < 2) {
-      hour = '0' + hour;
-    }
-    if (seconds.length < 2) {
-      seconds = '0' + seconds;
-    }
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-    return `${[year, month, day].join('-')} ${[hour, minute, seconds].join(':')}`;
   }
 }

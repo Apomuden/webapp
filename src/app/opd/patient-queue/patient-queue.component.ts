@@ -38,7 +38,13 @@ export class PatientQueueComponent implements OnInit, OnDestroy {
         this.opdService.getQueue(this.queuePath).pipe(first()).subscribe(data => {
           this.attendances = data;
           this.isLoading = false;
-        }, error => console.error(error));
+        }, error => {
+          this.isLoading = false;
+          if (error.url) {
+            console.error(error);
+          }
+        }
+        );
       });
     }
     /* if (!this.client) {

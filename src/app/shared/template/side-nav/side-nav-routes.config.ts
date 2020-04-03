@@ -161,9 +161,18 @@ export const ROUTES: SideNavInterface[] = [
         icon: '',
         iconTheme: '',
         submenu: []
-      },
+      }
+    ]
+  },
+  {
+    path: '/physician',
+    title: 'Physician Management',
+    iconType: 'fontawesome',
+    iconTheme: 'fas',
+    icon: 'fa-stethoscope',
+    submenu: [
       {
-        path: '/opd/consultation',
+        path: '/physician/consultation',
         title: 'Consultation',
         iconType: '',
         icon: '',

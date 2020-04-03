@@ -1,6 +1,6 @@
 <nz-row>
-  <nz-col [nzSpan]="patient ? 24 : 16">
-    <nz-card nz-row *ngIf="patient">
+  <nz-col [nzSpan]="consultation ? 24 : 16">
+    <nz-card nz-row *ngIf="consultation">
       <nz-descriptions nzSize="small" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
         <nz-descriptions-item nzTitle="Folder #">
           {{patient.folder_no}}
@@ -39,8 +39,8 @@
       </nz-descriptions>
     </nz-card>
     <nz-card>
-      <div nz-row [nzGutter]="24" *ngIf="!patient">
-        <nz-form-item nz-col [nzSpan]="6">
+      <div nz-row [nzGutter]="24" *ngIf="!consultation">
+        <nz-form-item nz-col [nzSpan]="10">
           <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
             <input type="text" nz-input placeholder="A0000001/20a" [formControl]="folderNumb" />
@@ -48,7 +48,7 @@
         </nz-form-item>
       </div>
 
-      <nz-table *ngIf="patient" nzTemplateMode nzBordered nzSize="small">
+      <nz-table *ngIf="consultation" nzTemplateMode nzBordered nzSize="small">
         <thead>
           <tr>
             <th nzWidth="34%">Vital</th>
@@ -120,7 +120,7 @@
     </nz-card>
   </nz-col>
 
-  <nz-col *ngIf="!patient" [nzSpan]="8">
+  <nz-col *ngIf="!consultation" [nzSpan]="8">
     <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Check Vital" (queueClick)="attendanceClick($event)"></app-patient-queue>
   </nz-col>
 </nz-row>
@@ -132,7 +132,7 @@
       <nz-form-control>
         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Prescriber" [formControl]="doctorControl"
           [nzLoading]="doctorsLoading">
-          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.name" [nzValue]="doctor.id">
+          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.title + ' ' + doctor.firstname + ' ' + doctor.surname" [nzValue]="doctor.id">
           </nz-option>
         </nz-select>
       </nz-form-control>

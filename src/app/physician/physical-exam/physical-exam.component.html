@@ -1,0 +1,39 @@
+<nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
+  <nz-tab nzTitle="Previous Entry">
+    <nz-empty *ngIf="!previousExams"></nz-empty>
+    <nz-collapse *ngIf="previousExams" nzAccordion>
+      <nz-collapse-panel *ngFor="let item of previousExams" [nzHeader]="item.consultation_date | date"
+        [nzActive]="item.active">
+        <nz-comment *ngFor="let exam of item.exams" [nzAuthor]="exam.category_name">
+          <nz-comment-content>
+            <p> {{ exam.note || 'N/A' }} </p>
+          </nz-comment-content>
+        </nz-comment>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </nz-tab>
+
+  <nz-tab nzTitle="Current Entry">
+    <form nz-form [formGroup]="physicalExamForm">
+      <nz-form-item *ngFor="let field of examFields">
+        <nz-form-label [nzFor]="field.name"> {{ field.name }} <button nz-button nzType="primary" nzShape="circle"><i
+              nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control *ngIf="physicalExamForm.get(field.name + 'Abnormal').value">
+          <textarea [formControlName]="field.name" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+        <nz-switch [formControlName]="field.name + 'Abnormal'" nzCheckedChildren="Abnormal" nzUnCheckedChildren="Normal"></nz-switch>
+      </nz-form-item>
+    </form>
+  </nz-tab>
+</nz-tabset>
+
+<nz-divider></nz-divider>
+
+<nz-row nzType="flex" nzJustify="center">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="default" (click)="previous()" [nzLoading]="submiting">Previous</button>
+      <button nz-button (click)="submit()" [nzLoading]="submiting">Next</button>
+    </nz-button-group>
+  </nz-col>
+</nz-row>

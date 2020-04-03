@@ -1,0 +1,157 @@
+<nz-row>
+  <nz-col [nzSpan]="patient ? 24 : 16">
+    <nz-card nz-row *ngIf="patient && attendance">
+      <nz-collapse nzAccordion>
+        <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active">
+          <div *ngIf="panel.name === 'Vitals'; then vitalDetails else patientDetals"></div>
+        </nz-collapse-panel>
+      </nz-collapse>
+    </nz-card>
+
+    <nz-card>
+      <div nz-row [nzGutter]="24" *ngIf="!attendance">
+        <nz-form-item nz-col [nzSpan]="10">
+          <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
+            <input type="text" nz-input placeholder="A0000001/20a" [formControl]="folderNumb" />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <form *ngIf="patient && attendance" nz-form nzLayout="inline" [formGroup]="consultationForm">
+        <nz-row nzType="flex" nzJustify="center">
+          <nz-col>
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="end_at">Date</nz-form-label>
+              <nz-form-control nzHasFeedback nzErrorTip="Select a valid date">
+                <nz-date-picker [nzAllowClear]="false" [nzShowTime]="true" [nzDisabledDate]="disabledDate"
+                  formControlName="end_at" nzPlaceHolder="Select consultation date">
+                </nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+
+          <nz-col>
+            <nz-form-item>
+              <nz-form-label nzRequired nzFor="gender">Illness Type</nz-form-label>
+              <nz-form-control nzErrorTip="Select a gender">
+                <nz-select formControlName="illness_type" nzPlaceHolder="Select an illness type">
+                  <nz-option *ngFor="let type of illnessTypes" [nzValue]="type.id" [nzLabel]="type.name"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+
+          <nz-col *ngIf="attendance && (patient && patient.gender !== 'MALE')">
+            <nz-form-item>
+              <nz-form-control>
+                <nz-form-label nzFor="pregnant">Pregnant?</nz-form-label>
+                <nz-switch formControlName="pregnant"></nz-switch>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-col>
+        </nz-row>
+        <nz-divider></nz-divider>
+      </form>
+
+      <!-- consultation steps -->
+      <nz-steps *ngIf="patient && attendance" nzSize="small" [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
+        <nz-step nzTitle="PATIENT HISTORY"></nz-step>
+        <nz-step nzTitle="PHYSICAL EXAMINATION"></nz-step>
+        <nz-step nzTitle="DIAGNOSIS"></nz-step>
+        <nz-step nzTitle="INVESTIGATION"></nz-step>
+        <nz-step nzTitle="PRESCRIPTION"></nz-step>
+        <nz-step nzTitle="PROCEDURE"></nz-step>
+        <nz-step nzTitle="CLINICAL NOTES"></nz-step>
+      </nz-steps>
+
+      <ng-template #progressTemplate let-dot let-status="status" let-index="index">
+        <span nz-popover nzContent="{{ status }}" style="margin-left: -100%;">
+          <ng-template [ngTemplateOutlet]="dot"></ng-template>
+        </span>
+      </ng-template>
+
+      <div *ngIf="patient && attendance" class="steps-content">
+        <!-- patient history step -->
+        <div *ngIf="stepIndex === 0">
+          <app-patient-history *ngIf="user && patient && attendance" [consultationId]="attendance.id"
+            [patientStatus]="attendance.patient_status" [patientId]="patient.id" [userId]="user.id"
+            (nextClicked)="next($event)"></app-patient-history>
+        </div>
+
+        <div *ngIf="stepIndex === 1">
+          <app-physical-exam *ngIf="user && patient && attendance" [consultationId]="attendance.id"
+            [patientStatus]="attendance.patient_status" [patientId]="patient.id" [userId]="user.id"
+            (nextClicked)="next($event)"> </app-physical-exam>
+        </div>
+      </div>
+
+      <nz-divider></nz-divider>
+      <div nz-row>
+        <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
+            class="m-r-5"></i> {{message}}
+        </div>
+      </div>
+
+      <nz-row>
+        <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
+        </nz-skeleton>
+      </nz-row>
+
+    </nz-card>
+  </nz-col>
+
+  <nz-col *ngIf="!attendance" [nzSpan]="8">
+    <app-patient-queue *ngIf="today && user" [queuePath]="'/registry/consultations/' + user.id + '/queue'"
+      action="Consult" (queueClick)="attendanceClick($event)"></app-patient-queue>
+  </nz-col>
+</nz-row>
+
+<ng-template #vitalDetails>
+  <nz-descriptions *ngIf="vitals" nzSize="small" nzBordered>
+    <nz-descriptions-item *ngFor="let key of vitalKeys" [nzTitle]="key.name">
+      <span *ngIf="vitals[key.apiName] && vitals[key.apiName].value">
+        {{ vitals[key.apiName].value }}
+        {{ vitals[key.apiName].unit }}</span>
+      <span *ngIf="!vitals[key.apiName] || !vitals[key.apiName].value"> N/A </span>
+    </nz-descriptions-item>
+  </nz-descriptions>
+
+  <nz-comment nzAuthor="Nurse Comments" *ngIf="vitals && vitals.comment">
+    <nz-comment-content>
+      <p>
+        {{ vitals.comment }}
+      </p>
+    </nz-comment-content>
+  </nz-comment>
+</ng-template>
+
+<ng-template #patientDetals>
+  <nz-descriptions *ngIf="patient && attendance" nzSize="small" nzBordered
+    [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+    <nz-descriptions-item nzTitle="Folder #">
+      {{patient.folder_no}}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Name">
+      {{patient.firstname}} {{patient.middlename}} {{patient.surname}}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Gender">
+      {{patient.gender}}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Age">
+      {{attendance.age}} year(s)
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Funding Type">
+      {{attendance.funding_type_name}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Patient Status">
+      {{attendance.patient_status}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Clinic">
+      {{attendance.clinic_name}}
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="attendance" nzTitle="Attendance Date">
+      {{attendance.attendance_date | date:'M/d/yy, h:mm a'}}
+    </nz-descriptions-item>
+  </nz-descriptions>
+</ng-template>

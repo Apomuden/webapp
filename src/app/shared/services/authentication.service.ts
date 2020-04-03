@@ -35,7 +35,6 @@ export class AuthenticationService {
       .pipe(
         map(res => {
           if (res && res.data.access_token) {
-            console.log('result', res);
             this.decodedUser = jwt_decode(res.data.access_token);
             this.decodedUser.token = res.data.access_token;
             this.decodedUser.details = res.data.profile;

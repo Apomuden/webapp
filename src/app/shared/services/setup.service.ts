@@ -816,7 +816,6 @@ export class SetupService {
       map(res => {
         if (res) {
           this.relationships = res;
-          console.log(res);
           for (let i = 0; i < this.relationships.data.length; i++) {
             this.relationships.data[i].isActivated =
               this.relationships.data[i].status === 'ACTIVE';
