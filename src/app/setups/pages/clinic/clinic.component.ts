@@ -111,8 +111,8 @@ export class ClinicComponent implements OnInit {
         name: this.clinicForm.value.name,
         clinic_type_id: this.clinicForm.value.clinicType,
         age_group_id: this.clinicForm.value.age_group_id,
-        gender: this.clinicForm.value.gender.join(','),
-        patient_status: this.clinicForm.value.patient_status.join(',')
+        gender: this.clinicForm.value.gender.join(', '),
+        patient_status: this.clinicForm.value.patient_status.join(', ')
       };
 
 

@@ -15,9 +15,15 @@
               <ng-template #moreAction>
                 <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
-              <nz-list-item-meta [nzTitle]="nzTitle">
+              <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDesc">
                 <ng-template #nzTitle>
                   <a>{{ item.service_name }}</a>
+                </ng-template>
+                <ng-template #nzDesc>
+                  <div>{{ item.service_category_name }}</div>
+                  <div>{{ item.billing_cycle_name }}</div>
+                  <div>{{ item.clinic_name }}</div>
+                  <div>{{ item.clinic_type_name }}</div>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>

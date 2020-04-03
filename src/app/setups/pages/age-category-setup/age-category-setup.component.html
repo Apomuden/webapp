@@ -17,7 +17,8 @@
               </ng-template>
               <nz-list-item-meta [nzTitle]="item.age_classification_name" [nzDescription]="nzDescription">
                 <ng-template #nzDescription>
-                  <a href="#"> {{ item.description }} </a>
+                  <div> {{ item.age_group_name }} </div>
+                  <div> {{ item.description }} </div>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>

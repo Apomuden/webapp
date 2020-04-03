@@ -1061,9 +1061,9 @@ export class SetupService {
     );
   }
 
-  createIdType(name: string) {
+  createIdType(name: string, expires: boolean) {
     return this.http
-      .post<any>(ID_TYPE_API_URL, { name })
+      .post<any>(ID_TYPE_API_URL, { name, expires })
       .pipe(
         map(res => {
           if (res) {

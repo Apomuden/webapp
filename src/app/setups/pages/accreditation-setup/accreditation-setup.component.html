@@ -15,9 +15,14 @@
               <ng-template #toggle>
                 <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
-              <nz-list-item-meta [nzTitle]="nzTitle">
+              <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDesc">
                 <ng-template #nzTitle>
-                  <a href="#">{{ item.reg_body }}</a>
+                  <a>{{ item.reg_body }}</a>
+                </ng-template>
+                <ng-template #nzDesc>
+                  <div>{{ item.reg_no }}</div>
+                  <div>{{ item.reg_date }}</div>
+                  <div>{{ item.expiry_date }}</div>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>

@@ -15,11 +15,15 @@
               <ng-template #moreAction>
                 <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
-              <nz-list-item-meta [nzTitle]="nzTitle">
+              <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDesc">
                 <ng-template #nzTitle>
                   <a>{{item.description}} </a>
+                </ng-template>
+                <ng-template #nzDesc>
                   <div>GHS {{item.prepaid_amount}} Prepaid</div>
                   <div>GHS {{item.postpaid_amount}} Postpaid</div>
+                  <div>{{item.age_group_name}}</div>
+                  <div>{{item.gender}}</div>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>
