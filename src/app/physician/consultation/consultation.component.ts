@@ -18,8 +18,6 @@ import { formatDate } from '@angular/common';
 export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   today: string;
 
-  folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
-
   panels = [
     {
       active: true,
@@ -31,6 +29,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     },
   ];
   commentControl = this.fb.control(null);
+  folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
   consultationForm = this.fb.group({
     end_at: [new Date(), Validators.required],
     pregnant: [false, Validators.required],
@@ -213,12 +212,6 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
-
-  handleCancel() {
-    this.doctorsModalVisible = false;
-    this.cancel();
-  }
-
   cancel() {
     this.patient = null;
     this.searchInitialized = false;
@@ -227,39 +220,35 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   previous() {
+    if (this.stepIndex === 0) {
+      this.cancel();
+      return;
+    }
     this.stepIndex -= 1;
   }
 
-  next(data: any) {
+  next(eventData: any) {
     if (this.stepIndex === 0) {
-      if (data) {
-        this.patientHistory = data;
-        this.stepIndex += 1;
-      } else {
-        // cancel event
-        this.cancel();
-      }
+      this.patientHistory = eventData;
+      this.stepIndex += 1;
     } else if (this.stepIndex === 1) {
-      if (data) {
-        this.physicalExam = data;
-        this.stepIndex += 1;
-      } else {
-        // previous step event
-        this.previous();
-      }
+      this.physicalExam = eventData;
+      this.stepIndex += 1;
     }
   }
 
   done() {
     const data = this.processData();
-    this.submiting = true;
+    // this.submiting = true;
     console.log(data);
   }
 
   processData() {
+    // todo
     return null;
   }
 
+  // queue item click event
   attendanceClick(attendance: any) {
     this.folderNoControl.setValue(attendance.folder_no);
   }

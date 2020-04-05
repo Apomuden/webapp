@@ -23,11 +23,11 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
   relationships = [this.defaultRelationship];
   submiting = false;
 
-  @Input() patientId: number;
-  @Input() consultationId: any;
-  @Input() patientStatus: any;
+  @Input() consultation: any;
+  @Input() patient: any;
   @Input() userId: any;
   @Output() nextClicked: EventEmitter<any> = new EventEmitter();
+  @Output() previousClicked: EventEmitter<any> = new EventEmitter();
   consultationDate = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'en');
   examinedToday = false;
 
@@ -66,7 +66,7 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.getPhysicalExams(this.patientId);
+    this.getPhysicalExams(this.patient.id);
 
     this.physicianService.consultationDate$.pipe(untilComponentDestroyed(this))
       .subscribe(date => {
@@ -82,7 +82,7 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
         this.previousExams = [];
         exams = exams.reverse();
         exams.forEach(exam => {
-          this.examinedToday = exam.consultation_id === this.consultationId;
+          this.examinedToday = exam.consultation_id === this.consultation.id;
           if (this.examinedToday) {
             if (exam.category_name) {
               this.physicalExamForm.get(exam.category_name).setValue(exam.note);
@@ -101,7 +101,7 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
 
   previous() {
     // emit previous step event
-    this.nextClicked.emit(null);
+    this.previousClicked.emit();
   }
 
   submit() {
@@ -114,7 +114,7 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(res => {
         if (res) {
           this.physicalExamForm.reset();
-          this.getPhysicalExams(this.patientId);
+          this.getPhysicalExams(this.patient.id);
           this.nextClicked.emit(res.data);
         }
       }, error => {
@@ -134,8 +134,8 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     });
     return {
-      consultation_id: this.consultationId,
-      patient_status: this.patientStatus,
+      consultation_id: this.consultation.id,
+      patient_status: this.consultation.patient_status,
       consultation_date: this.consultationDate,
       consultant_id: this.userId,
       exams: exams

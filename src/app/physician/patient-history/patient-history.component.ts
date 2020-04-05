@@ -35,11 +35,11 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
   submiting = false;
 
   @ViewChild(NzInputDirective, { static: false, read: ElementRef }) inputElement: ElementRef;
-  @Input() patientId: number;
-  @Input() consultationId: any;
-  @Input() patientStatus: any;
+  @Input() patient: any;
+  @Input() consultation: any;
   @Input() userId: any;
   @Output() nextClicked: EventEmitter<any> = new EventEmitter();
+  @Output() previousClicked: EventEmitter<any> = new EventEmitter();
   consultationDate = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'en');
   patientHistory: any;
 
@@ -58,8 +58,8 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
   }
 
   ngAfterViewInit() {
-    this.getPatientHistories(this.patientId);
-    this.getPatientHistory(this.patientId);
+    this.getPatientHistories(this.patient.id);
+    this.getPatientHistory(this.patient.id);
     this.physicianService.consultationDate$.pipe(untilComponentDestroyed(this))
       .subscribe(date => {
         this.consultationDate = formatDate(date, 'yyyy-MM-dd HH:mm:ss', 'en');
@@ -86,7 +86,7 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
 
   cancel() {
     // emit cancel event
-    this.nextClicked.emit(null);
+    this.previousClicked.emit(null);
   }
 
   submit() {
@@ -99,7 +99,7 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
       .subscribe(res => {
         if (res) {
           this.patientHistoryForm.reset();
-          this.getPatientHistories(this.patientId);
+          this.getPatientHistories(this.patient.id);
           this.nextClicked.emit(res.data);
         }
       }, error => {
@@ -112,9 +112,9 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
     const data = this.patientHistoryForm.value;
     data.chief_complaint_relation_id = (data.chief_complaint_relation_id === 0) ? null : data.chief_complaint_relation_id;
     return {
-      patient_id: this.patientId,
-      consultation_id: this.consultationId,
-      patient_status: this.patientStatus,
+      patient_id: this.patient.id,
+      consultation_id: this.consultation.id,
+      patient_status: this.consultation.patient_status,
       consultant_id: this.userId,
       consultation_date: this.consultationDate,
       ...data
