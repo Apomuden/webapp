@@ -15,9 +15,13 @@
               <ng-template #moreAction>
                 <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
-              <nz-list-item-meta [nzTitle]="nzTitle">
+              <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDescription">
                 <ng-template #nzTitle>
-                  <a href="#">{{ item.name }}</a>
+                  <a>{{ item.name }}</a>
+                </ng-template>            
+                <ng-template #nzDescription>
+                  <div><strong>Min age:</strong> {{item.min_age}} {{item.min_age_unit | lowercase }}{{item.min_age > 1 ? 's': ''}}</div>
+                  <div><strong>Max age:</strong> {{item.max_age}} {{item.max_age_unit | lowercase }}{{item.max_age > 1 ? 's': ''}}</div>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>

@@ -165,9 +165,9 @@ export class BankSetupComponent implements OnInit {
   ngOnInit() {
     this.updateForm = this.fb.group({
       name: [null, Validators.required],
-      sort_code: [null],
-      email: [null],
-      phone: [null]
+      sort_code: [null, Validators.required],
+      email: [null, Validators.email],
+      phone: [null, Validators.required]
     });
     this.getBanks();
   }

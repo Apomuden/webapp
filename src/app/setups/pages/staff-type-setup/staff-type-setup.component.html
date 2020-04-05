@@ -8,16 +8,19 @@
             <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
               <ng-template #editAction><a (click)="showModal(item)">edit</a></ng-template>
               <ng-template #deleteAction>
-                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                <a nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this?" nzPopconfirmPlacement="bottom"
                   (nzOnConfirm)="deleteStaffType(item)"><i nz-icon nzType="delete" nzTheme="fill"
                     style="color:red;font-size: 16px;"></i></a>
               </ng-template>
               <ng-template #moreAction>
                 <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
               </ng-template>
-              <nz-list-item-meta [nzTitle]="nzTitle">
+              <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDesc">
                 <ng-template #nzTitle>
                   <a>{{item.name}} </a>
+                </ng-template>
+                <ng-template #nzDesc>
+                  <a>{{item.validity_days}} {{(item.validity_days > 1) ? 'days': 'day'}}</a>
                 </ng-template>
               </nz-list-item-meta>
             </nz-skeleton>

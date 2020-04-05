@@ -74,7 +74,10 @@
               </div>
               <ng-template #editTpl>
                 <input nz-input [placeholder]="(vital.name === 'Blood Pressure' ? 'eg: 70/109': 'eg: 10')"
-                  [type]="(vital.name === 'Blood Pressure') ? 'text': 'number'" [formControl]="vital.form" />
+                  [type]="(vital.name === 'Blood Pressure') ? 'text': 'number'" [formControl]="vital.form"
+                  appCustomAutoFocus />
+                <!-- <input nz-input  [placeholder]="(vital.name === 'Blood Pressure' ? 'eg: 70/109': 'eg: 10')"
+                  [type]="(vital.name === 'Blood Pressure') ? 'text': 'number'" [formControl]="vital.form" /> -->
               </ng-template>
             </td>
 
@@ -121,7 +124,8 @@
   </nz-col>
 
   <nz-col *ngIf="!consultation" [nzSpan]="8">
-    <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Check Vital" (queueClick)="attendanceClick($event)"></app-patient-queue>
+    <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Check Vital"
+      (queueClick)="attendanceClick($event)"></app-patient-queue>
   </nz-col>
 </nz-row>
 
@@ -132,7 +136,8 @@
       <nz-form-control>
         <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Prescriber" [formControl]="doctorControl"
           [nzLoading]="doctorsLoading">
-          <nz-option *ngFor="let doctor of doctors" [nzLabel]="doctor.title + ' ' + doctor.firstname + ' ' + doctor.surname" [nzValue]="doctor.id">
+          <nz-option *ngFor="let doctor of doctors"
+            [nzLabel]="doctor.title + ' ' + doctor.firstname + ' ' + doctor.surname" [nzValue]="doctor.id">
           </nz-option>
         </nz-select>
       </nz-form-control>

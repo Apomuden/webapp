@@ -1,5 +1,9 @@
 .setup-category i{
   font-size: 35px;
+
+}
+.setup-category{
+  cursor: pointer;
 }
 .setup-category div{
   font-size: 20px;

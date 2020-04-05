@@ -17,6 +17,7 @@ import { PhysicianService } from 'src/app/physician/services/physician.service';
 export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   today: string;
   editName: string | null;
+  isQueueVisible = true;
   @ViewChild(NzInputDirective, { static: false, read: ElementRef }) inputElement: ElementRef;
 
   folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
@@ -225,6 +226,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.searchInitialized = true;
     this.opdService.getAttendance(folderNo, this.today).pipe(first())
       .subscribe(data => {
+        this.isQueueVisible = false;
         this.isLoadingData = false;
         this.attendance = data;
         this.getPatient(folderNo);
@@ -323,6 +325,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.attendance = null;
     this.consultation = null;
     this.searchInitialized = false;
+    this.isQueueVisible = true;
     this.folderNoControl.reset();
     for (let i = 0; i < this.vitals.length; i++) {
       this.vitals[i].form.reset();
@@ -334,6 +337,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.submiting = true;
     this.opdService.saveVitals(data).pipe(first())
       .subscribe(res => {
+        this.isQueueVisible = true;
         this.submiting = false;
         this.doctorsModalVisible = true;
         this.doctorsLoading = true;

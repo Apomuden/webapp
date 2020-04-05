@@ -1,3 +1,4 @@
+import { ClinicsComponent } from './categories/clinics/clinics.component';
 import { AccountComponent } from './categories/account/account.component';
 import { OtherComponent } from './categories/other/other.component';
 import { RecordComponent } from './categories/record/record.component';
@@ -64,6 +65,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           title: 'Others'
+        }
+      },
+      {
+        path: 'clinics',
+        component: ClinicsComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Clinics'
         }
       },
       {

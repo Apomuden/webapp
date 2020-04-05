@@ -1,4 +1,4 @@
-import { map } from 'rxjs/operators';
+import { map, first } from 'rxjs/operators';
 import { environment } from './../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -1060,9 +1060,9 @@ export class SetupService {
     );
   }
 
-  createIdType(name: string) {
+  createIdType(name: string, expires: boolean) {
     return this.http
-      .post<any>(ID_TYPE_API_URL, { name })
+      .post<any>(ID_TYPE_API_URL, { name, expires })
       .pipe(
         map(res => {
           if (res) {
@@ -1479,6 +1479,54 @@ export class SetupService {
       res.data.isActivated = res.data.status === 'ACTIVE';
       return res.data;
     }));
+  }
+
+  getHistoryCategories(resourcePath: string) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.get<any>(url).pipe(map(res => {
+      return res ? res.data : [];
+    },
+      err => {
+        return [];
+      }
+    ));
+  }
+  createHistoryCategory(resourcePath: string, fields: object) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.post<any>(url, fields).pipe(map(res => {
+      return res ? true : false;
+    },
+      err => {
+        return false;
+      }
+    ));
+  }
+  genericGet(resourcePath: string) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.get<any>(url).pipe(map(res => {
+      if (res) {
+        for (let i = 0; i < res.data.length; i++) {
+          res.data[i].isActivated =
+            res.data[i].status === 'ACTIVE' ? true : false;
+        }
+      }
+
+      return res ? res.data : [];
+    },
+      err => {
+        return [];
+      }
+    ));
+  }
+  genericPost(resourcePath: string, fields: object) {
+    const url = `${environment.apiBaseUrl}/${resourcePath}`;
+    return this.http.post<any>(url, fields).pipe(map(res => {
+      return res ? true : false;
+    },
+      err => {
+        return false;
+      }
+    ));
   }
   deleteSetup(resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;

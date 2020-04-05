@@ -28,4 +28,7 @@ export class SetupsComponent implements OnInit {
   goToOthers() {
     this.router.navigate(['setup/others']);
   }
+  goToClinics() {
+    this.router.navigate(['setup/clinics']);
+  }
 }
