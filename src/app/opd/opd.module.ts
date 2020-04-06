@@ -8,7 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { PatientQueueComponent } from './patient-queue/patient-queue.component';
 
 @NgModule({
-  declarations: [VitalFormComponent, PatientQueueComponent],
+  declarations: [VitalFormComponent, PatientQueueComponent, CustomAutoFocusDirective],
   imports: [
     CommonModule,
     OpdRoutingModule,
