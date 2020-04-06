@@ -7,6 +7,7 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from '../record.service';
 import { NzMessageService, NzNotificationService } from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-walkin-registration',
@@ -218,7 +219,7 @@ export class WalkinRegistrationComponent implements OnInit, AfterViewInit, OnDes
       surname: this.walkinForm.get('lastName').value,
       firstname: this.walkinForm.get('firstName').value,
       middlename: this.walkinForm.get('middleName').value,
-      dob: this.formatDate(this.walkinForm.get('dob').value),
+      dob: formatDate(this.walkinForm.get('dob').value, 'yyyy-MM-dd', 'en'),
       gender: this.walkinForm.get('gender').value,
       origin_country_id: this.walkinForm.get('originCountry').value,
       origin_region_id: this.walkinForm.get('originRegion').value,
@@ -226,23 +227,5 @@ export class WalkinRegistrationComponent implements OnInit, AfterViewInit, OnDes
       reg_status: 'WALK-IN',
       // folder_type: 'INDIVIDUAL',
     };
-  }
-
-  formatDate(date: Date): string {
-    if (!date) {
-      return null;
-    }
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-
-    return [year, month, day].join('-');
   }
 }

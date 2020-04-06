@@ -1,5 +1,5 @@
 import { map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 const USER_API_URL = environment.apiBaseUrl + '/auth/profiles';
@@ -19,6 +19,19 @@ export class UserManagementService {
             this.data = res;
           }
           return this.data;
+        }
+      )
+    );
+  }
+
+  getDoctors() {
+    return this.http.get<any>(`${USER_API_URL}?role=doctor`).pipe(
+      map(
+        res => {
+          if (res && res.data) {
+            return res.data;
+          }
+          throw new HttpErrorResponse({ status: 404 });
         }
       )
     );
@@ -89,5 +102,6 @@ export class UserManagementService {
       )
     );
   }
+
 
 }

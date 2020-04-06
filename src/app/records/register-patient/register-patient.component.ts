@@ -10,6 +10,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy, ViewChild } from '@angular
 import { AbstractControl, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import * as dateFns from 'date-fns';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-register-patient',
@@ -654,7 +655,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       'surname': patientData.lastName,
       'middlename': patientData.middleName,
       'firstname': patientData.firstName,
-      'dob': this.formatDate(patientData.dob),
+      'dob': formatDate(patientData.dob.toISOString(), 'yyyy-MM-dd', 'en'),
       'gender': patientData.gender,
       'origin_country_id': patientData.nationality,
       'origin_region_id': patientData.region,
@@ -670,7 +671,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       'official_lang_id': patientData.officialLanguage,
       'id_type_id': (patientData.idtype === 0) ? null : patientData.idtype,
       'id_no': patientData.idNumber,
-      'id_expiry_date': this.formatDate(patientData.IdExpiryDate),
+      'id_expiry_date': formatDate(patientData.IdExpiryDate.toISOString(), 'yyyy-MM-dd', 'en'),
       'religion_id': patientData.religion,
       'educational_level_id': patientData.educationalLevel,
       'active_cell': active_cell,
@@ -714,27 +715,9 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       staff_id: this.staffIDControl.value,
       benefit_type: this.beneficiaryControl.value,
       relation_id: this.relationControl.value,
-      issued_date: this.formatDate(this.issueDateControl.value as Date),
-      expiry_date: this.formatDate(this.expiryDateControl.value as Date),
+      issued_date: formatDate(this.issueDateControl.value, 'yyyy-MM-dd', 'en'),
+      expiry_date: formatDate(this.expiryDateControl.value, 'yyyy-MM-dd', 'en'),
     };
-  }
-
-  private formatDate(date: Date): string {
-    if (!date) {
-      return null;
-    }
-
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-    return [year, month, day].join('-');
   }
 
   private createCompany() {

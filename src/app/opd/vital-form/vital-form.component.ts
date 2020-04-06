@@ -5,6 +5,9 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { OpdService } from '../services/opd.service';
 import { NzInputDirective, NzNotificationService, NzInputGroupComponent, NzModalRef, NzModalService } from 'ng-zorro-antd';
 import * as datefns from 'date-fns';
+import { formatDate } from '@angular/common';
+import { UserManagementService } from 'src/app/user-management/user-management.service';
+import { PhysicianService } from 'src/app/physician/services/physician.service';
 
 @Component({
   selector: 'app-vital-form',
@@ -87,10 +90,13 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   message = 'Please enter a valid folder number to fill this form.';
   attendance: any;
   tplModal: NzModalRef;
+  consultation: any;
 
   constructor(
     private fb: FormBuilder,
     private opdService: OpdService,
+    private physicianService: PhysicianService,
+    private userManagementService: UserManagementService,
     private notificationS: NzNotificationService,
     private modalService: NzModalService,
   ) { }
@@ -133,7 +139,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.today = this.formatDate(datefns.startOfToday());
+    this.today = formatDate(datefns.startOfToday(), 'yyyy-MM-dd', 'en');
   }
 
   ngAfterViewInit() {
@@ -181,14 +187,32 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
+  getConsultation() {
+    this.isLoadingData = true;
+    this.searchInitialized = true;
+    const date = new Date(this.attendance.attendance_date);
+    const formatedDate = formatDate(date, 'yyyy-MM-dd', 'en');
+    this.physicianService.getConsultation(this.patient.id, formatedDate).pipe(first())
+      .subscribe(data => {
+        this.isLoadingData = false;
+        this.consultation = data;
+      }, e => {
+        console.error(e);
+        this.message = 'Folder not found';
+        this.attendance = null;
+        this.patient = null;
+        this.searchInitialized = false;
+      });
+  }
+
   getPatient(folderNo: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
     this.opdService.getPatient(folderNo).pipe(first())
       .subscribe(data => {
-        this.isLoadingData = false;
         this.patient = data;
         this.patient.age = this.calculateAge(this.patient.dob);
+        this.getConsultation();
       }, e => {
         console.log(e);
         this.message = 'Folder not found';
@@ -254,24 +278,6 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  formatDate(date: Date): string {
-    if (!date) {
-      return null;
-    }
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-
-    return [year, month, day].join('-');
-  }
-
   calculateAge(birthday: string) {
     const ageDifMs = Date.now() - new Date(birthday).getTime();
     const ageDate = new Date(ageDifMs);
@@ -302,11 +308,22 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   assignDoctor() {
-
+    this.opdService.assignDoctor(this.doctorControl.value, this.consultation.id).pipe(first())
+      .subscribe(res => {
+        if (res) {
+          this.handleCancel();
+          this.notificationS.success('Success', 'Doctor assigned');
+        }
+      }, error => {
+        console.log(error);
+        this.notificationS.error('Error', 'Doctor not assigned');
+      });
   }
 
   cancel() {
     this.patient = null;
+    this.attendance = null;
+    this.consultation = null;
     this.searchInitialized = false;
     this.isQueueVisible = true;
     this.folderNoControl.reset();
@@ -318,12 +335,17 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   done() {
     const data = this.processData();
     this.submiting = true;
-    console.log(data);
     this.opdService.saveVitals(data).pipe(first())
       .subscribe(res => {
         this.isQueueVisible = true;
         this.submiting = false;
         this.doctorsModalVisible = true;
+        this.doctorsLoading = true;
+        this.userManagementService.getDoctors().pipe(first()).subscribe(doctors => {
+          this.doctorsLoading = false;
+          this.doctors = doctors;
+          console.log(this.doctors);
+        });
       }, e => {
         this.submiting = false;
         this.notificationS.error('Error', 'Could not save vitals');
@@ -363,7 +385,6 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   attendanceClick(attendance: any) {
-    console.log(attendance);
     this.folderNoControl.setValue(attendance.folder_no);
   }
 }

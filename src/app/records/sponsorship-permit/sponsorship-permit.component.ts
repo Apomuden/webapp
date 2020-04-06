@@ -7,6 +7,7 @@ import { SetupService } from 'src/app/shared/services/setup.service';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { NzNotificationService } from 'ng-zorro-antd';
 import * as dateFn from 'date-fns';
+import { formatDate } from '@angular/common';
 @Component({
   selector: 'app-sponsorship-permit',
   templateUrl: './sponsorship-permit.component.html',
@@ -490,26 +491,8 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
       staff_id: this.staffIDControl.value,
       benefit_type: this.beneficiaryControl.value,
       relation_id: this.relationControl.value,
-      issued_date: this.formatDate(this.issueDateControl.value as Date),
-      expiry_date: this.formatDate(this.expiryDateControl.value as Date),
+      issued_date: formatDate(this.issueDateControl.value, 'yyyy-MM-dd', 'en'),
+      expiry_date: formatDate(this.expiryDateControl.value, 'yyyy-MM-dd', 'en'),
     };
-  }
-
-  private formatDate(date: Date): string {
-    if (!date) {
-      return null;
-    }
-
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-    return [year, month, day].join('-');
   }
 }

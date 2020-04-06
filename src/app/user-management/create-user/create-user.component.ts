@@ -9,6 +9,7 @@ import { UploadFile, NzMessageService, NzNotificationService } from 'ng-zorro-an
 import { Router } from '@angular/router';
 import { componentDestroyed, untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import * as dateFns from 'date-fns';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-create-user',
@@ -661,7 +662,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       middlename: this.bioDataForm.get('middleName').value,
       surname: this.bioDataForm.get('lastName').value,
       email: this.contactInfoForm.get('email').value,
-      dob: this.formatDate(this.bioDataForm.get('dateOfBirth').value as Date),
+      dob: formatDate(this.bioDataForm.get('dateOfBirth').value as Date, 'yyyy-MM-dd', 'en'),
       gender: this.bioDataForm.get('gender').value,
       title_id: this.bioDataForm.get('title').value,
       religion_id: this.bioDataForm.get('religion').value,
@@ -687,7 +688,7 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       emerg_phone1: emerg_phone1 ? parseInt(emerg_phone1, 10) : null,
       emerg_phone2: emerg_phone2 ? parseInt(emerg_phone2, 10) : null,
       // other info
-      appointment_date: this.formatDate(this.otherDetailsForm.get('appointmentDate').value as Date),
+      appointment_date: formatDate(this.otherDetailsForm.get('appointmentDate').value as Date, 'yyyy-MM-dd', 'en'),
       ssnit_no: this.otherDetailsForm.get('snnitNumber').value,
       tin: this.otherDetailsForm.get('tinNumber').value,
       basic: this.otherDetailsForm.get('salary').value,
@@ -709,23 +710,5 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     }
     // can only select days before today
     return dateFns.isAfter(current, new Date());
-  }
-
-  formatDate(date: Date): string {
-    if (!date) {
-      return null;
-    }
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-
-    return [year, month, day].join('-');
   }
 }

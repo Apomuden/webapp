@@ -4,6 +4,7 @@ import { SetupService } from './../../../shared/services/setup.service';
 import { first } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-accreditation-setup',
@@ -112,26 +113,7 @@ export class AccreditationSetupComponent implements OnInit {
         );
     }
   }
-  private formatDate(date: Date): string {
-    if (!date) {
-      return null;
-    }
-    if (!(date instanceof Date)) {
-      return date;
-    }
 
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-    return [year, month, day].join('-');
-  }
   update() {
     if (!this.updateForm.valid) {
       this.modalError = 'All fields are required';
@@ -140,8 +122,8 @@ export class AccreditationSetupComponent implements OnInit {
       this.isUpdatingAccreditation.next(true);
       this.setup.updateSetup({
         ...this.updateForm.value,
-        reg_date: this.formatDate(this.updateForm.get('reg_date').value),
-        expiry_date: this.formatDate(this.updateForm.get('expiry_date').value)
+        reg_date: formatDate(this.updateForm.get('reg_date').value, 'yyyy-MM-dd', 'en'),
+        expiry_date: formatDate(this.updateForm.get('expiry_date').value, 'yyyy-MM-dd', 'en')
       }, `setups/accreditations/${this.accreditationId}`).pipe(first()).subscribe(
         response => {
           this.isUpdatingAccreditation.next(false);

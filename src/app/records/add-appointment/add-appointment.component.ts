@@ -6,6 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { FormGroup, Validators, ValidatorFn, FormBuilder, FormControl, AbstractControl } from '@angular/forms';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { SetupService } from 'src/app/shared/services/setup.service';
+import { formatDate } from '@angular/common';
 
 @Component({
   selector: 'app-add-appointment',
@@ -275,7 +276,7 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
         doctor_id: this.appointmentForm.get('doctor_id').value,
         comment: this.appointmentForm.get('comment').value,
         staff_specialty_id: this.appointmentForm.get('staff_specialty_id').value,
-        appointment_date: this.formatDate(this.appointmentForm.get('appointment_date').value)
+        appointment_date: formatDate(this.appointmentForm.get('appointment_date').value, 'yyyy-MM-dd', 'en'),
       };
     } else {
       return {
@@ -286,27 +287,9 @@ export class AddAppointmentComponent implements OnInit, AfterViewInit, OnDestroy
         doctor_id: this.appointmentForm.get('doctor_id').value,
         comment: this.appointmentForm.get('comment').value,
         staff_speciality_id: this.appointmentForm.get('staff_specialty_id').value,
-        appointment_date: this.formatDate(this.appointmentForm.get('appointment_date').value)
+        appointment_date: formatDate(this.appointmentForm.get('appointment_date').value, 'yyyy-MM-dd', 'en')
       };
     }
 
-  }
-
-  formatDate(date: Date): string {
-    if (!date) {
-      return null;
-    }
-    let month = '' + (date.getMonth() + 1);
-    let day = '' + date.getDate();
-    const year = date.getFullYear();
-
-    if (month.length < 2) {
-      month = '0' + month;
-    }
-    if (day.length < 2) {
-      day = '0' + day;
-    }
-
-    return [year, month, day].join('-');
   }
 }

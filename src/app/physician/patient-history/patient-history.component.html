@@ -1,0 +1,165 @@
+<nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
+  <nz-tab nzTitle="Previous History">
+    <nz-empty *ngIf="!previousHistories"></nz-empty>
+    <nz-collapse *ngIf="previousHistories" nzAccordion>
+      <nz-collapse-panel *ngIf="patientHistory" nzHeader="Curated History" [nzActive]="patientHistory.panelActive">
+        <nz-comment *ngIf="patientHistory.past_medical_history" nzAuthor="Past Medical History">
+          <nz-comment-content>
+            <p> {{ patientHistory.past_medical_history }} </p>
+          </nz-comment-content>
+        </nz-comment>
+
+        <nz-comment *ngIf="patientHistory.surgical_history" nzAuthor="Surgical History">
+          <nz-comment-content>
+            <p> {{ patientHistory.surgical_history }} </p>
+          </nz-comment-content>
+        </nz-comment>
+
+        <nz-comment *ngIf="patientHistory.medicine_history" nzAuthor="Medicine History">
+          <nz-comment-content>
+            <p> {{ patientHistory.medicine_history }} </p>
+          </nz-comment-content>
+        </nz-comment>
+
+        <nz-comment *ngIf="patientHistory.allergies_history" nzAuthor="Allergies History">
+          <nz-comment-content>
+            <p> {{ patientHistory.allergies_history }} </p>
+          </nz-comment-content>
+        </nz-comment>
+
+        <nz-comment *ngIf="patientHistory.family_history" nzAuthor="Family History">
+          <nz-comment-content>
+            <p> {{ patientHistory.family_history }} </p>
+          </nz-comment-content>
+        </nz-comment>
+
+        <nz-comment *ngIf="patientHistory.social_history" nzAuthor="Social History">
+          <nz-comment-content>
+            <p> {{ patientHistory.social_history }} </p>
+          </nz-comment-content>
+        </nz-comment>
+      </nz-collapse-panel>
+
+      <nz-collapse-panel *ngFor="let item of previousHistories" [nzHeader]="item.consultation_date | date"
+        [nzActive]="item.active">
+        <nz-comment *ngIf="item.presenting_complaints" nzAuthor="Complaints">
+          <nz-comment-content>
+            <p> {{ item.presenting_complaints }} </p>
+          </nz-comment-content>
+        </nz-comment>
+
+        <nz-comment *ngIf="item.presenting_complaints_history" nzAuthor="History of Complaints">
+          <nz-comment-content>
+            <p> {{ item.presenting_complaints_history }} </p>
+          </nz-comment-content>
+        </nz-comment>
+
+        <nz-comment *ngIf="item.direct_questions" nzAuthor="On Direct Questioning">
+          <nz-comment-content>
+            <p> {{ item.direct_questions }} </p>
+          </nz-comment-content>
+        </nz-comment>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </nz-tab>
+
+  <nz-tab nzTitle="Current Entry">
+    <form nz-form nzLayout="horizontal" [formGroup]="patientHistoryForm">
+
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="religion">Relationship</nz-form-label>
+        <nz-form-control nzErrorTip="Please select relationship">
+          <nz-select nzShowSearch nzPlaceHolder="Select a relationship" formControlName="chief_complaint_relation_id">
+            <nz-option *ngFor="let relationship of relationships" [nzLabel]="relationship.name"
+              [nzValue]="relationship.id">
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item nz-row>
+        <nz-form-label nzFor="presenting_complaints">Presenting Complaints <button nz-button nzType="primary"
+            nzShape="circle"><i nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="presenting_complaints" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item nz-row>
+        <nz-form-label nzFor="presenting_complaints_history">History of Complaints <button nz-button nzType="primary"
+            nzShape="circle"><i nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="presenting_complaints_history" nz-input
+            placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item nz-row>
+        <nz-form-label nzFor="direct_questions">On Direct Questioning <button nz-button nzType="primary"
+            nzShape="circle"><i nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="direct_questions" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="patientHistory && !patientHistory.past_medical_history" nz-row>
+        <nz-form-label nzFor="past_medical_history">Past Medical History <button nz-button nzType="primary"
+            nzShape="circle"><i nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="past_medical_history" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="patientHistory && !patientHistory.medicine_history" nz-row>
+        <nz-form-label nzFor="medicine_history">Medicine History <button nz-button nzType="primary" nzShape="circle"><i
+              nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="medicine_history" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="patientHistory && !patientHistory.surgical_history" nz-row>
+        <nz-form-label nzFor="surgical_history">Surgical History <button nz-button nzType="primary" nzShape="circle"><i
+              nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="surgical_history" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="patientHistory && !patientHistory.allergies_history" nz-row>
+        <nz-form-label nzFor="allergies_history">Allergy History <button nz-button nzType="primary" nzShape="circle"><i
+              nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="allergies_history" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="patientHistory && !patientHistory.family_history" nz-row>
+        <nz-form-label nzFor="family_history">Family History <button nz-button nzType="primary" nzShape="circle"><i
+              nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="family_history" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item *ngIf="patientHistory && !patientHistory.social_history" nz-row>
+        <nz-form-label nzFor="social_history">Social History <button nz-button nzType="primary" nzShape="circle"><i
+              nz-icon nzType="edit"></i></button></nz-form-label>
+        <nz-form-control>
+          <textarea formControlName="social_history" nz-input placeholder="Enter findings here"></textarea>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </nz-tab>
+</nz-tabset>
+
+<nz-divider></nz-divider>
+
+<nz-row nzType="flex" nzJustify="center">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="submiting">Cancel</button>
+      <button nz-button (click)="submit()" [nzLoading]="submiting">Next</button>
+    </nz-button-group>
+  </nz-col>
+</nz-row>

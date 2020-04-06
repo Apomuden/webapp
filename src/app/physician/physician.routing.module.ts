@@ -1,14 +1,14 @@
 import {AuthGuard} from '../shared/guard/auth.guard';
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import { VitalFormComponent } from './vital-form/vital-form.component';
+import { ConsultationComponent } from './consultation/consultation.component';
 
 const routes: Routes = [
   {
-    path: 'vitals',
-    component: VitalFormComponent,
+    path: 'consultation',
+    component: ConsultationComponent,
     canActivate: [AuthGuard],
-    data: {title: 'Vitals'}
+    data: {title: 'Consultation'}
   },
 ];
 
@@ -16,5 +16,5 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class OpdRoutingModule {
+export class PhysicianRoutingModule {
 }
