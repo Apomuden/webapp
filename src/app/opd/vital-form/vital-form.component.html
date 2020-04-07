@@ -33,7 +33,7 @@
           {{attendance.clinic_name}}
         </nz-descriptions-item>
         <nz-descriptions-item *ngIf="attendance" nzTitle="Attendance Date">
-          {{attendance.attendance_date | date}}
+          {{ attendance.attendance_date | date:'medium' }}
         </nz-descriptions-item>
 
       </nz-descriptions>

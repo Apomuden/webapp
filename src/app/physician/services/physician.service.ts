@@ -45,7 +45,6 @@ export class PhysicianService {
       },
     }).pipe(map(
       res => {
-        console.log(res)
         if (res && res.data.length > 0) {
           return res.data[0];
         }
@@ -80,7 +79,6 @@ export class PhysicianService {
     }).pipe(map(
       res => {
         if (res && res.data && res.data.length > 0) {
-          console.log(res.data);
           return res.data[0];
         }
         throw new HttpErrorResponse({ status: 404 });
@@ -109,7 +107,12 @@ export class PhysicianService {
     ));
   }
 
-  getPatientHistory(patient_id: number) {
+  savePatientHistorySummary(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/patienthistorysummaries`;
+    return this.http.post<any>(url, data);
+  }
+
+  getPatientHistorySummary(patient_id: number) {
     const url = `${environment.apiBaseUrl}/registry/patienthistorysummaries/${patient_id}`;
     return this.http.get<any>(url).pipe(map(
       res => {
@@ -140,7 +143,7 @@ export class PhysicianService {
   savePhysicalExams(data: any, isUpdating = false, examId = 0) {
     let url = `${environment.apiBaseUrl}/registry/physicalexaminations/multiple`;
     if (!isUpdating) {
-    return this.http.post<any>(url, data);
+      return this.http.post<any>(url, data);
     } else {
       url += `/${examId}`;
       return this.http.put<any>(url, data);

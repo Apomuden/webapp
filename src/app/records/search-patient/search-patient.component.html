@@ -14,7 +14,7 @@
         <form [nzLayout]="'inline'" [formGroup]="searchForm" nz-form>
           <nz-form-item>
             <nz-form-label nzRequired nzFor="search">Search patient</nz-form-label>
-            <nz-form-control [nzErrorTip]="'gyfghf'">
+            <nz-form-control nzErrorTip="Enter valid folder number">
               <nz-input-group nzPrefixIcon="search">
                 <input nz nz-input formControlName="searchControl" name='search' id="search" />
               </nz-input-group>

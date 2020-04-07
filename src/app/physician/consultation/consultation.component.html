@@ -1,5 +1,5 @@
 <nz-row>
-  <nz-col [nzSpan]="patient ? 24 : 16">
+  <nz-col [nzSpan]="attendance ? 24 : 16">
     <nz-card nz-row *ngIf="patient && attendance">
       <nz-collapse nzAccordion>
         <nz-collapse-panel *ngFor="let panel of panels" [nzHeader]="panel.name" [nzActive]="panel.active">
@@ -58,10 +58,10 @@
       <nz-steps *ngIf="patient && attendance" nzSize="small" [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
         <nz-step nzTitle="PATIENT HISTORY"></nz-step>
         <nz-step nzTitle="PHYSICAL EXAMINATION"></nz-step>
-        <nz-step nzTitle="DIAGNOSIS"></nz-step>
         <nz-step nzTitle="INVESTIGATION"></nz-step>
-        <nz-step nzTitle="PRESCRIPTION"></nz-step>
         <nz-step nzTitle="PROCEDURE"></nz-step>
+        <nz-step nzTitle="DIAGNOSIS"></nz-step>
+        <nz-step nzTitle="PRESCRIPTION"></nz-step>
         <nz-step nzTitle="CLINICAL NOTES"></nz-step>
       </nz-steps>
 
@@ -75,12 +75,18 @@
         <!-- patient history step -->
         <div *ngIf="stepIndex === 0">
           <app-patient-history *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
-            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"></app-patient-history>
+            [userId]="user.details.id" (nextClicked)="next($event)" (previousClicked)="previous()">
+          </app-patient-history>
         </div>
 
         <div *ngIf="stepIndex === 1">
           <app-physical-exam *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
             [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-physical-exam>
+        </div>
+
+        <div *ngIf="stepIndex === 5">
+          <app-prescription *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
+            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-prescription>
         </div>
       </div>
 
@@ -149,7 +155,7 @@
       {{attendance.clinic_name}}
     </nz-descriptions-item>
     <nz-descriptions-item *ngIf="attendance" nzTitle="Attendance Date">
-      {{attendance.attendance_date | date:'M/d/yy, h:mm a'}}
+      {{ attendance.attendance_date | date:'medium' }}
     </nz-descriptions-item>
   </nz-descriptions>
 </ng-template>

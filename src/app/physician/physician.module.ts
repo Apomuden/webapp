@@ -7,9 +7,10 @@ import { OpdModule } from '../opd/opd.module';
 import { PhysicianService } from './services/physician.service';
 import { PatientHistoryComponent } from './patient-history/patient-history.component';
 import { PhysicalExamComponent } from './physical-exam/physical-exam.component';
+import { PrescriptionComponent } from '../prescription/prescription.component';
 
 @NgModule({
-  declarations: [ConsultationComponent, PatientHistoryComponent, PhysicalExamComponent],
+  declarations: [ConsultationComponent, PatientHistoryComponent, PhysicalExamComponent, PrescriptionComponent],
   imports: [
     CommonModule,
     PhysicianRoutingModule,

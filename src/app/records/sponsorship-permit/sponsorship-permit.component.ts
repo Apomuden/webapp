@@ -8,6 +8,8 @@ import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { NzNotificationService } from 'ng-zorro-antd';
 import * as dateFn from 'date-fns';
 import { formatDate } from '@angular/common';
+import * as datefns from 'date-fns';
+
 @Component({
   selector: 'app-sponsorship-permit',
   templateUrl: './sponsorship-permit.component.html',
@@ -357,7 +359,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         if (data.data) {
           this.patient = data.data;
           console.log(this.patient.id, 'patient id');
-          this.patient.age = this.calculateAge(this.patient.dob);
+          this.patient.age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
         } else {
           this.message = 'Folder not found';
           this.searchInitialized = false;

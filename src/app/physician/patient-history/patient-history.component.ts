@@ -33,6 +33,7 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
   relationships = [this.defaultRelationship];
   editName: string | null;
   submiting = false;
+  isLoading = true;
 
   @ViewChild(NzInputDirective, { static: false, read: ElementRef }) inputElement: ElementRef;
   @Input() patient: any;
@@ -73,11 +74,14 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
       .subscribe(histories => {
         histories = histories.reverse();
         this.previousHistories = histories;
+        this.isLoading = false;
+      }, e => {
+        this.isLoading = false;
       });
   }
 
   getPatientHistory(patientId: number) {
-    this.physicianService.getPatientHistory(patientId).pipe(first())
+    this.physicianService.getPatientHistorySummary(patientId).pipe(first())
       .subscribe(history => {
         history.panelActive = true; // to open the collapse panel in the ui
         this.patientHistory = history;
@@ -94,16 +98,19 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
       this.nextClicked.emit(this.previousHistories || {});
       return;
     }
+    this.submiting = true;
     const data = this.processPatientHistoryData();
     this.physicianService.savePatientHistory(data).pipe(first())
       .subscribe(res => {
         if (res) {
           this.patientHistoryForm.reset();
-          this.getPatientHistories(this.patient.id);
           this.nextClicked.emit(res.data);
+        } else {
+          this.notificationS.error('Error', 'Unable to proceed');
         }
+        this.submiting = false;
       }, error => {
-        console.error(error);
+        this.submiting = false;
         this.notificationS.error('Error', 'Unable to proceed');
       });
   }
@@ -111,6 +118,7 @@ export class PatientHistoryComponent implements OnInit, OnDestroy, AfterViewInit
   processPatientHistoryData() {
     const data = this.patientHistoryForm.value;
     data.chief_complaint_relation_id = (data.chief_complaint_relation_id === 0) ? null : data.chief_complaint_relation_id;
+
     return {
       patient_id: this.patient.id,
       consultation_id: this.consultation.id,
