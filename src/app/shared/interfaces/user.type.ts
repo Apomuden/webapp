@@ -4,6 +4,7 @@ export interface User {
   password: string;
   token?: string;
   details?: {
+    id?: string;
     title?: string;
     staff_id?: string;
     username?: string;

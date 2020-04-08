@@ -5,7 +5,7 @@
       <nz-list-item [nzActions]="Action">
         <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="attendance.loading">
           <ng-template #Action><a (click)="doAction(attendance)">{{action}}</a></ng-template>
-          <nz-list-item-meta [nzDescription]="attendance.attendance_date | date:'M/d/yy, h:mm a'" [nzTitle]="title">
+          <nz-list-item-meta [nzDescription]="attendance.attendance_date | date:'medium'" [nzTitle]="title">
             <ng-template #title>
               <a (click)="doAction(attendance)">{{ attendance.patient_name }}</a>
             </ng-template>

@@ -13,6 +13,12 @@ import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
   styleUrls: ['./physical-exam.component.css']
 })
 export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
+  @Input() consultation: any;
+  @Input() patient: any;
+  @Input() userId: any;
+  @Output() nextClicked: EventEmitter<any> = new EventEmitter();
+  @Output() previousClicked: EventEmitter<any> = new EventEmitter();
+
   physicalExamForm = this.fb.group({});
   examFields: any[];
   previousExams: any[];
@@ -22,14 +28,8 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
   };
   relationships = [this.defaultRelationship];
   submiting = false;
-
-  @Input() consultation: any;
-  @Input() patient: any;
-  @Input() userId: any;
-  @Output() nextClicked: EventEmitter<any> = new EventEmitter();
-  @Output() previousClicked: EventEmitter<any> = new EventEmitter();
+  isLoading = true;
   consultationDate = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'en');
-  examinedToday = false;
 
   constructor(
     private setUpService: SetupService,
@@ -43,6 +43,11 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(res => {
         this.relationships.push(...res.data);
       });
+    this.getPhysicalExams(this.patient.id);
+    this.setUpForm();
+  }
+
+  private setUpForm() {
     this.physicianService.getPhysicalExamCategories().pipe(first())
       .subscribe(res => {
         this.examFields = res;
@@ -66,8 +71,6 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.getPhysicalExams(this.patient.id);
-
     this.physicianService.consultationDate$.pipe(untilComponentDestroyed(this))
       .subscribe(date => {
         this.consultationDate = formatDate(date, 'yyyy-MM-dd HH:mm:ss', 'en');
@@ -82,13 +85,6 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
         this.previousExams = [];
         exams = exams.reverse();
         exams.forEach(exam => {
-          this.examinedToday = exam.consultation_id === this.consultation.id;
-          if (this.examinedToday) {
-            if (exam.category_name) {
-              this.physicalExamForm.get(exam.category_name).setValue(exam.note);
-              this.physicalExamForm.get(`${exam.category_name}Abnormal`).setValue(true);
-            }
-          }
           if (!this.previousExams.find(pe => pe.consultation_date === exam.consultation_date)) {
             this.previousExams.push({
               consultation_date: exam.consultation_date,
@@ -96,7 +92,8 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
             });
           }
         });
-      });
+        this.isLoading = false;
+      }, e => this.isLoading = false);
   }
 
   previous() {
@@ -109,16 +106,17 @@ export class PhysicalExamComponent implements OnInit, OnDestroy, AfterViewInit {
       this.nextClicked.emit(this.previousExams || {});
       return;
     }
+    this.submiting = true;
     const data = this.processExamData();
     this.physicianService.savePhysicalExams(data).pipe(first())
       .subscribe(res => {
         if (res) {
           this.physicalExamForm.reset();
-          this.getPhysicalExams(this.patient.id);
           this.nextClicked.emit(res.data);
         }
+        this.submiting = false;
       }, error => {
-        console.error(error);
+        this.submiting = false;
         this.notificationS.error('Error', 'Unable to proceed');
       });
   }

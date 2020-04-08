@@ -98,7 +98,6 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     private physicianService: PhysicianService,
     private userManagementService: UserManagementService,
     private notificationS: NzNotificationService,
-    private modalService: NzModalService,
   ) { }
 
 
@@ -211,7 +210,7 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.opdService.getPatient(folderNo).pipe(first())
       .subscribe(data => {
         this.patient = data;
-        this.patient.age = this.calculateAge(this.patient.dob);
+        this.patient.age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
         this.getConsultation();
       }, e => {
         console.log(e);

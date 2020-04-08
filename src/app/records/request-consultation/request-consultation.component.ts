@@ -8,6 +8,7 @@ import { RecordService } from '../record.service';
 import { NzNotificationService } from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
 import { formatDate } from '@angular/common';
+import * as datefns from 'date-fns';
 
 @Component({
   selector: 'app-request-consultation',
@@ -259,7 +260,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   appendToForm() {
-    const age = this.calculateAge(this.patient.dob);
+    const age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
     this.patient.age = age;
     if (this.patient.sponsorship_type_name !== 'Patient') {
       this.billedControl.reset();

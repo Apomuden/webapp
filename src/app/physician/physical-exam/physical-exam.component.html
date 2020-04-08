@@ -1,8 +1,9 @@
 <nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
   <nz-tab nzTitle="Previous Entry">
-    <nz-empty *ngIf="!previousExams"></nz-empty>
+    <nz-card-loading *ngIf="isLoading"></nz-card-loading>
+    <nz-empty *ngIf="!isLoading && !previousExams"></nz-empty>
     <nz-collapse *ngIf="previousExams" nzAccordion>
-      <nz-collapse-panel *ngFor="let item of previousExams" [nzHeader]="item.consultation_date | date"
+      <nz-collapse-panel *ngFor="let item of previousExams" [nzHeader]="item.consultation_date | date:'medium'"
         [nzActive]="item.active">
         <nz-comment *ngFor="let exam of item.exams" [nzAuthor]="exam.category_name">
           <nz-comment-content>
@@ -21,7 +22,8 @@
         <nz-form-control *ngIf="physicalExamForm.get(field.name + 'Abnormal').value">
           <textarea [formControlName]="field.name" nz-input placeholder="Enter findings here"></textarea>
         </nz-form-control>
-        <nz-switch [formControlName]="field.name + 'Abnormal'" nzCheckedChildren="Abnormal" nzUnCheckedChildren="Normal"></nz-switch>
+        <nz-switch [formControlName]="field.name + 'Abnormal'" nzCheckedChildren="Abnormal"
+          nzUnCheckedChildren="Normal"></nz-switch>
       </nz-form-item>
     </form>
   </nz-tab>

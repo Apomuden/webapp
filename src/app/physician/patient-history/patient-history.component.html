@@ -1,6 +1,7 @@
 <nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
   <nz-tab nzTitle="Previous History">
-    <nz-empty *ngIf="!previousHistories"></nz-empty>
+    <nz-card-loading *ngIf="isLoading"></nz-card-loading>
+    <nz-empty *ngIf="!isLoading && !previousHistories"></nz-empty>
     <nz-collapse *ngIf="previousHistories" nzAccordion>
       <nz-collapse-panel *ngIf="patientHistory" nzHeader="Curated History" [nzActive]="patientHistory.panelActive">
         <nz-comment *ngIf="patientHistory.past_medical_history" nzAuthor="Past Medical History">
@@ -40,7 +41,7 @@
         </nz-comment>
       </nz-collapse-panel>
 
-      <nz-collapse-panel *ngFor="let item of previousHistories" [nzHeader]="item.consultation_date | date"
+      <nz-collapse-panel *ngFor="let item of previousHistories" [nzHeader]="item.consultation_date | date:'medium'"
         [nzActive]="item.active">
         <nz-comment *ngIf="item.presenting_complaints" nzAuthor="Complaints">
           <nz-comment-content>

@@ -3,7 +3,6 @@ import { Validators, FormBuilder, FormControl } from '@angular/forms';
 import { debounceTime, first } from 'rxjs/operators';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { NzNotificationService, NzModalRef } from 'ng-zorro-antd';
-import * as datefns from 'date-fns';
 import { AuthenticationService } from 'src/app/shared/services/authentication.service';
 import { User } from 'src/app/shared/interfaces/user.type';
 import { PhysicianService } from '../services/physician.service';
@@ -16,18 +15,6 @@ import { formatDate } from '@angular/common';
   styleUrls: ['./consultation.component.css']
 })
 export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
-  today: string;
-
-  panels = [
-    {
-      active: true,
-      name: 'Patient Details',
-    },
-    {
-      active: false,
-      name: 'Vitals'
-    },
-  ];
   commentControl = this.fb.control(null);
   folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
   consultationForm = this.fb.group({
@@ -36,21 +23,10 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     illness_type: [null, Validators.required]
   });
 
-  doctorsModalVisible = false;
-  doctorsLoading = false;
-  isLoadingData = false;
-  searchInitialized = false;
-  submiting = false;
-  isAssigning = false;
-
-  patient: any;
-  illnessTypes = [];
-  message = 'Please enter a valid folder number to fill this form.';
-  attendance: any;
-  tplModal: NzModalRef;
-  vitals: any;
   stepIndex = 0;
+  // stepIndex = 5;
   stepsCount = 6;
+
   vitalKeys = [
     {
       name: 'Temperature',
@@ -97,6 +73,30 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
       max: 24.9
     },
   ];
+  panels = [
+    {
+      active: true,
+      name: 'Patient Details',
+    },
+    {
+      active: false,
+      name: 'Vitals'
+    },
+  ];
+  illnessTypes = [];
+
+  doctorsModalVisible = false;
+  doctorsLoading = false;
+  isLoadingData = false;
+  searchInitialized = false;
+  submiting = false;
+  isAssigning = false;
+
+  patient: any;
+  message = 'Please enter a valid folder number to fill this form.';
+  today: string;
+  attendance: any;
+  vitals: any;
   user: User;
   patientHistory: any;
   physicalExam: any;
@@ -114,7 +114,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit() {
-    this.today = formatDate(datefns.startOfToday(), 'yyyy-MM-dd', 'en');
+    this.today = formatDate(dateFns.startOfToday(), 'yyyy-MM-dd', 'en');
     this.user = this.authService.currentUserValue;
     this.physicianService.getIllnessTypes().pipe(first())
       .subscribe(res => {
@@ -162,7 +162,6 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
         this.attendance = data;
         this.getPatientVitals(this.patient.id);
       }, e => {
-        console.log(e);
         this.patient = null;
         this.message = 'Attendance not found';
         this.searchInitialized = false;
@@ -176,10 +175,9 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(data => {
         this.isLoadingData = false;
         this.patient = data;
-        this.patient.age = this.calculateAge(this.patient.dob);
+        this.patient.age = dateFns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
         this.getConsultation(this.patient.id);
       }, e => {
-        console.log(e);
         this.message = 'Folder not found';
         this.attendance = null;
         this.searchInitialized = false;
@@ -201,15 +199,8 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
           };
         }
       }, e => {
-        console.log(e);
         this.isLoadingData = false;
       });
-  }
-
-  calculateAge(birthday: string) {
-    const ageDifMs = Date.now() - new Date(birthday).getTime();
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
   cancel() {
