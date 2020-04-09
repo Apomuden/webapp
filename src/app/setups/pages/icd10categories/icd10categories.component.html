@@ -28,7 +28,7 @@
     <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="closeModal()" [nzTitle]="modalTitle" [nzContent]="modalContent"
       [nzFooter]="modalFooter">
       <ng-template #modalTitle>
-        Update ICD 10 Grouping
+        Update ICD 10 Category
       </ng-template>
 
       <ng-template #modalContent>
@@ -40,28 +40,6 @@
               <nz-form-label [nzXs]="8" nzRequired nzFor="name">Name</nz-form-label>
               <nz-form-control [nzSpan]="16">
                 <input type="text" nz-input formControlName="name" name="name" placeholder="Input name" />
-              </nz-form-control>
-            </nz-form-item>
-          </nz-row>
-          <nz-row>
-            <nz-form-item>
-              <nz-form-label [nzXs]="8" nzRequired nzFor="icd10_category_id">ICD10 Category</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <nz-select nzAllowSearch="false" nzAllowClear="false" name="icd10_category_id"
-                  formControlName="icd10_category_id" nzPlaceHolder="ICD10 Catgory"
-                  [nzLoading]="icd10CategoriesLoading | async">
-                  <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id">
-                  </nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-row>
-          <nz-row>
-            <nz-form-item>
-              <nz-form-label [nzXs]="8" nzRequired nzFor="icd10_grouping_code">Grouping Code</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <input type="text" nz-input formControlName="icd10_grouping_code" name="icd10_grouping_code"
-                  placeholder="Grouping Code" />
               </nz-form-control>
             </nz-form-item>
           </nz-row>
@@ -77,32 +55,16 @@
   <nz-col nzSpan="8">
     <nz-card>
       <h5>ICD 10 Grouping</h5>
-      <form [formGroup]="createForm">
+      <form (ngSubmit)="submitForm()">
         <div *ngIf="error">{{ error }}</div>
-        <nz-row style="margin-bottom:10px">
+        <nz-row>
           <nz-form-control [nzSpan]="24">
-            <input type="text" nz-input formControlName="name" name="name" placeholder="Name" />
-          </nz-form-control>
-        </nz-row>
-        <nz-row style="margin-bottom:10px">
-          <nz-form-control [nzSpan]="24">
-            <nz-select nzAllowSearch="false" nzAllowClear="false" name="icd10_category_id"
-              formControlName="icd10_category_id" nzPlaceHolder="ICD10 Catgory"
-              [nzLoading]="icd10CategoriesLoading | async">
-              <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-row>
-        <nz-row style="margin-bottom:10px">
-          <nz-form-control [nzSpan]="24">
-            <input type="text" nz-input formControlName="icd10_grouping_code" name="icd10_grouping_code"
-              placeholder="Grouping Code" />
+            <input type="text" nz-input [(ngModel)]="setupItem" name="name" placeholder="Input name" />
           </nz-form-control>
         </nz-row>
         <nz-row>
           <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
-            <button nz-button nzType="primary" (click)="submitForm()" [nzLoading]="isCreatingItem | async">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingItem | async">
               Submit
             </button>
           </nz-form-control>

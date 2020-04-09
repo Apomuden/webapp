@@ -6,36 +6,33 @@ import { BehaviorSubject } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd';
 
 @Component({
-  selector: 'app-icd10groupings',
-  templateUrl: './icd10groupings.component.html',
-  styleUrls: ['./icd10groupings.component.css']
+  selector: 'app-icd10categories',
+  templateUrl: './icd10categories.component.html',
+  styleUrls: ['./icd10categories.component.css']
 })
-export class Icd10groupingsComponent implements OnInit {
-  initLoading = true; // bug
+export class Icd10categoriesComponent implements OnInit {
+  initLoading = true;
   loadingMore = false;
   modalError = '';
-  categories = null;
   isVisible = false;
   isCreatingItem = new BehaviorSubject(false);
   isUpdatingItem = new BehaviorSubject(false);
-  icd10CategoriesLoading = new BehaviorSubject(false);
   updateForm: FormGroup;
-  createForm: FormGroup;
   itemId = null;
   data = [];
   list = [];
   error = '';
   setupItem = '';
-  componentLabel = 'ICD 10 Grouping';
+  componentLabel = 'ICD 10 Category';
 
   submitForm(): void {
-    if (this.createForm.invalid) {
-      this.error = `All fields are required`;
+    if (this.setupItem == null || this.setupItem === '') {
+      this.error = `Please enter ${this.componentLabel} name`;
     } else {
       this.error = '';
       this.isCreatingItem.next(true);
       this.setup
-        .genericPost('setups/icd10groupings', { ...this.createForm.value, status: 'ACTIVE' })
+        .genericPost('setups/icd10categories', { name: this.setupItem, status: 'ACTIVE' })
         .pipe(first())
         .subscribe(
           success => {
@@ -46,7 +43,7 @@ export class Icd10groupingsComponent implements OnInit {
                 `Successfully created ${this.componentLabel}`
               );
               this.getItems();
-              this.createForm.reset();
+              this.setupItem = '';
             } else {
               this.notification.blank(
                 'Error',
@@ -72,7 +69,7 @@ export class Icd10groupingsComponent implements OnInit {
   ) { }
   getItems() {
     this.setup
-      .genericGet('setups/icd10groupings')
+      .genericGet('setups/icd10categories')
       .pipe(first())
       .subscribe(
         data => {
@@ -86,36 +83,15 @@ export class Icd10groupingsComponent implements OnInit {
         }
       );
   }
-  getICD10Categories() {
-    this.icd10CategoriesLoading.next(true);
-    this.setup.genericGet('setups/icd10categories').pipe(first()).subscribe(
-      res => {
-        this.icd10CategoriesLoading.next(false);
-        this.categories = res;
-      },
-      err => {
-        this.icd10CategoriesLoading.next(false);
-        console.log(err);
-      }
-    );
-  }
   ngOnInit() {
     this.getItems();
-    this.getICD10Categories();
     this.updateForm = this.fb.group({
-      name: [null, Validators.required],
-      icd10_category_id: [null, Validators.required],
-      icd10_grouping_code: [null, Validators.required]
-    });
-    this.createForm = this.fb.group({
-      name: [null, Validators.required],
-      icd10_category_id: [null, Validators.required],
-      icd10_grouping_code: [null, Validators.required]
+      name: [null, Validators.required]
     });
   }
 
   toggleItem($event: any, setupItem: any) {
-    this.setup.toggleActive(`setups/icd10groupings/${setupItem.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
+    this.setup.toggleActive(`setups/icd10categories/${setupItem.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
       .subscribe(toggled => {
         const index = this.list.findIndex(i => i.id === toggled.id);
         this.list[index].isActivated = toggled.isActivated;
@@ -134,7 +110,7 @@ export class Icd10groupingsComponent implements OnInit {
       this.isUpdatingItem.next(true);
       this.setup.updateSetup({
         ...this.updateForm.value
-      }, `setups/icd10groupings/${this.itemId}`).pipe(first()).subscribe(
+      }, `setups/icd10categories/${this.itemId}`).pipe(first()).subscribe(
         response => {
           this.isUpdatingItem.next(false);
           if (response) {
@@ -156,7 +132,7 @@ export class Icd10groupingsComponent implements OnInit {
   }
 
   deleteItem(setupItem: any) {
-    this.setup.deleteSetup(`setups/icd10groupings/${setupItem.id}`).pipe(first()).subscribe(
+    this.setup.deleteSetup(`setups/icd10categories/${setupItem.id}`).pipe(first()).subscribe(
       res => {
         this.getItems();
         this.notification.success('Success', 'Deleted');
@@ -174,12 +150,10 @@ export class Icd10groupingsComponent implements OnInit {
   }
   showModal(setupItem: any) {
     this.isVisible = true;
-    const { name, icd10_category_id, icd10_grouping_code } = setupItem;
+    const { name } = setupItem;
     this.itemId = setupItem.id as number;
     console.log(this.itemId);
     this.updateForm.get('name').setValue(name);
-    this.updateForm.get('icd10_category_id').setValue(icd10_category_id);
-    this.updateForm.get('icd10_grouping_code').setValue(icd10_grouping_code);
 
   }
 }
