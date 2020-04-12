@@ -210,10 +210,8 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     this.opdService.getPatient(folderNo).pipe(first())
       .subscribe(data => {
         this.patient = data;
-        this.patient.age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
         this.getConsultation();
       }, e => {
-        console.log(e);
         this.message = 'Folder not found';
         this.attendance = null;
         this.searchInitialized = false;
@@ -277,12 +275,6 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  calculateAge(birthday: string) {
-    const ageDifMs = Date.now() - new Date(birthday).getTime();
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
-  }
-
   startEdit(name: string, event: MouseEvent): void {
     if (this.submiting) {
       return;
@@ -307,14 +299,17 @@ export class VitalFormComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   assignDoctor() {
+    this.isAssigning = true;
     this.opdService.assignDoctor(this.doctorControl.value, this.consultation.id).pipe(first())
       .subscribe(res => {
+        this.isAssigning = false;
         if (res) {
           this.handleCancel();
           this.notificationS.success('Success', 'Doctor assigned');
         }
       }, error => {
         console.log(error);
+        this.isAssigning = false;
         this.notificationS.error('Error', 'Doctor not assigned');
       });
   }

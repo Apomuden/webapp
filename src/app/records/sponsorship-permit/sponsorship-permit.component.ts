@@ -55,6 +55,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
   isCompaniesLoading = false;
   isCreatingSponsor = false;
   policies = [];
+  ageUnit = 'year(s)';
 
   constructor(
     private recordService: RecordService,
@@ -358,8 +359,7 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
         this.isLoadingData = false;
         if (data.data) {
           this.patient = data.data;
-          console.log(this.patient.id, 'patient id');
-          this.patient.age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
+          this.calculateAge();
         } else {
           this.message = 'Folder not found';
           this.searchInitialized = false;
@@ -370,10 +370,17 @@ export class SponsorshipPermitComponent implements OnInit, OnDestroy, AfterViewI
       });
   }
 
-  private calculateAge(birthday: string) {
-    const ageDifMs = Date.now() - new Date(birthday).getTime();
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  private calculateAge() {
+    let age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
+    if (age < 1) {
+      age = datefns.differenceInMonths(new Date(), new Date(this.patient.dob));
+      this.ageUnit = 'month(s)';
+      if (age < 1) {
+        age = datefns.differenceInCalendarDays(new Date(), new Date(this.patient.dob));
+        this.ageUnit = 'day(s)';
+      }
+    }
+    this.patient.age = age;
   }
 
   handleCancel() {

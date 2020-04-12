@@ -56,13 +56,14 @@
 
       <!-- consultation steps -->
       <nz-steps *ngIf="patient && attendance" nzSize="small" [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
-        <nz-step nzTitle="PATIENT HISTORY"></nz-step>
-        <nz-step nzTitle="PHYSICAL EXAMINATION"></nz-step>
-        <nz-step nzTitle="INVESTIGATION"></nz-step>
-        <nz-step nzTitle="PROCEDURE"></nz-step>
-        <nz-step nzTitle="DIAGNOSIS"></nz-step>
-        <nz-step nzTitle="PRESCRIPTION"></nz-step>
-        <nz-step nzTitle="CLINICAL NOTES"></nz-step>
+        <<nz-step nzTitle="PATIENT HISTORY">
+          </nz-step>
+          <nz-step nzTitle="PHYSICAL EXAMINATION"></nz-step>
+          <nz-step nzTitle="DIAGNOSIS"></nz-step>
+          <nz-step nzTitle="INVESTIGATION"></nz-step>
+          <nz-step nzTitle="PRESCRIPTION"></nz-step>
+          <nz-step nzTitle="PROCEDURE"></nz-step>
+          <nz-step nzTitle="CLINICAL NOTES"></nz-step>
       </nz-steps>
 
       <ng-template #progressTemplate let-dot let-status="status" let-index="index">
@@ -84,7 +85,7 @@
             [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-physical-exam>
         </div>
 
-        <div *ngIf="stepIndex === 5">
+        <div *ngIf="stepIndex === 4">
           <app-prescription *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
             [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-prescription>
         </div>
