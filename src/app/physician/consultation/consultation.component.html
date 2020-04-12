@@ -55,7 +55,8 @@
       </form>
 
       <!-- consultation steps -->
-      <nz-steps *ngIf="patient && attendance" nzSize="small" [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
+      <nz-steps *ngIf="patient && attendance" nzSize="small" (nzIndexChange)="onIndexChange($event)"
+        [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
         <nz-step nzTitle="PATIENT HISTORY"></nz-step>
         <nz-step nzTitle="PHYSICAL EXAMINATION"></nz-step>
         <nz-step nzTitle="INVESTIGATION"></nz-step>
@@ -81,12 +82,16 @@
 
         <div *ngIf="stepIndex === 1">
           <app-physical-exam *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
-            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-physical-exam>
+            [userId]="user.details.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-physical-exam>
+        </div>
+        <div *ngIf="stepIndex === 4">
+          <app-diagnosis *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
+            [userId]="user.details.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-diagnosis>
         </div>
 
         <div *ngIf="stepIndex === 5">
           <app-prescription *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
-            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-prescription>
+            [userId]="user.details.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-prescription>
         </div>
       </div>
 

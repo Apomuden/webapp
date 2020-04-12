@@ -1,0 +1,119 @@
+<nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
+  <nz-tab nzTitle="Previous Entry">
+    <nz-card-loading *ngIf="isLoading"></nz-card-loading>
+    <nz-empty *ngIf="!isLoading && !previousDiagnosis"></nz-empty>
+    <nz-collapse *ngIf="previousDiagnosis" nzAccordion>
+      <nz-collapse-panel *ngFor="let item of previousDiagnosis" [nzHeader]="item.attendance_date | date:'medium'"
+        [nzActive]="item.active">
+        <nz-table #diagnosisTable [nzData]="item.diagnosis" [nzFrontPagination]=true [nzShowPagination]=false>
+          <thead>
+            <tr>
+              <th>Diagnosis</th>
+              <th>Diagnosis Type</th>
+              <th>Patient Status</th>
+              <th>Clinic</th>
+              <th>Doctor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of diagnosisTable.data">
+              <td>{{data.disease_name}}</td>
+              <td>{{data.diagnosis_type}}</td>
+              <td>{{data.patient_status}}</td>
+              <td>{{data.clinic_name}}</td>
+              <td>{{data.consultant_name}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-collapse-panel>
+    </nz-collapse>
+
+  </nz-tab>
+
+  <nz-tab nzTitle="Current Entry">
+    <nz-col [nzSm]="10" [nzXs]="24">
+      <form nz-form [formGroup]="diagnosisForm">
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="diagnosis_type">Diagnosis Type</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select formControlName="diagnosis_type" nzPlaceHolder="Choose">
+              <nz-option nzValue="CONFIRM" nzLabel="Confirm"></nz-option>
+              <nz-option nzValue="PROVISIONAL" nzLabel="Provisional"></nz-option>
+              <nz-option nzValue="ADDITIONAL" nzLabel="Additional"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="diagnosis_status">Diagnosis Status</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select formControlName="diagnosis_status" nzPlaceHolder="Choose">
+              <nz-option nzValue="NEW" nzLabel="New"></nz-option>
+              <nz-option nzValue="OLD" nzLabel="Old"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="disease_id">Patient Diagnosis</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <nz-select formControlName="disease_id" nzPlaceHolder="Choose" [nzLoading]="diseasesLoading">
+              <nz-option *ngFor="let disease of diseases" [nzValue]="disease.id" [nzLabel]="disease.name"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="remarks">Remarks</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <textarea nz-input id="remarks" formControlName="remarks" rows="2" placeholder="Remarks"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-row>
+          <nz-form-control [nzSpan]="14" [nzOffset]="6">
+            <button nz-button nzType="primary" (click)="addDiagnosis()">Add</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-col>
+    <nz-col [nzSm]="14" [nzXs]="24">
+      <nz-table #diagnosisTable [nzData]="diagnosis" [nzFrontPagination]=true [nzShowPagination]=false>
+        <thead>
+          <tr>
+            <th>Patient Diagnosis</th>
+            <th>Diagnosis Type</th>
+            <th>Diagnosis Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of diagnosisTable.data">
+            <td>{{data.diseaseValue}}</td>
+            <td>{{data.diagnosis_type}}</td>
+            <td>{{data.diagnosis_status}}</td>
+            <td>
+
+              <button nz-button nzType="default" [nzSize]="'small'" class="m-r-10">
+                Edit <i style="cursor: pointer;" nz-icon nzType="edit" nzTheme="outline"
+                  style="cursor: pointer;"></i></button>
+              <button nz-button nzType="default" [nzSize]="'small'" nz-popconfirm
+                nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                (nzOnConfirm)="deleteItem(data)">Delete <i nz-icon nzType="delete" nzTheme="fill"
+                  style="color:red;font-size: 16px;"></i></button>
+
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+
+    </nz-col>
+  </nz-tab>
+</nz-tabset>
+
+<nz-divider></nz-divider>
+
+<nz-row nzType="flex" nzJustify="center">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="default" (click)="previous()" [nzLoading]="submiting">Previous</button>
+      <button nz-button (click)="submit()" [nzLoading]="submiting">Next</button>
+    </nz-button-group>
+  </nz-col>
+</nz-row>

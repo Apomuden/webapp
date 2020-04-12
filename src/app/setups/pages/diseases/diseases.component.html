@@ -1,0 +1,322 @@
+<div nz-row nzGutter="10">
+  <nz-col nzSpan="12">
+    <nz-card>
+      <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
+        [nzRenderItem]="item">
+        <ng-template #item let-item>
+          <nz-list-item [nzActions]="item.loading ? [] : [deleteAction,editAction, moreAction]">
+            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
+              <ng-template #editAction><a (click)="showModal(item)">edit</a></ng-template>
+              <ng-template #deleteAction>
+                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="deleteItem(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                    style="color:red;font-size: 16px;"></i></a>
+              </ng-template>
+              <ng-template #moreAction>
+                <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
+              </ng-template>
+              <nz-list-item-meta [nzTitle]="nzTitle">
+                <ng-template #nzTitle>
+                  <a>{{ item.name }}</a>
+                </ng-template>
+              </nz-list-item-meta>
+            </nz-skeleton>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+    </nz-card>
+    <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="closeModal()" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter">
+      <ng-template #modalTitle>
+        Update Disease
+      </ng-template>
+
+      <ng-template #modalContent>
+        <form [formGroup]="updateForm">
+          <nz-alert *ngIf="modalError" nzType="error" [nzMessage]="modalError" class="m-b-10" nzShowIcon>
+          </nz-alert>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="name">Name</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="name" name="name" placeholder="Input name" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="disease_code">Disease Code</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="disease_code" name="disease_code"
+                  placeholder="Disease Code" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="icd10_code">ICD10 Code</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="icd10_code" name="icd10_code" placeholder="ICD10 Code" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="icd10_grouping_code">ICD10 Grouping Code</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="icd10_grouping_code" name="icd10_grouping_code"
+                  placeholder="ICD10 Grouping Code" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="adult_gdrg">Adult Gdrg</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="adult_gdrg" name="adult_gdrg" placeholder="Adult Gdrg" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="adult_tariff">Adult Tarrif</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="adult_tariff" name="adult_tariff"
+                  placeholder="Adult Tariff" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="child_gdrg">Child Gdrg</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="child_gdrg" name="child_gdrg" placeholder="Child Gdrg" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="child_tariff">Child Tarrif</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="child_tariff" name="child_tariff"
+                  placeholder="Child Tariff" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="icd10_category_id">ICD10 Category</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" name="icd10_category_id"
+                  formControlName="icd10_category_id" nzPlaceHolder="ICD10 Catgory"
+                  [nzLoading]="icd10CategoriesLoading | async">
+                  <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="icd10_grouping_id">ICD10 Grouping</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" name="icd10_grouping_id"
+                  formControlName="icd10_grouping_id" nzPlaceHolder="ICD10 Grouping"
+                  [nzLoading]="icd10GroupingsLoading | async">
+                  <nz-option *ngFor="let grouping of icd10Groupings" [nzLabel]="grouping.name" [nzValue]="grouping.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="moh_ghs_grouping_id">MOH GHS Grouping</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" name="moh_ghs_grouping_id"
+                  formControlName="moh_ghs_grouping_id" nzPlaceHolder="Moh Ghs Grouping"
+                  [nzLoading]="mohGhsGroupingsLoading | async">
+                  <nz-option *ngFor="let grouping of mohGhsGroupings" [nzLabel]="grouping.name" [nzValue]="grouping.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="moh_grouping_code">Moh Grouping Code</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="moh_grouping_code" name="moh_grouping_code"
+                  placeholder="Moh Grouping Code" />
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="illness_type_id">Illness Type</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" name="illness_type_id"
+                  formControlName="illness_type_id" nzPlaceHolder="Illness Type"
+                  [nzLoading]="illnessTypesLoading | async">
+                  <nz-option *ngFor="let illnessType of illnessTypes" [nzLabel]="illnessType.name"
+                    [nzValue]="illnessType.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="age_group_id">Age Group</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" name="age_group_id" formControlName="age_group_id"
+                  nzPlaceHolder="Age Group" [nzLoading]="ageGroupsLoading | async">
+                  <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="gender">Gender</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" [nzMode]="'tags'" nzAllowClear="false" name="gender"
+                  formControlName="gender" nzPlaceHolder="Gender">
+                  <nz-option nzLabel="Male" nzValue="MALE"></nz-option>
+                  <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+        </form>
+      </ng-template>
+
+
+      <ng-template #modalFooter>
+        <button nz-button (click)="closeModal()">Cancel</button>
+        <button nz-button nzType="primary" (click)="update()" [nzLoading]="isUpdatingItem|async">Save</button>
+      </ng-template>
+    </nz-modal>
+  </nz-col>
+  <nz-col nzSpan="8">
+    <nz-card>
+      <h5> Create Disease</h5>
+      <form [formGroup]="createForm">
+        <div *ngIf="error">{{ error }}</div>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="name" name="name" placeholder="Name" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="disease_code" name="disease_code" placeholder="Disease Code" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="icd10_code" name="icd10_code" placeholder="ICD10 Code" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="icd10_grouping_code" name="icd10_grouping_code"
+              placeholder="ICD10 Grouping Code" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="adult_gdrg" name="adult_gdrg" placeholder="Adult Gdrg" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="adult_tariff" name="adult_tariff" placeholder="Adult Tariff" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="child_gdrg" name="child_gdrg" placeholder="Child Gdrg" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="child_tariff" name="child_tariff" placeholder="Child Tariff" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="icd10_category_id"
+              formControlName="icd10_category_id" nzPlaceHolder="ICD10 Catgory"
+              [nzLoading]="icd10CategoriesLoading | async">
+              <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="icd10_grouping_id"
+              formControlName="icd10_grouping_id" nzPlaceHolder="ICD10 Grouping"
+              [nzLoading]="icd10GroupingsLoading | async">
+              <nz-option *ngFor="let grouping of icd10Groupings" [nzLabel]="grouping.name" [nzValue]="grouping.id">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="moh_ghs_grouping_id"
+              formControlName="moh_ghs_grouping_id" nzPlaceHolder="Moh Ghs Grouping"
+              [nzLoading]="mohGhsGroupingsLoading | async">
+              <nz-option *ngFor="let grouping of mohGhsGroupings" [nzLabel]="grouping.name" [nzValue]="grouping.id">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="moh_grouping_code" name="moh_grouping_code"
+              placeholder="Moh Grouping Code" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="illness_type_id"
+              formControlName="illness_type_id" nzPlaceHolder="Illness Type" [nzLoading]="illnessTypesLoading | async">
+              <nz-option *ngFor="let illnessType of illnessTypes" [nzLabel]="illnessType.name"
+                [nzValue]="illnessType.id">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="age_group_id" formControlName="age_group_id"
+              nzPlaceHolder="Age Group" [nzLoading]="ageGroupsLoading | async">
+              <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" [nzMode]="'tags'" nzAllowClear="false" name="gender"
+              formControlName="gender" nzPlaceHolder="Gender">
+              <nz-option nzLabel="Male" nzValue="MALE"></nz-option>
+              <nz-option nzLabel="Female" nzValue="FEMALE"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row>
+          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
+            <button nz-button nzType="primary" (click)="submitForm()" [nzLoading]="isCreatingItem | async">
+              Submit
+            </button>
+          </nz-form-control>
+        </nz-row>
+      </form>
+    </nz-card>
+  </nz-col>
+</div>
