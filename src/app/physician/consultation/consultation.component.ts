@@ -24,8 +24,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     illness_type: [null, Validators.required]
   });
 
-  // stepIndex = 0;
-  stepIndex = 4;
+  stepIndex = 0;
   stepsCount = 6;
 
   vitalKeys = [
