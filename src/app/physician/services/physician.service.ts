@@ -111,6 +111,7 @@ export class PhysicianService {
     return this.http.post<any>(url, data);
   }
 
+
   getPatientHistorySummary(patient_id: number) {
     const url = `${environment.apiBaseUrl}/registry/patienthistorysummaries/${patient_id}`;
     return this.http.get<any>(url).pipe(map(
@@ -118,6 +119,28 @@ export class PhysicianService {
         if (res && res.data) {
           return res.data;
         }
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+
+  saveDiagnosis(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/diagnoses/multiple`;
+    return this.http.post<any>(url, data);
+  }
+  getDiagnosis(patient_id: any) {
+    console.log(`patientId: ${patient_id}`);
+    const url = `${environment.apiBaseUrl}/registry/diagnoses`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patient_id,
+      }
+    }).pipe(map(
+      res => {
+        if (res && res.data && res.data.length > 0) {
+          return res.data;
+        }
+
         throw new HttpErrorResponse({ status: 404 });
       }
     ));
