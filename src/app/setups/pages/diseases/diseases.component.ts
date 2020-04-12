@@ -256,7 +256,7 @@ export class DiseasesComponent implements OnInit {
 
   getIcd10Groupings(icd10category_id) {
     this.icd10GroupingsLoading.next(true);
-    this.setup.genericGet(`setups/icd10groupings?icd10_category_id=${icd10category_id}`).pipe(first()).subscribe(
+    this.setup.genericGet(`setups/icd10groupings?icd10_category_id==${icd10category_id}`).pipe(first()).subscribe(
       res => {
         this.icd10GroupingsLoading.next(false);
         this.icd10Groupings = res;
