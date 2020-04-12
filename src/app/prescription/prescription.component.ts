@@ -5,6 +5,14 @@ import { FormBuilder } from '@angular/forms';
 import { PhysicianService } from '../physician/services/physician.service';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import { ThemeConstantService } from '../shared/services/theme-constant.service';
+
+interface ItemData {
+  id: string;
+  name: string;
+  age: number;
+  address: string;
+}
 
 @Component({
   selector: 'app-prescription',
@@ -20,18 +28,31 @@ export class PrescriptionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   consultationDate = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'en');
   submiting = false;
+  editCache: { [key: string]: { edit: boolean; data: ItemData } } = {};
+  listOfData: ItemData[] = [];
 
   constructor(
     private setUpService: SetupService,
     private fb: FormBuilder,
+    private themeConstantService: ThemeConstantService,
     private physicianService: PhysicianService,
     private notificationS: NzNotificationService,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
+    for (let i = 0; i < 100; i++) {
+      this.listOfData.push({
+        id: `${i}`,
+        name: `Edrward ${i}`,
+        age: 32,
+        address: `London Park no. ${i}`
+      });
+    }
+    this.updateEditCache();
   }
 
   ngAfterViewInit() {
+    // this.themeConstantService.
     this.physicianService.consultationDate$.pipe(untilComponentDestroyed(this))
       .subscribe(date => {
         this.consultationDate = formatDate(date, 'yyyy-MM-dd HH:mm:ss', 'en');
@@ -40,12 +61,38 @@ export class PrescriptionComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() { }
 
+  startEdit(id: string): void {
+    this.editCache[id].edit = true;
+  }
+
+  cancelEdit(id: string): void {
+    const index = this.listOfData.findIndex(item => item.id === id);
+    this.editCache[id] = {
+      data: { ...this.listOfData[index] },
+      edit: false
+    };
+  }
+
+  saveEdit(id: string): void {
+    const index = this.listOfData.findIndex(item => item.id === id);
+    Object.assign(this.listOfData[index], this.editCache[id].data);
+    this.editCache[id].edit = false;
+  }
+
+  updateEditCache(): void {
+    this.listOfData.forEach(item => {
+      this.editCache[item.id] = {
+        edit: false,
+        data: { ...item }
+      };
+    });
+  }
+
   previous() {
-    // emit previous step event
     this.previousClicked.emit();
   }
 
   submit() {
-    // submit to api and move to next step
+
   }
 }

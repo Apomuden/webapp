@@ -8,6 +8,7 @@ import { User } from 'src/app/shared/interfaces/user.type';
 import { PhysicianService } from '../services/physician.service';
 import * as dateFns from 'date-fns';
 import { formatDate } from '@angular/common';
+import { ThemeConstantService } from 'src/app/shared/services/theme-constant.service';
 
 @Component({
   selector: 'app-vital-form',
@@ -23,8 +24,8 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     illness_type: [null, Validators.required]
   });
 
-  stepIndex = 0;
-  // stepIndex = 5;
+  // stepIndex = 0;
+  stepIndex = 4;
   stepsCount = 6;
 
   vitalKeys = [
@@ -179,7 +180,6 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
       .subscribe(data => {
         this.isLoadingData = false;
         this.patient = data;
-        this.patient.age = dateFns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
         this.getConsultation(this.patient.id);
       }, e => {
         this.message = 'Folder not found';

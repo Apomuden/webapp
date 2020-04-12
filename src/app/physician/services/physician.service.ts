@@ -70,11 +70,10 @@ export class PhysicianService {
   }
 
   getPatientVitals(patient_id = '', attendance_date: string) {
-    const url = `${environment.apiBaseUrl}/registry/patientvitals/byattendancedate`;
+    const url = `${environment.apiBaseUrl}/registry/patientvitals/byattendancedate/${attendance_date}`;
     return this.http.get<any>(url, {
       params: {
-        'patient_id': `=${patient_id}`,
-        'attendance_date': `>=${attendance_date}`,
+        'patient_id': `${patient_id}`,
       }
     }).pipe(map(
       res => {

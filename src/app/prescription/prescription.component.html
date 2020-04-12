@@ -1,8 +1,156 @@
 <nz-row nzType="flex" nzJustify="center">
   <nz-col>
     <nz-button-group>
-      <button nz-button nzType="default" (click)="previous()" [nzLoading]="submiting">Previous</button>
-      <button nz-button (click)="submit()" [nzLoading]="submiting">Next</button>
+      <button nz-button nzType="danger" (click)="previous()" [nzLoading]="submiting">Previous</button>
+      <button nz-button nzType="primary" (click)="submit()" [nzLoading]="submiting">Next</button>
     </nz-button-group>
   </nz-col>
 </nz-row>
+
+<nz-divider></nz-divider>
+
+<nz-row nzType="flex" nzJustify="center">
+  <form nz-form nz-col nzSpan="16" nzLayout="vertical">
+    <nz-form-item style="margin: 0;" nzGutter="16">
+      <nz-form-control nzSpan="8">
+        <nz-form-label>Dispensing unit</nz-form-label>
+        <nz-select nzPlaceHolder="Select Dispensing unit">
+          <nz-option nzValue="1" nzLabel="Paracetamol 500mg tablets"></nz-option>
+          <nz-option nzValue="2" nzLabel="Zetheromicine 500mg tablets"></nz-option>
+          <nz-option nzValue="3" nzLabel="Artefan 200mg tablets"></nz-option>
+        </nz-select>
+      </nz-form-control>
+      <nz-form-control nzSpan="16">
+        <nz-form-label>Drug</nz-form-label>
+        <nz-select nzPlaceHolder="Select Drug">
+          <nz-option nzValue="1" nzLabel="Paracetamol 500mg tablets"></nz-option>
+          <nz-option nzValue="2" nzLabel="Zetheromicine 500mg tablets"></nz-option>
+          <nz-option nzValue="3" nzLabel="Artefan 200mg tablets"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item style="margin: 0;" nzGutter="16">
+      <nz-form-control nzSpan="4">
+        <nz-form-label>Dose / Tablet</nz-form-label>
+        <nz-input-number [nzMin]="1" [nzStep]="1" nzPlaceHolder="Dose" name="dose"></nz-input-number>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="10">
+        <nz-form-label>Frequency - Days</nz-form-label>
+        <nz-input-group nz-row>
+          <nz-select style="width: 150px;" nzPlaceHolder="Select Frequency">
+            <nz-option nzValue="1" nzLabel="TID"></nz-option>
+            <nz-option nzValue="2" nzLabel="BID"></nz-option>
+          </nz-select>
+          <nz-input-number [nzMin]="1" [nzStep]="1" nzPlaceHolder="Days" name="days"></nz-input-number>
+        </nz-input-group>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="3">
+        <nz-form-label>Meal</nz-form-label>
+        <nz-switch></nz-switch>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="7">
+        <nz-form-label>Route</nz-form-label>
+        <input type="text" nz-input nzPlaceHolder="Route" placeholder="Route" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item style="margin: 0;" nzGutter="16">
+      <nz-form-control nzSpan="4">
+        <nz-form-label>Qty/ GH¢1.00</nz-form-label>
+        <nz-input-number [nzMin]="1" [nzStep]="1" nzPlaceHolder="Qty" name="qty"></nz-input-number>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="8">
+        <nz-form-label>Order Type</nz-form-label>
+        <nz-select nzPlaceHolder="Select Order Type">
+          <nz-option nzValue="1" nzLabel="Internal"></nz-option>
+          <nz-option nzValue="2" nzLabel="External"></nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12">
+        <nz-form-label>Billed Sponsor</nz-form-label>
+        <nz-select nzPlaceHolder="Select Billed Sponsor">
+          <nz-option nzValue="1" nzLabel="NHIS"></nz-option>
+          <nz-option nzValue="2" nzLabel="Heroku"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item style="margin: 0;" nzGutter="16">
+      <nz-form-control nzSpan="12">
+        <nz-form-label>Start Date</nz-form-label>
+        <nz-date-picker nzPlaceHolder="Select start date"></nz-date-picker>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12">
+        <nz-form-label>End Date</nz-form-label>
+        <nz-date-picker nzPlaceHolder="Select end date"></nz-date-picker>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzGutter="16">
+      <nz-form-control>
+        <nz-form-label>Instructions</nz-form-label>
+        <textarea nz-input type="text"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-col>
+        <nz-button-group>
+          <button nz-button nzType="danger" [nzLoading]="submiting">Clear</button>
+          <button nz-button nzType="primary" [nzLoading]="submiting">Add Drug</button>
+        </nz-button-group>
+      </nz-col>
+    </nz-row>
+  </form>
+</nz-row>
+
+<nz-divider nzText="Prescribed Drugs"></nz-divider>
+<nz-table #editRowTable nzBordered [nzData]="listOfData" nzSize="small">
+  <thead>
+    <tr>
+      <th nzWidth="35%">Medicine Name</th>
+      <th nzWidth="25%">Description</th>
+      <th>Qty X Price</th>
+      <th>Start Date</th>
+      <th>Order</th>
+      <th>Sponsor</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let dat of editRowTable.data">
+      <td>
+        Paracetamol 500mg Tab Paracetamol 500mg Tab
+      </td>
+      <td>
+        1 tablet TID for 5 days after meals
+      </td>
+      <td>
+        20 x GH¢ 10
+      </td>
+      <td>
+        10-04-2020
+      </td>
+      <td>
+        Internal
+      </td>
+      <td>
+        NHIS
+      </td>
+      <td>
+        <div class="editable-row-operations">
+          <a><i nz-icon nzType="check-circle" [nzTwotoneColor]="'#52c41a'" nzTheme="twotone"></i></a>
+          <a nz-popconfirm nzTitle="Sure to cancel?"><i nz-icon nzType="close-circle" [nzTwotoneColor]="'#eb2f96'"
+              nzTheme="twotone"></i></a>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>

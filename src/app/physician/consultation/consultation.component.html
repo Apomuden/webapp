@@ -55,6 +55,7 @@
       </form>
 
       <!-- consultation steps -->
+
       <nz-steps *ngIf="patient && attendance" nzSize="small" (nzIndexChange)="onIndexChange($event)"
         [nzProgressDot]="progressTemplate" [nzCurrent]="stepIndex">
         <nz-step nzTitle="PATIENT HISTORY"></nz-step>

@@ -55,6 +55,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   };
   sponsorPermits = [this.patientSponsor];
   servicePrice: any;
+  ageUnit = 'year(s)';
   formatFee = (value: number) => `GHC ${value}`;
   parseFee = (value: string) => value.replace('GHC', '');
 
@@ -260,17 +261,19 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   appendToForm() {
-    const age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
+    let age = datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob));
+    if (age < 1) {
+      age = datefns.differenceInMonths(new Date(), new Date(this.patient.dob));
+      this.ageUnit = 'month(s)';
+      if (age < 1) {
+        age = datefns.differenceInCalendarDays(new Date(), new Date(this.patient.dob));
+        this.ageUnit = 'day(s)';
+      }
+    }
     this.patient.age = age;
     if (this.patient.sponsorship_type_name !== 'Patient') {
       this.billedControl.reset();
     }
-  }
-
-  calculateAge(birthday: string) {
-    const ageDifMs = Date.now() - new Date(birthday).getTime();
-    const ageDate = new Date(ageDifMs);
-    return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
   cancel(): void {
@@ -281,7 +284,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     this.requestForm.get('orderType').setValue('INTERNAL');
     this.billedControl.setValue(0);
     this.feeControl.setValue(0);
-    this.qtyControl.setValue(0);
+    this.qtyControl.setValue(1);
     this.attendanceDateControl.setValue(new Date());
   }
 
@@ -314,6 +317,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
           `Successfully requested consultation for ${this.patient.folder_no}`);
         this.cancel();
       }, error => {
+        console.log(error)
         this.requesting = false;
         this.notificationS.error('Oops',
           `Failed to request consultation for ${this.patient.folder_no}. Consultation has probably been requested already.`);
@@ -325,7 +329,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
       order_type: this.requestForm.get('orderType').value as string,
       service_quantity: this.qtyControl.value as number,
       service_fee: this.feeControl.value,
-      age: this.patient.age,
+      age: datefns.differenceInCalendarYears(new Date(), new Date(this.patient.dob)),
       patient_id: this.patient.id,
       clinic_id: this.clinicControl.value as number,
       consultation_service_id: this.serviceControl.value as number,
