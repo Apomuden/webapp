@@ -60,6 +60,7 @@ import { PhysicalExaminationCategoryComponent } from './pages/physical-examinati
 import { MohghsgroupingsComponent } from './pages/mohghsgroupings/mohghsgroupings.component';
 import { Icd10groupingsComponent } from './pages/icd10groupings/icd10groupings.component';
 import { Icd10categoriesComponent } from './pages/icd10categories/icd10categories.component';
+import { DiseasesComponent } from './pages/diseases/diseases.component';
 
 @NgModule({
   declarations: [
@@ -117,7 +118,8 @@ import { Icd10categoriesComponent } from './pages/icd10categories/icd10categorie
     PhysicalExaminationCategoryComponent,
     MohghsgroupingsComponent,
     Icd10groupingsComponent,
-    Icd10categoriesComponent
+    Icd10categoriesComponent,
+    DiseasesComponent
   ],
   imports: [
     CommonModule,

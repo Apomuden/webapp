@@ -1,3 +1,4 @@
+import { DiagnosisComponent } from './diagnosis/diagnosis.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
@@ -10,7 +11,7 @@ import { PhysicalExamComponent } from './physical-exam/physical-exam.component';
 import { PrescriptionComponent } from '../prescription/prescription.component';
 
 @NgModule({
-  declarations: [ConsultationComponent, PatientHistoryComponent, PhysicalExamComponent, PrescriptionComponent],
+  declarations: [ConsultationComponent, PatientHistoryComponent, PhysicalExamComponent, PrescriptionComponent, DiagnosisComponent],
   imports: [
     CommonModule,
     PhysicianRoutingModule,

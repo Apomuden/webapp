@@ -145,6 +145,10 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() { }
 
+  onIndexChange(index: number): void {
+    this.stepIndex = index;
+  }
+
   disabledDate(current: Date): boolean {
     if (!current) {
       return false;
@@ -224,6 +228,8 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
       this.stepIndex += 1;
     } else if (this.stepIndex === 1) {
       this.physicalExam = eventData;
+      this.stepIndex += 1;
+    } else {
       this.stepIndex += 1;
     }
   }
