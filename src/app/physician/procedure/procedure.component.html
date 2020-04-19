@@ -1,15 +1,15 @@
 <nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
   <nz-tab nzTitle="Previous Entry">
     <nz-card-loading *ngIf="isLoading"></nz-card-loading>
-    <nz-empty *ngIf="!isLoading && !previousInvestigations"></nz-empty>
-    <nz-collapse *ngIf="previousInvestigations" nzAccordion>
-      <nz-collapse-panel *ngFor="let item of previousInvestigations" [nzHeader]="item.attendance_date | date:'medium'"
+    <nz-empty *ngIf="!isLoading && !previousProcedures"></nz-empty>
+    <nz-collapse *ngIf="previousProcedures" nzAccordion>
+      <nz-collapse-panel *ngFor="let item of previousProcedures" [nzHeader]="item.attendance_date | date:'medium'"
         [nzActive]="item.active">
-        <nz-table #diagnosisTable [nzData]="item.investigation" [nzFrontPagination]=true [nzShowPagination]=false>
+        <nz-table #diagnosisTable [nzData]="item.procedure" [nzFrontPagination]=true [nzShowPagination]=false>
           <thead>
             <tr>
               <th>Service</th>
-              <th>Investigation Category</th>
+              <th>Procedure Category</th>
               <!-- <th>Status</th> -->
               <th>Patient Status</th>
               <th>Clinic</th>
@@ -113,12 +113,11 @@
         <div nz-col [nzSpan]="4">
           <button style="top: 28px;position: absolute;left:100px;" nz-button nzType="primary"
             (click)="resetForm()">Clear</button>
-          <button style="top: 28px;position: absolute;" nz-button nzType="primary"
-            (click)="addInvestigation()">Add</button>
+          <button style="top: 28px;position: absolute;" nz-button nzType="primary" (click)="addProcedure()">Add</button>
         </div>
       </div>
     </form>
-    <nz-table #diagnosisTable [nzData]="investigations" [nzFrontPagination]=true [nzShowPagination]=false>
+    <nz-table #diagnosisTable [nzData]="procedures" [nzFrontPagination]=true [nzShowPagination]=false>
       <thead>
         <tr>
           <th>Service</th>
