@@ -6,6 +6,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { first, takeUntil } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-diagnosis',
@@ -41,7 +42,7 @@ export class DiagnosisComponent implements OnInit {
       diagnosis_type: [null, Validators.required],
       diagnosis_status: [null, Validators.required],
       disease_id: [null, Validators.required],
-      remarks: [null, Validators.required]
+      remarks: [null]
     });
     this.getDiagnosis(this.patient.id);
     this.getDiseases();
@@ -74,7 +75,7 @@ export class DiagnosisComponent implements OnInit {
       console.log(this.diagnosis);
       this.diagnosisForm.reset();
     } else {
-      this.notification.error('Error', 'All fields are required');
+      this.notification.error('Error', 'Fill required fields');
     }
   }
 
@@ -83,6 +84,14 @@ export class DiagnosisComponent implements OnInit {
     this.setup.genericGet('setups/diseases').pipe(first())
       .subscribe(diseases => {
         this.diseases = diseases;
+        const age = this.getAge();
+        diseases.forEach(disease => {
+          if (age >= 13) {
+            disease.modifiedName = `${disease.name}-AG(${disease.adult_gdrg})-AT(${disease.adult_tariff})`;
+          } else {
+            disease.modifiedName = `${disease.name}-CG(${disease.child_gdrg})-CT(${disease.child_tariff})`;
+          }
+        });
         this.diseasesLoading = false;
       }, e => { console.log(e); this.diseasesLoading = false; });
   }
@@ -114,11 +123,14 @@ export class DiagnosisComponent implements OnInit {
       });
   }
 
+  getAge() {
+    return moment().diff(moment(this.patient.dob, 'YYYY-MM-DD'), 'years');
+  }
   deleteItem(item) {
     this.diagnosis = this.diagnosis.filter(d => d.key !== item.key);
   }
   previous() {
-
+    this.previousClicked.emit();
   }
 
 

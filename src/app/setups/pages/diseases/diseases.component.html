@@ -43,7 +43,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
-          <nz-row>
+          <!-- <nz-row>
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="disease_code">Disease Code</nz-form-label>
               <nz-form-control [nzSpan]="16">
@@ -51,7 +51,7 @@
                   placeholder="Disease Code" />
               </nz-form-control>
             </nz-form-item>
-          </nz-row>
+          </nz-row> -->
           <nz-row>
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="icd10_code">ICD10 Code</nz-form-label>
@@ -60,7 +60,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
-          <nz-row>
+          <!-- <nz-row>
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="icd10_grouping_code">ICD10 Grouping Code</nz-form-label>
               <nz-form-control [nzSpan]="16">
@@ -68,8 +68,21 @@
                   placeholder="ICD10 Grouping Code" />
               </nz-form-control>
             </nz-form-item>
-          </nz-row>
+          </nz-row> -->
+
           <nz-row style="margin-bottom:10px">
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzFor="age_group_id">Age Group</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" name="age_group_id" formControlName="age_group_id"
+                  nzPlaceHolder="Age Group" [nzLoading]="ageGroupsLoading | async">
+                  <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+          <nz-row style="margin-bottom:10px" *ngIf="isUpdateEveryone||(updateAgeGroupValue&&!isUpdateChild)">
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="adult_gdrg">Adult Gdrg</nz-form-label>
               <nz-form-control [nzSpan]="16">
@@ -77,7 +90,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
-          <nz-row style="margin-bottom:10px">
+          <nz-row style="margin-bottom:10px" *ngIf="isUpdateEveryone||(updateAgeGroupValue&&!isUpdateChild)">
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="adult_tariff">Adult Tarrif</nz-form-label>
               <nz-form-control [nzSpan]="16">
@@ -86,7 +99,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
-          <nz-row style="margin-bottom:10px">
+          <nz-row style="margin-bottom:10px" *ngIf="isUpdateEveryone||(updateAgeGroupValue&&isUpdateChild)">
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="child_gdrg">Child Gdrg</nz-form-label>
               <nz-form-control [nzSpan]="16">
@@ -94,7 +107,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
-          <nz-row style="margin-bottom:10px">
+          <nz-row style="margin-bottom:10px" *ngIf="isUpdateEveryone||(updateAgeGroupValue&&isUpdateChild)">
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="child_tariff">Child Tarrif</nz-form-label>
               <nz-form-control [nzSpan]="16">
@@ -142,7 +155,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
-          <nz-row style="margin-bottom:10px">
+          <!-- <nz-row style="margin-bottom:10px">
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="moh_grouping_code">Moh Grouping Code</nz-form-label>
               <nz-form-control [nzSpan]="16">
@@ -150,7 +163,7 @@
                   placeholder="Moh Grouping Code" />
               </nz-form-control>
             </nz-form-item>
-          </nz-row>
+          </nz-row> -->
           <nz-row style="margin-bottom:10px">
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="illness_type_id">Illness Type</nz-form-label>
@@ -165,18 +178,7 @@
               </nz-form-control>
             </nz-form-item>
           </nz-row>
-          <nz-row style="margin-bottom:10px">
-            <nz-form-item>
-              <nz-form-label [nzXs]="8" nzFor="age_group_id">Age Group</nz-form-label>
-              <nz-form-control [nzSpan]="16">
-                <nz-select nzAllowSearch="false" nzAllowClear="false" name="age_group_id" formControlName="age_group_id"
-                  nzPlaceHolder="Age Group" [nzLoading]="ageGroupsLoading | async">
-                  <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id">
-                  </nz-option>
-                </nz-select>
-              </nz-form-control>
-            </nz-form-item>
-          </nz-row>
+
           <nz-row style="margin-bottom:10px">
             <nz-form-item>
               <nz-form-label [nzXs]="8" nzFor="gender">Gender</nz-form-label>
@@ -209,38 +211,47 @@
             <input type="text" nz-input formControlName="name" name="name" placeholder="Name" />
           </nz-form-control>
         </nz-row>
-        <nz-row style="margin-bottom:10px">
+        <!-- <nz-row style="margin-bottom:10px">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="disease_code" name="disease_code" placeholder="Disease Code" />
           </nz-form-control>
-        </nz-row>
+        </nz-row> -->
         <nz-row style="margin-bottom:10px">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="icd10_code" name="icd10_code" placeholder="ICD10 Code" />
           </nz-form-control>
         </nz-row>
-        <nz-row style="margin-bottom:10px">
+        <!-- <nz-row style="margin-bottom:10px">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="icd10_grouping_code" name="icd10_grouping_code"
               placeholder="ICD10 Grouping Code" />
           </nz-form-control>
-        </nz-row>
+        </nz-row> -->
         <nz-row style="margin-bottom:10px">
+          <nz-form-control [nzSpan]="24">
+            <nz-select nzAllowSearch="false" nzAllowClear="false" name="age_group_id" formControlName="age_group_id"
+              nzPlaceHolder="Age Group" [nzLoading]="ageGroupsLoading | async">
+              <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-row>
+        <nz-row style="margin-bottom:10px" *ngIf="isEveryone||(ageGroupValue&&!isChild)">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="adult_gdrg" name="adult_gdrg" placeholder="Adult Gdrg" />
           </nz-form-control>
         </nz-row>
-        <nz-row style="margin-bottom:10px">
+        <nz-row style="margin-bottom:10px" *ngIf="isEveryone||(ageGroupValue&&!isChild)">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="adult_tariff" name="adult_tariff" placeholder="Adult Tariff" />
           </nz-form-control>
         </nz-row>
-        <nz-row style="margin-bottom:10px">
+        <nz-row style="margin-bottom:10px" *ngIf="isEveryone||(ageGroupValue&&isChild)">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="child_gdrg" name="child_gdrg" placeholder="Child Gdrg" />
           </nz-form-control>
         </nz-row>
-        <nz-row style="margin-bottom:10px">
+        <nz-row style="margin-bottom:10px" *ngIf="isEveryone||(ageGroupValue&&isChild)">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="child_tariff" name="child_tariff" placeholder="Child Tariff" />
           </nz-form-control>
@@ -275,12 +286,12 @@
             </nz-select>
           </nz-form-control>
         </nz-row>
-        <nz-row style="margin-bottom:10px">
+        <!-- <nz-row style="margin-bottom:10px">
           <nz-form-control [nzSpan]="24">
             <input type="text" nz-input formControlName="moh_grouping_code" name="moh_grouping_code"
               placeholder="Moh Grouping Code" />
           </nz-form-control>
-        </nz-row>
+        </nz-row> -->
         <nz-row style="margin-bottom:10px">
           <nz-form-control [nzSpan]="24">
             <nz-select nzAllowSearch="false" nzAllowClear="false" name="illness_type_id"
@@ -291,15 +302,7 @@
             </nz-select>
           </nz-form-control>
         </nz-row>
-        <nz-row style="margin-bottom:10px">
-          <nz-form-control [nzSpan]="24">
-            <nz-select nzAllowSearch="false" nzAllowClear="false" name="age_group_id" formControlName="age_group_id"
-              nzPlaceHolder="Age Group" [nzLoading]="ageGroupsLoading | async">
-              <nz-option *ngFor="let ageGroup of ageGroups" [nzLabel]="ageGroup.name" [nzValue]="ageGroup.id">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-row>
+
         <nz-row style="margin-bottom:10px">
           <nz-form-control [nzSpan]="24">
             <nz-select nzAllowSearch="false" [nzMode]="'tags'" nzAllowClear="false" name="gender"

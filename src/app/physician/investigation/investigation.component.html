@@ -1,0 +1,174 @@
+<nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
+  <nz-tab nzTitle="Previous Entry">
+    <nz-card-loading *ngIf="isLoading"></nz-card-loading>
+    <nz-empty *ngIf="!isLoading && !previousInvestigations"></nz-empty>
+    <nz-collapse *ngIf="previousInvestigations" nzAccordion>
+      <nz-collapse-panel *ngFor="let item of previousInvestigations" [nzHeader]="item.attendance_date | date:'medium'"
+        [nzActive]="item.active">
+        <nz-table #diagnosisTable [nzData]="item.investigation" [nzFrontPagination]=true [nzShowPagination]=false>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Investigation Category</th>
+              <!-- <th>Status</th> -->
+              <th>Patient Status</th>
+              <th>Clinic</th>
+              <th>Doctor</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let data of diagnosisTable.data">
+              <td>{{data.service_name}}</td>
+              <td>{{data.service_category_name}}</td>
+              <td>{{data.patient_status}}</td>
+              <td>{{data.clinic_name}}</td>
+              <td>{{data.user_name}}</td>
+            </tr>
+          </tbody>
+        </nz-table>
+      </nz-collapse-panel>
+    </nz-collapse>
+
+  </nz-tab>
+
+  <nz-tab nzTitle="Current Entry">
+    <form nz-form nzLayout="vertical" [formGroup]="requestForm">
+      <div nz-row [nzGutter]="24">
+        <!-- <div nz-row [nzGutter]="24" *ngIf=""> -->
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="category">Category</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please select category">
+              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Category" formControlName="category"
+                [nzLoading]="categoriesLoading | async">
+                <nz-option *ngFor="let category of categories" [nzLabel]="category.name" [nzValue]="category.id">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+
+        <div nz-col [nzSpan]="5" nzOffset="7" *ngIf="isInsurance">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="ccc">CCC</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Enter valid CCC">
+              <input type="text" nz-input placeholder="ccc" formControlName="ccc" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row [nzGutter]="24">
+        <!-- <div nz-row [nzGutter]="24" *ngIf=""> -->
+        <div nz-col [nzSpan]="5">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="service_id">Service
+            </nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please select service">
+              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Service" formControlName="service_id"
+                [nzLoading]="servicesLoading | async">
+                <nz-option *ngFor="let service of services" [nzLabel]="service.description" [nzValue]="service.id">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="5">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="order_type">Order Type</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please select order type">
+              <nz-select [compareWith]="compareFn" nzShowSearch nzAllowClear nzPlaceHolder="Order type"
+                formControlName="order_type">
+                <nz-option nzLabel="INTERNAL" nzValue="INTERNAL"></nz-option>
+                <nz-option nzLabel="EXTERNAL" nzValue="EXTERNAL"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="5">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="fee">Unit fee</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Enter a valid quantity">
+              <nz-input-number formControlName="fee" [nzMin]="0.1" [nzStep]="1" [nzFormatter]="formatFee"
+                [nzParser]="parseFee">
+              </nz-input-number>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <div nz-col [nzSpan]="5">
+          <nz-form-item>
+            <nz-form-label nzRequired nzFor="sponsor_id">Billed Sponsor</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Please select billed sponsor">
+              <nz-select nzShowSearch nzAllowClear [compareWith]="compareFn" nzPlaceHolder="Billed sponsor"
+                formControlName="sponsor_id" [nzLoading]="sponsorLoading">
+                <nz-option *ngFor="let permit of sponsorPermits" [nzLabel]="permit.billing_sponsor_name"
+                  [nzValue]="permit.id"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="4">
+          <button style="top: 28px;position: absolute;left:100px;" nz-button nzType="primary"
+            (click)="resetForm()">Clear</button>
+          <button style="top: 28px;position: absolute;" nz-button nzType="primary"
+            (click)="addInvestigation()">Add</button>
+        </div>
+      </div>
+    </form>
+    <nz-table #diagnosisTable [nzData]="investigations" [nzFrontPagination]=true [nzShowPagination]=false>
+      <thead>
+        <tr>
+          <th>Service</th>
+          <th>Order Type</th>
+          <th>Unit Fee</th>
+          <th>Billed Sponsor</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of diagnosisTable.data">
+          <td>{{data.serviceValue}}</td>
+          <td>{{data.order_type}}</td>
+          <td>{{data.unitFee}}</td>
+          <td>{{data.sponsorValue}}</td>
+          <td>
+
+            <button nz-button nzType="default" [nzSize]="'small'" class="m-r-10">
+              Edit <i style="cursor: pointer;" nz-icon nzType="edit" nzTheme="outline"
+                style="cursor: pointer;"></i></button>
+            <button nz-button nzType="default" [nzSize]="'small'" nz-popconfirm
+              nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteItem(data)">Delete <i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></button>
+
+          </td>
+        </tr>
+      </tbody>
+
+    </nz-table>
+    <div style="display: inline-block;display: inline-block;float:right;padding: 15px;font-size: 1.2em;">
+      <span style="margin-right: 10px;">
+        Prepaid Amt: <span style="font-weight: bold;">{{totalPrepaid}}</span>
+      </span>
+      <span>
+        Postpaid Amt: <span style="font-weight: bold;">{{totalPostpaid}}</span>
+      </span>
+    </div>
+
+
+  </nz-tab>
+</nz-tabset>
+
+<nz-divider></nz-divider>
+
+<nz-row nzType="flex" nzJustify="center">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="danger" (click)="previous()" [nzLoading]="submiting">Previous</button>
+      <button nz-button (click)="submit()" [nzLoading]="submiting">Next</button>
+    </nz-button-group>
+  </nz-col>
+</nz-row>

@@ -20,6 +20,10 @@ export class DiseasesComponent implements OnInit {
   illnessTypes = null;
   mohGhsGroupings = null;
   icd10Groupings = null;
+  isChild = null;
+  isUpdateChild = null;
+  isUpdateEveryone = null;
+  isEveryone = null;
   isVisible = false;
   isCreatingItem = new BehaviorSubject(false);
   isUpdatingItem = new BehaviorSubject(false);
@@ -106,11 +110,10 @@ export class DiseasesComponent implements OnInit {
     this.getAgeGroups();
     this.getMohGhsGroupings();
 
+
     this.updateForm = this.fb.group({
       name: [null],
       icd10_category_id: [null],
-      icd10_grouping_code: [null],
-      disease_code: [null],
       icd10_code: [null],
       adult_gdrg: [null],
       adult_tariff: [null],
@@ -118,16 +121,13 @@ export class DiseasesComponent implements OnInit {
       child_tariff: [null],
       icd10_grouping_id: [null],
       moh_ghs_grouping_id: [null],
-      moh_grouping_code: [null],
       illness_type_id: [null],
-      age_group_id: [null],
+      age_group_id: [null, Validators.required],
       gender: [null]
     });
     this.createForm = this.fb.group({
       name: [null],
       icd10_category_id: [null],
-      icd10_grouping_code: [null],
-      disease_code: [null],
       icd10_code: [null],
       adult_gdrg: [null],
       adult_tariff: [null],
@@ -135,11 +135,67 @@ export class DiseasesComponent implements OnInit {
       child_tariff: [null],
       icd10_grouping_id: [null],
       moh_ghs_grouping_id: [null],
-      moh_grouping_code: [null],
       illness_type_id: [null],
-      age_group_id: [null],
+      age_group_id: [null, Validators.required],
       gender: [null]
     });
+
+    this.createForm.get('age_group_id').valueChanges.subscribe(
+      val => {
+        if (val) {
+          const ageGroup = this.ageGroups.find(ag => ag.id === val);
+          if (ageGroup.name.toLowerCase().trim() === 'child' || ageGroup.name.toLowerCase().trim() === 'infant') {
+            this.isChild = true;
+            this.isEveryone = false;
+            this.createForm.get('child_gdrg').setValidators([Validators.required]);
+            this.createForm.get('child_tariff').setValidators([Validators.required]);
+            this.createForm.get('adult_gdrg').setValidators(null);
+            this.createForm.get('adult_tariff').setValidators(null);
+          } else if (ageGroup.name.toLowerCase().trim() === 'adult') {
+            this.isChild = false;
+            this.createForm.get('child_gdrg').setValidators(null);
+            this.createForm.get('child_tariff').setValidators(null);
+            this.createForm.get('adult_gdrg').setValidators([Validators.required]);
+            this.createForm.get('adult_tariff').setValidators([Validators.required]);
+            this.isEveryone = false;
+          } else {
+            this.updateForm.get('child_gdrg').setValidators(null);
+            this.updateForm.get('child_tariff').setValidators(null);
+            this.updateForm.get('adult_gdrg').setValidators(null);
+            this.updateForm.get('adult_tariff').setValidators(null);
+            this.isEveryone = true;
+          }
+        }
+      }
+    );
+    this.updateForm.get('age_group_id').valueChanges.subscribe(
+      val => {
+        if (val) {
+          const ageGroup = this.ageGroups.find(ag => ag.id === val);
+          if (ageGroup.name.toLowerCase().trim() === 'child' || ageGroup.name.toLowerCase().trim() === 'infant') {
+            this.isUpdateChild = true;
+            this.updateForm.get('child_gdrg').setValidators([Validators.required]);
+            this.updateForm.get('child_tariff').setValidators([Validators.required]);
+            this.updateForm.get('adult_gdrg').setValidators(null);
+            this.updateForm.get('adult_tariff').setValidators(null);
+            this.isUpdateEveryone = false;
+          } else if (ageGroup.name.toLowerCase().trim() === 'adult') {
+            this.isUpdateChild = false;
+            this.updateForm.get('child_gdrg').setValidators(null);
+            this.updateForm.get('child_tariff').setValidators(null);
+            this.updateForm.get('adult_gdrg').setValidators([Validators.required]);
+            this.updateForm.get('adult_tariff').setValidators([Validators.required]);
+            this.isUpdateEveryone = false;
+          } else {
+            this.updateForm.get('child_gdrg').setValidators(null);
+            this.updateForm.get('child_tariff').setValidators(null);
+            this.updateForm.get('adult_gdrg').setValidators(null);
+            this.updateForm.get('adult_tariff').setValidators(null);
+            this.isUpdateEveryone = true;
+          }
+        }
+      }
+    );
     this.createForm.get('icd10_category_id').valueChanges.subscribe(categoryId => {
       if (categoryId) {
         this.createForm.get('icd10_grouping_id').reset();
@@ -152,6 +208,14 @@ export class DiseasesComponent implements OnInit {
         this.getIcd10Groupings(categoryId);
       }
     });
+  }
+
+
+  public get ageGroupValue(): number {
+    return this.createForm.get('age_group_id').value;
+  }
+  public get updateAgeGroupValue(): number {
+    return this.updateForm.get('age_group_id').value;
   }
 
   toggleItem($event: any, setupItem: any) {
@@ -218,8 +282,6 @@ export class DiseasesComponent implements OnInit {
 
     const { name,
       icd10_category_id,
-      icd10_grouping_code,
-      disease_code,
       icd10_code,
       adult_gdrg,
       adult_tariff,
@@ -227,7 +289,6 @@ export class DiseasesComponent implements OnInit {
       child_tariff,
       icd10_grouping_id,
       moh_ghs_grouping_id,
-      moh_grouping_code,
       illness_type_id,
       age_group_id,
       gender,
@@ -236,8 +297,6 @@ export class DiseasesComponent implements OnInit {
     console.log(this.itemId);
     this.updateForm.get('name').setValue(name);
     this.updateForm.get('icd10_category_id').setValue(icd10_category_id);
-    this.updateForm.get('icd10_grouping_code').setValue(icd10_grouping_code);
-    this.updateForm.get('disease_code').setValue(disease_code);
     this.updateForm.get('icd10_code').setValue(icd10_code);
     this.updateForm.get('adult_gdrg').setValue(adult_gdrg);
     this.updateForm.get('adult_tariff').setValue(adult_tariff);
@@ -245,7 +304,6 @@ export class DiseasesComponent implements OnInit {
     this.updateForm.get('child_tariff').setValue(child_tariff);
     this.updateForm.get('icd10_grouping_id').setValue(icd10_grouping_id);
     this.updateForm.get('moh_ghs_grouping_id').setValue(moh_ghs_grouping_id);
-    this.updateForm.get('moh_grouping_code').setValue(moh_grouping_code);
     this.updateForm.get('illness_type_id').setValue(illness_type_id);
     this.updateForm.get('age_group_id').setValue(age_group_id);
     this.updateForm.get('gender').setValue(gender.split(','));
@@ -319,5 +377,7 @@ export class DiseasesComponent implements OnInit {
       }
     );
   }
+
+
 }
 

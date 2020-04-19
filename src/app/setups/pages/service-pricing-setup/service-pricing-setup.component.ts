@@ -228,10 +228,12 @@ export class ServicePricingSetupComponent implements OnInit, OnDestroy {
         res => {
           this.isCreatingServicePricing.next(false);
           if (res) {
+            this.servicePricingForm.reset();
             this.notification.blank(
               'Success',
               `Successfully created service pricing`
             );
+
             this.getServicePricings();
 
           } else {

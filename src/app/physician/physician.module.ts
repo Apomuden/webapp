@@ -1,3 +1,5 @@
+import { ProcedureComponent } from './procedure/procedure.component';
+import { InvestigationComponent } from './investigation/investigation.component';
 import { DiagnosisComponent } from './diagnosis/diagnosis.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -11,7 +13,15 @@ import { PhysicalExamComponent } from './physical-exam/physical-exam.component';
 import { PrescriptionComponent } from '../prescription/prescription.component';
 
 @NgModule({
-  declarations: [ConsultationComponent, PatientHistoryComponent, PhysicalExamComponent, PrescriptionComponent, DiagnosisComponent],
+  declarations: [
+    ConsultationComponent,
+    PatientHistoryComponent,
+    PhysicalExamComponent,
+    PrescriptionComponent,
+    DiagnosisComponent,
+    InvestigationComponent,
+    ProcedureComponent
+  ],
   imports: [
     CommonModule,
     PhysicianRoutingModule,

@@ -34,7 +34,7 @@
     <nz-col [nzSm]="10" [nzXs]="24">
       <form nz-form [formGroup]="diagnosisForm">
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="diagnosis_type">Diagnosis Type</nz-form-label>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="diagnosis_type">* Diagnosis Type</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24">
             <nz-select formControlName="diagnosis_type" nzPlaceHolder="Choose">
               <nz-option nzValue="CONFIRM" nzLabel="Confirm"></nz-option>
@@ -44,7 +44,7 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="diagnosis_status">Diagnosis Status</nz-form-label>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="diagnosis_status">* Diagnosis Status</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24">
             <nz-select formControlName="diagnosis_status" nzPlaceHolder="Choose">
               <nz-option nzValue="NEW" nzLabel="New"></nz-option>
@@ -53,10 +53,12 @@
           </nz-form-control>
         </nz-form-item>
         <nz-form-item>
-          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="disease_id">Patient Diagnosis</nz-form-label>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="disease_id">* Patient Diagnosis</nz-form-label>
           <nz-form-control [nzSm]="14" [nzXs]="24">
-            <nz-select formControlName="disease_id" nzPlaceHolder="Choose" [nzLoading]="diseasesLoading">
-              <nz-option *ngFor="let disease of diseases" [nzValue]="disease.id" [nzLabel]="disease.name"></nz-option>
+            <nz-select formControlName="disease_id" nzShowSearch nzAllowClear nzPlaceHolder="Choose"
+              [nzLoading]="diseasesLoading">
+              <nz-option *ngFor="let disease of diseases" [nzValue]="disease.id" [nzLabel]="disease.modifiedName">
+              </nz-option>
             </nz-select>
           </nz-form-control>
         </nz-form-item>

@@ -146,6 +146,49 @@ export class PhysicianService {
     ));
   }
 
+  saveInvestigations(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/investigations/multiple`;
+    return this.http.post<any>(url, data);
+  }
+  getInvestigations(patient_id: any) {
+    console.log(`patientId: ${patient_id}`);
+    const url = `${environment.apiBaseUrl}/registry/investigations`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patient_id,
+      }
+    }).pipe(map(
+      res => {
+        if (res && res.data && res.data.length > 0) {
+          return res.data;
+        }
+
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+  getProcedures(patient_id: any) {
+    console.log(`patientId: ${patient_id}`);
+    const url = `${environment.apiBaseUrl}/registry/procedures`;
+    return this.http.get<any>(url, {
+      params: {
+        'patient_id': patient_id,
+      }
+    }).pipe(map(
+      res => {
+        if (res && res.data && res.data.length > 0) {
+          return res.data;
+        }
+
+        throw new HttpErrorResponse({ status: 404 });
+      }
+    ));
+  }
+
+  saveProcedures(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/procedures/multiple`;
+    return this.http.post<any>(url, data);
+  }
   getPhysicalExams(patient_id: any) {
     const url = `${environment.apiBaseUrl}/registry/physicalexaminations`;
     return this.http.get<any>(url, {
