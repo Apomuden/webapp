@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LaboratoryComponent } from './laboratory.component';
+import { LabSampleTypesComponent } from './lab-sample-types.component';
 
-describe('LaboratoryComponent', () => {
-  let component: LaboratoryComponent;
-  let fixture: ComponentFixture<LaboratoryComponent>;
+describe('LabSampleTypesComponent', () => {
+  let component: LabSampleTypesComponent;
+  let fixture: ComponentFixture<LabSampleTypesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LaboratoryComponent ]
+      declarations: [ LabSampleTypesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LaboratoryComponent);
+    fixture = TestBed.createComponent(LabSampleTypesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -28,12 +28,12 @@ import { StaffTypeSetupComponent } from './pages/staff-type-setup/staff-type-set
 import { ServiceCategorySetupComponent } from './pages/service-category-setup/service-category-setup.component';
 import { HospitalServiceSetupComponent } from './pages/hospital-service-setup/hospital-service-setup.component';
 import { SponsershipTypeSetupComponent } from './pages/sponsership-type-setup/sponsership-type-setup.component';
-import { DepartmentSetupComponent } from './pages/department-setup/department-setup.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { SetupsComponent } from './setups.component';
 import { SpecialitySetupComponent } from './pages/speciality-setup/speciality-setup.component';
+import { LaboratorySetupComponent } from './categories/laboratory-setup/laboratory-setup.component';
 
 const routes: Routes = [
   {
@@ -49,7 +49,6 @@ const routes: Routes = [
         data: {
           title: 'System Configurations'
         }
-
       },
       {
         path: 'records',
@@ -57,6 +56,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           title: 'Records Setup'
+        }
+      },
+      {
+        path: 'laboratory-setup',
+        component: LaboratorySetupComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Laboratory Setup'
         }
       },
       {

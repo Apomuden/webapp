@@ -20,7 +20,7 @@ export class SetupsComponent implements OnInit {
     this.router.navigate(['setup/inpatient']);
   }
   goToLaboratory() {
-    this.router.navigate(['setup/laboratory']);
+    this.router.navigate(['setup/laboratory-setup']);
   }
   goToEISU() {
     this.router.navigate(['setup/eisu']);

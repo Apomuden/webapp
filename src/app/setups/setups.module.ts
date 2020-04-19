@@ -35,7 +35,7 @@ import { MedicalSponsorSetupComponent } from './pages/medical-sponsor-setup/medi
 import { RecordComponent } from './categories/record/record.component';
 import { AccountComponent } from './categories/account/account.component';
 import { InpatientComponent } from './categories/inpatient/inpatient.component';
-import { LaboratoryComponent } from './categories/laboratory/laboratory.component';
+import { LaboratorySetupComponent } from './categories/laboratory-setup/laboratory-setup.component';
 import { EisuComponent } from './categories/eisu/eisu.component';
 import { OtherComponent } from './categories/other/other.component';
 import { ClinicComponent } from './pages/clinic/clinic.component';
@@ -61,6 +61,8 @@ import { MohghsgroupingsComponent } from './pages/mohghsgroupings/mohghsgrouping
 import { Icd10groupingsComponent } from './pages/icd10groupings/icd10groupings.component';
 import { Icd10categoriesComponent } from './pages/icd10categories/icd10categories.component';
 import { DiseasesComponent } from './pages/diseases/diseases.component';
+import { LabParametersComponent } from './pages/lab-parameters/lab-parameters.component';
+import { LabSampleTypesComponent } from './pages/lab-sample-types/lab-sample-types.component';
 
 @NgModule({
   declarations: [
@@ -96,7 +98,7 @@ import { DiseasesComponent } from './pages/diseases/diseases.component';
     RecordComponent,
     AccountComponent,
     InpatientComponent,
-    LaboratoryComponent,
+    LaboratorySetupComponent,
     EisuComponent,
     OtherComponent,
     ClinicComponent,
@@ -119,7 +121,9 @@ import { DiseasesComponent } from './pages/diseases/diseases.component';
     MohghsgroupingsComponent,
     Icd10groupingsComponent,
     Icd10categoriesComponent,
-    DiseasesComponent
+    DiseasesComponent,
+    LabParametersComponent,
+    LabSampleTypesComponent
   ],
   imports: [
     CommonModule,
