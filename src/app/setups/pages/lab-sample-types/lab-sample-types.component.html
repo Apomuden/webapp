@@ -1,0 +1,78 @@
+<nz-row nzGutter="16">
+  <nz-card nz-col nzSpan="12" nzTitle="Lab Parameters">
+    <nz-list style="min-height: 350px;" [nzDataSource]="types" [nzItemLayout]="'horizontal'" [nzLoading]="isLoading"
+      [nzRenderItem]="item">
+      <ng-template #item let-item>
+        <nz-list-item [nzActions]="[editAction,deleteAction, moreAction]">
+          <ng-template #editAction><a (click)="showEditModal(item)">edit</a></ng-template>
+          <ng-template #deleteAction>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteType(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #moreAction>
+            <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="description">
+            <ng-template #nzTitle>
+              <a>{{ item.name }}</a>
+            </ng-template>
+            <ng-template #description>
+              <a>{{ item.prefix }}</a>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+
+  <nz-card nz-col nzSpan="12" nzTitle="Sample Type Form">
+    <form nz-form [formGroup]="sampleTypeForm" (ngSubmit)="submit()" (reset)="closeModal()">
+      <nz-form-item>
+        <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+          <nz-form-label>Sample Name</nz-form-label>
+          <input nz-input type="text" formControlName="name" />
+        </nz-form-control>
+
+        <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+          <nz-form-label>Prefix</nz-form-label>
+          <input nz-input type="text" formControlName="prefix" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-row nzType="flex" nzJustify="center">
+        <nz-button-group>
+          <button nz-button nzType="danger" type="reset" [disabled]="sampleTypeForm.pristine" [nzLoading]="isLoading">Cancel</button>
+          <button nz-button nzType="primary" type="submit" [nzLoading]="isLoading"
+            [disabled]="sampleTypeForm.invalid">Submit</button>
+        </nz-button-group>
+      </nz-row>
+    </form>
+  </nz-card>
+</nz-row>
+
+<nz-modal [nzVisible]="isEditVisible" (nzOnCancel)="closeModal()" [nzFooter]="modalFooter" nzTitle="Update Sample Type">
+  <ng-template #modalFooter>
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-button-group>
+        <button nz-button nzType="danger" type="reset" [nzLoading]="isLoading" (click)="closeModal()">Cancel</button>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isLoading" [disabled]="sampleTypeForm.invalid"
+          (click)="submit()">Submit</button>
+      </nz-button-group>
+    </nz-row>
+  </ng-template>
+
+  <form nz-form [formGroup]="sampleTypeForm" (ngSubmit)="submit()" (reset)="closeModal()">
+    <nz-form-item>
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Sample Name</nz-form-label>
+        <input nz-input type="text" formControlName="name" />
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Prefix</nz-form-label>
+        <input nz-input type="text" formControlName="prefix" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>

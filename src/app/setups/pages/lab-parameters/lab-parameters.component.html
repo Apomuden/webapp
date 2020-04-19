@@ -1,0 +1,217 @@
+<nz-row nzGutter="16">
+  <nz-card nz-col nzSpan="12" nzTitle="Lab Parameters" [nzExtra]="addParamTemplate">
+    <ng-template #addParamTemplate>
+      <button nz-button nzType="primary" (click)="showParamterModal()">Add Parameter</button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="parameters" [nzItemLayout]="'horizontal'"
+      [nzLoading]="isParametersLoading" [nzRenderItem]="par">
+      <ng-template #par let-par>
+        <nz-list-item [nzActions]="[rangeAction,editParam,deleteParam, toggleParam]">
+          <ng-template #rangeAction>
+            <a (click)="getParamRanges(par)">ranges</a>
+          </ng-template>
+          <ng-template #editParam><a (click)="showParamterModal(par)">edit</a></ng-template>
+          <ng-template #deleteParam>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteParameter(par)"><i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #toggleParam>
+            <nz-switch [(ngModel)]="par.isActivated" (ngModelChange)="toggleItem($event, par)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="description">
+            <ng-template #nzTitle>
+              <a>{{ param.par }}</a>
+            </ng-template>
+            <ng-template #description>
+              <a>{{ par.description }}</a>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+
+  <nz-card nz-col nzSpan="12" [nzTitle]="param ? param.name + ' Ranges' : 'Parameter Ranges'" [nzExtra]="extraTemplate">
+    <ng-template #extraTemplate>
+      <button nz-button nzType="primary" *ngIf="param" (click)="showRangeModal()">Add Range</button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="ranges" [nzItemLayout]="'horizontal'"
+      [nzLoading]="isRangesLoading" [nzRenderItem]="item">
+      <ng-template #item let-item>
+        <nz-list-item [nzActions]="[deleteAction,editAction, moreAction]">
+          <ng-template #editAction><a (click)="showRangeModal(item)">edit</a></ng-template>
+          <ng-template #deleteAction>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteRange(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #moreAction>
+            <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item, true)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="description">
+            <ng-template #nzTitle>
+              <a>{{ item.flag }}</a>
+            </ng-template>
+            <ng-template #description>
+              <div><strong>Min value:</strong> {{item.min_value}} </div>
+              <div><strong>Max value:</strong> {{item.max_value}} </div>
+
+              <nz-divider></nz-divider>
+
+              <div><strong>Min age:</strong> {{item.min_age}}
+                {{item.min_age_unit | lowercase }}{{item.min_age > 1 ? 's': ''}}</div>
+              <div><strong>Max age:</strong> {{item.max_age}}
+                {{item.max_age_unit | lowercase }}{{item.max_age > 1 ? 's': ''}}</div>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+</nz-row>
+
+<nz-modal [nzVisible]="isParamModalVisible" (nzOnCancel)="closeParamterModal()" [nzFooter]="modalFooter"
+  [nzTitle]="isEditingParam ? 'Update Parameter' : 'Create Parameter'">
+  <ng-template #modalFooter>
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-button-group>
+        <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingParam"
+          (click)="resetParam()">Cancel</button>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingParam"
+          [disabled]="parameterForm.invalid" (click)="submitParam()">Submit</button>
+      </nz-button-group>
+    </nz-row>
+  </ng-template>
+
+  <form nz-form [formGroup]="parameterForm" (ngSubmit)="submitParam()" (reset)="resetParam()">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>Parameter Name</nz-form-label>
+        <input nz-input type="text" formControlName="name" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzGutter="16">
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Value Type</nz-form-label>
+        <nz-select formControlName="value_type">
+          <nz-option nzValue="Number" nzLabel="Number"></nz-option>
+          <nz-option nzValue="Text" nzLabel="Text"></nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Unit</nz-form-label>
+        <input nz-input type="text" formControlName="unit" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label>Description</nz-form-label>
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <textarea nz-input formControlName="description"></textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+
+<nz-modal [nzVisible]="isRangeModalVisible" (nzOnCancel)="closeRangeModal()" [nzFooter]="rangeFooter"
+  [nzTitle]="isEditingRange ? 'Update Range' : 'Create Range'">
+  <form nz-form [formGroup]="rangeForm" (ngSubmit)="submitRange()" (reset)="resetRange()">
+    <ng-template #rangeFooter>
+      <nz-row nzType="flex" nzJustify="center">
+        <nz-button-group>
+          <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingRange"
+            (click)="resetRange()">Cancel</button>
+          <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingRange" [disabled]="rangeForm.invalid"
+            (click)="submitRange()">Submit</button>
+        </nz-button-group>
+      </nz-row>
+    </ng-template>
+
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>Parameter Name</nz-form-label>
+        <input nz-input type="text" formControlName="lab_parameter_name" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Flag</nz-form-label>
+        <input nz-input type="text" formControlName="flag" />
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
+        <nz-form-label>Gender</nz-form-label>
+        <nz-select formControlName="gender">
+          <nz-option nzValue="MALE,FEMALE" nzLabel="ALL"></nz-option>
+          <nz-option nzValue="MALE" nzLabel="MALE"></nz-option>
+          <nz-option nzValue="FEMALE" nzLabel="FEMALE"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Min Comparator</nz-form-label>
+        <nz-select formControlName="min_comparator">
+          <nz-option nzValue=">" nzLabel="Greater than"></nz-option>
+          <nz-option nzValue=">=" nzLabel="Greater than or equal"></nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
+        <nz-form-label>Max Comparator</nz-form-label>
+        <nz-select formControlName="max_comparator">
+          <nz-option nzValue="<" nzLabel="Less than"></nz-option>
+          <nz-option nzValue="<=" nzLabel="Less than or equal"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Min Value</nz-form-label>
+        <input nz-input type="number" formControlName="min_value" />
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Max Value</nz-form-label>
+        <input nz-input type="number" formControlName="max_value" />
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
+        <nz-form-label>Min Age Unit</nz-form-label>
+        <nz-select formControlName="min_age_unit">
+          <nz-option *ngFor="let unit of ageUnits" [nzValue]="unit" [nzLabel]="unit"></nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
+        <nz-form-label>Max Age Unit</nz-form-label>
+        <nz-select formControlName="max_age_unit">
+          <nz-option nzValue="YEAR" nzLabel="YEAR"></nz-option>
+          <nz-option nzValue="MONTH" nzLabel="MONTH"></nz-option>
+          <nz-option nzValue="WEEK" nzLabel="WEEK"></nz-option>
+          <nz-option nzValue="DAY" nzLabel="DAY"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Min Age</nz-form-label>
+        <input nz-input type="number" formControlName="min_age" />
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Max Age</nz-form-label>
+        <input nz-input type="number" formControlName="max_age" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
