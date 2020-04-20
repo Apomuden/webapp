@@ -25,7 +25,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     value_type: ['Number', Validators.required],
     unit: [null],
   });
-  rangeForm = this.fb.group({
+  flagForm = this.fb.group({
     lab_parameter_id: [null, Validators.required],
     lab_parameter_name: [{ value: 'null', disabled: true }, Validators.required],
     text_value: [null],
@@ -42,20 +42,20 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
   });
 
   parameters = [];
-  ranges = [];
+  flags = [];
   ageUnits = [DAY, WEEK, MONTH, YEAR];
 
   isParametersLoading = true;
   isCreatingParam = false;
   isParamModalVisible = false;
-  isRangeModalVisible = false;
+  isFlagModalVisible = false;
   isEditingParam = false;
-  isEditingRange = false;
-  isRangesLoading = false;
-  isCreatingRange = false;
+  isEditingFlag = false;
+  isFlagsLoading = false;
+  isCreatingFlag = false;
 
   editParam: any;
-  editRange: any;
+  editFlag: any;
   param: any;
 
   constructor(
@@ -74,7 +74,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   ngAfterViewInit() {
-    this.rangeForm.valueChanges.pipe(untilComponentDestroyed(this))
+    this.flagForm.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe(value => {
         this.validateAge(value);
         if (!this.isText) {
@@ -97,10 +97,10 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
 
     const errStatus = minVal > maxVal || (minVal === maxVal && maxComparator === '<') || null;
     if (!errStatus) {
-      this.rangeForm.get('min_value').setErrors(null);
+      this.flagForm.get('min_value').setErrors(null);
       return;
     }
-    this.rangeForm.get('min_value').setErrors({ invalid: errStatus });
+    this.flagForm.get('min_value').setErrors({ invalid: errStatus });
   }
 
   private validateAge(value: any) {
@@ -109,10 +109,10 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     const maxAgeUnit: string = value.max_age_unit;
     const minAgeUnit: string = value.min_age_unit;
     if (maxAge && !maxAgeUnit) {
-      this.rangeForm.get('max_age_unit').setValidators(Validators.required);
+      this.flagForm.get('max_age_unit').setValidators(Validators.required);
     }
     if (!maxAge && maxAgeUnit) {
-      this.rangeForm.get('max_age').setValidators(Validators.required);
+      this.flagForm.get('max_age').setValidators(Validators.required);
     }
     if (
       minAgeUnit === YEAR &&
@@ -120,35 +120,35 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
         (maxAgeUnit === MONTH && maxAge < 12 * minAge) ||
         (maxAgeUnit === WEEK && maxAge < 52 * minAge))
     ) {
-      this.rangeForm.get('max_age').setErrors({ invalid: true });
+      this.flagForm.get('max_age').setErrors({ invalid: true });
     } else if (
       minAgeUnit === MONTH &&
       ((maxAgeUnit === DAY && maxAge < 31 * minAge) ||
         (maxAgeUnit === WEEK && maxAge < 4 * minAge))
     ) {
-      this.rangeForm.get('max_age').setErrors({ invalid: true });
+      this.flagForm.get('max_age').setErrors({ invalid: true });
     } else if (
       minAgeUnit === WEEK &&
       maxAgeUnit === DAY && maxAge < 31 * minAge
     ) {
-      this.rangeForm.get('max_age').setErrors({ invalid: true });
+      this.flagForm.get('max_age').setErrors({ invalid: true });
     } else if (
       minAgeUnit === DAY &&
       (maxAgeUnit === WEEK || maxAgeUnit === MONTH || maxAgeUnit === YEAR)
     ) {
-      this.rangeForm.get('max_age').setErrors(null);
+      this.flagForm.get('max_age').setErrors(null);
     } else if (
       minAgeUnit === WEEK &&
       (maxAgeUnit === MONTH || maxAgeUnit === YEAR)
     ) {
-      this.rangeForm.get('max_age').setErrors(null);
+      this.flagForm.get('max_age').setErrors(null);
     } else if (minAgeUnit === MONTH && maxAgeUnit === YEAR) {
-      this.rangeForm.get('max_age').setErrors(null);
+      this.flagForm.get('max_age').setErrors(null);
     } else {
       if (minAge >= maxAge) {
-        this.rangeForm.get('max_age').setErrors({ invalid: true });
+        this.flagForm.get('max_age').setErrors({ invalid: true });
       } else {
-        this.rangeForm.get('max_age').setErrors(null);
+        this.flagForm.get('max_age').setErrors(null);
       }
     }
   }
@@ -160,20 +160,20 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
         this.parameters = paramters;
         this.isParametersLoading = false;
         if (this.parameters.length > 0) {
-          this.getParamRanges(this.parameters[0]);
+          this.getParamFlags(this.parameters[0]);
         }
       });
   }
 
-  getParamRanges(param: any) {
-    this.isRangesLoading = true;
+  getParamFlags(param: any) {
+    this.isFlagsLoading = true;
     this.param = param;
-    this.rangeForm.get('lab_parameter_id').setValue(param.id);
-    this.rangeForm.get('lab_parameter_name').setValue(param.name);
-    this.ranges = [];
-    this.labService.getParamRanges(param.id).subscribe(ranges => {
-      this.isRangesLoading = false;
-      this.ranges = ranges;
+    this.flagForm.get('lab_parameter_id').setValue(param.id);
+    this.flagForm.get('lab_parameter_name').setValue(param.name);
+    this.flags = [];
+    this.labService.getParamFlags(param.id).subscribe(flags => {
+      this.isFlagsLoading = false;
+      this.flags = flags;
     });
   }
 
@@ -184,14 +184,14 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     this.editParam = null;
   }
 
-  resetRange() {
-    this.rangeForm.reset();
-    this.rangeForm.get('max_age_unit').setValue('YEAR');
-    this.rangeForm.get('min_age_unit').setValue('YEAR');
-    this.rangeForm.get('min_comparator').setValue('>');
-    this.rangeForm.get('max_comparator').setValue('<');
-    this.isRangeModalVisible = false;
-    this.editRange = null;
+  resetFlag() {
+    this.flagForm.reset();
+    this.flagForm.get('max_age_unit').setValue('YEAR');
+    this.flagForm.get('min_age_unit').setValue('YEAR');
+    this.flagForm.get('min_comparator').setValue('>');
+    this.flagForm.get('max_comparator').setValue('<');
+    this.isFlagModalVisible = false;
+    this.editFlag = null;
   }
 
   submitParam() {
@@ -210,17 +210,17 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
-  submitRange() {
-    this.isCreatingRange = true;
-    const observable = !this.isEditingRange
-      ? this.labService.createParamRange(this.processRangeData())
-      : this.labService.editParamRange(this.editRange.id, this.processRangeData());
+  submitFlag() {
+    this.isCreatingFlag = true;
+    const observable = !this.isEditingFlag
+      ? this.labService.createParamFlag(this.processFlagData())
+      : this.labService.editParamFlag(this.editFlag.id, this.processFlagData());
     observable.subscribe(success => {
-      this.isCreatingRange = false;
+      this.isCreatingFlag = false;
       this.showNotif(!success);
       if (success) {
-        this.closeRangeModal();
-        this.getParamRanges(this.param);
+        this.closeFlagModal();
+        this.getParamFlags(this.param);
       }
     });
   }
@@ -237,8 +237,8 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     return this.parameterForm.value;
   }
 
-  processRangeData() {
-    return this.rangeForm.value;
+  processFlagData() {
+    return this.flagForm.value;
   }
 
   showParamterModal(parameter?: any) {
@@ -259,36 +259,36 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     this.isParamModalVisible = false;
   }
 
-  closeRangeModal() {
-    this.isEditingRange = false;
-    this.editRange = null;
-    this.resetRange();
-    this.isRangeModalVisible = false;
+  closeFlagModal() {
+    this.isEditingFlag = false;
+    this.editFlag = null;
+    this.resetFlag();
+    this.isFlagModalVisible = false;
   }
 
-  showRangeModal(paramRange?: any) {
-    if (paramRange) {
-      this.editRange = paramRange;
-      this.isEditingRange = true;
+  showFlagModal(paramFlag?: any) {
+    if (paramFlag) {
+      this.editFlag = paramFlag;
+      this.isEditingFlag = true;
       const { created_at, updated_at,
         id, status, isActivated, lab_parameter_description,
-        ...range } = paramRange;
-      this.rangeForm.setValue(range);
+        ...flag } = paramFlag;
+      this.flagForm.setValue(flag);
     }
-    this.isRangeModalVisible = true;
+    this.isFlagModalVisible = true;
     if (this.isText) {
-      this.clearValidator(this.rangeForm.get('min_comparator'));
-      this.clearValidator(this.rangeForm.get('max_comparator'));
-      this.clearValidator(this.rangeForm.get('min_value'));
-      this.clearValidator(this.rangeForm.get('max_value'));
-      this.rangeForm.get('text_value').setValidators(Validators.required);
+      this.clearValidator(this.flagForm.get('min_comparator'));
+      this.clearValidator(this.flagForm.get('max_comparator'));
+      this.clearValidator(this.flagForm.get('min_value'));
+      this.clearValidator(this.flagForm.get('max_value'));
+      this.flagForm.get('text_value').setValidators(Validators.required);
       return;
     }
-    this.rangeForm.get('min_comparator').setValidators(Validators.required);
-    this.rangeForm.get('max_comparator').setValidators(Validators.required);
-    this.rangeForm.get('min_value').setValidators(Validators.required);
-    this.rangeForm.get('max_value').setValidators(Validators.required);
-    this.clearValidator(this.rangeForm.get('text_value'));
+    this.flagForm.get('min_comparator').setValidators(Validators.required);
+    this.flagForm.get('max_comparator').setValidators(Validators.required);
+    this.flagForm.get('min_value').setValidators(Validators.required);
+    this.flagForm.get('max_value').setValidators(Validators.required);
+    this.clearValidator(this.flagForm.get('text_value'));
   }
 
   clearValidator(control: AbstractControl) {
@@ -306,44 +306,44 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
         this.parameters.splice(index, 1);
         if (this.param === param) {
           this.param = null;
-          this.ranges = [];
+          this.flags = [];
         }
       }
     });
   }
 
-  deleteRange(range: any) {
-    this.isRangesLoading = true;
-    this.labService.deleteParamRange(range.id).subscribe(success => {
-      this.isRangesLoading = false;
+  deleteFlag(flag: any) {
+    this.isFlagsLoading = true;
+    this.labService.deleteParamFlag(flag.id).subscribe(success => {
+      this.isFlagsLoading = false;
       this.showNotif(!success);
       if (success) {
-        const index = this.ranges.findIndex(r => r.id === range.id);
-        this.ranges.splice(index, 1);
+        const index = this.flags.findIndex(f => f.id === flag.id);
+        this.flags.splice(index, 1);
       }
     });
   }
 
-  toggleItem($event: any, item: any, isRange = false) {
-    const path = isRange ? 'parameters/ranges' : 'parameters';
+  toggleItem($event: any, item: any, isFlag = false) {
+    const path = isFlag ? 'parameters/ranges' : 'parameters';
     this.setupService.toggleActive(`labs/${path}/${item.id}`, $event ? 'ACTIVE' : 'INACTIVE').pipe(first())
       .subscribe((toggled: any) => {
-        const index = !isRange
+        const index = !isFlag
           ? this.parameters.findIndex(l => l.id === toggled.id)
-          : this.ranges.findIndex(l => l.id === toggled.id);
-        if (!isRange) {
+          : this.flags.findIndex(l => l.id === toggled.id);
+        if (!isFlag) {
           this.parameters[index].isActivated = toggled.isActivated;
         } else {
-          this.ranges[index].isActivated = toggled.isActivated;
+          this.flags[index].isActivated = toggled.isActivated;
         }
       }, error => {
         let index;
-        if (!isRange) {
+        if (!isFlag) {
           index = this.parameters.findIndex(l => l.id === item.id);
           this.parameters[index].isActivated = !item.isActivated;
         } else {
-          index = this.ranges.findIndex(l => l.id === item.id);
-          this.ranges[index].isActivated = !item.isActivated;
+          index = this.flags.findIndex(l => l.id === item.id);
+          this.flags[index].isActivated = !item.isActivated;
         }
         this.notification.error('Toggle failed', 'Unable to toggle this item.');
       });

@@ -6,9 +6,9 @@
     <nz-list style="min-height: 350px;" [nzDataSource]="parameters" [nzItemLayout]="'horizontal'"
       [nzLoading]="isParametersLoading" [nzRenderItem]="par">
       <ng-template #par let-par>
-        <nz-list-item [nzActions]="[rangeAction,editParam,deleteParam, toggleParam]">
-          <ng-template #rangeAction>
-            <a (click)="getParamRanges(par)">ranges</a>
+        <nz-list-item [nzActions]="[flagAction,editParam,deleteParam, toggleParam]">
+          <ng-template #flagAction>
+            <a (click)="getParamFlags(par)">flags</a>
           </ng-template>
           <ng-template #editParam><a (click)="showParamterModal(par)">edit</a></ng-template>
           <ng-template #deleteParam>
@@ -34,16 +34,16 @@
 
   <nz-card nz-col nzSpan="12" [nzTitle]="param ? param.name + ' Flags' : 'Parameter Flags'" [nzExtra]="extraTemplate">
     <ng-template #extraTemplate>
-      <button nz-button nzType="primary" *ngIf="param" (click)="showRangeModal()">Add Flag</button>
+      <button nz-button nzType="primary" *ngIf="param" (click)="showFlagModal()">Add Flag</button>
     </ng-template>
-    <nz-list style="min-height: 350px;" [nzDataSource]="ranges" [nzItemLayout]="'horizontal'"
-      [nzLoading]="isRangesLoading" [nzRenderItem]="item">
+    <nz-list style="min-height: 350px;" [nzDataSource]="flags" [nzItemLayout]="'horizontal'"
+      [nzLoading]="isFlagsLoading" [nzRenderItem]="item">
       <ng-template #item let-item>
         <nz-list-item [nzActions]="[deleteAction,editAction, moreAction]">
-          <ng-template #editAction><a (click)="showRangeModal(item)">edit</a></ng-template>
+          <ng-template #editAction><a (click)="showFlagModal(item)">edit</a></ng-template>
           <ng-template #deleteAction>
             <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
-              (nzOnConfirm)="deleteRange(item)"><i nz-icon nzType="delete" nzTheme="fill"
+              (nzOnConfirm)="deleteFlag(item)"><i nz-icon nzType="delete" nzTheme="fill"
                 style="color:red;font-size: 16px;"></i></a>
           </ng-template>
           <ng-template #moreAction>
@@ -115,16 +115,16 @@
   </form>
 </nz-modal>
 
-<nz-modal [nzVisible]="isRangeModalVisible" (nzOnCancel)="closeRangeModal()" [nzFooter]="rangeFooter"
-  [nzTitle]="isEditingRange ? 'Update Range' : 'Create Range'">
-  <form nz-form [formGroup]="rangeForm" (ngSubmit)="submitRange()" (reset)="resetRange()">
-    <ng-template #rangeFooter>
+<nz-modal [nzVisible]="isFlagModalVisible" (nzOnCancel)="closeFlagModal()" [nzFooter]="flagFooter"
+  [nzTitle]="isEditingFlag ? 'Update Flag' : 'Create Flag'">
+  <form nz-form [formGroup]="flagForm" (ngSubmit)="submitFlag()" (reset)="resetFlag()">
+    <ng-template #flagFooter>
       <nz-row nzType="flex" nzJustify="center">
         <nz-button-group>
-          <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingRange"
-            (click)="resetRange()">Cancel</button>
-          <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingRange" [disabled]="rangeForm.invalid"
-            (click)="submitRange()">Submit</button>
+          <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingFlag"
+            (click)="resetFlag()">Cancel</button>
+          <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingFlag" [disabled]="flagForm.invalid"
+            (click)="submitFlag()">Submit</button>
         </nz-button-group>
       </nz-row>
     </ng-template>

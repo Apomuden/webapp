@@ -27,7 +27,7 @@ export class LabSetupService {
       }), first(), catchError(_ => of([])));
   }
 
-  getParamRanges(paramId: number) {
+  getParamFlags(paramId: number) {
     return this.http.get<any>(`${LAB_URL}/parameters/ranges`, {
       params: {
         lab_parameter_id: `${paramId}`
@@ -60,17 +60,17 @@ export class LabSetupService {
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  createParamRange(data: any) {
+  createParamFlag(data: any) {
     return this.http.post<boolean>(`${LAB_URL}/parameters/ranges`, data)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  deleteParamRange(id: number) {
+  deleteParamFlag(id: number) {
     return this.http.delete<boolean>(`${LAB_URL}/parameters/ranges/${id}`)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  editParamRange(id: number, data: any) {
+  editParamFlag(id: number, data: any) {
     return this.http.put<boolean>(`${LAB_URL}/parameters/ranges/${id}`, data)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
