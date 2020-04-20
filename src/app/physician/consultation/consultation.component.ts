@@ -16,14 +16,14 @@ import { formatDate } from '@angular/common';
 })
 export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   commentControl = this.fb.control(null);
-  folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
+  folderNumb = this.fb.control('A0000032/2', [Validators.minLength(11), Validators.maxLength(12)]);
   consultationForm = this.fb.group({
     end_at: [new Date(), Validators.required],
     pregnant: [false, Validators.required],
     illness_type: [null, Validators.required]
   });
 
-  stepIndex = 0;
+  stepIndex = 6;
   // stepIndex = 5;
   stepsCount = 6;
 

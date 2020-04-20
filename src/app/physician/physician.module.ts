@@ -8,15 +8,19 @@ import { PhysicianService } from './services/physician.service';
 import { PatientHistoryComponent } from './patient-history/patient-history.component';
 import { PhysicalExamComponent } from './physical-exam/physical-exam.component';
 import { PrescriptionComponent } from '../prescription/prescription.component';
+import { ProcedureComponent } from './procedure/procedure.component';
+import { ClinicalNotesComponent } from './clinical-notes/clinical-notes.component';
 
 @NgModule({
-  declarations: [ConsultationComponent, PatientHistoryComponent, PhysicalExamComponent, PrescriptionComponent],
-  imports: [
-    CommonModule,
-    PhysicianRoutingModule,
-    OpdModule,
-    SharedModule,
+  declarations: [
+    ConsultationComponent,
+    PatientHistoryComponent,
+    PhysicalExamComponent,
+    PrescriptionComponent,
+    ProcedureComponent,
+    ClinicalNotesComponent
   ],
+  imports: [CommonModule, PhysicianRoutingModule, OpdModule, SharedModule],
   providers: [PhysicianService]
 })
-export class PhysicianModule { }
+export class PhysicianModule {}

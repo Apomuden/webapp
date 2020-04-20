@@ -81,12 +81,25 @@
 
         <div *ngIf="stepIndex === 1">
           <app-physical-exam *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
-            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-physical-exam>
+            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()">
+          </app-physical-exam>
+        </div>
+
+        <div *ngIf="stepIndex === 3">
+          <app-procedure *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
+            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()">
+          </app-procedure>
         </div>
 
         <div *ngIf="stepIndex === 5">
           <app-prescription *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
-            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()"> </app-prescription>
+            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()">
+          </app-prescription>
+        </div>
+        <div *ngIf="stepIndex === 6">
+          <app-prescription *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
+            [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()">
+          </app-prescription>
         </div>
       </div>
 

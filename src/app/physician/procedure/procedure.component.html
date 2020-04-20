@@ -1,0 +1,100 @@
+<div nz-row>
+  <nz-tabset>
+    <nz-tab nzTitle="Previous History">
+      <nz-table #previousProceduresTable [nzData]="previousProcedures">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Service</th>
+            <th>Procedure Category</th>
+            <th>Status</th>
+            <th>Patient Status</th>
+            <th>Clinic</th>
+            <th>Doctor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of previousProceduresTable.data">
+            <td>{{ data.date | date: 'medium' }}</td>
+            <td>{{ data.service }}</td>
+            <td>{{ data.procedureType }}</td>
+            <td>{{ data.status }}</td>
+            <td>{{ data.patientStatus }}</td>
+            <td>{{ data.clinic }}</td>
+            <td>{{ data.doctor }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
+    <nz-tab nzTitle="Current Entry">
+      <form nz-form [formGroup]="procedureForm">
+        <div nz-row>
+          <nz-form-item>
+            <nz-form-label>Category</nz-form-label>
+            <nz-form-control>
+              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Category" formControlName="category" [nzLoading]="isCategoriesLoading">
+                <nz-option *ngFor="let catergory of categories" [nzValue]="catergory" [nzLabel]="catergory"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-row>
+          <div nz-col [nzSpan]="5">
+            <nz-form-item>
+              <nz-form-label>Service</nz-form-label>
+              <nz-form-control>
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Service" formControlName="service" [nzLoading]="isServicesLoading">
+                  <nz-option *ngFor="let service of services" [nzValue]="services" [nzLabel]="service"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="5">
+            <nz-form-item>
+              <nz-form-label>Order Type</nz-form-label>
+              <nz-form-control>
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Order Type" formControlName="orderType">
+                  <nz-option nzLabel="INTERNAL" nzValue="INTERNAL"></nz-option>
+                  <nz-option nzLabel="EXTERNAL" nzValue="EXTERNAL"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="4">
+            <nz-form-item>
+              <nz-form-label>Unit Fee</nz-form-label>
+              <nz-form-control>
+                <nz-input-number formControlName="unitFee" [nzMin]="0.1" [nzStep]="1" [nzFormatter]="formatFee"
+                [nzParser]="parseFee" [nzDisabled]="true">
+              </nz-input-number>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="5" [nzOffset]="1">
+            <nz-form-item>
+              <nz-form-label>Bill Sponsor</nz-form-label>
+              <nz-form-control>
+                <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Bill Sponsor" [nzLoading]="isBillSponsorLoading">
+                  <nz-option nzValue="External" nzLabel="External"></nz-option>
+                  <nz-option nzValue="Internal" nzLabel="Internal"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="2">
+            <button nz-button nzType="primary">
+              <i nz-icon nzType="plus"></i> Add</button>
+          </div>
+        </div>
+      </form>
+    </nz-tab>
+  </nz-tabset>
+</div>
+<div nz-row nzType="flex" nzJustify="center">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="default" (click)="previous()" [nzLoading]="submitting">Previous</button>
+      <button nz-button (click)="submit()" [nzLoading]="submitting">Next</button>
+    </nz-button-group>
+  </nz-col>
+</div>

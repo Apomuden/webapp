@@ -1,0 +1,10 @@
+nz-select {
+  margin: 0 8px 10px 0;
+  width: 250px;
+}
+
+
+[nz-button] {
+  margin-top: 40px;
+  margin-left: 20px;
+}
