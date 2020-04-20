@@ -97,9 +97,9 @@
           </app-prescription>
         </div>
         <div *ngIf="stepIndex === 6">
-          <app-prescription *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
+          <app-clinical-notes *ngIf="user && patient && attendance" [consultation]="attendance" [patient]="patient"
             [userId]="user.id" (nextClicked)="next($event)" (previousClicked)="previous()">
-          </app-prescription>
+          </app-clinical-notes>
         </div>
       </div>
 

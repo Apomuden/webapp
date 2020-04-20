@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-clinical-notes',
@@ -6,6 +6,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./clinical-notes.component.css']
 })
 export class ClinicalNotesComponent implements OnInit {
+
+  @Input() consultation: any;
+  @Input() patient: any;
+  @Input() userId: any;
+  @Output() nextClicked: EventEmitter<any> = new EventEmitter();
+  @Output() previousClicked: EventEmitter<any> = new EventEmitter();
+
 
   constructor() { }
 
