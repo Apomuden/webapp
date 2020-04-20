@@ -13,7 +13,7 @@ export class LabSetupService {
 
   constructor(private http: HttpClient) { }
 
-  getLabParameters() {
+  getParameters() {
     return this.http.get<any>(`${LAB_URL}/parameters`)
       .pipe(map(res => {
         if (res && res.data && res.data.length > 0) {
@@ -102,5 +102,42 @@ export class LabSetupService {
   editSampleType(id: number, data: any) {
     return this.http.put<boolean>(`${LAB_URL}/sampletypes/${id}`, data)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  getLabs() {
+    const url = `${environment.apiBaseUrl}/pricing/services`;
+    return this.http.get<any>(url, {
+      params: {
+        service_category: 'laboratory',
+        status: 'ACTIVE'
+      }
+    }).pipe(
+      map(res => {
+        if (res && res.data.length > 0) {
+          return res.data;
+        }
+        return [];
+      }), catchError(_ => of([])), first()
+    );
+  }
+
+  getLabParams(labId: number) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/parameters`;
+    return this.http.get<any>(url).pipe(
+      map(res => {
+        if (res && res.data.length > 0) {
+          return res.data;
+        }
+        return [];
+      }), catchError(_ => of([])), first()
+    );
+  }
+
+  mapLabParam(labId: number, params: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/parameters`;
+    return this.http.post<boolean>(url, {
+      parameters: params
+    })
+    .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 }

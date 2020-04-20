@@ -1,5 +1,5 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { SetupService } from 'src/app/shared/services/setup.service';
 import { LabSetupService } from 'src/app/shared/services/lab-setup.service';
 import { NzNotificationService } from 'ng-zorro-antd';
@@ -28,6 +28,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
   rangeForm = this.fb.group({
     lab_parameter_id: [null, Validators.required],
     lab_parameter_name: [{ value: 'null', disabled: true }, Validators.required],
+    text_value: [null],
     min_comparator: ['>', Validators.required],
     max_comparator: ['<', Validators.required],
     min_value: [null, Validators.required],
@@ -64,6 +65,10 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     private notification: NzNotificationService,
   ) { }
 
+  public get isText(): boolean {
+    return this.param && this.param.value_type === 'Text';
+  }
+
   ngOnInit() {
     this.getParams();
   }
@@ -72,7 +77,9 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     this.rangeForm.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe(value => {
         this.validateAge(value);
-        this.validateValue(value);
+        if (!this.isText) {
+          this.validateValue(value);
+        }
       });
   }
 
@@ -148,7 +155,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
 
   getParams() {
     this.isParametersLoading = true;
-    this.labService.getLabParameters()
+    this.labService.getParameters()
       .subscribe(paramters => {
         this.parameters = paramters;
         this.isParametersLoading = false;
@@ -269,6 +276,24 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
       this.rangeForm.setValue(range);
     }
     this.isRangeModalVisible = true;
+    if (this.isText) {
+      this.clearValidator(this.rangeForm.get('min_comparator'));
+      this.clearValidator(this.rangeForm.get('max_comparator'));
+      this.clearValidator(this.rangeForm.get('min_value'));
+      this.clearValidator(this.rangeForm.get('max_value'));
+      this.rangeForm.get('text_value').setValidators(Validators.required);
+      return;
+    }
+    this.rangeForm.get('min_comparator').setValidators(Validators.required);
+    this.rangeForm.get('max_comparator').setValidators(Validators.required);
+    this.rangeForm.get('min_value').setValidators(Validators.required);
+    this.rangeForm.get('max_value').setValidators(Validators.required);
+    this.clearValidator(this.rangeForm.get('text_value'));
+  }
+
+  clearValidator(control: AbstractControl) {
+    control.clearValidators();
+    control.updateValueAndValidity();
   }
 
   deleteParameter(param: any) {
@@ -312,7 +337,6 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
           this.ranges[index].isActivated = toggled.isActivated;
         }
       }, error => {
-        console.error(error);
         let index;
         if (!isRange) {
           index = this.parameters.findIndex(l => l.id === item.id);

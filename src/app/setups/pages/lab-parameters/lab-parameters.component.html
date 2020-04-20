@@ -32,9 +32,9 @@
     </nz-list>
   </nz-card>
 
-  <nz-card nz-col nzSpan="12" [nzTitle]="param ? param.name + ' Ranges' : 'Parameter Ranges'" [nzExtra]="extraTemplate">
+  <nz-card nz-col nzSpan="12" [nzTitle]="param ? param.name + ' Flags' : 'Parameter Flags'" [nzExtra]="extraTemplate">
     <ng-template #extraTemplate>
-      <button nz-button nzType="primary" *ngIf="param" (click)="showRangeModal()">Add Range</button>
+      <button nz-button nzType="primary" *ngIf="param" (click)="showRangeModal()">Add Flag</button>
     </ng-template>
     <nz-list style="min-height: 350px;" [nzDataSource]="ranges" [nzItemLayout]="'horizontal'"
       [nzLoading]="isRangesLoading" [nzRenderItem]="item">
@@ -54,10 +54,9 @@
               <a>{{ item.flag }}</a>
             </ng-template>
             <ng-template #description>
-              <div><strong>Min value:</strong> {{item.min_value}} </div>
-              <div><strong>Max value:</strong> {{item.max_value}} </div>
-
-              <nz-divider></nz-divider>
+              <div *ngIf="!item.text_value"><strong>Min value:</strong> {{item.min_value}} </div>
+              <div *ngIf="!item.text_value"><strong>Max value:</strong> {{item.max_value}} </div>
+              <div *ngIf="item.text_value"><strong>Value:</strong> {{item.text_value}} </div>
 
               <div><strong>Min age:</strong> {{item.min_age}}
                 {{item.min_age_unit | lowercase }}{{item.min_age > 1 ? 's': ''}}</div>
@@ -152,8 +151,15 @@
         </nz-select>
       </nz-form-control>
     </nz-form-item>
+    
+    <nz-form-item *ngIf="isText">
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>Value</nz-form-label>
+        <input nz-input type="text" formControlName="text_value" />
+      </nz-form-control>
+    </nz-form-item>
 
-    <nz-form-item>
+    <nz-form-item *ngIf="!isText">
       <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
         <nz-form-label>Min Comparator</nz-form-label>
         <nz-select formControlName="min_comparator">
@@ -171,7 +177,7 @@
       </nz-form-control>
     </nz-form-item>
 
-    <nz-form-item>
+    <nz-form-item *ngIf="!isText">
       <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
         <nz-form-label>Min Value</nz-form-label>
         <input nz-input type="number" formControlName="min_value" />
@@ -194,10 +200,7 @@
       <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
         <nz-form-label>Max Age Unit</nz-form-label>
         <nz-select formControlName="max_age_unit">
-          <nz-option nzValue="YEAR" nzLabel="YEAR"></nz-option>
-          <nz-option nzValue="MONTH" nzLabel="MONTH"></nz-option>
-          <nz-option nzValue="WEEK" nzLabel="WEEK"></nz-option>
-          <nz-option nzValue="DAY" nzLabel="DAY"></nz-option>
+          <nz-option *ngFor="let unit of ageUnits" [nzValue]="unit" [nzLabel]="unit"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
