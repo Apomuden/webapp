@@ -1,0 +1,103 @@
+<nz-row>
+  <nz-card nz-col [nzSpan]="12" nzTitle="Lab Services">
+    <nz-list style="min-height: 350px;" [nzDataSource]="labs" [nzItemLayout]="'horizontal'" [nzLoading]="isLoading"
+      [nzRenderItem]="labItem">
+      <ng-template #labItem let-labItem>
+        <nz-list-item [nzActions]="[moreAction]">
+          <ng-template #moreAction>
+            <a (click)="selectLab(labItem)">View Parameters</a>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDesc">
+            <ng-template #nzTitle>
+              <a>{{labItem.description}} </a>
+            </ng-template>
+            <ng-template #nzDesc>
+              <div>GHS {{labItem.prepaid_amount}} Prepaid</div>
+              <div>GHS {{labItem.postpaid_amount}} Postpaid</div>
+              <div>{{labItem.age_group_name}}</div>
+              <div>{{labItem.gender}}</div>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+
+  <nz-card nz-col nzSpan="12" [nzTitle]="'Parameters'" [nzExtra]="extraTemplate">
+    <ng-template #extraTemplate>
+      <button nz-button nzType="primary" *ngIf="lab" (click)="showParamModal()">Add Parameter</button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="labParams" [nzItemLayout]="'horizontal'" [nzLoading]="isLoading"
+      [nzRenderItem]="item">
+      <ng-template #item let-item>
+        <nz-list-item [nzActions]="[editAction, deleteAction]">
+          <ng-template #editAction><a (click)="showEditModal(item)">edit</a></ng-template>
+          <ng-template #deleteAction>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="removeParamter(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="description">
+            <ng-template #nzTitle>
+              <a>{{ item.description }}</a>
+            </ng-template>
+            <ng-template #description>
+              <div><strong>Value type:</strong> {{item.value_type}} </div>
+              <div><strong>Unit:</strong> {{item.unit}} </div>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+</nz-row>
+
+<nz-modal [nzVisible]="isModalShowing" (nzOnCancel)="closeModal()" [nzFooter]="modalFooter" nzTitle="Add Parameter">
+  <ng-template #modalFooter>
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-button-group>
+        <button nz-button nzType="danger" type="reset" (click)="closeModal()" [nzLoading]="isLoading">Cancel</button>
+        <button nz-button nzType="primary" type="submit" [disabled]="newParamForm.invalid"
+          (click)="addLabParam()" [nzLoading]="isLoading">Add</button>
+      </nz-button-group>
+    </nz-row>
+  </ng-template>
+
+  <form nz-form [formGroup]="newParamForm">
+    <nz-form-item nzGutter="16">
+      <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
+        <nz-form-label>Parameter</nz-form-label>
+        <nz-select formControlName="id">
+          <nz-option *ngFor="let p of params" [nzValue]="p.id" [nzLabel]="p.description"></nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Order</nz-form-label>
+        <input nz-input type="number" formControlName="order" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+
+<nz-modal [nzVisible]="isEditModalShowing" (nzOnCancel)="closeEditModal()" [nzFooter]="modalFooter"
+  nzTitle="Update Parameter Order">
+  <ng-template #modalFooter>
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-button-group>
+        <button nz-button nzType="danger" type="reset" (click)="closeEditModal()" [nzLoading]="isLoading">Cancel</button>
+        <button nz-button nzType="primary" type="submit" [disabled]="newParamForm.pristine || newParamForm.invalid"
+          (click)="addLabParam()" [nzLoading]="isLoading">Done</button>
+      </nz-button-group>
+    </nz-row>
+  </ng-template>
+
+  <form nz-form [formGroup]="newParamForm">
+    <nz-form-item nzGutter="16">
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>New Order</nz-form-label>
+        <input nz-input type="number" formControlName="order" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>

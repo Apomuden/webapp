@@ -198,7 +198,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     this.isCreatingParam = true;
     let observable: Observable<boolean>;
     observable = !this.isEditingParam
-      ? this.labService.createLabParameter(this.processParamData())
+      ? this.labService.createParameter(this.processParamData())
       : this.labService.editLabParameter(this.editParam.id, this.processParamData());
     observable.subscribe(success => {
       this.isCreatingParam = false;
@@ -298,7 +298,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
 
   deleteParameter(param: any) {
     this.isParametersLoading = true;
-    this.labService.deleteLabParameter(param.id).subscribe(success => {
+    this.labService.deleteParameter(param.id).subscribe(success => {
       this.isParametersLoading = false;
       this.showNotif(!success);
       if (success) {

@@ -45,12 +45,12 @@ export class LabSetupService {
       }), first(), catchError(_ => of([])));
   }
 
-  createLabParameter(data: any) {
+  createParameter(data: any) {
     return this.http.post<boolean>(`${LAB_URL}/parameters`, data)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  deleteLabParameter(id: number) {
+  deleteParameter(id: number) {
     return this.http.delete<boolean>(`${LAB_URL}/parameters/${id}`)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
@@ -108,8 +108,9 @@ export class LabSetupService {
     const url = `${environment.apiBaseUrl}/pricing/services`;
     return this.http.get<any>(url, {
       params: {
-        service_category: 'laboratory',
-        status: 'ACTIVE'
+        service_category_id: '2',
+        // service_category: 'laboratory',
+        // status: 'ACTIVE'
       }
     }).pipe(
       map(res => {
@@ -133,11 +134,21 @@ export class LabSetupService {
     );
   }
 
-  mapLabParam(labId: number, params: any[]) {
+  deleteLabParam(labId: number, params: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/parameters`;
+    const options = {
+      params: {},
+      body: { parameters: params }
+    };
+    return this.http.delete<boolean>(url, options)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  createLabParam(labId: number, params: any[]) {
     const url = `${environment.apiBaseUrl}/labs/services/${labId}/parameters`;
     return this.http.post<boolean>(url, {
       parameters: params
     })
-    .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 }

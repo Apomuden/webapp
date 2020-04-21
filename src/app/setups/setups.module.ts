@@ -63,6 +63,7 @@ import { Icd10categoriesComponent } from './pages/icd10categories/icd10categorie
 import { DiseasesComponent } from './pages/diseases/diseases.component';
 import { LabParametersComponent } from './pages/lab-parameters/lab-parameters.component';
 import { LabSampleTypesComponent } from './pages/lab-sample-types/lab-sample-types.component';
+import { ParameterServiceMapComponent } from './pages/parameter-service-map/parameter-service-map.component';
 
 @NgModule({
   declarations: [
@@ -123,7 +124,8 @@ import { LabSampleTypesComponent } from './pages/lab-sample-types/lab-sample-typ
     Icd10categoriesComponent,
     DiseasesComponent,
     LabParametersComponent,
-    LabSampleTypesComponent
+    LabSampleTypesComponent,
+    ParameterServiceMapComponent
   ],
   imports: [
     CommonModule,
