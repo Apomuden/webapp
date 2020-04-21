@@ -21,7 +21,6 @@ export class ParameterServiceMapComponent implements OnInit {
 
   isModalShowing: boolean;
   isEditModalShowing: boolean;
-  isUpdating: boolean;
 
   lab: any;
   editParam: any;
@@ -52,7 +51,6 @@ export class ParameterServiceMapComponent implements OnInit {
   getLabParams(labId: number) {
     this.isLoading = true;
     this.labService.getLabParams(labId).subscribe(params => {
-      this.isUpdating = params.length > 0;
       this.isLoading = false;
       this.labParams = params;
     });
