@@ -74,8 +74,7 @@ export class ParameterServiceMapComponent implements OnInit {
     this.isEditModalShowing = true;
     this.newParamForm.get('id').setValue(param.id);
     this.newParamForm.get('order').setValue(param.order);
-    this.newParamForm.get('order').setValidators(Validators.max(this.labParams.length + 1));
-    this.newParamForm.get('order').setValidators(Validators.min(1));
+    this.newParamForm.get('order').setValidators([Validators.max(this.labParams.length), Validators.min(1)]);
   }
 
   closeEditModal() {
@@ -86,8 +85,7 @@ export class ParameterServiceMapComponent implements OnInit {
   showParamModal() {
     this.isModalShowing = true;
     this.newParamForm.get('order').setValue(this.labParams.length + 1);
-    this.newParamForm.get('order').setValidators(Validators.max(this.labParams.length + 1));
-    this.newParamForm.get('order').setValidators(Validators.min(1));
+    this.newParamForm.get('order').setValidators([Validators.max(this.labParams.length + 1), Validators.min(1)]);
   }
 
   closeModal() {

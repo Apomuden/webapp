@@ -151,4 +151,34 @@ export class LabSetupService {
     })
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
+
+  createLabSampleType(labId: number, sampleTypes: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/sampletypes`;
+    return this.http.post<boolean>(url, {
+      sample_types: sampleTypes
+    })
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  getLabSampleTypes(labId: number) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/sampletypes`;
+    return this.http.get<any>(url).pipe(
+      map(res => {
+        if (res && res.data.length > 0) {
+          return res.data;
+        }
+        return [];
+      }), catchError(_ => of([])), first()
+    );
+  }
+
+  deleteLabSampleType(labId: number, sampleTypes: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/sampletypes`;
+    const options = {
+      params: {},
+      body: { sample_types: sampleTypes }
+    };
+    return this.http.delete<boolean>(url, options)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
 }
