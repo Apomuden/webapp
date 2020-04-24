@@ -13,7 +13,7 @@ export class LabSetupService {
 
   constructor(private http: HttpClient) { }
 
-  getLabParameters() {
+  getParameters() {
     return this.http.get<any>(`${LAB_URL}/parameters`)
       .pipe(map(res => {
         if (res && res.data && res.data.length > 0) {
@@ -27,7 +27,7 @@ export class LabSetupService {
       }), first(), catchError(_ => of([])));
   }
 
-  getParamRanges(paramId: number) {
+  getParamFlags(paramId: number) {
     return this.http.get<any>(`${LAB_URL}/parameters/ranges`, {
       params: {
         lab_parameter_id: `${paramId}`
@@ -45,12 +45,12 @@ export class LabSetupService {
       }), first(), catchError(_ => of([])));
   }
 
-  createLabParameter(data: any) {
+  createParameter(data: any) {
     return this.http.post<boolean>(`${LAB_URL}/parameters`, data)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  deleteLabParameter(id: number) {
+  deleteParameter(id: number) {
     return this.http.delete<boolean>(`${LAB_URL}/parameters/${id}`)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
@@ -60,17 +60,17 @@ export class LabSetupService {
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  createParamRange(data: any) {
+  createParamFlag(data: any) {
     return this.http.post<boolean>(`${LAB_URL}/parameters/ranges`, data)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  deleteParamRange(id: number) {
+  deleteParamFlag(id: number) {
     return this.http.delete<boolean>(`${LAB_URL}/parameters/ranges/${id}`)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  editParamRange(id: number, data: any) {
+  editParamFlag(id: number, data: any) {
     return this.http.put<boolean>(`${LAB_URL}/parameters/ranges/${id}`, data)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
@@ -101,6 +101,84 @@ export class LabSetupService {
 
   editSampleType(id: number, data: any) {
     return this.http.put<boolean>(`${LAB_URL}/sampletypes/${id}`, data)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  getLabs() {
+    const url = `${environment.apiBaseUrl}/pricing/services`;
+    return this.http.get<any>(url, {
+      params: {
+        service_category_id: '2',
+        // service_category: 'laboratory',
+        // status: 'ACTIVE'
+      }
+    }).pipe(
+      map(res => {
+        if (res && res.data.length > 0) {
+          return res.data;
+        }
+        return [];
+      }), catchError(_ => of([])), first()
+    );
+  }
+
+  getLabParams(labId: number) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/parameters`;
+    return this.http.get<any>(url).pipe(
+      map(res => {
+        if (res && res.data.length > 0) {
+          return res.data;
+        }
+        return [];
+      }), catchError(_ => of([])), first()
+    );
+  }
+
+  deleteLabParam(labId: number, params: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/parameters`;
+    const options = {
+      params: {},
+      body: { parameters: params }
+    };
+    return this.http.delete<boolean>(url, options)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  createLabParam(labId: number, params: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/parameters`;
+    return this.http.post<boolean>(url, {
+      parameters: params
+    })
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  createLabSampleType(labId: number, sampleTypes: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/sampletypes`;
+    return this.http.post<boolean>(url, {
+      sample_types: sampleTypes
+    })
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  getLabSampleTypes(labId: number) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/sampletypes`;
+    return this.http.get<any>(url).pipe(
+      map(res => {
+        if (res && res.data.length > 0) {
+          return res.data;
+        }
+        return [];
+      }), catchError(_ => of([])), first()
+    );
+  }
+
+  deleteLabSampleType(labId: number, sampleTypes: any[]) {
+    const url = `${environment.apiBaseUrl}/labs/services/${labId}/sampletypes`;
+    const options = {
+      params: {},
+      body: { sample_types: sampleTypes }
+    };
+    return this.http.delete<boolean>(url, options)
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 }

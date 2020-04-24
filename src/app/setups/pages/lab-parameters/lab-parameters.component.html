@@ -6,9 +6,9 @@
     <nz-list style="min-height: 350px;" [nzDataSource]="parameters" [nzItemLayout]="'horizontal'"
       [nzLoading]="isParametersLoading" [nzRenderItem]="par">
       <ng-template #par let-par>
-        <nz-list-item [nzActions]="[rangeAction,editParam,deleteParam, toggleParam]">
-          <ng-template #rangeAction>
-            <a (click)="getParamRanges(par)">ranges</a>
+        <nz-list-item [nzActions]="[flagAction,editParam,deleteParam, toggleParam]">
+          <ng-template #flagAction>
+            <a (click)="getParamFlags(par)">flags</a>
           </ng-template>
           <ng-template #editParam><a (click)="showParamterModal(par)">edit</a></ng-template>
           <ng-template #deleteParam>
@@ -32,18 +32,18 @@
     </nz-list>
   </nz-card>
 
-  <nz-card nz-col nzSpan="12" [nzTitle]="param ? param.name + ' Ranges' : 'Parameter Ranges'" [nzExtra]="extraTemplate">
+  <nz-card nz-col nzSpan="12" [nzTitle]="param ? param.name + ' Flags' : 'Parameter Flags'" [nzExtra]="extraTemplate">
     <ng-template #extraTemplate>
-      <button nz-button nzType="primary" *ngIf="param" (click)="showRangeModal()">Add Range</button>
+      <button nz-button nzType="primary" *ngIf="param" (click)="showFlagModal()">Add Flag</button>
     </ng-template>
-    <nz-list style="min-height: 350px;" [nzDataSource]="ranges" [nzItemLayout]="'horizontal'"
-      [nzLoading]="isRangesLoading" [nzRenderItem]="item">
+    <nz-list style="min-height: 350px;" [nzDataSource]="flags" [nzItemLayout]="'horizontal'"
+      [nzLoading]="isFlagsLoading" [nzRenderItem]="item">
       <ng-template #item let-item>
         <nz-list-item [nzActions]="[deleteAction,editAction, moreAction]">
-          <ng-template #editAction><a (click)="showRangeModal(item)">edit</a></ng-template>
+          <ng-template #editAction><a (click)="showFlagModal(item)">edit</a></ng-template>
           <ng-template #deleteAction>
             <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
-              (nzOnConfirm)="deleteRange(item)"><i nz-icon nzType="delete" nzTheme="fill"
+              (nzOnConfirm)="deleteFlag(item)"><i nz-icon nzType="delete" nzTheme="fill"
                 style="color:red;font-size: 16px;"></i></a>
           </ng-template>
           <ng-template #moreAction>
@@ -54,10 +54,9 @@
               <a>{{ item.flag }}</a>
             </ng-template>
             <ng-template #description>
-              <div><strong>Min value:</strong> {{item.min_value}} </div>
-              <div><strong>Max value:</strong> {{item.max_value}} </div>
-
-              <nz-divider></nz-divider>
+              <div *ngIf="!item.text_value"><strong>Min value:</strong> {{item.min_value}} </div>
+              <div *ngIf="!item.text_value"><strong>Max value:</strong> {{item.max_value}} </div>
+              <div *ngIf="item.text_value"><strong>Value:</strong> {{item.text_value}} </div>
 
               <div><strong>Min age:</strong> {{item.min_age}}
                 {{item.min_age_unit | lowercase }}{{item.min_age > 1 ? 's': ''}}</div>
@@ -116,16 +115,16 @@
   </form>
 </nz-modal>
 
-<nz-modal [nzVisible]="isRangeModalVisible" (nzOnCancel)="closeRangeModal()" [nzFooter]="rangeFooter"
-  [nzTitle]="isEditingRange ? 'Update Range' : 'Create Range'">
-  <form nz-form [formGroup]="rangeForm" (ngSubmit)="submitRange()" (reset)="resetRange()">
-    <ng-template #rangeFooter>
+<nz-modal [nzVisible]="isFlagModalVisible" (nzOnCancel)="closeFlagModal()" [nzFooter]="flagFooter"
+  [nzTitle]="isEditingFlag ? 'Update Flag' : 'Create Flag'">
+  <form nz-form [formGroup]="flagForm" (ngSubmit)="submitFlag()" (reset)="resetFlag()">
+    <ng-template #flagFooter>
       <nz-row nzType="flex" nzJustify="center">
         <nz-button-group>
-          <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingRange"
-            (click)="resetRange()">Cancel</button>
-          <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingRange" [disabled]="rangeForm.invalid"
-            (click)="submitRange()">Submit</button>
+          <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingFlag"
+            (click)="resetFlag()">Cancel</button>
+          <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingFlag" [disabled]="flagForm.invalid"
+            (click)="submitFlag()">Submit</button>
         </nz-button-group>
       </nz-row>
     </ng-template>
@@ -152,8 +151,15 @@
         </nz-select>
       </nz-form-control>
     </nz-form-item>
+    
+    <nz-form-item *ngIf="isText">
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>Value</nz-form-label>
+        <input nz-input type="text" formControlName="text_value" />
+      </nz-form-control>
+    </nz-form-item>
 
-    <nz-form-item>
+    <nz-form-item *ngIf="!isText">
       <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
         <nz-form-label>Min Comparator</nz-form-label>
         <nz-select formControlName="min_comparator">
@@ -171,7 +177,7 @@
       </nz-form-control>
     </nz-form-item>
 
-    <nz-form-item>
+    <nz-form-item *ngIf="!isText">
       <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
         <nz-form-label>Min Value</nz-form-label>
         <input nz-input type="number" formControlName="min_value" />
@@ -194,10 +200,7 @@
       <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
         <nz-form-label>Max Age Unit</nz-form-label>
         <nz-select formControlName="max_age_unit">
-          <nz-option nzValue="YEAR" nzLabel="YEAR"></nz-option>
-          <nz-option nzValue="MONTH" nzLabel="MONTH"></nz-option>
-          <nz-option nzValue="WEEK" nzLabel="WEEK"></nz-option>
-          <nz-option nzValue="DAY" nzLabel="DAY"></nz-option>
+          <nz-option *ngFor="let unit of ageUnits" [nzValue]="unit" [nzLabel]="unit"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
