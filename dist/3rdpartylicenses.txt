@@ -604,8 +604,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-undefined
-
 rxjs
 Apache-2.0
                                Apache License
@@ -814,6 +812,8 @@ Apache-2.0
 
 signature_pad
 MIT
+
+undefined
 
 tinycolor2
 MIT

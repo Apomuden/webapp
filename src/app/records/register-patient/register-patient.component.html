@@ -189,7 +189,8 @@
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="dob">Date of birth</nz-form-label>
           <nz-form-control nzErrorTip="Select a valid date">
-            <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="dob" nzPlaceHolder="Select date of birth" [nzDisabled]="useAge">
+            <nz-date-picker [nzDisabledDate]="disabledDate" formControlName="dob" nzPlaceHolder="Select date of birth"
+              [nzDisabled]="useAge">
             </nz-date-picker>
           </nz-form-control>
         </nz-form-item>
@@ -246,7 +247,8 @@
         <nz-form-item>
           <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="region">Region</nz-form-label>
           <nz-form-control nzErrorTip="Select region">
-            <nz-select nzShowSearch formControlName="region" nzPlaceHolder="Select region" [nzLoading]="isLoadingRegions | async">
+            <nz-select nzShowSearch formControlName="region" nzPlaceHolder="Select region"
+              [nzLoading]="isLoadingRegions | async">
               <nz-option *ngFor="let region of regions" [nzValue]="region.id" [nzLabel]="region.name"></nz-option>
             </nz-select>
           </nz-form-control>
@@ -419,8 +421,8 @@
               </ng-container>
               <img *ngIf="photo" [src]="photo" class="avatar" />
             </nz-upload>
-            <button [nzLoading]="isCreatingPatient || isCreatingSponsor" *ngIf="photo" (click)="clearPhoto()" nz-button nzType="danger"><i nz-icon
-                nzType="close"></i></button>
+            <button [nzLoading]="isCreatingPatient || isCreatingSponsor" *ngIf="photo" (click)="clearPhoto()" nz-button
+              nzType="danger"><i nz-icon nzType="close"></i></button>
           </nz-form-control>
         </nz-form-item>
       </div>
