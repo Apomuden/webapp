@@ -1,3 +1,4 @@
+import { ClinicalNotesComponent } from './clinical-notes/clinical-notes.component';
 import { ProcedureComponent } from './procedure/procedure.component';
 import { InvestigationComponent } from './investigation/investigation.component';
 import { DiagnosisComponent } from './diagnosis/diagnosis.component';
@@ -20,7 +21,8 @@ import { PrescriptionComponent } from '../prescription/prescription.component';
     PrescriptionComponent,
     DiagnosisComponent,
     InvestigationComponent,
-    ProcedureComponent
+    ProcedureComponent,
+    ClinicalNotesComponent
   ],
   imports: [
     CommonModule,
