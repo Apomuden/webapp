@@ -1,0 +1,80 @@
+<nz-row>
+  <nz-col [nzSpan]="labParams ? 24 : 16">
+    <nz-card nz-row [nzLoading]="isLoadingData && searchInitialized">
+
+      <nz-row [nzGutter]="24" *ngIf="!patient">
+        <nz-form-item nz-col [nzSpan]="10">
+          <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
+            <input type="text" nz-input placeholder="A0000001/20a" [formControl]="folderNumb" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-row>
+
+      <nz-row nzJustify="center" nzType="flex" *ngIf="!searchInitialized">
+        <div>
+          <nz-divider></nz-divider>
+          <i nz-icon [nzType]="'info-circle'"
+            class="m-r-5"></i> {{ message }}
+        </div>
+      </nz-row>
+
+      <div *ngIf="labParams">
+      <nz-descriptions nzSize="small" nzBordered
+       [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+        <nz-descriptions-item nzTitle="Folder #">
+          {{ patient.folder_no }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Name">
+          {{ patient.firstname }} {{ patient.middlename }} {{ patient.surname }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Gender">
+          {{ patient.gender }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Age">
+          {{ labRequest.age }} year(s)
+        </nz-descriptions-item>
+        <nz-descriptions-item *ngIf="labRequest.billing_sponsor_name" nzTitle="Sponsor">
+          {{ labRequest.sponsor_name }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Patient Status">
+          {{ labRequest.patient_status }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Clinic">
+          {{ labRequest.clinic_name }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Lab Requested">
+          {{ labRequest.service_name }}
+        </nz-descriptions-item>
+        <nz-descriptions-item nzTitle="Attendance Date">
+          {{ labRequest.consultation_date | date:'medium' }}
+        </nz-descriptions-item>
+      </nz-descriptions>
+
+      <nz-divider></nz-divider>
+
+      <nz-row nzJustify="center" nzType="flex">
+        <div *ngIf="labParams.length === 0">
+          <i nz-icon [nzType]="'exclamation-circle'"
+            class="m-r-5"></i>  The lab requested has not been set up!
+        </div>
+
+        <form nz-form nz-col [nzSpan]="16" nzLayout="vertical" *ngIf="labParams.length > 0">
+          <nz-form-item [nzGutter]="16" *ngFor="let row of labParams">
+            <nz-form-control *ngFor="let param of row" [nzSpan]="24 / row.length">
+              <nz-form-label> {{ param.name }} </nz-form-label>
+            <input nz-input [type]="param.value_type" [formControl]="param.form"
+             nz-popover [nzPopoverContent]="param.description"/>
+          </nz-form-control>
+          </nz-form-item>
+        </form>
+      </nz-row>
+      </div>
+    </nz-card>
+  </nz-col>
+
+  <nz-col *ngIf="!labParams" [nzSpan]="8">
+    <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Check Vital"
+      (queueClick)="attendanceClick($event)"></app-patient-queue>
+  </nz-col>
+</nz-row>

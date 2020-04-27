@@ -167,13 +167,30 @@ export const ROUTES: SideNavInterface[] = [
   {
     path: '/physician',
     title: 'Physician Management',
-    iconType: 'fontawesome',
-    iconTheme: 'fas',
-    icon: 'fa-stethoscope',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'plus-circle',
     submenu: [
       {
         path: '/physician/consultation',
         title: 'Consultation',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+    ]
+  },
+  {
+    path: '/lab-management',
+    title: 'Laboraory Management',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'pushpin',
+    submenu: [
+      {
+        path: '/lab-management/laboratory',
+        title: 'Laboratory',
         iconType: '',
         icon: '',
         iconTheme: '',
