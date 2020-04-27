@@ -17,8 +17,8 @@ import * as datefns from 'date-fns';
 })
 export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDestroy {
 
+  folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
   requestForm: FormGroup = this.fb.group({
-    folderNumber: this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]),
     attendanceDate: this.fb.control(new Date(), [Validators.required]),
     clinic: this.fb.control(null, [Validators.required]),
     consultationService: this.fb.control(null, [Validators.required]),
@@ -68,9 +68,9 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   ngOnInit() { }
 
   ngAfterViewInit() {
-    this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
+    this.folderNumb.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
       .subscribe(folderNo => {
-        if (folderNo && this.folderNoControl.valid) {
+        if (folderNo && this.folderNumb.valid) {
           this.getPatient(folderNo);
         } else {
           this.message = 'Please enter a valid folder number to fill this form.';
@@ -98,10 +98,6 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   ngOnDestroy() { }
-
-  get folderNoControl(): FormControl {
-    return this.requestForm.get('folderNumber') as FormControl;
-  }
 
   get feeControl(): FormControl {
     return this.requestForm.get('fee') as FormControl;
@@ -278,6 +274,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
 
   cancel(): void {
     this.patient = null;
+    this.folderNumb.reset();
     this.sponsorPermits = [this.patientSponsor];
     this.searchInitialized = false;
     this.requestForm.reset();
