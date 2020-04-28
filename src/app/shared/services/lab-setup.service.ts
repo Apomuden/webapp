@@ -35,8 +35,8 @@ export class LabSetupService {
     })
       .pipe(map(res => {
         if (res && res.data && res.data.length > 0) {
-          res.data.forEach(range => {
-            range.isActivated = range.status === 'ACTIVE';
+          res.data.forEach(flag => {
+            flag.isActivated = flag.status === 'ACTIVE';
           });
           return res.data;
         } else {
