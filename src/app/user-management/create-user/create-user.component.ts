@@ -54,8 +54,8 @@ export class CreateUserComponent implements OnInit, OnDestroy {
     contactInfo: this.fb.group({
       countryCode: ['+233', [Validators.required]],
       altCode: ['+233'],
-      altNumber: [null, [Validators.minLength(9), Validators.maxLength(9)]],
-      number: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9)]],
+      altNumber: [null, [Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/[0-9]/)]],
+      number: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/[0-9]/)]],
       email: [null, [Validators.email]],
     }),
     // 5 emergency information
@@ -64,8 +64,8 @@ export class CreateUserComponent implements OnInit, OnDestroy {
       relationship: [null],
       countryCode: ['+233'],
       countryCodeTwo: ['+233'],
-      number: [null, [Validators.minLength(9), Validators.maxLength(9)]],
-      numberTwo: [null, [Validators.minLength(9), Validators.maxLength(9)]],
+      number: [null, [Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/[0-9]/)]],
+      numberTwo: [null, [Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/[0-9]/)]],
       emailAddress: [null, [Validators.email]],
     }),
     // 6 role and department
