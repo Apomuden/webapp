@@ -53,5 +53,9 @@ export const CommonLayout_ROUTES: Routes = [
         m => m.PhysicianModule
       ),
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'accounts', loadChildren: () => import('../../accounts/accounts.module').then(m => m.AccountsModule),
+    canActivate: [AuthGuard]
   }
 ];

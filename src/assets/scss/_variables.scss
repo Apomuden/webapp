@@ -11,6 +11,7 @@ $orange:                    #fa8c16 !default;
 $gold:                      #ffc107 !default;
 $green:                     #52c41a !default;
 $blue:                      #1565C0 !default;
+$medic-red:                 #ed1379 !default;
 $cyan:                      #00c9a7 !default;
 $purple:                    #886cff  !default;
 $magenta:                   #eb2f96 !default;
@@ -76,7 +77,7 @@ $tone-loop: (
 );
 
 // State Colors
-$brand-primary:             $blue !default;
+$brand-primary:             $medic-red !default;
 $brand-secondary:           $purple !default;
 $brand-success:             $cyan !default;
 $brand-info:                $blue !default;

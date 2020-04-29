@@ -180,5 +180,22 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
     ]
+  },
+  {
+    path: '/accounts',
+    title: 'Accounts Management',
+    iconType: 'fontawesome',
+    iconTheme: 'fas',
+    icon: 'fa-money-bill',
+    submenu: [
+      {
+        path: '/accounts/receipt',
+        title: 'E-Receipt',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+    ]
   }
 ];
