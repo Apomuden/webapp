@@ -1,28 +1,70 @@
-<form nz-form>
-  <div nz-row>
-    <nz-form-item>
-      <nz-form-label [nzXs]="4">Treatment Plan</nz-form-label>
-      <nz-form-control [nzXs]="18" [nzOffset]="1">
-        <textarea nz-input placeholder="Treatment Plan" [nzAutosize]="{ minRows: 5}"></textarea>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzXs]="4">Progressive Note</nz-form-label>
-      <nz-form-control [nzXs]="18" [nzOffset]="1">
-        <textarea nz-input placeholder="Progressive Note" [nzAutosize]="{ minRows: 5}"></textarea>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzXs]="4">Admission Note</nz-form-label>
-      <nz-form-control [nzXs]="18" [nzOffset]="1">
-        <textarea nz-input placeholder="Admission Note" [nzAutosize]="{ minRows: 5}"></textarea>
-      </nz-form-control>
-    </nz-form-item>
-    <nz-form-item>
-      <nz-form-label [nzXs]="4">Urgent Care Note</nz-form-label>
-      <nz-form-control [nzXs]="18" [nzOffset]="1">
-        <textarea nz-input placeholder="Urgent Care Note" [nzAutosize]="{ minRows: 5}"></textarea>
-      </nz-form-control>
-    </nz-form-item>
-  </div>
-</form>
+<nz-tabset>
+  <nz-tab nzTitle="Previous">
+    <form nz-form>
+      <div nz-row>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Treatment Plan</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Treatment Plan" [nzAutosize]="{ minRows: 5}" readOnly></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Progressive Note</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Progressive Note" [nzAutosize]="{ minRows: 5}" readOnly></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Admission Note</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Admission Note" [nzAutosize]="{ minRows: 5}" readOnly></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Urgent Care Note</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Urgent Care Note" [nzAutosize]="{ minRows: 5}" readOnly></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </form>
+  </nz-tab>
+  <nz-tab nzTitle="Current">
+    <form nz-form>
+      <div nz-row>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Treatment Plan</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Treatment Plan" [nzAutosize]="{ minRows: 5}"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Progressive Note</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Progressive Note" [nzAutosize]="{ minRows: 5}"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Admission Note</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Admission Note" [nzAutosize]="{ minRows: 5}"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzXs]="4">Urgent Care Note</nz-form-label>
+          <nz-form-control [nzXs]="18" [nzOffset]="1">
+            <textarea nz-input placeholder="Urgent Care Note" [nzAutosize]="{ minRows: 5}"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </form>
+  </nz-tab>
+</nz-tabset>
+<div nz-row nzType="flex" nzJustify="center">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="default" (click)="previous()" [nzLoading]="submitting">Previous</button>
+      <button nz-button (click)="submit()" [nzLoading]="submitting">Next</button>
+    </nz-button-group>
+  </nz-col>
+</div>
