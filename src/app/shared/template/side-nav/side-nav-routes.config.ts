@@ -183,7 +183,7 @@ export const ROUTES: SideNavInterface[] = [
   },
   {
     path: '/lab-management',
-    title: 'Laboraory Management',
+    title: 'Laboratory Management',
     iconType: 'nzIcon',
     iconTheme: 'outline',
     icon: 'pushpin',
@@ -191,19 +191,24 @@ export const ROUTES: SideNavInterface[] = [
       {
         path: '/lab-management/laboratory',
         title: 'Laboratory',
-  }]
-}
-,{
+        iconType: '',
+        iconTheme: '',
+        icon: '',
+        submenu: []
+      }
+    ]
+  },
+  {
+
     path: '/accounts',
     title: 'Accounts Management',
-    iconType: 'fontawesome',
-    iconTheme: 'fas',
-    icon: 'fa-money-bill',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'money-collect',
     submenu: [
       {
         path: '/accounts/receipt',
         title: 'E-Receipt',
-        dev
         iconType: '',
         icon: '',
         iconTheme: '',

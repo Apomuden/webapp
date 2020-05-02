@@ -60,7 +60,7 @@ export const CommonLayout_ROUTES: Routes = [
       import('../../laboratory/laboratory.module').then(
         m => m.LaboratoryModule
       ),
-    canActivate:[AuthGuard]
+    canActivate: [AuthGuard]
   },
   {
     path: 'accounts', loadChildren: () => import('../../accounts/accounts.module').then(m => m.AccountsModule),

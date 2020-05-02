@@ -13,7 +13,7 @@
           : 'ant-menu-item-selected'
       " [routerLinkActiveOptions]="{ exact: true }">
       <a href="javascript:void(0);" class="ant-menu-submenu-title" *ngIf="item.submenu.length > 0">
-        <i *ngIf="item.iconType == 'nzIcon'" nz-icon [nzType]="item.icon" [theme]="item.iconTheme"></i>
+        <i *ngIf="item.iconType == 'nzIcon'" nz-icon [nzType]="item.icon" [theme]="item.iconTheme"> </i>
         <i *ngIf="item.iconType == 'fontawesome'" class="m-r-10" [ngClass]="[item.iconTheme, item.icon]"></i>
         <span>{{ item.title }}</span>
         <i class="ant-menu-submenu-arrow"></i>
