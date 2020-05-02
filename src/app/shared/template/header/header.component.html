@@ -1,21 +1,23 @@
 <div class="header">
   <div class="logo logo-dark">
     <a href="">
-      <img src="assets/images/logo/newlogo.png" alt="Logo" style="width: 200px;" />
-      <img class="logo-fold" src="assets/images/logo/folded.png" alt="Logo" style="width:80px" />
+      <img src="assets/images/logo/simeds-transparent.png" alt="Logo" style="width: 160px;" />
+      <img class="logo-fold" src="assets/images/logo/simeds-folded-transparent.png" alt="Logo"
+        style="width: 60px;margin-top: 4px;" />
     </a>
   </div>
   <div class="logo logo-white">
     <a href="">
-      <img src="assets/images/logo/newlogo.png" alt="Logo" style="width: 200px;" />
-      <img class="logo-fold" src="assets/images/logo/folded.png" alt="Logo" style="width:80px" />
+      <img src="assets/images/logo/simeds-transparent.png" alt="Logo" style="width: 160px;" />
+      <img class="logo-fold" src="assets/images/logo/simeds-folded-transparent.png" alt="Logo"
+        style="width: 60px;margin-top: 4px;" />
     </a>
   </div>
   <div class="nav-wrap">
     <ul class="nav-left">
       <li class="desktop-toggle">
         <a (click)="toggleFold()">
-          <i nz-icon [nzType]="isFolded ? 'menu-unfold' : 'menu-fold'" theme="outline"></i>
+          <i nz-icon style="color:white" [nzType]="isFolded ? 'menu-unfold' : 'menu-fold'" theme="outline"></i>
         </a>
       </li>
       <li class="mobile-toggle">
@@ -23,7 +25,7 @@
           <i nz-icon [nzType]="isExpand ? 'menu-fold' : 'menu-unfold'" theme="outline"></i>
         </a>
       </li>
-      <li>
+      <!-- <li>
         <a (click)="searchToggle()">
           <i nz-icon nzType="search" theme="outline"></i>
         </a>
@@ -31,7 +33,7 @@
           (nzOnClose)="searchToggle()">
           <app-search></app-search>
         </nz-drawer>
-      </li>
+      </li> -->
     </ul>
     <span style="font-size:1.5em;text-transform: uppercase;margin-top: 16px;" *ngIf="facility"
       [innerHTML]="facility.name"></span>
@@ -40,7 +42,7 @@
       <li>
         <span class="p-h-10 pointer" nz-dropdown [nzDropdownMenu]="profile" [nzTrigger]="'click'"
           [nzPlacement]="'bottomRight'">
-          <nz-avatar class="m-r-10" nzIcon="user" style="background: #3c3ec2;"></nz-avatar>
+          <nz-avatar class="m-r-10" nzIcon="user" style="background: white;color:#2668b7"></nz-avatar>
         </span>
         <nz-dropdown-menu #profile="nzDropdownMenu">
           <ul nz-menu class="p-b-15 p-t-20">
@@ -76,7 +78,7 @@
           </ul>
         </nz-dropdown-menu>
       </li>
-      <li>
+      <!-- <li>
         <a (click)="quickViewToggle()">
           <i nz-icon nzType="appstore" theme="outline"></i>
         </a>
@@ -84,7 +86,7 @@
           nzPlacement="right" (nzOnClose)="quickViewToggle()">
           <app-quick-view></app-quick-view>
         </nz-drawer>
-      </li>
+      </li> -->
     </ul>
   </div>
 </div>
