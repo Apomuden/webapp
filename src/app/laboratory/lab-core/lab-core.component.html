@@ -1,0 +1,171 @@
+<div *ngIf="labRequest">
+  <nz-descriptions nzSize="small" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
+    <nz-descriptions-item nzTitle="Folder #">
+      {{ patient.folder_no }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Name">
+      {{ patient.firstname }} {{ patient.middlename }} {{ patient.surname }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Gender">
+      {{ patient.gender }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Age">
+      {{ labRequest.age }} year(s)
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="labRequest.billing_sponsor_name" nzTitle="Sponsor">
+      {{ labRequest.sponsor_name }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Patient Status">
+      {{ labRequest.patient_status }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Clinic">
+      {{ labRequest.clinic_name }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Lab Requested">
+      {{ labRequest.service_name }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Status">
+      {{ labRequest.status }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Sample Code" *ngIf="sample">
+      {{ sample.sample_code }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Attendance Date">
+      {{ labRequest.consultation_date | date:'medium' }}
+    </nz-descriptions-item>
+  </nz-descriptions>
+
+  <nz-divider></nz-divider>
+
+  <div *ngIf="labRequest.status === 'IN-QUEUE'">
+    <nz-row nzJustify="center" nzType="flex">
+      <nz-form-item nz-col [nzSpan]="10">
+        <nz-form-label nzRequired>Sample Type</nz-form-label>
+        <nz-form-control nzErrorTip="Select sample type">
+          <nz-select nz-col [nzSpan]="24" [formControl]="sampleTypeCtrl" nzPlaceHolder="Sample type for test"
+            [nzLoading]="isLoadingData">
+            <nz-option *ngFor="let type of sampleTypes" [nzLabel]="type.name" [nzValue]="type.id"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-row>
+
+    <nz-row nzJustify="center" nzType="flex">
+      <nz-button-group>
+        <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="isInProgress">Cancel lab</button>
+        <button nz-button nzType="default" nzDanger (click)="pause()" [nzLoading]="isInProgress">Pause
+          lab</button>
+        <button nz-button nzType="primary" (click)="generateSample()" [disabled]="sampleTypeCtrl.invalid"
+          [nzLoading]="isInProgress">Create Sample</button>
+      </nz-button-group>
+    </nz-row>
+  </div>
+
+  <nz-row nzJustify="center" nzType="flex" *ngIf="labRequest.status === 'SAMPLE-TAKEN'">
+    <nz-skeleton *ngIf="!labParams" [nzActive]="true"></nz-skeleton>
+    <div *ngIf="labParams && labParams.length === 0">
+      <i nz-icon [nzType]="'exclamation-circle'" class="m-r-5"></i> The lab requested has not been set up!
+    </div>
+
+    <form nz-form nz-col [nzSpan]="16" nzLayout="vertical" *ngIf="labParams && labParams.length > 0">
+      <nz-row nzJustify="center" nzType="flex">
+        <h4>Fill in test results</h4>
+      </nz-row>
+      <nz-form-item [nzGutter]="16" *ngFor="let row of labParams">
+        <nz-form-control *ngFor="let param of row" [nzSpan]="24 / row.length">
+          <nz-form-label> {{ param.name }} </nz-form-label>
+          <input *ngIf="param.value_type !== 'Text'" nz-input [type]="param.value_type" [formControl]="param.form"
+            nz-popover [nzPopoverContent]="param.description" [placeholder]="param.name" />
+          <nz-select *ngIf="param.value_type === 'Text'" [nzLoading]="param.loading" [formControl]="param.form"
+            nz-popover [nzPopoverContent]="param.description" nzAllowClear [nzPlaceHolder]="param.name">
+            <nz-option *ngFor="let flag of param.flags" [nzValue]="flag.text_value" [nzLabel]="flag.text_value">
+            </nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-row nzJustify="center" nzType="flex">
+        <nz-button-group>
+          <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="isInProgress">Cancel
+            lab</button>
+          <button nz-button nzType="default" nzDanger (click)="pause()" [nzLoading]="isInProgress">Pause
+            lab</button>
+          <button nz-button nzType="primary" (click)="submitResults()" [disabled]="!resultFormValid()"
+            [nzLoading]="isInProgress">Submit</button>
+        </nz-button-group>
+      </nz-row>
+    </form>
+  </nz-row>
+
+  <div *ngIf="labRequest.status === 'RESULTS-TAKEN'">
+    <nz-row nzJustify="center" nzType="flex">
+      <nz-table nz-col nzSpan="18" #resultTable nzTitle="Pending Approval" [nzData]="results" [nzLoading]="!results"
+        [nzFrontPagination]="false" [nzShowPagination]="false">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Parameter</th>
+            <th>Test result</th>
+            <th>Flag</th>
+            <th>Technician</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of resultTable.data">
+            <td>
+              <label nz-checkbox [(ngModel)]="data.isChecked"></label>
+            </td>
+            <td>{{ data.lab_parameter_name }}</td>
+            <td>{{ data.test_value }}</td>
+            <td>{{ data.flag || 'N/A' }}</td>
+            <td>{{ data.technician_name }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-row>
+
+    <nz-row nzJustify="center" nzType="flex">
+      <div>
+        <nz-divider></nz-divider>
+        <nz-button-group>
+          <button nz-button nzType="danger" (click)="cancel()" [nzLoading]="isInProgress">Cancel
+            lab</button>
+          <button nz-button nzType="default" nzDanger (click)="pause()" [nzLoading]="isInProgress">Pause
+            lab</button>
+          <button nz-button nzType="primary" [disabled]="!isSomeChecked()" (click)="approve()"
+            [nzLoading]="isInProgress">Approve
+            results</button>
+        </nz-button-group>
+      </div>
+    </nz-row>
+  </div>
+
+  <div *ngIf="labRequest.status === 'APPROVED'">
+    <nz-row nzJustify="center" nzType="flex">
+      <nz-table nz-col nzSpan="18" #resultTable [nzTitle]="'Results approved by ' + labRequest.approver_name"
+        [nzData]="results" [nzLoading]="!results" [nzFrontPagination]="false" [nzShowPagination]="false">
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Test result</th>
+            <th>Flag</th>
+            <th>Technician</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of resultTable.data">
+            <td>{{ data.lab_parameter_name }}</td>
+            <td>{{ data.test_value }}</td>
+            <td>{{ data.flag || 'N/A' }}</td>
+            <td>{{ data.technician_name }}</td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-row>
+  </div>
+
+  <div *ngIf="labRequest.status === 'CANCELLED'">
+    <nz-empty [nzNotFoundContent]="'This lab has been cancelled by ' + labRequest.canceller_name"></nz-empty>
+  </div>
+
+</div>

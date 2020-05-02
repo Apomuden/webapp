@@ -21,7 +21,7 @@ export class LaboratoryService {
     }).pipe(map(
       res => {
         if (res && res.data.length > 0) {
-          return res.data[0];
+          return res.data;
         }
         throw new HttpErrorResponse({ status: 404 });
       }
@@ -94,15 +94,11 @@ export class LaboratoryService {
   }
 
   getLabResults(investigation_id: number) {
-    const url = `${environment.apiBaseUrl}/labs/results`;
-    return this.http.get<any>(url, {
-      params: {
-        investigation_id: `${investigation_id}`
-      }
-    }).pipe(map(
+    const url = `${environment.apiBaseUrl}/labs/investigations/${investigation_id}/results`;
+    return this.http.get<any>(url).pipe(map(
       res => {
-        if (res && res.data) {
-          return res.data;
+        if (res && res.data && res.data.results) {
+          return res.data.results;
         } else {
           return [];
         }
