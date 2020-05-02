@@ -49,16 +49,22 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
   }
 
   async initLabForm() {
-    if (this.labRequest.status === 'IN-QUEUE') {
-      this.sampleTypes = await this.labSetupService.getLabSampleTypes(this.labRequest.service_id)
-        .toPromise();
-    } if (this.labRequest.status === 'SAMPLE-TAKEN') {
-      this.labService.getSample(this.labRequest)
-        .subscribe(sample => this.sample = sample, error => console.log(error));
-      this.labParams = await this.processParams();
-    } else if (this.labRequest.status === 'RESULTS-TAKEN' || this.labRequest.status === 'APPROVED') {
-      this.results = await this.labService.getLabResults(this.labRequest.id).toPromise();
+    this.isInProgress = true;
+    try {
+      if (this.labRequest.status === 'IN-QUEUE') {
+        this.sampleTypes = await this.labSetupService.getLabSampleTypes(this.labRequest.service_id)
+          .toPromise();
+      } if (this.labRequest.status === 'SAMPLE-TAKEN') {
+        this.labService.getSample(this.labRequest)
+          .subscribe(sample => this.sample = sample, error => console.log(error));
+        this.labParams = await this.processParams();
+      } else if (this.labRequest.status === 'RESULTS-TAKEN' || this.labRequest.status === 'APPROVED') {
+        this.results = await this.labService.getLabResults(this.labRequest.id).toPromise();
+      }
+    } catch (e) {
+      this.pause();
     }
+    this.isInProgress = false;
   }
 
   async processParams(): Promise<any[]> {

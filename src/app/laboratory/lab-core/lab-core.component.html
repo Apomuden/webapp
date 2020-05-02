@@ -43,7 +43,7 @@
         <nz-form-label nzRequired>Sample Type</nz-form-label>
         <nz-form-control nzErrorTip="Select sample type">
           <nz-select nz-col [nzSpan]="24" [formControl]="sampleTypeCtrl" nzPlaceHolder="Sample type for test"
-            [nzLoading]="isLoadingData">
+            [nzLoading]="isInProgress">
             <nz-option *ngFor="let type of sampleTypes" [nzLabel]="type.name" [nzValue]="type.id"></nz-option>
           </nz-select>
         </nz-form-control>
@@ -128,8 +128,7 @@
             lab</button>
           <button nz-button nzType="default" nzDanger (click)="pause()" [nzLoading]="isInProgress">Pause
             lab</button>
-          <button nz-button nzType="primary" [disabled]="!isSomeChecked()" (click)="approve()"
-            [nzLoading]="isInProgress">Approve
+          <button nz-button nzType="primary" (click)="approve()" [nzLoading]="isInProgress">Approve
             results</button>
         </nz-button-group>
       </div>
