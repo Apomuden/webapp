@@ -1,0 +1,44 @@
+<nz-row>
+  <nz-col [nzSpan]="patient ? 24 : 16">
+    <nz-card nz-row [nzLoading]="isLoadingData && searchInitialized">
+
+      <nz-row [nzGutter]="24" *ngIf="!patient">
+        <nz-form-item nz-col [nzSpan]="10">
+          <nz-form-label nzRequired nzFor="title">Folder #</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter valid folder number">
+            <input type="text" nz-input placeholder="A0000001/20a" [formControl]="folderNumb" />
+          </nz-form-control>
+        </nz-form-item>
+      </nz-row>
+
+      <nz-row nzJustify="center" nzType="flex" *ngIf="!searchInitialized">
+        <div>
+          <nz-divider></nz-divider>
+          <i nz-icon [nzType]="'info-circle'" class="m-r-5"></i> {{ message }}
+        </div>
+      </nz-row>
+
+      <nz-tabset *ngIf="labRequests">
+        <nz-tab *ngFor="let labRequest of labRequests; let i = index" [nzTitle]="labRequest.service_name">
+          <ng-template nz-tab>
+            <app-lab-core [patient]="patient" [consultation]="consultation" [labRequest]="labRequest" [user]="user"
+              (didPause)="pause(i)" (didUpdateLab)="didUpdateLab($event)">
+            </app-lab-core>
+          </ng-template>
+        </nz-tab>
+      </nz-tabset>
+
+      <nz-row *ngIf="labRequests" nzType="flex" nzJustify="center">
+        <div>
+          <nz-divider></nz-divider>
+          <button nz-button nzType="danger" (click)="pauseAll()" [nzLoading]="isInProgress">Go Back</button>
+        </div>
+      </nz-row>
+    </nz-card>
+  </nz-col>
+
+  <nz-col *ngIf="!patient" [nzSpan]="8">
+    <app-patient-queue *ngIf="today" [queuePath]="'/registry/attendance?attendance_date=' + today" action="Investiigate"
+      (queueClick)="attendanceClick($event)"></app-patient-queue>
+  </nz-col>
+</nz-row>

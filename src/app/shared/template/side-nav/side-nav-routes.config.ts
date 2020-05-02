@@ -167,9 +167,9 @@ export const ROUTES: SideNavInterface[] = [
   {
     path: '/physician',
     title: 'Physician Management',
-    iconType: 'fontawesome',
-    iconTheme: 'fas',
-    icon: 'fa-stethoscope',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'plus-circle',
     submenu: [
       {
         path: '/physician/consultation',
@@ -182,6 +182,18 @@ export const ROUTES: SideNavInterface[] = [
     ]
   },
   {
+    path: '/lab-management',
+    title: 'Laboraory Management',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'pushpin',
+    submenu: [
+      {
+        path: '/lab-management/laboratory',
+        title: 'Laboratory',
+  }]
+}
+,{
     path: '/accounts',
     title: 'Accounts Management',
     iconType: 'fontawesome',
@@ -191,6 +203,7 @@ export const ROUTES: SideNavInterface[] = [
       {
         path: '/accounts/receipt',
         title: 'E-Receipt',
+        dev
         iconType: '',
         icon: '',
         iconTheme: '',

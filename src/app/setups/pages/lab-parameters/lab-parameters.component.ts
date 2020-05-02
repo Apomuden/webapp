@@ -275,6 +275,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
         ...flag } = paramFlag;
       this.flagForm.setValue(flag);
     }
+    this.flagForm.get('lab_parameter_name').setValue(this.param.name);
     this.isFlagModalVisible = true;
     if (this.isText) {
       this.clearValidator(this.flagForm.get('min_comparator'));

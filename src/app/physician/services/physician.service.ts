@@ -119,7 +119,7 @@ export class PhysicianService {
         if (res && res.data) {
           return res.data;
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }

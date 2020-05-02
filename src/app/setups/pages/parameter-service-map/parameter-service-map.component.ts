@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SetupService } from 'src/app/shared/services/setup.service';
 import { LabSetupService } from 'src/app/shared/services/lab-setup.service';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { FormBuilder, Validators } from '@angular/forms';
@@ -27,7 +26,6 @@ export class ParameterServiceMapComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private setupService: SetupService,
     private labService: LabSetupService,
     private notification: NzNotificationService
   ) { }
@@ -85,7 +83,8 @@ export class ParameterServiceMapComponent implements OnInit {
   showParamModal() {
     this.isModalShowing = true;
     this.newParamForm.get('order').setValue(this.labParams.length + 1);
-    this.newParamForm.get('order').setValidators([Validators.max(this.labParams.length + 1), Validators.min(1)]);
+    this.newParamForm.get('order').setValidators([Validators.min(1), Validators.max(this.labParams.length + 1)]);
+    this.newParamForm.get('order').updateValueAndValidity();
   }
 
   closeModal() {
