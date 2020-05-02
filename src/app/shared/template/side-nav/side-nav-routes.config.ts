@@ -191,6 +191,19 @@ export const ROUTES: SideNavInterface[] = [
       {
         path: '/lab-management/laboratory',
         title: 'Laboratory',
+  }]
+}
+,{
+    path: '/accounts',
+    title: 'Accounts Management',
+    iconType: 'fontawesome',
+    iconTheme: 'fas',
+    icon: 'fa-money-bill',
+    submenu: [
+      {
+        path: '/accounts/receipt',
+        title: 'E-Receipt',
+        dev
         iconType: '',
         icon: '',
         iconTheme: '',

@@ -3,7 +3,7 @@ import { environment } from './../../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, first } from 'rxjs/operators';
+import { map, first, catchError } from 'rxjs/operators';
 
 import { User } from '../interfaces/user.type';
 import jwt_decode from 'jwt-decode';
@@ -65,13 +65,19 @@ export class AuthenticationService {
     ));
   }
 
+  logoutOn401() {
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+    if (this.router.url === 'authentication/login') { return; }
+    this.router.navigate(['authentication/login']);
+  }
+
   logout() {
     this.http
       .post<any>(LOGOUT_API, {})
       .pipe(
         map(res => {
           if (res) {
-            console.log(res);
             localStorage.removeItem('currentUser');
             this.currentUserSubject.next(null);
             this.router.navigate(['authentication/login']);
@@ -82,15 +88,9 @@ export class AuthenticationService {
   }
 
   changePassword(password: string): Observable<any> {
-    console.log('current user value', this.currentUserValue);
     return this.http.put<any>(
       `${USER_UPDATE_API}${(this.currentUserValue.details as any).id}`,
       { password }
-    )
-      .pipe(
-        map(res => {
-          console.log(res);
-        })
-      );
+    );
   }
 }

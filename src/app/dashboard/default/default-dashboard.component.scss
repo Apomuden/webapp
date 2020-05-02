@@ -1,0 +1,10 @@
+.dashboard-stat{
+  border-radius: 8px !important;
+  background: #0e5a32;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #0e5a32, #259258) !important;
+  background: linear-gradient(to right, #0e5a32, #259258) !important;
+
+}
+.dashboard-stat h2,.dashboard-stat p{
+  color:white !important;
+}

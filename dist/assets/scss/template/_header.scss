@@ -1,5 +1,6 @@
 .header {
-    background: $white;
+    background:#2668b7;
+    color:$white;
     height: $header-height;
     border-bottom: 1px solid $border-color;
     position: fixed;
@@ -11,7 +12,7 @@
     .logo {
         width: $side-nav-width;
         border-right: 1px solid $border-color;
-        @include transition(all 0.2s ease); 
+        @include transition(all 0.2s ease);
 
         @include screen-laptop-only {
             width: $side-nav-width-laptop;
@@ -20,7 +21,7 @@
         @include screen-tablet {
             display: none;
         }
-        
+
         > a {
             display: block;
             text-align: center;
@@ -58,7 +59,7 @@
                     font-size: 18px;
                     color: $body-color;
                     display: block;
-                    @include transition(background-color 0.3s); 
+                    @include transition(background-color 0.3s);
                     border-radius: $border-radius;
 
                     &:hover,
@@ -68,8 +69,8 @@
                         background-color: rgba($brand-primary, 0.1);
 
                         .ant-badge {
-                            color: $brand-primary; 
-                        }    
+                            color: $brand-primary;
+                        }
                     }
 
                     .ant-badge {
@@ -136,7 +137,7 @@
                     display: block;
                 }
             }
-        }    
+        }
     }
 }
 
@@ -177,16 +178,16 @@
                         background-color: rgba($white, 0.15);
 
                         .ant-badge {
-                            color: $white; 
-                        }    
+                            color: $white;
+                        }
                     }
 
                     .ant-badge {
                         color: rgba($white, 0.8);
                     }
-                }    
+                }
             }
-        }        
+        }
     }
 }
 
