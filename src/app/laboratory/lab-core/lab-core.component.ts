@@ -58,9 +58,6 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
       this.labParams = await this.processParams();
     } else if (this.labRequest.status === 'RESULTS-TAKEN' || this.labRequest.status === 'APPROVED') {
       this.results = await this.labService.getLabResults(this.labRequest.id).toPromise();
-      console.log(this.results);
-
-      this.results.forEach(res => res.isChecked = false);
     }
   }
 
@@ -85,13 +82,6 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
       }
     });
     return temp;
-  }
-
-  isSomeChecked() {
-    if (!this.results) {
-      return false;
-    }
-    return this.results.some(res => res.isChecked);
   }
 
   pause() {
@@ -167,7 +157,6 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
       })
         .toPromise();
     } catch (e) {
-      console.log(e);
       this.showNotification(OperationStatus.error);
     }
     this.isInProgress = false;

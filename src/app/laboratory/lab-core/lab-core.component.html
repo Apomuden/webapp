@@ -103,7 +103,6 @@
         [nzFrontPagination]="false" [nzShowPagination]="false">
         <thead>
           <tr>
-            <th></th>
             <th>Parameter</th>
             <th>Test result</th>
             <th>Flag</th>
@@ -112,9 +111,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let data of resultTable.data">
-            <td>
-              <label nz-checkbox [(ngModel)]="data.isChecked"></label>
-            </td>
             <td>{{ data.lab_parameter_name }}</td>
             <td>{{ data.test_value }}</td>
             <td>{{ data.flag || 'N/A' }}</td>
