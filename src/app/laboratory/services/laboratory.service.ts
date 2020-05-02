@@ -12,18 +12,17 @@ export class LaboratoryService {
 
   constructor(private http: HttpClient) { }
 
-  getLabInvestigation(consultation_id: string, date: string) {
+  getLabInvestigation(consultation_id: string) {
     return this.http.get<any>(this.investigationUrl, {
       params: {
-        'consultation_id': `${consultation_id}`,
-        'consultation_date': date,
+        'consultation_id': `=${consultation_id}`,
       }
     }).pipe(map(
       res => {
         if (res && res.data.length > 0) {
           return res.data;
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ), first());
   }

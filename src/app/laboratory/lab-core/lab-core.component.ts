@@ -21,7 +21,7 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
 
   sampleTypeCtrl = this.fb.control(null, [Validators.required]);
 
-  isInProgress = false;
+  isInProgress = true;
 
   @Input() patient: any;
   @Input() labRequest: any;
@@ -49,7 +49,6 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
   }
 
   async initLabForm() {
-    this.isInProgress = true;
     try {
       if (this.labRequest.status === 'IN-QUEUE') {
         this.sampleTypes = await this.labSetupService.getLabSampleTypes(this.labRequest.service_id)

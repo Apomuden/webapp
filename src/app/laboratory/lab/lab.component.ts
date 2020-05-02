@@ -68,13 +68,10 @@ export class LabComponent implements OnInit, OnDestroy, AfterViewInit {
       this.consultation = await this.physicianService
         .getConsultation(this.patient.id, this.today).toPromise();
       this.labRequests = await this.labService
-        .getLabInvestigation(this.consultation.id, this.today).toPromise();
+        .getLabInvestigation(this.consultation.id).toPromise();
     } catch (e) {
-      this.patient = null;
-      this.labRequests = null;
-      this.consultation = null;
+      this.pauseAll();
       this.message = 'Failed to get lab';
-      this.searchInitialized = false;
     }
     this.isLoadingData = false;
   }
