@@ -64,7 +64,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   companyForm = this.fb.group({
     name: [null, [Validators.required]],
     email: [null, [Validators.required]],
-    phone: [null, [Validators.required, Validators.pattern(/[0-9]/)]],
+    phone: [null, [Validators.required, Validators.pattern(/^\d{9,}$/)]],
     googleAddress: [null],
   });
   patientForm = this.fb.group({
@@ -117,7 +117,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       homeAddress: [null, [Validators.required]],
       workAddress: [null, [Validators.required]],
       countryCode: ['+233', [Validators.required]],
-      cellPhoneNumber: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/[0-9]/)]],
+      cellPhoneNumber: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/^\d{8,}$/)]],
       emailAddress: [null, [Validators.email]],
     }),
     // 4.0 Next of Kin
@@ -125,7 +125,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
       name: [null, [Validators.required]],
       homeAddress: [null, [Validators.required]],
       countryCode: ['+233', [Validators.required]],
-      cellPhoneNumber: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/[0-9]/)]],
+      cellPhoneNumber: [null, [Validators.required, Validators.minLength(9), Validators.maxLength(9), Validators.pattern(/^\d{8,}$/)]],
       emailAddress: [null, [Validators.email]],
       relationship: [null, [Validators.required]],
     }),
@@ -541,7 +541,7 @@ export class RegisterPatientComponent implements OnInit, AfterViewInit, OnDestro
   }
 
   changeContent(mode: 'next' | 'previous'): void {
-    const action = (valid: boolean) => mode === 'next' ? !(valid) ? this.stepIndex++ : null : this.stepIndex--;
+    const action = (valid: boolean) => mode === 'next' ? (valid) ? this.stepIndex++ : null : this.stepIndex--;
     switch (this.stepIndex) {
       case 0: {
         action(this.validateBillingInfo() && this.validateSponsorInfo());
