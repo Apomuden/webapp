@@ -214,6 +214,22 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       },
+      {
+        path: '/accounts/deposit',
+        title: 'Deposit',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
+      {
+        path: '/accounts/discount',
+        title: 'Discount',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
     ]
   }
 ];

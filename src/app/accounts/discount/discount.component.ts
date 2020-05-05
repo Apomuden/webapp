@@ -12,11 +12,11 @@ import { formatDate } from '@angular/common';
 import * as datefns from 'date-fns';
 
 @Component({
-  selector: 'app-receipt',
-  templateUrl: './receipt.component.html',
-  styleUrls: ['./receipt.component.css']
+  selector: 'app-discount',
+  templateUrl: './discount.component.html',
+  styleUrls: ['./discount.component.css']
 })
-export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
+export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
   editName: string | null;
   requestForm: FormGroup = this.fb.group({
     folderNumber: this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]),
@@ -30,11 +30,9 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
     fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required, Validators.min(0.1)]),
   });
 
-  amountRecievedFormControl = this.fb.control(null, [Validators.min(0)]);
-  changeFormControl = this.fb.control(null);
-  paymentChannelFormControl = this.fb.control('Cash');
-  billDueControl = this.fb.control(null);
-  totalBillControl = this.fb.control(null);
+  appliesToReasonControl = this.fb.control(null);
+
+  balanceDueControl = this.fb.control(null);
   isLoadingData = false;
   searchInitialized = false;
   requesting = false;
@@ -67,33 +65,7 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
   ageUnit = 'year(s)';
   formatFee = (value: number) => `GHC ${value}`;
   parseFee = (value: string) => value.replace('GHC', '');
-  checkAll(value: boolean): void {
-    this.services.forEach(data => {
-      if (!data.disabled) {
-        data.checked = value;
-      }
-    });
-    this.refreshStatus();
-  }
-  refreshStatus(): void {
-    const validData = this.services.filter(value => !value.disabled);
-    const allCheckedItems = validData.filter(value => value.checked === true);
-    const allChecked = validData.length > 0 && validData.every(value => value.checked === true);
-    const allUnChecked = validData.every(value => !value.checked);
-    this.allChecked = allChecked;
 
-    this.indeterminate = !allChecked && !allUnChecked;
-
-    let newTotalBill = 0;
-    allCheckedItems.forEach(item => {
-      newTotalBill = newTotalBill + parseFloat(item.total_amount);
-    });
-
-    if (this.totalBillControl.value && this.totalBillControl.valid) {
-      this.totalBillControl.setValue(newTotalBill);
-      this.billDueControl.setValue(newTotalBill - this.transactionDetails.total_discount_amount);
-    }
-  }
 
   constructor(private readonly fb: FormBuilder,
     private recordService: RecordService,
@@ -116,40 +88,6 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
-    this.amountRecievedFormControl.valueChanges.pipe(untilComponentDestroyed(this)).subscribe(
-      val => {
-        const billDueValue = this.billDueControl.value;
-        if (val && billDueValue) {
-          const change = billDueValue - val;
-          if (change > 0) {
-            this.changeFormControl.setValue(change);
-          } else {
-            this.changeFormControl.reset();
-          }
-        } else {
-          this.changeFormControl.reset();
-        }
-      }
-    );
-    this.billDueControl.valueChanges.pipe(untilComponentDestroyed(this)).subscribe(
-      val => {
-        if (val
-          && this.changeFormControl.valid
-          && this.changeFormControl.value
-          && this.amountRecievedFormControl.valid
-          && this.amountRecievedFormControl.value
-        ) {
-          const change = val - parseFloat(this.amountRecievedFormControl.value);
-          if (change > 0) {
-            this.changeFormControl.setValue(change);
-          } else {
-            this.changeFormControl.reset();
-          }
-        } else {
-          this.changeFormControl.reset();
-        }
-      }
-    );
 
   }
 
@@ -206,9 +144,7 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       const otherDetails = JSON.parse(JSON.stringify(response.data));
       delete otherDetails.services;
       this.transactionDetails = otherDetails;
-      this.billDueControl.setValue(this.transactionDetails.total_bill_due);
-      this.totalBillControl.setValue(this.transactionDetails.total_bill);
-      this.checkAll(true);
+
     } catch (e) {
       this.serviceOrdersLoading = false;
       console.log(e);
@@ -276,11 +212,11 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   done(): void {
-    if (this.amountRecievedFormControl.value && this.amountRecievedFormControl.valid) {
-      this.submitForm();
-    } else {
-      console.log('Invalid data');
-    }
+    // if (this.amountRecievedFormControl.value && this.amountRecievedFormControl.valid) {
+    //   this.submitForm();
+    // } else {
+    //   console.log('Invalid data');
+    // }
   }
 
   async submitForm() {
@@ -302,15 +238,15 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   processData() {
-    return {
-      patient_id: this.patient.id,
-      patient_status: this.patient.reg_status,
-      services: this.services.filter(item => item.checked).map(item => ({ transaction_update_id: item.transaction_update_id })),
-      outstanding_bill: this.services
-        .filter(item => !item.checked)
-        .reduce(((accumulator, currentValue) => accumulator + parseFloat(currentValue.total_amount)), 0.00),
-      total_bill: this.billDueControl.value,
-      amount_paid: this.amountRecievedFormControl.value
-    };
+    // return {
+    //   patient_id: this.patient.id,
+    //   patient_status: this.patient.reg_status,
+    //   services: this.services.filter(item => item.checked).map(item => ({ transaction_update_id: item.transaction_update_id })),
+    //   outstanding_bill: this.services
+    //     .filter(item => !item.checked)
+    //     .reduce(((accumulator, currentValue) => accumulator + parseFloat(currentValue.total_amount)), 0.00),
+    //   total_bill: this.billDueControl.value,
+    //   amount_paid: this.amountRecievedFormControl.value
+    // };
   }
 }

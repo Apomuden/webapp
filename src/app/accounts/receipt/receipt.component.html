@@ -1,4 +1,4 @@
-<!-- <nz-card>
+<nz-card>
   <form nz-form nzLayout="vertical" [formGroup]="requestForm">
     <div nz-row *ngIf="patient">
       <nz-descriptions nzSize="small" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
@@ -38,98 +38,122 @@
     </div>
     <nz-divider></nz-divider>
     <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
-      <div nz-col [nzSpan]="6">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="clinic">Clinic</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="Please select clinic">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Clinic" formControlName="clinic"
-              [nzLoading]="clinicsloading | async">
-              <nz-option *ngFor="let clinic of clinics" [nzLabel]="clinic.name" [nzValue]="clinic.id"></nz-option>
+      <div nz-col [nzSpan]="12">
+        <h3>Quick Transaction Details</h3>
+        <div>
+          <nz-row *ngIf="transactionDetails" [nzGutter]="16">
+            <nz-col [nzSpan]="4">
+              <nz-statistic
+                [nzValue]="(billDueControl.value && billDueControl.valid)?billDueControl.value:'' | number: '1.2-2'"
+                [nzTitle]="'Total Bill'">
+              </nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+              <nz-statistic [nzValue]="transactionDetails.total_deposit_amount | number: '1.2-2'"
+                [nzTitle]="'Total Deposit'">
+              </nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+              <nz-statistic [nzValue]="transactionDetails.total_discount_amount | number: '1.2-2'"
+                [nzTitle]="'Total Discount'">
+              </nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+              <nz-statistic [nzValue]="'N/A'" [nzTitle]="'Abscond'"></nz-statistic>
+            </nz-col>
+            <nz-col [nzSpan]="4">
+              <nz-statistic [nzValue]="transactionDetails.outstanding_bill | number: '1.2-2'"
+                [nzTitle]="'Outstanding Bill'"></nz-statistic>
+            </nz-col>
+
+          </nz-row>
+
+        </div>
+      </div>
+
+      <div nz-col [nzSpan]="12">
+        <nz-descriptions nzSize="small" nzBordered [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }">
+          <nz-descriptions-item nzTitle="Receipt Number">
+            Feb/02/000
+          </nz-descriptions-item>
+          <nz-descriptions-item *ngIf="transactionDetails" nzTitle="Bill Due">
+            {{(totalBillControl.value && totalBillControl.valid)?totalBillControl.value:''}}
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Amount Received">
+            <div class="editable-cell" *ngIf="editName !== 'amountRecieved'; else editTpl">
+              <div class="editable-cell-value-wrap" (click)="startEdit('amountRecieved', $event)">
+                <span>
+                  {{ (amountRecievedFormControl.value != null && amountRecievedFormControl.valid) ? amountRecievedFormControl.value : '' }}
+                </span>
+
+              </div>
+            </div>
+            <ng-template #editTpl>
+              <input nz-input [placeholder]="'eg: 10'" [type]="'number'" [formControl]="amountRecievedFormControl"
+                appCustomAutoFocus />
+            </ng-template>
+
+
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Change">
+            <div class="editable-cell" *ngIf="editName !== 'change'; else changeEditTpl">
+              <div class="editable-cell-value-wrap" (click)="startEdit('change', $event)">
+                <span>
+                  {{ (changeFormControl.value != null && changeFormControl.valid) ? changeFormControl.value : '' }}
+                </span>
+
+              </div>
+            </div>
+            <ng-template #changeEditTpl>
+              <input nz-input disabled="true" [type]="'number'" [formControl]="changeFormControl" />
+            </ng-template>
+          </nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Payment Channel">
+            <nz-select [formControl]="paymentChannelFormControl">
+              <nz-option nzValue="Cash" nzLabel="Cash"></nz-option>
             </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
+          </nz-descriptions-item>
+        </nz-descriptions>
 
-      <div nz-col [nzSpan]="5" nzOffset="7" *ngIf="isInsurance">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="ccc">CCC</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="Enter valid CCC">
-            <input type="text" nz-input placeholder="ccc" formControlName="ccc" />
-          </nz-form-control>
-        </nz-form-item>
       </div>
-
-      <div nz-col [nzSpan]="6" [nzOffset]="isInsurance ? 0 : 12">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="attendanceDate">Attendance Date</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="Select a valid date">
-            <nz-date-picker [nzShowTime]="true" [nzDisabledDate]="disabledDate" formControlName="attendanceDate"
-              nzPlaceHolder="Select attendance date">
-            </nz-date-picker>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
+    </div>
+    <div class="mt-5" style="text-align: center;" *ngIf="searchInitialized && !isLoadingData">
+      <h2>Bill Details (Service and Medicine Payment Transaction)</h2>
     </div>
 
     <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
-      <div nz-col [nzSpan]="6">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="consultationService">Consultation Service
-          </nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="Please select service">
-            <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Consultation Service"
-              formControlName="consultationService" [nzLoading]="servicesLoading | async">
-              <nz-option *ngFor="let service of services" [nzLabel]="service.service_name"
-                [nzValue]="service.service_id">
-              </nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-
-      <div nz-col [nzSpan]="6">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="orderType">Order Type</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="Please select order type">
-            <nz-select [compareWith]="compareFn" nzShowSearch nzAllowClear nzPlaceHolder="Order type"
-              formControlName="orderType">
-              <nz-option nzLabel="INTERNAL" nzValue="INTERNAL"></nz-option>
-              <nz-option nzLabel="EXTERNAL" nzValue="EXTERNAL"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-
-      <div nz-col [nzSpan]="6">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="qty">Service fee</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="Enter a valid quantity">
-            <nz-input-number formControlName="fee" [nzMin]="0.1" [nzStep]="1" [nzFormatter]="formatFee"
-              [nzParser]="parseFee">
-            </nz-input-number>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
-
-      <div nz-col [nzSpan]="6">
-        <nz-form-item>
-          <nz-form-label nzRequired nzFor="billed">Billed Sponsor</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="Please select billed sponsor">
-            <nz-select nzShowSearch nzAllowClear [compareWith]="compareFn" nzPlaceHolder="Billed sponsor"
-              formControlName="billed" [nzLoading]="sponsorLoading">
-              <nz-option *ngFor="let permit of sponsorPermits" [nzLabel]="permit.billing_sponsor_name"
-                [nzValue]="permit.id"></nz-option>
-            </nz-select>
-          </nz-form-control>
-        </nz-form-item>
-      </div>
+      <nz-table #basicTable nzBordered [nzData]="services" [nzLoading]="serviceOrdersLoading">
+        <thead>
+          <tr>
+            <th nzWidth="60px" [nzShowCheckbox]="true" [(nzChecked)]="allChecked" [nzLeft]="true"
+              (nzCheckedChange)="checkAll($event)"></th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Unit Fee</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td [nzLeft]="true" [nzShowCheckbox]="true" [(nzChecked)]="data.checked"
+              (nzCheckedChange)="refreshStatus()"></td>
+            <td>2020/04/05</td>
+            <td>{{data.description}}</td>
+            <td>{{data.unit_fee}}</td>
+            <td>{{data.total_quantity}}</td>
+            <td>{{data.amount}}</td>
+            <td>{{data.service_type}}</td>
+          </tr>
+        </tbody>
+      </nz-table>
     </div>
     <div nz-row>
       <div nz-col nzSpan="12" nzOffset="6" nzSm="24" *ngIf="!searchInitialized"><i nz-icon [nzType]="'info-circle'"
           class="m-r-5"></i> {{message}}
       </div>
     </div>
-
     <nz-skeleton [nzLoading]="isLoadingData && searchInitialized" [nzActive]="true">
     </nz-skeleton>
   </form>
@@ -142,5 +166,4 @@
       </nz-button-group>
     </nz-col>
   </nz-row>
-</nz-card> -->
-Work in progress
+</nz-card>
