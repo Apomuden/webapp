@@ -34,6 +34,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { SetupsComponent } from './setups.component';
 import { SpecialitySetupComponent } from './pages/speciality-setup/speciality-setup.component';
 import { LaboratorySetupComponent } from './categories/laboratory-setup/laboratory-setup.component';
+import { StoreSetupComponent } from './categories/store-setup/store-setup.component';
 
 const routes: Routes = [
   {
@@ -64,6 +65,14 @@ const routes: Routes = [
         canActivate: [AuthGuard],
         data: {
           title: 'Laboratory Setup'
+        }
+      },
+      {
+        path: 'store-setup',
+        component: StoreSetupComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Store Setup'
         }
       },
       {
