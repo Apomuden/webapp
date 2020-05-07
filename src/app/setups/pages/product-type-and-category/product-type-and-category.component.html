@@ -1,0 +1,110 @@
+<nz-row nzGutter="16">
+  <nz-card nz-col nzSpan="12" nzTitle="Product Types" [nzExtra]="addTypeTemplate">
+    <ng-template #addTypeTemplate>
+      <button nz-button nzType="primary" (click)="showTypeModal()">Add Type</button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="productTypes" [nzItemLayout]="'horizontal'"
+      [nzLoading]="isTypesLoading" [nzRenderItem]="type">
+      <ng-template #type let-type>
+        <nz-list-item [nzActions]="[editType,removeType,toggleType]">
+          <ng-template #editType><a (click)="showTypeModal(type)">edit</a></ng-template>
+          <ng-template #removeType>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteType(type)"><i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #toggleType>
+            <nz-switch [(ngModel)]="type.isActivated" (ngModelChange)="toggleItem($event, type, true)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle">
+            <ng-template #nzTitle>
+              <a>{{ type.name }}</a>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+
+  <nz-card nz-col nzSpan="12" nzTitle="Product Categories" [nzExtra]="addCatTemplate">
+    <ng-template #addCatTemplate>
+      <button nz-button nzType="primary" (click)="showCatModal()">Add Category</button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="categories" [nzItemLayout]="'horizontal'"
+      [nzLoading]="isCatsLoading" [nzRenderItem]="category">
+      <ng-template #category let-category>
+        <nz-list-item [nzActions]="[edit,delete, toggleCat]">
+          <ng-template #edit><a (click)="showCatModal(category)">edit</a></ng-template>
+          <ng-template #delete>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteCat(category)"><i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #toggleCat>
+            <nz-switch [(ngModel)]="category.isActivated" (ngModelChange)="toggleItem($event, category)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="description">
+            <ng-template #nzTitle>
+              <a>{{ category.name }}</a>
+            </ng-template>
+            <ng-template #description>
+              <a>{{ category.product_type_name }}</a>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+</nz-row>
+
+<nz-modal [nzVisible]="isTypeModalVisible" (nzOnCancel)="closeTypeModal()" [nzFooter]="typeFooter"
+  [nzTitle]="isEditingType ? 'Update' : 'Create'">
+  <ng-template #typeFooter>
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-button-group>
+        <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingType"
+          (click)="resetType()">Cancel</button>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingType" [disabled]="typeForm.invalid"
+          (click)="submitType()">Submit</button>
+      </nz-button-group>
+    </nz-row>
+  </ng-template>
+
+  <form nz-form [formGroup]="typeForm" (ngSubmit)="submitType()" (reset)="resetType()">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>Type Name</nz-form-label>
+        <input nz-input type="text" formControlName="name" />
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+
+<nz-modal [nzVisible]="isCatModalVisible" (nzOnCancel)="closeCatModal()" [nzFooter]="modalFooter"
+  [nzTitle]="isEditingCat ? 'Update' : 'Create'">
+  <ng-template #modalFooter>
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-button-group>
+        <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingCat" (click)="resetCat()">Cancel</button>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingCat" [disabled]="catForm.invalid"
+          (click)="submitCat()">Submit</button>
+      </nz-button-group>
+    </nz-row>
+  </ng-template>
+
+  <form nz-form [formGroup]="catForm" (ngSubmit)="submitCat()" (reset)="resetCat()">
+    <nz-form-item nzGutter="16">
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Category Name</nz-form-label>
+        <input nz-input type="text" formControlName="name" />
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Product Type</nz-form-label>
+        <nz-select formControlName="product_type_id">
+          <nz-option *ngFor="let type of productTypes" [nzValue]="type.id" [nzLabel]="type.name"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
