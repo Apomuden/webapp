@@ -22,6 +22,9 @@ export class SetupsComponent implements OnInit {
   goToLaboratory() {
     this.router.navigate(['setup/laboratory-setup']);
   }
+  goToStores() {
+    this.router.navigate(['setup/store-setup']);
+  }
   goToEISU() {
     this.router.navigate(['setup/eisu']);
   }
