@@ -1,18 +1,10 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { SetupService } from 'src/app/shared/services/setup.service';
-import { LabSetupService } from 'src/app/shared/services/lab-setup.service';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { first } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { StoreService } from 'ng-chartjs/lib/store.service';
 import { StoreSetupService } from 'src/app/shared/services/store-setup.service';
-
-const DAY = 'DAY';
-const WEEK = 'WEEK';
-const MONTH = 'MONTH';
-const YEAR = 'YEAR';
 
 @Component({
   selector: 'app-product-type-and-category',

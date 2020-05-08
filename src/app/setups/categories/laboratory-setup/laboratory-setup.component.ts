@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-laboratory',
+  selector: 'app-laboratory-setup',
   templateUrl: './laboratory-setup.component.html',
   styleUrls: ['./laboratory-setup.component.css']
 })

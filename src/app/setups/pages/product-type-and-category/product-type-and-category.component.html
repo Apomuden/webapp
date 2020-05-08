@@ -1,7 +1,7 @@
 <nz-row nzGutter="16">
   <nz-card nz-col nzSpan="12" nzTitle="Product Types" [nzExtra]="addTypeTemplate">
     <ng-template #addTypeTemplate>
-      <button nz-button nzType="primary" (click)="showTypeModal()">Add Type</button>
+      <button nz-button nzType="primary" (click)="showTypeModal()">Add</button>
     </ng-template>
     <nz-list style="min-height: 350px;" [nzDataSource]="productTypes" [nzItemLayout]="'horizontal'"
       [nzLoading]="isTypesLoading" [nzRenderItem]="type">
@@ -28,7 +28,7 @@
 
   <nz-card nz-col nzSpan="12" nzTitle="Product Categories" [nzExtra]="addCatTemplate">
     <ng-template #addCatTemplate>
-      <button nz-button nzType="primary" (click)="showCatModal()">Add Category</button>
+      <button nz-button nzType="primary" (click)="showCatModal()">Add</button>
     </ng-template>
     <nz-list style="min-height: 350px;" [nzDataSource]="categories" [nzItemLayout]="'horizontal'"
       [nzLoading]="isCatsLoading" [nzRenderItem]="category">
