@@ -65,6 +65,10 @@ import { LabParametersComponent } from './pages/lab-parameters/lab-parameters.co
 import { LabSampleTypesComponent } from './pages/lab-sample-types/lab-sample-types.component';
 import { ParameterServiceMapComponent } from './pages/parameter-service-map/parameter-service-map.component';
 import { SampleTypeServiceMapComponent } from './pages/sample-type-service-map/sample-type-service-map.component';
+import { MedicineRoutesComponent } from './pages/medicine-routes/medicine-routes.component';
+import { ProductFormAndUnitComponent } from './pages/product-form-and-unit/product-form-and-unit.component';
+import { ProductTypeAndCategoryComponent } from './pages/product-type-and-category/product-type-and-category.component';
+import { StoreSetupComponent } from './categories/store-setup/store-setup.component';
 
 @NgModule({
   declarations: [
@@ -101,6 +105,7 @@ import { SampleTypeServiceMapComponent } from './pages/sample-type-service-map/s
     AccountComponent,
     InpatientComponent,
     LaboratorySetupComponent,
+    StoreSetupComponent,
     EisuComponent,
     OtherComponent,
     ClinicComponent,
@@ -125,6 +130,9 @@ import { SampleTypeServiceMapComponent } from './pages/sample-type-service-map/s
     Icd10categoriesComponent,
     DiseasesComponent,
     LabParametersComponent,
+    MedicineRoutesComponent,
+    ProductFormAndUnitComponent,
+    ProductTypeAndCategoryComponent,
     LabSampleTypesComponent,
     ParameterServiceMapComponent,
     SampleTypeServiceMapComponent
