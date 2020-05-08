@@ -68,7 +68,6 @@ import { SampleTypeServiceMapComponent } from './pages/sample-type-service-map/s
 import { MedicineRoutesComponent } from './pages/medicine-routes/medicine-routes.component';
 import { ProductFormAndUnitComponent } from './pages/product-form-and-unit/product-form-and-unit.component';
 import { ProductTypeAndCategoryComponent } from './pages/product-type-and-category/product-type-and-category.component';
-import { ProductsComponent } from './pages/products/products.component';
 import { StoreSetupComponent } from './categories/store-setup/store-setup.component';
 
 @NgModule({
@@ -134,7 +133,6 @@ import { StoreSetupComponent } from './categories/store-setup/store-setup.compon
     MedicineRoutesComponent,
     ProductFormAndUnitComponent,
     ProductTypeAndCategoryComponent,
-    ProductsComponent,
     LabSampleTypesComponent,
     ParameterServiceMapComponent,
     SampleTypeServiceMapComponent
