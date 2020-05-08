@@ -17,5 +17,8 @@ export class AccountService {
   createEreceipt(data) {
     return this.http.post<any>(`${environment.apiBaseUrl}/accounts/transactions/ereceipt`, data).toPromise();
   }
+  createDeposit(data) {
+    return this.http.post<any>(`${environment.apiBaseUrl}/accounts/deposits`, data).toPromise();
+  }
 
 }

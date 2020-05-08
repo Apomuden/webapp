@@ -1,8 +1,9 @@
+import { SetupService } from './../../shared/services/setup.service';
 import { AccountService } from './../services/account.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { first, retry, debounceTime, take } from 'rxjs/operators';
-import { SetupService } from 'src/app/shared/services/setup.service';
+import { first, retry, debounceTime, take, max, filter } from 'rxjs/operators';
+
 import { BehaviorSubject } from 'rxjs';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from '../../records/record.service';
@@ -10,6 +11,8 @@ import { NzNotificationService, isInteger } from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
 import { formatDate } from '@angular/common';
 import * as datefns from 'date-fns';
+import * as isFloat from 'is-float';
+import * as numeral from 'numeral';
 
 @Component({
   selector: 'app-deposit',
@@ -29,17 +32,21 @@ export class DepositComponent implements OnInit {
     qty: this.fb.control({ value: 1, disabled: true }, [Validators.required, Validators.min(1)]),
     fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required, Validators.min(0.1)]),
   });
-
+  numeral = numeral;
   appliesToReasonControl = this.fb.control(null);
-  totalBillControl = this.fb.control(null);
-  paymentChannelControl = this.fb.control('Cash');
+  totalBillControl = this.fb.control(null, [Validators.required]);
+  paymentChannelControl = this.fb.control(null);
   depositAmountControl = this.fb.control(null);
   balanceDueControl = this.fb.control(null);
+  billedFormControl = this.fb.control(null, Validators.required);
   isLoadingData = false;
   searchInitialized = false;
   requesting = false;
   serviceOrdersLoading = false;
+  sponsorsLoading = false;
   services = [];
+  isLoadingPaymentChannels = false;
+  paymentChannels = [];
   transactionDetails;
   submiting = false;
 
@@ -71,12 +78,14 @@ export class DepositComponent implements OnInit {
 
   constructor(private readonly fb: FormBuilder,
     private recordService: RecordService,
+    private setupService: SetupService,
     private notification: NzNotificationService,
     private accountService: AccountService
   ) {
   }
 
   ngOnInit() {
+    this.getPaymentChannels();
   }
 
   ngAfterViewInit() {
@@ -93,9 +102,12 @@ export class DepositComponent implements OnInit {
     this.depositAmountControl.valueChanges.pipe(untilComponentDestroyed(this))
       .subscribe(
         val => {
+          this.balanceDueControl.updateValueAndValidity();
           try {
-            if (val && isInteger(parseFloat(val))) {
-              this.balanceDueControl.setValue(this.totalBillControl.value - parseFloat(val));
+            if ((val && (isFloat(parseFloat(val))
+              || isInteger(parseFloat(val))))
+              && (parseFloat(val) <= parseFloat(this.totalBillControl.value))) {
+              this.balanceDueControl.setValue(numeral(parseFloat(this.totalBillControl.value) - parseFloat(val)).format('0.00'));
             } else {
               this.balanceDueControl.setValue(null);
             }
@@ -137,6 +149,7 @@ export class DepositComponent implements OnInit {
         if (data.data) {
           this.patient = data.data;
           this.appendToForm();
+          this.getPatientSponsorPermits(this.patient.id);
           this.getServiceOrdersForPatient(this.patient.id);
         } else {
           this.message = 'Folder not found';
@@ -145,6 +158,17 @@ export class DepositComponent implements OnInit {
       }, e => {
         this.message = 'Folder not found';
         this.searchInitialized = false;
+      });
+  }
+  getPatientSponsorPermits(id: number) {
+    this.sponsorsLoading = true;
+    this.recordService.getPatientSponsors(id)
+      .pipe(first()).subscribe(res => {
+        if (res && res.data) {
+          this.sponsorPermits.push(...res.data);
+        }
+        this.sponsorsLoading = false;
+      }, error => {
       });
   }
 
@@ -162,6 +186,7 @@ export class DepositComponent implements OnInit {
       delete otherDetails.services;
       this.transactionDetails = otherDetails;
       this.totalBillControl.setValue(this.transactionDetails.total_bill);
+      this.depositAmountControl.setValidators([Validators.required, Validators.max(this.transactionDetails.total_bill)])
     } catch (e) {
       this.serviceOrdersLoading = false;
       console.log(e);
@@ -169,6 +194,23 @@ export class DepositComponent implements OnInit {
       this.serviceOrdersLoading = false;
     }
 
+
+  }
+  async getPaymentChannels() {
+    this.isLoadingPaymentChannels = true;
+    try {
+      const response = await this.setupService.getPaymentChannels().toPromise();
+      this.paymentChannels = response.data.filter(item => item.name === 'Cash');
+      if (this.paymentChannels.length > 0) {
+        this.paymentChannelControl.setValue(this.paymentChannels[0].id);
+      }
+
+    } catch (e) {
+      this.isLoadingPaymentChannels = false;
+      console.log(e);
+    } finally {
+      this.isLoadingPaymentChannels = false;
+    }
 
   }
 
@@ -234,6 +276,9 @@ export class DepositComponent implements OnInit {
     // } else {
     //   console.log('Invalid data');
     // }
+
+
+
   }
 
   async submitForm() {
@@ -255,10 +300,21 @@ export class DepositComponent implements OnInit {
   }
 
   processData() {
+    //     'patient_id'=required,
+    // 'patient_status'=>'optional|in:IN-PATIENT,OUT-PATIENT,WALK-IN',
+    // 'funding_type_id'=>required,
+    // 'sponsorship_type_id'=>required,
+    // 'billing_sponsor_id'=>not required if sponsorship type is patient or government insurance,
+    // 'patient_sponsor_id'=>not required if sponsorship type is patient or government insurance,
+    // 'payment_channel_id'=>required,
+    // 'deposit_amount'=>required',
+    // 'reason'=>optional|nullable|string',
+    // 'status'=>optional|in:ACTIVE,INACTIVE'
     // return {
     //   patient_id: this.patient.id,
     //   patient_status: this.patient.reg_status,
-    //   services: this.services.filter(item => item.checked).map(item => ({ transaction_update_id: item.transaction_update_id })),
+    //   funding_type_id: this.patient.funding_type_id,
+    //   sponsorship_type_id: this.patient.sponsorship_type_id,
     //   outstanding_bill: this.services
     //     .filter(item => !item.checked)
     //     .reduce(((accumulator, currentValue) => accumulator + parseFloat(currentValue.total_amount)), 0.00),
