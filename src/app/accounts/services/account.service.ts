@@ -20,5 +20,8 @@ export class AccountService {
   createDeposit(data) {
     return this.http.post<any>(`${environment.apiBaseUrl}/accounts/deposits`, data).toPromise();
   }
+  createDiscount(data) {
+    return this.http.post<any>(`${environment.apiBaseUrl}/accounts/discounts`, data).toPromise();
+  }
 
 }

@@ -38,7 +38,7 @@ export class DepositComponent implements OnInit {
   paymentChannelControl = this.fb.control(null);
   depositAmountControl = this.fb.control(null);
   balanceDueControl = this.fb.control(null);
-  billedFormControl = this.fb.control(null, Validators.required);
+  billedFormControl = this.fb.control(0, Validators.required);
   isLoadingData = false;
   searchInitialized = false;
   requesting = false;
@@ -118,6 +118,14 @@ export class DepositComponent implements OnInit {
         }
       );
 
+    this.billedFormControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(val => {
+        console.log(val);
+        if (val || val === 0) {
+          this.patientSponsor = this.sponsorPermits.filter(item => item.id === val)[0];
+        }
+      });
+
   }
 
   ngOnDestroy() { }
@@ -165,7 +173,8 @@ export class DepositComponent implements OnInit {
     this.recordService.getPatientSponsors(id)
       .pipe(first()).subscribe(res => {
         if (res && res.data) {
-          this.sponsorPermits.push(...res.data);
+          this.sponsorPermits = [...this.sponsorPermits, ...res.data];
+          console.log(this.sponsorPermits);
         }
         this.sponsorsLoading = false;
       }, error => {
@@ -271,11 +280,13 @@ export class DepositComponent implements OnInit {
 
 
   done(): void {
-    // if (this.amountRecievedFormControl.value && this.amountRecievedFormControl.valid) {
-    //   this.submitForm();
-    // } else {
-    //   console.log('Invalid data');
-    // }
+    if (this.paymentChannelControl.invalid) {
+      this.notification.error('Error', 'Please select a payment channel');
+    } else if (this.depositAmountControl.invalid) {
+      this.notification.error('Error', 'Please enter deposit amount');
+    } else {
+      this.submitForm();
+    }
 
 
 
@@ -286,21 +297,21 @@ export class DepositComponent implements OnInit {
     const data = this.processData();
     console.log(data);
     try {
-      const response = await this.accountService.createEreceipt(data);
+      const response = await this.accountService.createDeposit(data);
       console.log(response);
       this.requesting = false;
-      this.notification.success('Success', 'E-receipt creation was successful');
+      this.notification.success('Success', 'Deposit creation was successful');
     } catch (e) {
       console.log(e);
       this.requesting = false;
-      this.notification.error('Error', 'Unable to create E-receipt');
+      this.notification.error('Error', 'Unable to create Deposit');
     } finally {
       this.requesting = false;
     }
   }
 
   processData() {
-    //     'patient_id'=required,
+    // 'patient_id'=required,
     // 'patient_status'=>'optional|in:IN-PATIENT,OUT-PATIENT,WALK-IN',
     // 'funding_type_id'=>required,
     // 'sponsorship_type_id'=>required,
@@ -310,16 +321,24 @@ export class DepositComponent implements OnInit {
     // 'deposit_amount'=>required',
     // 'reason'=>optional|nullable|string',
     // 'status'=>optional|in:ACTIVE,INACTIVE'
-    // return {
-    //   patient_id: this.patient.id,
-    //   patient_status: this.patient.reg_status,
-    //   funding_type_id: this.patient.funding_type_id,
-    //   sponsorship_type_id: this.patient.sponsorship_type_id,
-    //   outstanding_bill: this.services
-    //     .filter(item => !item.checked)
-    //     .reduce(((accumulator, currentValue) => accumulator + parseFloat(currentValue.total_amount)), 0.00),
-    //   total_bill: this.billDueControl.value,
-    //   amount_paid: this.amountRecievedFormControl.value
-    // };
+    let data: any = {
+      patient_id: this.patient.id,
+      patient_status: this.patient.reg_status,
+      funding_type_id: this.patient.funding_type_id,
+      sponsorship_type_id: this.patient.sponsorship_type_id,
+      payment_channel_id: this.paymentChannelControl.value,
+      deposit_amount: this.depositAmountControl.value
+    };
+
+    if (this.patient.sponsorship_type_name.trim().toLowerCase() !== 'patient'
+      && this.patient.sponsorship_type_name.trim().toLowerCase() !== 'government insurance') {
+      data = { ...data, patient_sponsor_id: this.patientSponsor.id };
+      if (this.patientSponsor.billing_sponsor) {
+        data = { ...data, billing_sponsor_id: this.patientSponsor.billing_sponsor.id };
+      }
+    }
+    return data;
   }
+
+
 }

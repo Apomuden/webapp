@@ -1,5 +1,5 @@
 .dashboard-stat{
-  border-radius: 8px !important;
+  border-radius: 5px !important;
   background: #0e5a32;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to right, #0e5a32, #259258) !important;
   background: linear-gradient(to right, #0e5a32, #259258) !important;
@@ -7,4 +7,66 @@
 }
 .dashboard-stat h2,.dashboard-stat p{
   color:white !important;
+}
+.small-box:hover {
+  text-decoration: none;
+  color: #f9f9f9;
+}
+.bg-aqua {
+  background-color: #00c0ef !important;
+}
+.bg-green{
+  background-color: #00a65a !important;
+}
+.bg-yellow{
+  background:#f39c12 !important;
+}
+.bg-red{
+  background :#dd4b39 !important
+}
+.bg-purple{
+  background:#605ca8 !important;
+}
+.bg-indigo {
+  background-color: #4c6ef5;
+}
+.bg-teal {
+  background-color: #39cccc !important;
+}
+.bg-blue {
+  background-color: #0073b7 !important;
+}
+.small-box .icon {
+  -webkit-transition: all 0.3s linear;
+  -o-transition: all 0.3s linear;
+  transition: all 0.3s linear;
+  position: absolute;
+  top: -10px;
+  right: 10px;
+  z-index: 0;
+  font-size: 90px;
+  color: rgba(0, 0, 0, 0.15);
+}
+
+.small-box h3, .small-box p {
+  z-index: 5;
+  color: white;
+}
+.small-box h3 {
+  font-size: 38px;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  white-space: nowrap;
+  padding: 0;
+
+}
+.small-box > .inner {
+  padding: 10px;
+}
+.small-box {
+  border-radius: 2px;
+  position: relative;
+  display: block;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
 }
