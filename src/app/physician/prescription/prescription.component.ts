@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, EventEmitter, Output, OnDestroy, AfterViewInit } from '@angular/core';
 import { formatDate } from '@angular/common';
-import { SetupService } from '../shared/services/setup.service';
+import { SetupService } from '../../shared/services/setup.service';
 import { FormBuilder } from '@angular/forms';
-import { PhysicianService } from '../physician/services/physician.service';
+import { PhysicianService } from '../services/physician.service';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { ThemeConstantService } from '../shared/services/theme-constant.service';
+import { ThemeConstantService } from '../../shared/services/theme-constant.service';
+import { ConsultationData } from '../consultation/model/consultation-data.model';
 
 interface ItemData {
   id: string;
@@ -23,6 +24,8 @@ export class PrescriptionComponent implements OnInit, OnDestroy, AfterViewInit {
   @Input() consultation: any;
   @Input() patient: any;
   @Input() userId: any;
+   // consultation data for holding child component data states
+   @Input() consultationData: ConsultationData;
   @Output() nextClicked: EventEmitter<any> = new EventEmitter();
   @Output() previousClicked: EventEmitter<any> = new EventEmitter();
 

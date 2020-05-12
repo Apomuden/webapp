@@ -1,41 +1,53 @@
-import { PhysicianService } from './../services/physician.service';
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
-import { NzNotificationService } from 'ng-zorro-antd';
-import { SetupService } from 'src/app/shared/services/setup.service';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { first, takeUntil } from 'rxjs/operators';
-import { formatDate } from '@angular/common';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import * as moment from 'moment';
+import { PhysicianService } from "./../services/physician.service";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter
+} from "@angular/core";
+import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from "src/app/shared/services/setup.service";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { first, takeUntil } from "rxjs/operators";
+import { formatDate } from "@angular/common";
+import { untilComponentDestroyed } from "@w11k/ngx-componentdestroyed";
+import * as moment from "moment";
+import { ConsultationData } from "../consultation/model/consultation-data.model";
 
 @Component({
-  selector: 'app-diagnosis',
-  templateUrl: './diagnosis.component.html',
-  styleUrls: ['./diagnosis.component.css']
+  selector: "app-diagnosis",
+  templateUrl: "./diagnosis.component.html",
+  styleUrls: ["./diagnosis.component.css"]
 })
 export class DiagnosisComponent implements OnInit {
   @Input() consultation: any;
   @Input() patient: any;
   @Input() userId: any;
+  // consultation data for holding child component data states
+  @Input() consultationData: ConsultationData;
+
   @Output() nextClicked: EventEmitter<any> = new EventEmitter();
   @Output() previousClicked: EventEmitter<any> = new EventEmitter();
-  consultationDate = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'en');
+  consultationDate = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss", "en");
   submiting = false;
   isLoading = true;
   previousDiagnosis = null;
   diagnosisForm: FormGroup;
   diseasesLoading = false;
   diagnosisKey = 0;
-  diagnosis = [];
   diseases = [];
-
 
   constructor(
     private physicianService: PhysicianService,
     private fb: FormBuilder,
     private setup: SetupService,
     private notification: NzNotificationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.diagnosisForm = this.fb.group({
@@ -49,54 +61,82 @@ export class DiagnosisComponent implements OnInit {
   }
 
   getDiagnosis(patientId: number) {
-    this.physicianService.getDiagnosis(patientId).pipe(first())
-      .subscribe((diagnosis: any[]) => {
-        this.previousDiagnosis = [];
-        diagnosis = diagnosis.reverse();
-        diagnosis.forEach(diag => {
-          if (!this.previousDiagnosis.find(pd => pd.attendance_date === diag.attendance_date)) {
-            this.previousDiagnosis.push({
-              attendance_date: diag.attendance_date,
-              diagnosis: diagnosis.filter(e => e.attendance_date === diag.attendance_date)
-            });
-          }
-        });
-        this.isLoading = false;
-      }, e => { console.log(e); this.isLoading = false; });
+    this.physicianService
+      .getDiagnosis(patientId)
+      .pipe(first())
+      .subscribe(
+        (diagnosis: any[]) => {
+          this.previousDiagnosis = [];
+          diagnosis = diagnosis.reverse();
+          diagnosis.forEach(diag => {
+            if (
+              !this.previousDiagnosis.find(
+                pd => pd.attendance_date === diag.attendance_date
+              )
+            ) {
+              this.previousDiagnosis.push({
+                attendance_date: diag.attendance_date,
+                diagnosis: diagnosis.filter(
+                  e => e.attendance_date === diag.attendance_date
+                )
+              });
+            }
+          });
+          this.isLoading = false;
+        },
+        e => {
+          console.log(e);
+          this.isLoading = false;
+        }
+      );
   }
-
 
   addDiagnosis() {
     if (this.diagnosisForm.valid) {
-      const diseaseId = this.diagnosisForm.get('disease_id').value;
-      const diseaseValue = this.diseases.filter(disease => disease.id === diseaseId)[0].name;
-      this.diagnosis = [...this.diagnosis, { ...this.diagnosisForm.value, diseaseValue, key: this.diagnosisKey }];
+      const diseaseId = this.diagnosisForm.get("disease_id").value;
+      const diseaseValue = this.diseases.filter(
+        disease => disease.id === diseaseId
+      )[0].name;
+      this.consultationData.diagnosis = [
+        ...this.consultationData.diagnosis,
+        { ...this.diagnosisForm.value, diseaseValue, key: this.diagnosisKey }
+      ];
       this.diagnosisKey++;
-      console.log(this.diagnosis);
+      console.log(this.consultationData.diagnosis);
       this.diagnosisForm.reset();
     } else {
-      this.notification.error('Error', 'Fill required fields');
+      this.notification.error("Error", "Fill required fields");
     }
   }
 
   getDiseases() {
     this.diseasesLoading = true;
-    this.setup.genericGet('setups/diseases').pipe(first())
-      .subscribe(diseases => {
-        this.diseases = diseases;
-        const age = this.getAge();
-        diseases.forEach(disease => {
-          if (age >= 13) {
-            disease.modifiedName = `${disease.name}-AG(${disease.adult_gdrg})-AT(${disease.adult_tariff})`;
-          } else {
-            disease.modifiedName = `${disease.name}-CG(${disease.child_gdrg})-CT(${disease.child_tariff})`;
-          }
-        });
-        this.diseasesLoading = false;
-      }, e => { console.log(e); this.diseasesLoading = false; });
+    this.setup
+      .genericGet("setups/diseases")
+      .pipe(first())
+      .subscribe(
+        diseases => {
+          this.diseases = diseases;
+          const age = this.getAge();
+          diseases.forEach(disease => {
+            if (age >= 13) {
+              disease.modifiedName = `${disease.name}-AG(${disease.adult_gdrg})-AT(${disease.adult_tariff})`;
+            } else {
+              disease.modifiedName = `${disease.name}-CG(${disease.child_gdrg})-CT(${disease.child_tariff})`;
+            }
+          });
+          this.diseasesLoading = false;
+        },
+        e => {
+          console.log(e);
+          this.diseasesLoading = false;
+        }
+      );
   }
   submit() {
-    const diagnosisItems = JSON.parse(JSON.stringify(this.diagnosis));
+    const diagnosisItems = JSON.parse(
+      JSON.stringify(this.consultationData.diagnosis)
+    );
     diagnosisItems.forEach(item => {
       delete item.diseaseValue;
       delete item.key;
@@ -109,30 +149,36 @@ export class DiagnosisComponent implements OnInit {
       diagnoses: diagnosisItems
     };
 
-    this.physicianService.saveDiagnosis(data).pipe(first())
-      .subscribe(res => {
-        if (res && (res.errorCode === '000')) {
-          this.diagnosis = [];
-          this.diagnosisKey = 0;
-          this.nextClicked.emit(res.data);
+    this.physicianService
+      .saveDiagnosis(data)
+      .pipe(first())
+      .subscribe(
+        res => {
+          if (res && res.errorCode === "000") {
+            this.consultationData.diagnosis = [];
+            this.diagnosisKey = 0;
+            this.nextClicked.emit(res.data);
+          }
+          this.submiting = false;
+        },
+        error => {
+          this.submiting = false;
+          this.notification.error("Error", "Unable to proceed");
         }
-        this.submiting = false;
-      }, error => {
-        this.submiting = false;
-        this.notification.error('Error', 'Unable to proceed');
-      });
+      );
   }
 
   getAge() {
-    return moment().diff(moment(this.patient.dob, 'YYYY-MM-DD'), 'years');
+    return moment().diff(moment(this.patient.dob, "YYYY-MM-DD"), "years");
   }
   deleteItem(item) {
-    this.diagnosis = this.diagnosis.filter(d => d.key !== item.key);
+    this.consultationData.diagnosis = this.consultationData.diagnosis.filter(
+      d => d.key !== item.key
+    );
   }
   previous() {
     this.previousClicked.emit();
   }
-
 
   // {
   //   "consultation_id":96,

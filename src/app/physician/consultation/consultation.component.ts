@@ -9,6 +9,7 @@ import { PhysicianService } from '../services/physician.service';
 import * as dateFns from 'date-fns';
 import { formatDate } from '@angular/common';
 import { ThemeConstantService } from 'src/app/shared/services/theme-constant.service';
+import { ConsultationData } from './model/consultation-data.model';
 
 @Component({
   selector: 'app-vital-form',
@@ -17,7 +18,10 @@ import { ThemeConstantService } from 'src/app/shared/services/theme-constant.ser
 })
 export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   commentControl = this.fb.control(null);
-  folderNumb = this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]);
+  folderNumb = this.fb.control(null, [
+    Validators.minLength(11),
+    Validators.maxLength(12)
+  ]);
   consultationForm = this.fb.group({
     end_at: [new Date(), Validators.required],
     pregnant: [false, Validators.required],
@@ -38,7 +42,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
       name: 'Pulse',
       apiName: 'pulse',
       min: 60,
-      max: 100,
+      max: 100
     },
     {
       name: 'Blood Pressure',
@@ -60,28 +64,28 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     },
     {
       name: 'Weight',
-      apiName: 'weight',
+      apiName: 'weight'
     },
     {
       name: 'Height',
-      apiName: 'height',
+      apiName: 'height'
     },
     {
       name: 'BMI',
       apiName: 'bmi',
       min: 18.5,
       max: 24.9
-    },
+    }
   ];
   panels = [
     {
       active: true,
-      name: 'Patient Details',
+      name: 'Patient Details'
     },
     {
       active: false,
       name: 'Vitals'
-    },
+    }
   ];
   illnessTypes = [];
 
@@ -101,13 +105,26 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   patientHistory: any;
   physicalExam: any;
 
+  consultationData: ConsultationData = {
+    physicalExam: null,
+    investigations: [],
+    procedures: [],
+    diagnosis: [],
+    prescription: null,
+    clinicalNotes: {
+      treatmentPlan: '',
+      progressiveNote: '',
+      admissionNote: '',
+      urgentCareNote: ''
+    }
+  };
+
   constructor(
     private fb: FormBuilder,
     private physicianService: PhysicianService,
     private notificationS: NzNotificationService,
-    private authService: AuthenticationService,
-  ) { }
-
+    private authService: AuthenticationService
+  ) {}
 
   private get folderNoControl(): FormControl {
     return this.folderNumb as FormControl;
@@ -116,7 +133,9 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   ngOnInit() {
     this.today = formatDate(dateFns.startOfToday(), 'yyyy-MM-dd', 'en');
     this.user = this.authService.currentUserValue;
-    this.physicianService.getIllnessTypes().pipe(first())
+    this.physicianService
+      .getIllnessTypes()
+      .pipe(first())
       .subscribe(res => {
         this.illnessTypes = res;
       });
@@ -124,17 +143,21 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit() {
     if (this.user) {
-      this.folderNoControl.valueChanges.pipe(debounceTime(1000), untilComponentDestroyed(this))
+      this.folderNoControl.valueChanges
+        .pipe(debounceTime(1000), untilComponentDestroyed(this))
         .subscribe(folderNo => {
           if (folderNo && this.folderNoControl.valid) {
             this.getPatient(folderNo);
           } else {
-            this.message = 'Please enter a valid folder number to fill this form.';
+            this.message =
+              'Please enter a valid folder number to fill this form.';
             this.searchInitialized = false;
           }
         });
 
-      this.consultationForm.get('end_at').valueChanges.pipe(untilComponentDestroyed(this))
+      this.consultationForm
+        .get('end_at')
+        .valueChanges.pipe(untilComponentDestroyed(this))
         .subscribe(date => {
           this.physicianService.setConsultationDate(date);
         });
@@ -143,7 +166,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngOnDestroy() { }
+  ngOnDestroy() {}
 
   onIndexChange(index: number): void {
     this.stepIndex = index;
@@ -160,50 +183,69 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   getConsultation(patientId: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    this.physicianService.getConsultation(patientId, this.today).pipe(first())
-      .subscribe(data => {
-        this.isLoadingData = false;
-        this.attendance = data;
-        this.getPatientVitals(this.patient.id);
-      }, e => {
-        this.patient = null;
-        this.message = 'Attendance not found';
-        this.searchInitialized = false;
-      });
+    this.physicianService
+      .getConsultation(patientId, this.today)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.isLoadingData = false;
+          this.attendance = data;
+          this.getPatientVitals(this.patient.id);
+        },
+        e => {
+          this.patient = null;
+          this.message = 'Attendance not found';
+          this.searchInitialized = false;
+        }
+      );
   }
 
   getPatient(folderNo: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    this.physicianService.getPatient(folderNo).pipe(first())
-      .subscribe(data => {
-        this.isLoadingData = false;
-        this.patient = data;
-        this.getConsultation(this.patient.id);
-      }, e => {
-        this.message = 'Folder not found';
-        this.attendance = null;
-        this.searchInitialized = false;
-      });
+    this.physicianService
+      .getPatient(folderNo)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.isLoadingData = false;
+          this.patient = data;
+          this.getConsultation(this.patient.id);
+        },
+        e => {
+          this.message = 'Folder not found';
+          this.attendance = null;
+          this.searchInitialized = false;
+        }
+      );
   }
 
   getPatientVitals(patientId: string) {
     this.isLoadingData = true;
     this.searchInitialized = true;
-    this.physicianService.getPatientVitals(patientId, this.today).pipe(first())
-      .subscribe(data => {
-        this.isLoadingData = false;
-        this.vitals = data;
-        if ((this.vitals.systolic_blood_pressure && this.vitals.systolic_blood_pressure.value)
-          && (this.vitals.diastolic_blood_pressure && this.vitals.diastolic_blood_pressure.value)) {
-          this.vitals.blood_pressure = {
-            value: `${this.vitals.diastolic_blood_pressure.value}/${this.vitals.systolic_blood_pressure.value}`,
-            unit: 'mmHg'
-          };
+    this.physicianService
+      .getPatientVitals(patientId, this.today)
+      .pipe(first())
+      .subscribe(
+        data => {
+          this.isLoadingData = false;
+          this.vitals = data;
+          if (
+            this.vitals.systolic_blood_pressure &&
+            this.vitals.systolic_blood_pressure.value &&
+            this.vitals.diastolic_blood_pressure &&
+            this.vitals.diastolic_blood_pressure.value
+          ) {
+            this.vitals.blood_pressure = {
+              value: `${this.vitals.diastolic_blood_pressure.value}/${this.vitals.systolic_blood_pressure.value}`,
+              unit: 'mmHg'
+            };
+          }
+        },
+        e => {
+          this.isLoadingData = false;
         }
-      }, e => {
-        this.isLoadingData = false;
-      });
+      );
   }
 
   cancel() {

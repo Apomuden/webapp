@@ -9,6 +9,7 @@ import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms'
 import { first, takeUntil } from 'rxjs/operators';
 import { formatDate } from '@angular/common';
 import * as moment from 'moment';
+import { ConsultationData } from '../consultation/model/consultation-data.model';
 
 @Component({
   selector: 'app-procedure',
@@ -19,6 +20,8 @@ export class ProcedureComponent implements OnInit {
   @Input() consultation: any;
   @Input() patient: any;
   @Input() userId: any;
+   // consultation data for holding child component data states
+   @Input() consultationData: ConsultationData;
   @Output() nextClicked: EventEmitter<any> = new EventEmitter();
   @Output() previousClicked: EventEmitter<any> = new EventEmitter();
   consultationDate = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'en');
@@ -57,7 +60,6 @@ export class ProcedureComponent implements OnInit {
   sponsorPermits = [this.patientSponsor];
   servicePrice: any;
   previousProcedures = null;
-  procedures = [];
   formatFee = (value: number) => `GHC ${value}`;
   parseFee = (value: string) => value.replace('GHC', '');
   constructor(
@@ -141,11 +143,11 @@ export class ProcedureComponent implements OnInit {
 
       const { fee: unitFee } = this.requestForm.getRawValue();
       if (billingSponsorId) {
-        this.procedures = [...this.procedures, {
+          this.consultationData.procedures = [...this.consultationData.procedures, {
           ...this.requestForm.value, serviceValue, key: this.procedureKey, unitFee, sponsorValue, billing_sponsor_id: billingSponsorId
         }];
       } else {
-        this.procedures = [...this.procedures, {
+        this.consultationData.procedures = [this.consultationData.procedures, {
           ...this.requestForm.value, serviceValue, key: this.procedureKey, unitFee, sponsorValue,
           funding_type_id: this.prepaidCashFundingTypeId
         }];
@@ -159,7 +161,7 @@ export class ProcedureComponent implements OnInit {
     }
   }
   submit() {
-    const procedureItems = JSON.parse(JSON.stringify(this.procedures));
+    const procedureItems = JSON.parse(JSON.stringify(this.consultationData.procedures));
     procedureItems.forEach(item => {
       delete item.serviceValue;
       delete item.unitFee;
@@ -179,7 +181,7 @@ export class ProcedureComponent implements OnInit {
     this.physicianService.saveInvestigations(data).pipe(first())
       .subscribe(res => {
         if (res && (res.errorCode === '000')) {
-          this.procedures = [];
+          this.consultationData.procedures = [];
           this.procedureKey = 0;
           this.nextClicked.emit(res.data);
         }
@@ -194,13 +196,13 @@ export class ProcedureComponent implements OnInit {
     return moment().diff(moment(this.patient.dob, 'YYYY-MM-DD'), 'years');
   }
   deleteItem(item) {
-    this.procedures = this.procedures.filter(d => d.key !== item.key);
+    this.consultationData.procedures = this.consultationData.procedures.filter(d => d.key !== item.key);
   }
 
   calculateTotals() {
     this.totalPostpaid = 0;
     this.totalPrepaid = 0;
-    this.procedures.forEach(procedure => {
+    this.consultationData.procedures.forEach(procedure => {
       if (procedure.sponsorValue === 'Patient') {
         this.totalPrepaid += procedure.unitFee;
       } else {
