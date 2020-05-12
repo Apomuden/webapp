@@ -1,15 +1,18 @@
+import { SetupService } from './../../shared/services/setup.service';
 import { AccountService } from './../services/account.service';
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { first, retry, debounceTime, take } from 'rxjs/operators';
-import { SetupService } from 'src/app/shared/services/setup.service';
+import { first, retry, debounceTime, take, max, filter, min } from 'rxjs/operators';
+
 import { BehaviorSubject } from 'rxjs';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { RecordService } from '../../records/record.service';
-import { NzNotificationService } from 'ng-zorro-antd';
+import { NzNotificationService, isInteger } from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
 import { formatDate } from '@angular/common';
 import * as datefns from 'date-fns';
+import * as isFloat from 'is-float';
+import * as numeral from 'numeral';
 
 @Component({
   selector: 'app-discount',
@@ -29,15 +32,26 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
     qty: this.fb.control({ value: 1, disabled: true }, [Validators.required, Validators.min(1)]),
     fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required, Validators.min(0.1)]),
   });
-
+  numeral = numeral;
   appliesToReasonControl = this.fb.control(null);
-
+  discountBalanceControl = this.fb.control(null);
+  discountAmountControl = this.fb.control(null);
+  discountTypeControl = this.fb.control('f', [Validators.required]);
+  discountValueFlatControl = this.fb.control(0.0);
+  discountValuePercentageControl = this.fb.control(0, [Validators.min(0), Validators.max(100)]);
+  totalBillControl = this.fb.control(null, [Validators.required]);
+  paymentChannelControl = this.fb.control(null);
+  depositAmountControl = this.fb.control(null);
   balanceDueControl = this.fb.control(null);
+  billedFormControl = this.fb.control(0, Validators.required);
   isLoadingData = false;
   searchInitialized = false;
   requesting = false;
   serviceOrdersLoading = false;
+  sponsorsLoading = false;
   services = [];
+  isLoadingPaymentChannels = false;
+  paymentChannels = [];
   transactionDetails;
   submiting = false;
 
@@ -69,12 +83,14 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor(private readonly fb: FormBuilder,
     private recordService: RecordService,
+    private setupService: SetupService,
     private notification: NzNotificationService,
     private accountService: AccountService
   ) {
   }
 
   ngOnInit() {
+    this.getPaymentChannels();
   }
 
   ngAfterViewInit() {
@@ -88,9 +104,89 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
         }
       });
 
+    this.discountValueFlatControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(
+        val => {
+          try {
+            if ((val && (isFloat(parseFloat(val))
+              || isInteger(parseFloat(val))))
+            ) {
+              this.calculateDiscount();
+            } else {
+              this.discountAmountControl.setValue(null);
+              this.discountBalanceControl.setValue(null);
+            }
+          } catch (e) {
+            this.discountAmountControl.setValue(null);
+            this.discountBalanceControl.setValue(null);
+          }
+
+        }
+      );
+    this.discountValuePercentageControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(
+        val => {
+          try {
+            if ((val && (isFloat(parseFloat(val))
+              || isInteger(parseFloat(val))))
+            ) {
+              this.calculateDiscount();
+            } else {
+              this.discountAmountControl.setValue(null);
+              this.discountBalanceControl.setValue(null);
+            }
+          } catch (e) {
+            this.discountAmountControl.setValue(null);
+            this.discountBalanceControl.setValue(null);
+          }
+
+        }
+      );
+
+    this.discountTypeControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(
+        val => {
+          try {
+            if (val) {
+              this.calculateDiscount();
+            } else {
+              this.discountAmountControl.setValue(null);
+              this.discountBalanceControl.setValue(null);
+            }
+          } catch (e) {
+            this.discountAmountControl.setValue(null);
+            this.discountBalanceControl.setValue(null);
+          }
+
+        }
+      );
+
+    this.billedFormControl.valueChanges.pipe(untilComponentDestroyed(this))
+      .subscribe(val => {
+        console.log(val);
+        if (val || val === 0) {
+          this.patientSponsor = this.sponsorPermits.filter(item => item.id === val)[0];
+        }
+      });
 
   }
 
+
+  calculateDiscount() {
+    const discountType = this.discountTypeControl.value;
+    if (discountType === 'p') {
+      const discountPercentage = this.discountValuePercentageControl.value;
+      const discountAmount = (discountPercentage / 100) * this.totalBillControl.value;
+      const discountBalance = numeral(this.totalBillControl.value - discountAmount).format('0.00');
+      this.discountAmountControl.setValue(numeral(discountAmount).format('0.00'));
+      this.discountBalanceControl.setValue(discountBalance);
+    } else {
+      const discountAmount = this.discountValueFlatControl.value;
+      const discountBalance = numeral(this.totalBillControl.value - discountAmount).format('0.00');
+      this.discountAmountControl.setValue(numeral(discountAmount).format('0.00'));
+      this.discountBalanceControl.setValue(discountBalance);
+    }
+  }
   ngOnDestroy() { }
 
   get folderNoControl(): FormControl {
@@ -120,6 +216,7 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
         if (data.data) {
           this.patient = data.data;
           this.appendToForm();
+          this.getPatientSponsorPermits(this.patient.id);
           this.getServiceOrdersForPatient(this.patient.id);
         } else {
           this.message = 'Folder not found';
@@ -128,6 +225,18 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
       }, e => {
         this.message = 'Folder not found';
         this.searchInitialized = false;
+      });
+  }
+  getPatientSponsorPermits(id: number) {
+    this.sponsorsLoading = true;
+    this.recordService.getPatientSponsors(id)
+      .pipe(first()).subscribe(res => {
+        if (res && res.data) {
+          this.sponsorPermits = [...this.sponsorPermits, ...res.data];
+          console.log(this.sponsorPermits);
+        }
+        this.sponsorsLoading = false;
+      }, error => {
       });
   }
 
@@ -144,7 +253,8 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
       const otherDetails = JSON.parse(JSON.stringify(response.data));
       delete otherDetails.services;
       this.transactionDetails = otherDetails;
-
+      this.totalBillControl.setValue(this.transactionDetails.total_bill);
+      this.depositAmountControl.setValidators([Validators.required, Validators.max(this.transactionDetails.total_bill)])
     } catch (e) {
       this.serviceOrdersLoading = false;
       console.log(e);
@@ -152,6 +262,23 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
       this.serviceOrdersLoading = false;
     }
 
+
+  }
+  async getPaymentChannels() {
+    this.isLoadingPaymentChannels = true;
+    try {
+      const response = await this.setupService.getPaymentChannels().toPromise();
+      this.paymentChannels = response.data.filter(item => item.name === 'Cash');
+      if (this.paymentChannels.length > 0) {
+        this.paymentChannelControl.setValue(this.paymentChannels[0].id);
+      }
+
+    } catch (e) {
+      this.isLoadingPaymentChannels = false;
+      console.log(e);
+    } finally {
+      this.isLoadingPaymentChannels = false;
+    }
 
   }
 
@@ -212,11 +339,20 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   done(): void {
-    // if (this.amountRecievedFormControl.value && this.amountRecievedFormControl.valid) {
-    //   this.submitForm();
-    // } else {
-    //   console.log('Invalid data');
-    // }
+    if (this.paymentChannelControl.invalid) {
+      this.notification.error('Error', 'Please select a payment channel');
+    } else if (this.discountTypeControl.value === 'p' && (this.discountValuePercentageControl.invalid
+      || this.discountValuePercentageControl.value <= 0)) {
+      this.notification.error('Error', 'Please enter discount percentage');
+    } else if (this.discountTypeControl.value === 'f' && (this.discountValueFlatControl.invalid
+      || this.discountValueFlatControl.value <= 0)) {
+      this.notification.error('Error', 'Please enter discount amount');
+    } else {
+      this.submitForm();
+    }
+
+
+
   }
 
   async submitForm() {
@@ -224,29 +360,55 @@ export class DiscountComponent implements OnInit, AfterViewInit, OnDestroy {
     const data = this.processData();
     console.log(data);
     try {
-      const response = await this.accountService.createEreceipt(data);
+      const response = await this.accountService.createDiscount(data);
       console.log(response);
       this.requesting = false;
-      this.notification.success('Success', 'E-receipt creation was successful');
+      this.notification.success('Success', 'Discount creation was successful');
     } catch (e) {
       console.log(e);
       this.requesting = false;
-      this.notification.error('Error', 'Unable to create E-receipt');
+      this.notification.error('Error', 'Unable to create Discount');
     } finally {
       this.requesting = false;
     }
   }
 
   processData() {
-    // return {
-    //   patient_id: this.patient.id,
-    //   patient_status: this.patient.reg_status,
-    //   services: this.services.filter(item => item.checked).map(item => ({ transaction_update_id: item.transaction_update_id })),
-    //   outstanding_bill: this.services
-    //     .filter(item => !item.checked)
-    //     .reduce(((accumulator, currentValue) => accumulator + parseFloat(currentValue.total_amount)), 0.00),
-    //   total_bill: this.billDueControl.value,
-    //   amount_paid: this.amountRecievedFormControl.value
-    // };
+    // 'patient_id'=required,
+    // 'patient_status'=>'optional|in:IN-PATIENT,OUT-PATIENT,WALK-IN',
+    // 'funding_type_id'=>required,
+    // 'sponsorship_type_id'=>required,
+    // 'billing_sponsor_id'=>not required if sponsorship type is patient or government insurance,
+    // 'patient_sponsor_id'=>not required if sponsorship type is patient or government insurance,
+    // 'receipt_number' => Required
+    // 'total_bill'=>optional | default(Taken from the ereceipts table using the receipt_number provided),
+    // 'discount_amount'=>optional if discount_percentage is provided | default(It will be computed automatically from the total_bill using the discount_percentage),
+    // 'discount_percentage'=>optional if discount amount is provided,
+    // 'status'=>'optional|in:ACTIVE,INACTIVE',
+    let data: any = {
+      patient_id: this.patient.id,
+      patient_status: this.patient.reg_status,
+      funding_type_id: this.patient.funding_type_id,
+      sponsorship_type_id: this.patient.sponsorship_type_id,
+      payment_channel_id: this.paymentChannelControl.value,
+      total_bill: this.totalBillControl.value
+    };
+
+    if (this.patient.sponsorship_type_name.trim().toLowerCase() !== 'patient'
+      && this.patient.sponsorship_type_name.trim().toLowerCase() !== 'government insurance') {
+      data = { ...data, patient_sponsor_id: this.patientSponsor.id };
+      if (this.patientSponsor.billing_sponsor) {
+        data = { ...data, billing_sponsor_id: this.patientSponsor.billing_sponsor.id };
+      }
+    }
+
+    if (this.discountTypeControl.value === 'p') {
+      data = { ...data, discount_percentage: this.discountValuePercentageControl.value };
+    } else {
+      data = { ...data, discount_amount: this.discountValueFlatControl.value };
+    }
+    return data;
   }
+
+
 }
