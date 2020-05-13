@@ -1,0 +1,155 @@
+<nz-row nzGutter="16">
+  <nz-card nz-col nzSpan="12" nzTitle="Lab Parameters" [nzExtra]="addButton">
+    <ng-template #addButton>
+      <button nz-button nzType="primary" (click)="showQuestionModal()">Add Question</button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="questions" [nzItemLayout]="'horizontal'"
+             [nzLoading]="isQuestionsLoading" [nzRenderItem]="par">
+      <ng-template #par let-par>
+        <nz-list-item [nzActions]="[showOptions,edit,remove, toggle]">
+          <ng-template #showOptions>
+            <a *ngIf="asQuestion(par).value_type === 'Select'" (click)="getQuestionOptions(par)">options</a>
+          </ng-template>
+          <ng-template #edit><a (click)="showQuestionModal(par)">edit</a></ng-template>
+          <ng-template #remove>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+               (nzOnConfirm)="deleteQuestion(par)"><i nz-icon nzType="delete" nzTheme="fill"
+                                                      style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #toggle>
+            <nz-switch [(ngModel)]="asQuestion(par).isActivated" (ngModelChange)="toggleItem($event, par, true)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="description">
+            <ng-template #nzTitle>
+              <a>{{ asQuestion(par).question }}</a>
+            </ng-template>
+            <ng-template #description>
+              <div>{{ asQuestion(par).gender }}</div>
+              <div>{{ asQuestion(par).value_type }}</div>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+
+  <nz-card nz-col nzSpan="12" *ngIf="activeQuestion" [nzTitle]="activeQuestion.question"
+           [nzExtra]="extraTemplate">
+    <ng-template #extraTemplate>
+      <button nz-button nzType="primary" *ngIf="activeQuestion && isSelect" (click)="showOptionModal()">Add Option
+      </button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="options" [nzItemLayout]="'horizontal'"
+             [nzLoading]="isOptionsLoading" [nzRenderItem]="item">
+      <ng-template #item let-item>
+        <nz-list-item [nzActions]="[deleteAction,editAction, moreAction]">
+          <ng-template #editAction><a (click)="showOptionModal(item)">edit</a></ng-template>
+          <ng-template #deleteAction>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+               (nzOnConfirm)="deleteOption(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                                                     style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #moreAction>
+            <nz-switch [(ngModel)]="asOption(item).isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="description">
+            <ng-template #nzTitle>
+              <a>{{ item.value }}</a>
+            </ng-template>
+            <ng-template #description>
+              <div>{{ asOption(item).gender }}</div>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+</nz-row>
+
+<nz-modal [nzVisible]="isQuestionModalVisible" (nzOnCancel)="closeQuestionModal()" [nzFooter]="modalFooter"
+          [nzTitle]="isEditingQuestion ? 'Update Question' : 'Create Question'">
+  <ng-template #modalFooter>
+    <nz-row nzType="flex" nzJustify="center">
+      <nz-button-group>
+        <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingQuestion"
+                (click)="resetQue()">Cancel
+        </button>
+        <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingQuestion"
+                [disabled]="questionForm.invalid" (click)="submitQuestion()">Submit
+        </button>
+      </nz-button-group>
+    </nz-row>
+  </ng-template>
+
+  <form nz-form [formGroup]="questionForm" (ngSubmit)="submitQuestion()" (reset)="resetQue()">
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>Question</nz-form-label>
+        <input nz-input type="text" formControlName="question"/>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item nzGutter="16">
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Value Type</nz-form-label>
+        <nz-select formControlName="value_type">
+          <nz-option nzValue="Number" nzLabel="Number"></nz-option>
+          <nz-option nzValue="Text" nzLabel="Text"></nz-option>
+          <nz-option nzValue="True/False" nzLabel="True/False"></nz-option>
+          <nz-option nzValue="Select" nzLabel="Select"></nz-option>
+        </nz-select>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Gender</nz-form-label>
+        <nz-select formControlName="gender">
+          <nz-option nzValue="FEMALE" nzLabel="Female"></nz-option>
+          <nz-option nzValue="MALE" nzLabel="Male"></nz-option>
+          <nz-option nzValue="MALE,FEMALE" nzLabel="All"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
+
+<nz-modal [nzVisible]="isOptionModalVisible" (nzOnCancel)="closeOptionModal()" [nzFooter]="flagFooter"
+          [nzTitle]="isEditingOption ? 'Update Option' : 'Create Option'">
+  <form nz-form [formGroup]="optionForm" (ngSubmit)="submitOption()" (reset)="resetOpt()">
+    <ng-template #flagFooter>
+      <nz-row nzType="flex" nzJustify="center">
+        <nz-button-group>
+          <button nz-button nzType="danger" type="reset" [nzLoading]="isCreatingOption"
+                  (click)="resetOpt()">Cancel
+          </button>
+          <button nz-button nzType="primary" type="submit" [nzLoading]="isCreatingOption"
+                  [disabled]="optionForm.invalid"
+                  (click)="submitOption()">Submit
+          </button>
+        </nz-button-group>
+      </nz-row>
+    </ng-template>
+
+    <nz-form-item>
+      <nz-form-control nzErrorTip="Enter a valid value">
+        <nz-form-label>Question Name</nz-form-label>
+        <input nz-input type="text" formControlName="consultation_question"/>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
+        <nz-form-label>Value</nz-form-label>
+        <input nz-input type="text" formControlName="value"/>
+      </nz-form-control>
+
+      <nz-form-control nzSpan="12" nzErrorTip="Select a valid value">
+        <nz-form-label>Gender</nz-form-label>
+        <nz-select formControlName="gender">
+          <nz-option nzValue="MALE" nzLabel="MALE"></nz-option>
+          <nz-option nzValue="FEMALE" nzLabel="FEMALE"></nz-option>
+          <nz-option nzValue="MALE,FEMALE" nzLabel="ALL"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+  </form>
+</nz-modal>
