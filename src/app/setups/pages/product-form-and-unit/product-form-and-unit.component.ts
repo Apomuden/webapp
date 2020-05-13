@@ -18,12 +18,12 @@ export class ProductFormAndUnitComponent implements OnInit, AfterViewInit, OnDes
   });
   productFormForm = this.fb.group({
     name: [null, Validators.required],
-    product_category_id: [null, Validators.required],
+    product_type_id: [null, Validators.required],
   });
 
   productUnits = [];
   productForms = [];
-  categories = [];
+  productTypes = [];
 
   isUnitsLoading = true;
   isCreatingUnit = false;
@@ -33,7 +33,7 @@ export class ProductFormAndUnitComponent implements OnInit, AfterViewInit, OnDes
   isEditingForm = false;
   isFormsLoading = false;
   isCreatingForm = false;
-  isCatLoading = false;
+  isTypesLoading = false;
 
   editUnit: any;
   editForm: any;
@@ -62,9 +62,9 @@ export class ProductFormAndUnitComponent implements OnInit, AfterViewInit, OnDes
   }
 
   async getCategories() {
-    this.isCatLoading = true;
-    this.categories = await this.storeSetupService.getProductCategories().toPromise();
-    this.isCatLoading = false;
+    this.isTypesLoading = true
+    this.productTypes = await this.storeSetupService.getProductTypes().toPromise();
+    this.isTypesLoading = false;
   }
 
   async getForms() {

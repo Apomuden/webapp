@@ -48,7 +48,7 @@
               <a>{{ category.name }}</a>
             </ng-template>
             <ng-template #description>
-              <a>{{ category.product_category_name }}</a>
+              <a>{{ category.product_type_name }}</a>
             </ng-template>
           </nz-list-item-meta>
         </nz-list-item>
@@ -102,8 +102,8 @@
 
       <nz-form-control nzSpan="12" nzErrorTip="Enter a valid value">
         <nz-form-label>Product Category</nz-form-label>
-        <nz-select formControlName="product_category_id" [nzLoading]="isCatLoading">
-          <nz-option *ngFor="let cat of categories" [nzValue]="cat.id" [nzLabel]="cat.name"></nz-option>
+        <nz-select formControlName="product_type_id" [nzLoading]="isTypesLoading">
+          <nz-option *ngFor="let type of productTypes" [nzValue]="type.id" [nzLabel]="type.name"></nz-option>
         </nz-select>
       </nz-form-control>
     </nz-form-item>
