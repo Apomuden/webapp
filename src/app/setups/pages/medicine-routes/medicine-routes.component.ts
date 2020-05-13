@@ -62,19 +62,19 @@ export class MedicineRoutesComponent implements OnInit, AfterViewInit, OnDestroy
       : this.storeSetupService.editMedicineRoute(this.editRoute.id, this.routeForm.value);
     const success = await observable.toPromise();
     this.isCreatingRoute = false;
-    this.showNotif(!success);
+    this.showNotification(!success);
     if (success) {
       this.resetRoute();
       this.getRoutes();
     }
   }
 
-  showNotif(isError = false) {
+  showNotification(isError = false) {
     if (isError) {
       this.notification.error('Error', 'Operation unsuccessful');
       return;
     }
-    this.notification.success('Success', 'Proccessed Successfully');
+    this.notification.success('Success', 'Processed Successfully');
   }
 
   showRouteModal(route: any) {
@@ -102,7 +102,7 @@ export class MedicineRoutesComponent implements OnInit, AfterViewInit, OnDestroy
     this.isRoutesLoading = true;
     this.storeSetupService.deleteMedicineRoute(route.id).subscribe(success => {
       this.isRoutesLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.medicineRoutes.findIndex(p => p.id === route.id);
         this.medicineRoutes.splice(index, 1);
