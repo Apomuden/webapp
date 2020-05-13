@@ -1,7 +1,10 @@
-import { map, first } from 'rxjs/operators';
-import { environment } from './../../../environments/environment';
-import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import {map, first, catchError} from 'rxjs/operators';
+import {environment} from './../../../environments/environment';
+import {HttpClient} from '@angular/common/http';
+import {Injectable} from '@angular/core';
+import {of} from "rxjs";
+import {GetPayload} from "../models/payload";
+import {ConsultationQuestion} from "../models/ConsultationQuestion";
 
 const COUNTRIES_API_URL = environment.apiBaseUrl + '/setups/countries';
 const ROLES_API_URL = environment.apiBaseUrl + '/auth/roles';
@@ -51,6 +54,12 @@ const SERVICE_CATEGORY_API_URL =
 const FUNDING_TYPE_API_URL = environment.apiBaseUrl + '/setups/fundingtypes';
 const STAFF_CATEGORY_API_URL =
   environment.apiBaseUrl + '/setups/staffcategories';
+
+const
+  QUESTIONS_URL = `${environment.apiBaseUrl}/setups/consultationquestions`;
+const
+  OPTIONS_URL = `${environment.apiBaseUrl}/setups/consultationquestionoptions`;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -93,7 +102,8 @@ export class SetupService {
   private clinics;
   private servicePrices;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   getCountries() {
     return this.http.get<any>(COUNTRIES_API_URL).pipe(
@@ -105,6 +115,7 @@ export class SetupService {
       })
     );
   }
+
   getRegionsByCountryApi(countryId: String) {
     return REGIONS_BY_COUNTRY_ID_API_URL + countryId + '/regions';
   }
@@ -125,7 +136,7 @@ export class SetupService {
    */
   createDepartment(name: string) {
     return this.http
-      .post<any>(DEPARTMENTS_API_URL, { name })
+      .post<any>(DEPARTMENTS_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -135,6 +146,7 @@ export class SetupService {
         })
       );
   }
+
   createMedicalSponsor(fields: object) {
     return this.http
       .post<any>(MEDICAL_SPONSOR_API_URL, fields)
@@ -162,9 +174,10 @@ export class SetupService {
         })
       );
   }
+
   createClinicType(name: String) {
     return this.http
-      .post<any>(`${environment.apiBaseUrl}/setups/clinictypes`, { name })
+      .post<any>(`${environment.apiBaseUrl}/setups/clinictypes`, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -174,6 +187,7 @@ export class SetupService {
         })
       );
   }
+
   getClinicTypes() {
     return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinictypes`).pipe(
       map(
@@ -190,6 +204,7 @@ export class SetupService {
       )
     );
   }
+
   getClinics() {
     return this.http.get<any>(CLINICS_API_URL).pipe(
       map(
@@ -283,6 +298,7 @@ export class SetupService {
         })
       );
   }
+
   getFundingTypes() {
     return this.http.get<any>(FUNDING_TYPE_API_URL).pipe(
       map(res => {
@@ -297,7 +313,6 @@ export class SetupService {
       })
     );
   }
-
 
 
   /**
@@ -318,6 +333,7 @@ export class SetupService {
         })
       );
   }
+
   getServiceCategories() {
     return this.http.get<any>(SERVICE_CATEGORY_API_URL).pipe(
       map(res => {
@@ -370,6 +386,7 @@ export class SetupService {
         })
       );
   }
+
   getServiceSubcategories() {
     return this.http.get<any>(SERVICE_SUB_CATEGORIES_API_URL).pipe(
       map(res => {
@@ -384,6 +401,7 @@ export class SetupService {
       })
     );
   }
+
   getServiceSubcategoriesByCategory(categoryId: number) {
     return this.http.get<any>(`${environment.apiBaseUrl}/setups/servicecategories/${categoryId}/servicesubcategories`).pipe(
       map(res => {
@@ -398,6 +416,7 @@ export class SetupService {
       })
     );
   }
+
   getServiceCategoriesByHospitalService(hospitalServiceId: number) {
 
     return this.http.get<any>(`${environment.apiBaseUrl}/setups/hospitalservices/${hospitalServiceId}/servicecategories`).pipe(
@@ -432,6 +451,7 @@ export class SetupService {
         })
       );
   }
+
   getProfessions() {
     return this.http.get<any>(PROFESSIONS_API_URL).pipe(
       map(res => {
@@ -465,6 +485,7 @@ export class SetupService {
         })
       );
   }
+
   getStaffTypes() {
     return this.http.get<any>(STAFF_TYPE_API_URL).pipe(
       map(res => {
@@ -485,7 +506,7 @@ export class SetupService {
    */
   createPaymentChannel(name: string) {
     return this.http
-      .post<any>(PAYMENTS_CHANNEL_API_URL, { name })
+      .post<any>(PAYMENTS_CHANNEL_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -517,7 +538,7 @@ export class SetupService {
    */
   createBillingCycle(name: string, status: string) {
     return this.http
-      .post<any>(BILLING_CYCLE_API_URL, { name, status })
+      .post<any>(BILLING_CYCLE_API_URL, {name, status})
       .pipe(
         map(res => {
           if (res) {
@@ -593,7 +614,7 @@ export class SetupService {
    */
   createBillingSystem(name: string) {
     return this.http
-      .post<any>(BILLING_SYSTEM_API_URL, { name })
+      .post<any>(BILLING_SYSTEM_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -625,7 +646,7 @@ export class SetupService {
    */
   createCompany(name: string, phone: string, email: string, gps_location) {
     return this.http
-      .post<any>(COMPANY_API_URL, { name, phone, email, gps_location })
+      .post<any>(COMPANY_API_URL, {name, phone, email, gps_location})
       .pipe(
         map(res => {
           if (res) {
@@ -657,7 +678,7 @@ export class SetupService {
    */
   createHospitalService(name: string) {
     return this.http
-      .post<any>(HOSPITAL_SERVICE_API_URL, { name })
+      .post<any>(HOSPITAL_SERVICE_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -689,7 +710,7 @@ export class SetupService {
    */
   createLanguage(name: string) {
     return this.http
-      .post<any>(LANGUAGE_API_URL, { name })
+      .post<any>(LANGUAGE_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -721,7 +742,7 @@ export class SetupService {
    */
   createTown(name: string, district: string) {
     return this.http
-      .post<any>(TOWN_API_URL, { name, district_id: district })
+      .post<any>(TOWN_API_URL, {name, district_id: district})
       .pipe(
         map(res => {
           if (res) {
@@ -781,7 +802,6 @@ export class SetupService {
         }
         return this.servicePrices;
       })
-
     );
   }
 
@@ -795,12 +815,13 @@ export class SetupService {
       })
     );
   }
+
   /**
    * Relationship routes
    */
   createRelationship(name: string) {
     return this.http
-      .post<any>(RELATIONSHIP_API_URL, { name })
+      .post<any>(RELATIONSHIP_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -831,7 +852,7 @@ export class SetupService {
    */
   createSpeciality(name: string) {
     return this.http
-      .post<any>(SPECIALITY_API_URL, { name })
+      .post<any>(SPECIALITY_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -863,7 +884,7 @@ export class SetupService {
    */
   createReligion(name: string) {
     return this.http
-      .post<any>(RELIGION_API_URL, { name })
+      .post<any>(RELIGION_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -892,7 +913,7 @@ export class SetupService {
 
   createStaffCategory(name: string) {
     return this.http
-      .post<any>(STAFF_CATEGORY_API_URL, { name })
+      .post<any>(STAFF_CATEGORY_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -924,7 +945,7 @@ export class SetupService {
    */
   createPaymentStyle(name: string) {
     return this.http
-      .post<any>(PAYMENT_STYLE_API_URL, { name })
+      .post<any>(PAYMENT_STYLE_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -956,7 +977,7 @@ export class SetupService {
    */
   createSponsorshipType(name: string) {
     return this.http
-      .post<any>(SPONSORSHIP_TYPE_API_URL, { name })
+      .post<any>(SPONSORSHIP_TYPE_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -999,7 +1020,7 @@ export class SetupService {
    */
   createBank(name: string, shortCode: string, email: string, phone: string) {
     return this.http
-      .post<any>(BANKS_API_URL, { name, sort_code: shortCode, email, phone })
+      .post<any>(BANKS_API_URL, {name, sort_code: shortCode, email, phone})
       .pipe(
         map(res => {
           if (res) {
@@ -1062,7 +1083,7 @@ export class SetupService {
 
   createIdType(name: string, expires: boolean) {
     return this.http
-      .post<any>(ID_TYPE_API_URL, { name, expires })
+      .post<any>(ID_TYPE_API_URL, {name, expires})
       .pipe(
         map(res => {
           if (res) {
@@ -1105,7 +1126,7 @@ export class SetupService {
 
   createEducationalLevel(name: string) {
     return this.http
-      .post<any>(EDUCATIONAL_LEVEL_API_URL, { name })
+      .post<any>(EDUCATIONAL_LEVEL_API_URL, {name})
       .pipe(
         map(res => {
           if (res) {
@@ -1276,6 +1297,7 @@ export class SetupService {
       })
     );
   }
+
   getDoctorsBySpecialty(id: string) {
     const url = `${environment.apiBaseUrl}/auth/profiles?staff_specialty_id=${id}&role_id=3`;
 
@@ -1371,7 +1393,7 @@ export class SetupService {
       })
       .pipe(map(data => {
         if (!data) {
-          return { data: [] };
+          return {data: []};
         }
         return data;
       }));
@@ -1381,7 +1403,7 @@ export class SetupService {
     return this.http.get<any>(`${environment.apiBaseUrl}/setups/clinicservices`)
       .pipe(map(data => {
         if (!data) {
-          return { data: [] };
+          return {data: []};
         }
         return data;
       }));
@@ -1484,50 +1506,54 @@ export class SetupService {
   getHistoryCategories(resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.get<any>(url).pipe(map(res => {
-      return res ? res.data : [];
-    },
+        return res ? res.data : [];
+      },
       err => {
         return [];
       }
     ));
   }
+
   createHistoryCategory(resourcePath: string, fields: object) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.post<any>(url, fields).pipe(map(res => {
-      return res ? true : false;
-    },
+        return res ? true : false;
+      },
       err => {
         return false;
       }
     ));
   }
+
   genericGet(resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.get<any>(url).pipe(map(res => {
-      if (res) {
-        for (let i = 0; i < res.data.length; i++) {
-          res.data[i].isActivated =
-            res.data[i].status === 'ACTIVE' ? true : false;
+        if (res) {
+          for (let i = 0; i < res.data.length; i++) {
+            res.data[i].isActivated =
+              res.data[i].status === 'ACTIVE' ? true : false;
+          }
         }
-      }
 
-      return res ? res.data : [];
-    },
+        return res ? res.data : [];
+      },
       err => {
         return [];
       }
     ));
   }
+
   genericPost(resourcePath: string, fields: object) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.post<any>(url, fields).pipe(map(res => {
-      return res ? true : false;
-    },
+        return res ? true : false;
+      },
       err => {
         return false;
       }
     ));
   }
+
   deleteSetup(resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.delete<any>(url).pipe(
@@ -1535,12 +1561,70 @@ export class SetupService {
         return res ? true : false;
       }));
   }
+
   updateSetup(fields: any, resourcePath: string) {
     const url = `${environment.apiBaseUrl}/${resourcePath}`;
     return this.http.put<any>(url, fields).pipe(
       map(res => {
-        return res ? true : false;
+        return !!res;
       }));
+  }
+
+  getConsultationQuestions() {
+    return this.http.get<GetPayload<ConsultationQuestion>>(QUESTIONS_URL)
+      .pipe(map(this.setStatus), first(), catchError(_ => of([])));
+  }
+
+  createConsultationQuestion(value: Object) {
+    return this.http.post<boolean>(QUESTIONS_URL, value)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  editConsultationQuestion(id: number, value: Object) {
+    return this.http.put<boolean>(`${QUESTIONS_URL}/${id}`, value)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  deleteQuestion(id: any) {
+    return this.http.delete<boolean>(`${QUESTIONS_URL}/${id}`)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  getQuestionOptions(id: number) {
+    return this.http.get<any>(OPTIONS_URL, {
+      params: {
+        consultation_question_id: `=${id}`
+      }
+    })
+      .pipe(map(this.setStatus), first(), catchError(_ => of([])));
+  }
+
+  createQuestionOption(value: Object) {
+    return this.http.post<boolean>(OPTIONS_URL, value)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+  }
+
+  editQuestionOption(id: any, value: any) {
+    return this.http.put<boolean>(`${OPTIONS_URL}/${id}`, value)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+
+  }
+
+  deleteOption(id: any) {
+    return this.http.delete<boolean>(`${OPTIONS_URL}/${id}`)
+      .pipe(map(res => !!res), first(), catchError(_ => of(false)));
+
+  }
+
+  setStatus(res: any): any[] {
+    if (res && res.data && res.data.length > 0) {
+      res.data.forEach(flag => {
+        flag.isActivated = flag.status === 'ACTIVE';
+      });
+      return res.data;
+    } else {
+      return [];
+    }
   }
 }
 
