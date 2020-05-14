@@ -146,7 +146,9 @@ export class StockAdjustmentComponent implements OnInit {
     const index = this.adjustedStockData.indexOf(data);
 
     if (index !== -1) {
-      this.adjustedStockData = this.adjustedStockData.splice(index, 1);
+      this.adjustedStockData.splice(index, 1);
+      this.adjustedStockData =  [...this.adjustedStockData];
+      console.log('Print data', this.adjustedStockData);
     }
   }
 }
