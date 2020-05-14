@@ -22,6 +22,7 @@ export class StockAdjustmentComponent implements OnInit {
 
   adjustedStockData: StockData[] = [];
 
+
   constructor(private readonly fb: FormBuilder) {}
 
   ngOnInit() {
@@ -46,11 +47,11 @@ export class StockAdjustmentComponent implements OnInit {
     this.stockItemForm = this.fb.group({
       productName: ['', Validators.required],
       uom: ['ml', Validators.required],
-      qtyAtHand: [0, Validators.required],
-      unitCost: [0, Validators.required],
-      adjustmentMode: ['-', Validators.required],
-      adjustmentQuantity: [0, Validators.required],
-      expectedValue: [0, Validators.required],
+      qtyAtHand: [null, Validators.required],
+      unitCost: [null, Validators.required],
+      adjustmentMode: ['+', Validators.required],
+      adjustmentQuantity: [null, Validators.required],
+      expectedValue: [null, Validators.required],
       batchNo: ['', Validators.required],
       expiryDate: [new Date(), Validators.required],
       reason: ['Expired', Validators.required]
@@ -59,7 +60,87 @@ export class StockAdjustmentComponent implements OnInit {
     this.stockItemForm.get('expectedValue').disable();
   }
 
-  addStockItem() {}
+  get qtyAtHandControl() {
+    return this.stockItemForm.get('qtyAtHand');
+  }
+
+  get adjustmentModeControl() {
+    return this.stockItemForm.get('adjustmentMode');
+  }
+
+  get adjustmentQuantityControl() {
+    return this.stockItemForm.get('adjustmentQuantity');
+  }
+
+  get expectedValueControl() {
+    return this.stockItemForm.get('expectedValue');
+  }
+
+  adjustmentQtyChanged() {
+    console.log('value changed'); // TODO: REMOVE THIS LINE
+
+    const qtyAtHand = parseInt(this.qtyAtHandControl.value, 10);
+
+    if (isNaN(qtyAtHand)) {
+      this.qtyAtHandControl.setValue(null);
+      this.qtyAtHandControl.markAsDirty();
+      this.qtyAtHandControl.updateValueAndValidity();
+      return;
+    }
+
+    const adjQty = parseInt(this.adjustmentQuantityControl.value, 10);
+
+    if (isNaN(adjQty)) {
+      this.adjustmentQuantityControl.setValue(null);
+      this.adjustmentModeControl.markAsDirty();
+      this.adjustmentModeControl.updateValueAndValidity();
+      return;
+    }
+
+    if (this.adjustmentModeControl.value === '-') {
+      const sub = qtyAtHand - adjQty;
+
+      if (sub >= 0) {
+        this.adjustmentQuantityControl.setErrors(null);
+        this.expectedValueControl.setValue(qtyAtHand - adjQty);
+      } else {
+        this.expectedValueControl.setValue(null);
+        this.adjustmentQuantityControl.setErrors({
+          valueBelowZero: true
+        });
+      }
+    } else if (this.adjustmentModeControl.value === '+') {
+      this.expectedValueControl.setValue(qtyAtHand + adjQty);
+    }
+  }
+
+  addStockItem() {
+    for (const key of Object.keys(this.stockItemForm.controls)) {
+      const formControl = this.stockItemForm.controls[key];
+      formControl.markAsDirty();
+      formControl.updateValueAndValidity();
+    }
+
+    if (!this.stockItemForm.valid) {
+      return;
+    }
+
+    const formControls = this.stockItemForm.controls;
+    const stockData: StockData = {
+      productName: formControls.productName.value,
+      uom: formControls.uom.value,
+      qtyAtHand: this.qtyAtHandControl.value,
+      unitCost: formControls.unitCost.value,
+      adjustmentMode: this.adjustmentModeControl.value,
+      adjustmentQuantity: this.adjustmentQuantityControl.value,
+      expectedValue: this.expectedValueControl.value,
+      batchNo: formControls.batchNo.value,
+      expiryDate: formControls.expiryDate.value,
+      reason: formControls.reason.value
+    };
+
+    this.adjustedStockData = [...this.adjustedStockData, stockData];
+  }
 
   deleteData(data: StockData) {
     const index = this.adjustedStockData.indexOf(data);
@@ -67,22 +148,5 @@ export class StockAdjustmentComponent implements OnInit {
     if (index !== -1) {
       this.adjustedStockData = this.adjustedStockData.splice(index, 1);
     }
-
-    for (let i = 0; i < 10; i++) {
-      this.adjustedStockData.push({
-        productName: 'Paracetamol',
-        uom: 'ml',
-        qtyAtHand: 20,
-        unitCost: 30,
-        adjustmentMode: '-',
-        adjustmentQuantity: 90,
-        expectedValue: 22,
-        batchNo: 'E4434',
-        expiryDate: new Date(),
-        reason: 'Asem Aba'
-      });
-    }
-
-    this.adjustedStockData = this.adjustedStockData;
   }
 }

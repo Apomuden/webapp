@@ -89,9 +89,9 @@
         </nz-form-item>
         <nz-form-item nz-col [nzSpan]="3" >
           <nz-form-label nzRequired nzFor="qtyAtHand">Qty At Hand</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a valid number">
             <nz-input-number formControlName="qtyAtHand"
-            [nzMin]="0" [nzMax]="10" [nzStep]="1"
+            [nzMin]="0" [nzStep]="1"
             style="width: 140px;">
             </nz-input-number>
           </nz-form-control>
@@ -99,7 +99,9 @@
         <nz-form-item nz-col [nzSpan]="3" >
           <nz-form-label nzRequired nzFor="unitCost">Unit Cost</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="This field is required">
-            <input type="text" nz-input placeholder="Unit Cost" formControlName="unitCost"/>
+            <nz-input-number formControlName="unitCost"
+            [nzMin]="0" [nzStep]=".1"
+            style="width: 140px;"></nz-input-number>
           </nz-form-control>
         </nz-form-item>
         <nz-form-item nz-col [nzSpan]="5" >
@@ -124,7 +126,7 @@
             </nz-select>
           </nz-form-control>
         </nz-form-item>
-        <nz-form-item nz-col [nzSpan]="3">
+        <nz-form-item nz-col [nzSpan]="3" class="signed-radio">
           <nz-form-label nzFor="adjustmentMode" style="visibility: hidden;"></nz-form-label>
           <nz-form-control>
             <nz-radio-group formControlName="adjustmentMode" style="width: 180px;" >
@@ -139,9 +141,12 @@
         </nz-form-item>
         <nz-form-item nz-col [nzSpan]="3" >
           <nz-form-label nzRequired nzFor="adjustmentQuantity">Adj. Qty</nz-form-label>
-          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
-            <input type="text" nz-input placeholder="Adj. Qty" formControlName="adjustmentQuantity"/>
+          <nz-form-control>
+            <nz-input-number formControlName="adjustmentQuantity" [nzMin]="0" [nzStep]="1"
+            style="width: 140px;" (nzBlur)="adjustmentQtyChanged()"></nz-input-number>
           </nz-form-control>
+          <span nz-typography nzType="danger" *ngIf="adjustmentQuantityControl.hasError('required') && adjustmentQuantityControl.dirty">Adjustment quatity is required</span>
+          <span nz-typography nzType="danger" *ngIf="adjustmentQuantityControl.hasError('valueBelowZero') && adjustmentQuantityControl.dirty">Expected value cannot be below zero(0)</span>
         </nz-form-item>
         <nz-form-item nz-col [nzSpan]="3" >
           <nz-form-label nzRequired nzFor="expectedValue">Expected Value</nz-form-label>
@@ -161,6 +166,10 @@
 </div>
 <div nz-row>
   <nz-card>
+    <div nz-row>
+      <button nz-button nzType="primary">Save</button>
+      <button nz-button nzType="default" nzDanger>Cancel</button>
+    </div>
     <nz-table #stockAdjustmentTable [nzData]="adjustedStockData">
       <thead>
         <tr>
