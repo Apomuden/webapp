@@ -24,7 +24,7 @@ import {
 import { first, takeUntil } from "rxjs/operators";
 import { formatDate } from "@angular/common";
 import * as moment from "moment";
-import { ConsultationData } from "../consultation/model/consultation-data.model";
+import { ConsultationData } from "../../shared/models/consultation-data.model";
 
 @Component({
   selector: "app-investigation",

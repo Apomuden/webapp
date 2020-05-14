@@ -1,18 +1,17 @@
-import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
-import { Validators, FormBuilder, FormControl } from '@angular/forms';
-import { debounceTime, first } from 'rxjs/operators';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { NzNotificationService, NzModalRef } from 'ng-zorro-antd';
-import { AuthenticationService } from 'src/app/shared/services/authentication.service';
-import { User } from 'src/app/shared/interfaces/user.type';
-import { PhysicianService } from '../services/physician.service';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {debounceTime, first} from 'rxjs/operators';
+import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
+import {NzNotificationService} from 'ng-zorro-antd';
+import {AuthenticationService} from 'src/app/shared/services/authentication.service';
+import {User} from 'src/app/shared/interfaces/user.type';
+import {PhysicianService} from '../services/physician.service';
 import * as dateFns from 'date-fns';
-import { formatDate } from '@angular/common';
-import { ThemeConstantService } from 'src/app/shared/services/theme-constant.service';
-import { ConsultationData } from './model/consultation-data.model';
+import {formatDate} from '@angular/common';
+import {ConsultationData} from '../../shared/models/consultation-data.model';
 
 @Component({
-  selector: 'app-vital-form',
+  selector: 'app-consultation',
   templateUrl: './consultation.component.html',
   styleUrls: ['./consultation.component.css']
 })
@@ -250,6 +249,7 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
 
   cancel() {
     this.patient = null;
+    this.attendance = null;
     this.searchInitialized = false;
     this.folderNoControl.reset();
     this.vitals = null;

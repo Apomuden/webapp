@@ -6,7 +6,7 @@ import { PhysicianService } from '../services/physician.service';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
 import { ThemeConstantService } from '../../shared/services/theme-constant.service';
-import { ConsultationData } from '../consultation/model/consultation-data.model';
+import { ConsultationData } from '../../shared/models/consultation-data.model';
 
 interface ItemData {
   id: string;
