@@ -1,0 +1,60 @@
+<nz-tabset [nzTabPosition]="'top'" nzSize="small" nzType="line">
+  <nz-tab nzTitle="Previous Entry">
+    <nz-card-loading *ngIf="isLoading"></nz-card-loading>
+    <nz-empty *ngIf="!isLoading && (!previousResponses || previousResponses.length === 0)"></nz-empty>
+    <nz-collapse *ngIf="previousResponses" nzAccordion>
+      <nz-collapse-panel *ngFor="let row of previousResponses" [nzHeader]="row.response_date | date:'medium'"
+                         [nzActive]="row.active">
+        <nz-comment *ngFor="let res of row.responses" [nzAuthor]="res.consultation_question">
+          <nz-comment-content>
+            <div> {{ res.response || 'N/A' }} </div>
+          </nz-comment-content>
+        </nz-comment>
+      </nz-collapse-panel>
+    </nz-collapse>
+  </nz-tab>
+
+  <nz-tab nzTitle="Current Entry">
+    <nz-row nzType="flex" nzJustify="center">
+      <form [formGroup]="questionForm" nz-form nz-col [nzSpan]="24" nzLayout="vertical" *ngIf="questions">
+        <nz-form-item [nzGutter]="16" *ngFor="let row of questions">
+          <nz-form-control *ngFor="let question of row" [nzSpan]="24 / row.length" nzErrorTip="Enter valid value">
+            <nz-form-label> {{ question.question }} </nz-form-label>
+            <input *ngIf="question.value_type === 'Number'" nz-input
+                   [type]="question.value_type" [formControlName]="'' + question.id" nz-popover
+                   [nzPopoverContent]="question.question" [placeholder]="question.question"/>
+
+            <textarea nz-input *ngIf="question.value_type === 'Text'" nz-popover [formControlName]="'' + question.id"
+                      [nzPopoverContent]="question.question"
+                      [placeholder]="question.question"></textarea>
+
+            <nz-select *ngIf="question.value_type === 'Select'" [nzLoading]="question.isLoadingOptions"
+                       [formControlName]="'' + question.id"
+                       nz-popover [nzPopoverContent]="question.question" nzAllowClear
+                       [nzPlaceHolder]="question.question">
+              <nz-option *ngFor="let option of question.options" [nzValue]="option.value" [nzLabel]="option.value">
+              </nz-option>
+            </nz-select>
+
+            <nz-switch *ngIf="question.value_type === 'True/False'" [formControlName]="'' + question.id"
+                       nzCheckedChildren="True"
+                       nzUnCheckedChildren="False"></nz-switch>
+
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </nz-row>
+  </nz-tab>
+</nz-tabset>
+
+<nz-divider></nz-divider>
+
+<nz-row nzType="flex" nzJustify="center">
+  <nz-col>
+    <nz-button-group>
+      <button nz-button nzType="danger" (click)="previous()" [nzLoading]="isSubmitting">Previous</button>
+      <button nz-button nzType="primary" (click)="submit()" [nzLoading]="isSubmitting">Next
+      </button>
+    </nz-button-group>
+  </nz-col>
+</nz-row>

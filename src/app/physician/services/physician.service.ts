@@ -1,16 +1,19 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { map } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse} from '@angular/common/http';
+import {environment} from 'src/environments/environment';
+import {catchError, first, map} from 'rxjs/operators';
+import {BehaviorSubject, of} from 'rxjs';
+import {GetPayload} from "../../shared/models/payload.model";
+import {ConsultationQuestionResponse} from "../../shared/models/consultation-questionnaire.model";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class PhysicianService {
 
   private consultationDateSubject = new BehaviorSubject<Date>(new Date());
   readonly consultationDate$ = this.consultationDateSubject.asObservable();
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+  }
 
   setConsultationDate(date: Date) {
     if (!date) {
@@ -31,7 +34,7 @@ export class PhysicianService {
         if (res && res.data.length > 0) {
           return res.data[0];
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -48,7 +51,7 @@ export class PhysicianService {
         if (res && res.data.length > 0) {
           return res.data[0];
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -64,7 +67,7 @@ export class PhysicianService {
         if (res) {
           return res.data;
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -80,7 +83,7 @@ export class PhysicianService {
         if (res && res.data && res.data.length > 0) {
           return res.data[0];
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -101,7 +104,7 @@ export class PhysicianService {
         if (res && res.data && res.data.length > 0) {
           return res.data;
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -128,6 +131,7 @@ export class PhysicianService {
     const url = `${environment.apiBaseUrl}/registry/diagnoses/multiple`;
     return this.http.post<any>(url, data);
   }
+
   getDiagnosis(patient_id: any) {
     console.log(`patientId: ${patient_id}`);
     const url = `${environment.apiBaseUrl}/registry/diagnoses`;
@@ -141,7 +145,7 @@ export class PhysicianService {
           return res.data;
         }
 
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -150,6 +154,7 @@ export class PhysicianService {
     const url = `${environment.apiBaseUrl}/registry/investigations/multiple`;
     return this.http.post<any>(url, data);
   }
+
   getInvestigations(patient_id: any) {
     console.log(`patientId: ${patient_id}`);
     const url = `${environment.apiBaseUrl}/registry/investigations`;
@@ -163,10 +168,11 @@ export class PhysicianService {
           return res.data;
         }
 
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
+
   getProcedures(patient_id: any) {
     console.log(`patientId: ${patient_id}`);
     const url = `${environment.apiBaseUrl}/registry/procedures`;
@@ -180,7 +186,7 @@ export class PhysicianService {
           return res.data;
         }
 
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -189,6 +195,7 @@ export class PhysicianService {
     const url = `${environment.apiBaseUrl}/registry/procedures/multiple`;
     return this.http.post<any>(url, data);
   }
+
   getPhysicalExams(patient_id: any) {
     const url = `${environment.apiBaseUrl}/registry/physicalexaminations`;
     return this.http.get<any>(url, {
@@ -200,19 +207,14 @@ export class PhysicianService {
         if (res && res.data && res.data.length > 0) {
           return res.data;
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
 
-  savePhysicalExams(data: any, isUpdating = false, examId = 0) {
+  savePhysicalExams(data: any) {
     let url = `${environment.apiBaseUrl}/registry/physicalexaminations/multiple`;
-    if (!isUpdating) {
-      return this.http.post<any>(url, data);
-    } else {
-      url += `/${examId}`;
-      return this.http.put<any>(url, data);
-    }
+    return this.http.post<any>(url, data);
   }
 
   getPhysicalExamCategories() {
@@ -222,7 +224,7 @@ export class PhysicianService {
         if (res && res.data && res.data.length > 0) {
           return res.data;
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
   }
@@ -238,8 +240,30 @@ export class PhysicianService {
         if (res && res.data && res.data.length > 0) {
           return res.data;
         }
-        throw new HttpErrorResponse({ status: 404 });
+        throw new HttpErrorResponse({});
       }
     ));
+  }
+
+  getQuestionResponses(patient_id: any) {
+    const url = `${environment.apiBaseUrl}/registry/consultationquestionresponses`;
+    const options = {
+      params: {
+        'patient_id': patient_id
+      }
+    }
+    return this.http.get<GetPayload<ConsultationQuestionResponse[]>>(url, options).pipe(first(), map(
+      res => {
+        if (res && res.data && res.data.length > 0) {
+          return res.data;
+        }
+        throw new HttpErrorResponse({});
+      }
+    ), catchError(_ => of([])));
+  }
+
+  saveQuestionResponse(data: any) {
+    const url = `${environment.apiBaseUrl}/registry/consultationquestionresponses`;
+    return this.http.post<boolean>(url, data).pipe(first(), map(res => !!res), catchError(_ => of(console.log(_))));
   }
 }

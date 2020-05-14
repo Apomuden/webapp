@@ -1,10 +1,11 @@
-import {map, first, catchError} from 'rxjs/operators';
+import {catchError, first, map} from 'rxjs/operators';
 import {environment} from './../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {of} from "rxjs";
 import {GetPayload} from "../models/payload.model";
-import {ConsultationQuestion} from "../models/consultation-questionnaire.model";
+import {ConsultationQuestion, ConsultationQuestionOption} from "../models/consultation-questionnaire.model";
+import {Gender} from "../models/common.model";
 
 const COUNTRIES_API_URL = environment.apiBaseUrl + '/setups/countries';
 const ROLES_API_URL = environment.apiBaseUrl + '/auth/roles';
@@ -1570,9 +1571,13 @@ export class SetupService {
       }));
   }
 
-  getConsultationQuestions() {
-    return this.http.get<GetPayload<ConsultationQuestion>>(QUESTIONS_URL)
-      .pipe(map(this.setStatus), first(), catchError(_ => of([])));
+  getConsultationQuestions(gender: Gender = Gender.ALL) {
+    return this.http.get<GetPayload<ConsultationQuestion[]>>(QUESTIONS_URL)
+      .pipe(map(this.setStatus),
+        map(ques => {
+          return ques.filter((q: ConsultationQuestion) => q.gender === gender || q.gender === Gender.ALL)
+        })
+        , first(), catchError(_ => of([])));
   }
 
   createConsultationQuestion(value: Object) {
@@ -1590,8 +1595,8 @@ export class SetupService {
       .pipe(map(res => !!res), first(), catchError(_ => of(false)));
   }
 
-  getQuestionOptions(id: number) {
-    return this.http.get<any>(OPTIONS_URL, {
+  getQuestionOptions(id: number, gender: Gender = Gender.ALL) {
+    return this.http.get<GetPayload<ConsultationQuestionOption[]>>(OPTIONS_URL, {
       params: {
         consultation_question_id: `=${id}`
       }

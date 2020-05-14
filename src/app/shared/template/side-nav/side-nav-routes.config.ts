@@ -179,6 +179,14 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       },
+      {
+        path: '/physician/ivf-consultation',
+        title: 'IVF Consultation',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
     ]
   },
   {
