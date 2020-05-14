@@ -3,8 +3,8 @@ import {environment} from './../../../environments/environment';
 import {HttpClient} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {of} from "rxjs";
-import {GetPayload} from "../models/payload";
-import {ConsultationQuestion} from "../models/ConsultationQuestion";
+import {GetPayload} from "../models/payload.model";
+import {ConsultationQuestion} from "../models/consultation-questionnaire.model";
 
 const COUNTRIES_API_URL = environment.apiBaseUrl + '/setups/countries';
 const ROLES_API_URL = environment.apiBaseUrl + '/auth/roles';

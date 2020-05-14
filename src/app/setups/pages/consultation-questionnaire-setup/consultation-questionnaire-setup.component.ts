@@ -4,14 +4,18 @@ import {SetupService} from 'src/app/shared/services/setup.service';
 import {NzNotificationService} from 'ng-zorro-antd';
 import {first} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {ConsultationQuestion, ConsultationQuestionOption} from "../../../shared/models/ConsultationQuestion";
+import {
+  ConsultationQuestion,
+  ConsultationQuestionOption
+} from "../../../shared/models/consultation-questionnaire.model";
+import {Gender} from 'src/app/shared/models/common.model';
 
 @Component({
-  selector: 'app-consultation-questions',
-  templateUrl: './consultation-questions.component.html',
+  selector: 'app-consultation-questionnaire-setup',
+  templateUrl: './consultation-questionnaire-setup.component.html',
   styles: []
 })
-export class ConsultationQuestionsComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ConsultationQuestionnaireSetupComponent implements OnInit, AfterViewInit, OnDestroy {
 
   questionForm = this.fb.group({
     question: [null, Validators.required],
@@ -156,6 +160,10 @@ export class ConsultationQuestionsComponent implements OnInit, AfterViewInit, On
       }
     }
     this.optionForm.get('consultation_question').setValue(this.activeQuestion.question);
+    this.optionForm.get('gender').setValue(this.activeQuestion.gender);
+    if (this.activeQuestion.gender !== Gender.ALL) {
+      this.optionForm.get('gender').disable();
+    }
     this.isOptionModalVisible = true
   }
 

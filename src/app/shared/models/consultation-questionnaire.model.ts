@@ -1,3 +1,5 @@
+import {Gender, Status, ValueType} from "./common.model";
+
 export interface ConsultationQuestion {
   id: number;
   question: string;
@@ -14,16 +16,4 @@ export interface ConsultationQuestionOption {
   gender: Gender;
   status: Status;
   isActivated?: boolean;
-}
-
-enum Status {
-  ACTIVE = 'ACTIVE', INACTIVE = 'INACTIVE'
-}
-
-enum Gender {
-  MALE = 'MALE', FEMALE = 'FEMALE', ALL = 'MALE,FEMALE'
-}
-
-enum ValueType {
-  TEXT = 'Text', NUMBER = 'Number', BOOLEAN = 'True/False', SELECT = "Select"
 }
