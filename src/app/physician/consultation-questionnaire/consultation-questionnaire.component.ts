@@ -1,12 +1,12 @@
 import {AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output} from "@angular/core";
 import {NzNotificationService} from "ng-zorro-antd";
 import {SetupService} from "src/app/shared/services/setup.service";
-import {FormBuilder, Validators} from "@angular/forms";
+import {FormBuilder} from "@angular/forms";
 import {PhysicianService} from "../services/physician.service";
 import {formatDate} from "@angular/common";
 import {untilComponentDestroyed} from "@w11k/ngx-componentdestroyed";
 import {ConsultationData} from "../../shared/models/consultation-data.model";
-import {ConsultationQuestion, ConsultationQuestionResponse} from "../../shared/models/consultation-questionnaire.model";
+import {ConsultationGroupedResponses, ConsultationQuestion} from "../../shared/models/consultation-questionnaire.model";
 import {ValueType} from "../../shared/models/common.model";
 
 @Component({
@@ -26,11 +26,7 @@ export class ConsultationQuestionnaireComponent implements OnInit, OnDestroy, Af
 
   questionForm = this.fb.group({});
   questions: ConsultationQuestion[][] = [];
-  previousResponses: {
-    active?: boolean;
-    response_date?: Date,
-    responses?: ConsultationQuestionResponse[]
-  }[];
+  previousResponses: ConsultationGroupedResponses[];
   isSubmitting = false;
   isLoading = true;
   consultationDate = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss", "en");
@@ -49,7 +45,6 @@ export class ConsultationQuestionnaireComponent implements OnInit, OnDestroy, Af
     this.setUpForm().then();
   }
 
-
   ngAfterViewInit() {
     this.physicianService.consultationDate$
       .pipe(untilComponentDestroyed(this))
@@ -66,7 +61,6 @@ export class ConsultationQuestionnaireComponent implements OnInit, OnDestroy, Af
       .getConsultationQuestions(this.patient.gender).toPromise();
     temp.forEach((field, index) => {
       this.questionForm.addControl(`${field.id}`, this.fb.control(null));
-      console.log(field.gender)
       // get options for select types
       if (field.value_type === ValueType.SELECT) {
         field.isLoadingOptions = true;
@@ -87,22 +81,8 @@ export class ConsultationQuestionnaireComponent implements OnInit, OnDestroy, Af
   }
 
   async getPreviousResponses(patientId: number) {
-    let responses = await this.physicianService.getQuestionResponses(patientId).toPromise();
-    this.previousResponses = [];
-    responses.forEach(res => {
-      if (
-        !this.previousResponses.find(
-          pr => pr.response_date === res.response_date
-        )
-      ) {
-        this.previousResponses.push({
-          response_date: res.response_date,
-          responses: responses.filter(
-            r => r.response_date === res.response_date
-          )
-        });
-      }
-    });
+    this.previousResponses = await this.physicianService.getQuestionResponses(patientId, true)
+      .toPromise();
     this.isLoading = false;
   }
 

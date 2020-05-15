@@ -245,25 +245,28 @@ export class PhysicianService {
     ));
   }
 
-  getQuestionResponses(patient_id: any) {
-    const url = `${environment.apiBaseUrl}/registry/consultationquestionresponses`;
-    const options = {
-      params: {
-        'patient_id': patient_id
+  getQuestionResponses(patient_id: any = null, group: boolean = null) {
+    const url = !group ? `${environment.apiBaseUrl}/registry/consultationquestionresponses`
+      : `${environment.apiBaseUrl}/registry/consultation/questionresponses`;
+    const options = {};
+    if (patient_id) {
+      options['params'] = {
+        'patient_id': `=${patient_id}`
       }
     }
-    return this.http.get<GetPayload<ConsultationQuestionResponse[]>>(url, options).pipe(first(), map(
+    return this.http.get<any>(url, options).pipe(first(), map(
       res => {
-        if (res && res.data && res.data.length > 0) {
+        if (res) {
           return res.data;
         }
-        throw new HttpErrorResponse({});
+        return [];
       }
     ), catchError(_ => of([])));
   }
 
   saveQuestionResponse(data: any) {
     const url = `${environment.apiBaseUrl}/registry/consultationquestionresponses`;
-    return this.http.post<boolean>(url, data).pipe(first(), map(res => !!res), catchError(_ => of(console.log(_))));
+    return this.http.post<boolean>(url, data).pipe(first(), map(res => !!res),
+      catchError(_ => of(console.log(_))));
   }
 }

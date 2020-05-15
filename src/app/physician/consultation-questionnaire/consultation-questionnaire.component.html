@@ -3,11 +3,12 @@
     <nz-card-loading *ngIf="isLoading"></nz-card-loading>
     <nz-empty *ngIf="!isLoading && (!previousResponses || previousResponses.length === 0)"></nz-empty>
     <nz-collapse *ngIf="previousResponses" nzAccordion>
-      <nz-collapse-panel *ngFor="let row of previousResponses" [nzHeader]="row.response_date | date:'medium'"
-                         [nzActive]="row.active">
+      <nz-collapse-panel *ngFor="let row of previousResponses"
+                         [nzHeader]="(row.consultation_date | date:'medium') + ' by ' + row.consultant_name"
+                         [nzActive]="row.panelActive">
         <nz-comment *ngFor="let res of row.responses" [nzAuthor]="res.consultation_question">
           <nz-comment-content>
-            <div> {{ res.response || 'N/A' }} </div>
+            <div> {{ res.response === null ? 'N/A' : res.response }} </div>
           </nz-comment-content>
         </nz-comment>
       </nz-collapse-panel>

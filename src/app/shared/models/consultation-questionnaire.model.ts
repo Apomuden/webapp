@@ -34,3 +34,12 @@ export interface ConsultationQuestionResponse {
   status: Status;
   isActivated?: boolean;
 }
+
+export interface ConsultationGroupedResponses {
+  consultation_id: number;
+  consultation_date: Date;
+  consultant_name: string;
+  responses: ConsultationQuestionResponse[];
+  // UI variables
+  panelActive?: boolean;
+}
