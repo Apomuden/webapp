@@ -46,7 +46,7 @@ export class LabSampleTypesComponent implements OnInit {
   deleteType(type: any) {
     this.isLoading = true;
     this.labService.deleteSampleType(type.id).subscribe(success => {
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.types.findIndex(t => t.id === type.id);
         this.types.splice(index, 1);
@@ -63,7 +63,7 @@ export class LabSampleTypesComponent implements OnInit {
       ? this.labService.createSampleType(data)
       : this.labService.editSampleType(this.type.id, data);
     observable.subscribe(success => {
-      this.showNotif(!success);
+      this.showNotification(!success);
       this.isLoading = success;
       if (success) {
         this.getTypes();
@@ -85,12 +85,12 @@ export class LabSampleTypesComponent implements OnInit {
     this.sampleTypeForm.reset();
   }
 
-  showNotif(isError = false) {
+  showNotification(isError = false) {
     if (isError) {
       this.notification.error('Error', 'Operation unsuccessful');
       return;
     }
-    this.notification.success('Success', 'Proccessed Successfully');
+    this.notification.success('Success', 'Processed Successfully');
   }
 
   toggleItem($event: any, item: any) {

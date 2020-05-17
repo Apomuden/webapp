@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { ConsultationData } from '../consultation/model/consultation-data.model';
+import { ConsultationData } from '../../shared/models/consultation-data.model';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({

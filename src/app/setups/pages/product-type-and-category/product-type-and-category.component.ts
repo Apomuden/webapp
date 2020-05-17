@@ -86,7 +86,7 @@ export class ProductTypeAndCategoryComponent implements OnInit, AfterViewInit, O
       : this.storeSetupService.editProductType(this.editType.id, this.typeForm.value);
     const success = await observable.toPromise();
     this.isCreatingType = false;
-    this.showNotif(!success);
+    this.showNotification(!success);
     if (success) {
       this.resetType();
       this.getTypes();
@@ -100,19 +100,19 @@ export class ProductTypeAndCategoryComponent implements OnInit, AfterViewInit, O
       : this.storeSetupService.editProductCategory(this.editCat.id, this.catForm.value);
     const success = await observable.toPromise();
     this.isCreatingCat = false;
-    this.showNotif(!success);
+    this.showNotification(!success);
     if (success) {
       this.resetCat();
       this.getCats();
     }
   }
 
-  showNotif(isError = false) {
+  showNotification(isError = false) {
     if (isError) {
       this.notification.error('Error', 'Operation unsuccessful');
       return;
     }
-    this.notification.success('Success', 'Proccessed Successfully');
+    this.notification.success('Success', 'Processed Successfully');
   }
 
   showTypeModal(type?: any) {
@@ -160,7 +160,7 @@ export class ProductTypeAndCategoryComponent implements OnInit, AfterViewInit, O
     this.isTypesLoading = true;
     this.storeSetupService.deleteProductType(type.id).subscribe(success => {
       this.isTypesLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.productTypes.findIndex(p => p.id === type.id);
         this.productTypes.splice(index, 1);
@@ -172,7 +172,7 @@ export class ProductTypeAndCategoryComponent implements OnInit, AfterViewInit, O
     this.isCatsLoading = true;
     this.storeSetupService.deleteProductCategory(category.id).subscribe(success => {
       this.isCatsLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.categories.findIndex(p => p.id === category.id);
         this.categories.splice(index, 1);

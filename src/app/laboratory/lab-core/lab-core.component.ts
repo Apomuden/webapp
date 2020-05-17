@@ -72,6 +72,8 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
     const temp = [];
     params.forEach((param, index) => {
       param.form = this.fb.control(null);
+
+      // get options for text types
       if (param.value_type === 'Text') {
         param.loading = true;
         this.labSetupService.getParamFlags(param.id)
@@ -80,6 +82,7 @@ export class LabCoreComponent implements OnInit, AfterViewInit {
             param.loading = false;
           });
       }
+      // put the fields in groups of 2
       if (index % 2 === 0) {
         temp.push([param]);
       } else {

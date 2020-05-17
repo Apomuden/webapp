@@ -1,13 +1,13 @@
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
-import { debounceTime, first } from 'rxjs/operators';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { OpdService } from '../services/opd.service';
-import { NzInputDirective, NzNotificationService, NzInputGroupComponent, NzModalRef, NzModalService } from 'ng-zorro-antd';
+import {AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {debounceTime, first} from 'rxjs/operators';
+import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
+import {OpdService} from '../services/opd.service';
+import {NzInputDirective, NzModalRef, NzNotificationService} from 'ng-zorro-antd';
 import * as datefns from 'date-fns';
-import { formatDate } from '@angular/common';
-import { UserManagementService } from 'src/app/user-management/user-management.service';
-import { PhysicianService } from 'src/app/physician/services/physician.service';
+import {formatDate} from '@angular/common';
+import {UserManagementService} from 'src/app/user-management/user-management.service';
+import {PhysicianService} from 'src/app/physician/services/physician.service';
 
 @Component({
   selector: 'app-vital-form',

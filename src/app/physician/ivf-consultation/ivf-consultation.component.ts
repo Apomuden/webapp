@@ -1,21 +1,22 @@
-import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
-import {FormBuilder, FormControl, Validators} from '@angular/forms';
+import {Component, OnInit, OnDestroy, AfterViewInit} from '@angular/core';
+import {Validators, FormBuilder, FormControl} from '@angular/forms';
 import {debounceTime, first} from 'rxjs/operators';
 import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
-import {NzNotificationService} from 'ng-zorro-antd';
+import {NzNotificationService, NzModalRef} from 'ng-zorro-antd';
 import {AuthenticationService} from 'src/app/shared/services/authentication.service';
 import {User} from 'src/app/shared/interfaces/user.type';
 import {PhysicianService} from '../services/physician.service';
 import * as dateFns from 'date-fns';
 import {formatDate} from '@angular/common';
+import {ThemeConstantService} from 'src/app/shared/services/theme-constant.service';
 import {ConsultationData} from '../../shared/models/consultation-data.model';
 
 @Component({
-  selector: 'app-consultation',
-  templateUrl: './consultation.component.html',
-  styleUrls: ['./consultation.component.css']
+  selector: 'app-ivf-consultation',
+  templateUrl: './ivf-consultation.component.html',
+  styleUrls: ['./ivf-consultation.component.css']
 })
-export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
+export class IvfConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
   commentControl = this.fb.control(null);
   folderNumb = this.fb.control(null, [
     Validators.minLength(11),
@@ -123,7 +124,8 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     private physicianService: PhysicianService,
     private notificationS: NzNotificationService,
     private authService: AuthenticationService
-  ) {}
+  ) {
+  }
 
   private get folderNoControl(): FormControl {
     return this.folderNumb as FormControl;
@@ -165,7 +167,8 @@ export class ConsultationComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+  }
 
   onIndexChange(index: number): void {
     this.stepIndex = index;
