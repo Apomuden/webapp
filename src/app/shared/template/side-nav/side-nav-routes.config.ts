@@ -208,7 +208,7 @@ export const ROUTES: SideNavInterface[] = [
     submenu: [
       {
         path: '/accounts/receipt',
-        title: 'E-Receipt',
+        title: 'Payment',
         iconType: '',
         icon: '',
         iconTheme: '',

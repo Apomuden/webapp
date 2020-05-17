@@ -10,6 +10,7 @@ import { NzNotificationService } from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
 import { formatDate } from '@angular/common';
 import * as datefns from 'date-fns';
+import * as numeral from 'numeral';
 
 @Component({
   selector: 'app-receipt',
@@ -18,6 +19,7 @@ import * as datefns from 'date-fns';
 })
 export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
   editName: string | null;
+  numeral = numeral;
   requestForm: FormGroup = this.fb.group({
     folderNumber: this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]),
     attendanceDate: this.fb.control(new Date(), [Validators.required]),
@@ -89,9 +91,11 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       newTotalBill = newTotalBill + parseFloat(item.total_amount);
     });
 
-    if (this.totalBillControl.value && this.totalBillControl.valid) {
-      this.totalBillControl.setValue(newTotalBill);
-      this.billDueControl.setValue(newTotalBill - this.transactionDetails.total_discount_amount);
+    if (this.totalBillControl.valid && this.totalBillControl.valid) {
+      this.totalBillControl.setValue(numeral(newTotalBill).format('0.00'));
+      this.billDueControl.setValue(
+        newTotalBill - this.transactionDetails.total_discount_amount - this.transactionDetails.total_deposit_amount
+      );
     }
   }
 
@@ -120,7 +124,7 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       val => {
         const billDueValue = this.billDueControl.value;
         if (val && billDueValue) {
-          const change = billDueValue - val;
+          const change = val - billDueValue;
           if (change > 0) {
             this.changeFormControl.setValue(change);
           } else {
