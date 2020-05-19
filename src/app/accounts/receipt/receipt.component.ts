@@ -280,14 +280,21 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   done(): void {
-    if (this.amountRecievedFormControl.value && this.amountRecievedFormControl.valid) {
-      this.submitForm();
+    if (this.amountRecievedFormControl.valid && this.amountRecievedFormControl.valid) {
+      if (this.amountRecievedFormControl.value < this.billDueControl.value) {
+        this.notification.error('Error', 'Amount recieved is less that amount due');
+      } else {
+        this.submitForm();
+      }
+
     } else {
       console.log('Invalid data');
+      this.notification.error('Error', 'Please enter amount recieved');
     }
   }
 
   async submitForm() {
+
     this.requesting = true;
     const data = this.processData();
     console.log(data);
@@ -295,11 +302,11 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       const response = await this.accountService.createEreceipt(data);
       console.log(response);
       this.requesting = false;
-      this.notification.success('Success', 'E-receipt creation was successful');
+      this.notification.success('Success', 'Payment was successful');
     } catch (e) {
       console.log(e);
       this.requesting = false;
-      this.notification.error('Error', 'Unable to create E-receipt');
+      this.notification.error('Error', 'Unable to make payment');
     } finally {
       this.requesting = false;
     }
@@ -313,7 +320,7 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       outstanding_bill: this.services
         .filter(item => !item.checked)
         .reduce(((accumulator, currentValue) => accumulator + parseFloat(currentValue.total_amount)), 0.00),
-      total_bill: this.billDueControl.value,
+      total_bill: this.totalBillControl.value,
       amount_paid: this.amountRecievedFormControl.value
     };
   }
