@@ -239,5 +239,22 @@ export const ROUTES: SideNavInterface[] = [
         submenu: []
       },
     ]
+  },
+  {
+    path: '/stores-management',
+    title: 'Stores Management',
+    iconType: 'nzIcon',
+    iconTheme: 'outline',
+    icon: 'medicine-box',
+    submenu: [
+      {
+        path: '/stores-management/stock-adjustment',
+        title: 'Stock Adjustment',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      }
+    ]
   }
 ];

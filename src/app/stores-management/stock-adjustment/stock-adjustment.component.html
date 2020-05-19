@@ -1,0 +1,208 @@
+<div nz-row>
+    <nz-card>
+      <form nz-form [formGroup]="stockAdjustmentForm">
+        <div nz-row [nzGutter]="32">
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="storeDept">Store/Dept</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Store/Dept is required">
+              <nz-select formControlName="storeDept" [nzLoading]="isLoadingStoreDept">
+                <nz-option *ngFor="let storeDept of storeDeptsList"
+                [nzValue]="storeDept"
+                nzLabel="{{storeDept}}">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="5">
+            <nz-form-label nzRequired nzFor="adjustmentType">Adjustment Type</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Adjustment Type is required">
+              <nz-select formControlName="adjustmentType">
+                <nz-option *ngFor="let adjustmentType  of adjustmentTypeList"
+                [nzValue]="adjustmentType"
+                nzLabel="{{adjustmentType | titlecase}}">
+                </nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="4">
+            <nz-form-label nzRequired nzFor="adjustmentDate">Adjustment Date</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Adjustment Date is required">
+              <nz-date-picker nzSize="default" formControlName="adjustmentDate"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="7">
+            <nz-form-label nzRequired nzFor="adjustmentRef">Adjustment Ref#</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Adjustment Ref# is required">
+              <input type="text" nz-input placeholder="Adjustment Ref#" formControlName="adjustmentRef"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-row [nzGutter]="32">
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="totalAdjustedQty">Total Adjusted Qty</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Total Adjusted Qty is required">
+              <input type="text" nz-input placeholder="Total Adjusted Qty" formControlName="totalAdjustedQty"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="name">Name</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Name is required">
+              <input type="text" nz-input placeholder="Name" formControlName="name"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="totalExpectedValue">Total Expected Value</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Total Expected Value is required">
+              <input type="text" nz-input placeholder="Total Expected Value" formControlName="totalExpectedValue"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-row [nzGutter]="32">
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="designation">Designation</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Designation is required">
+              <input type="text" nz-input placeholder="Designation" formControlName="designation"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </form>
+    </nz-card>
+</div>
+<div nz-row>
+  <nz-card>
+    <form nz-form [formGroup]="stockItemForm" (ngSubmit)="addStockItem()">
+      <div nz-row [nzGutter]="32">
+        <nz-form-item nz-col [nzSpan]="7" >
+          <nz-form-label nzRequired nzFor="productName">Product Name</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+            <input type="text" nz-input placeholder="Product Name" formControlName="productName"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="2" >
+          <nz-form-label nzRequired nzFor="uom">UOM</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+            <nz-select formControlName="uom">
+              <nz-option nzValue="ml" nzLabel="ml"></nz-option>
+              <nz-option nzValue="grams" nzLabel="grams"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="3" >
+          <nz-form-label nzRequired nzFor="qtyAtHand">Qty At Hand</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Enter a valid number">
+            <nz-input-number formControlName="qtyAtHand"
+            [nzMin]="0" [nzStep]="1"
+            style="width: 140px;">
+            </nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="3" >
+          <nz-form-label nzRequired nzFor="unitCost">Unit Cost</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+            <nz-input-number formControlName="unitCost"
+            [nzMin]="0" [nzStep]=".1"
+            style="width: 140px;"></nz-input-number>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="5" >
+          <nz-form-label nzRequired nzFor="batchNo">Batch #</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+            <input type="text" nz-input placeholder="Batch #" formControlName="batchNo"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="4">
+          <nz-form-label nzRequired nzFor="expiryDate">Expiry Date</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+            <nz-date-picker nzSize="default" formControlName="expiryDate"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-row [nzGutter]="32">
+        <nz-form-item nz-col [nzSpan]="7" >
+          <nz-form-label nzRequired nzFor="reason">Reason</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+            <nz-select formControlName="reason">
+              <nz-option nzValue="Expired" nzLabel="Expired"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="3" class="signed-radio">
+          <nz-form-label nzFor="adjustmentMode" style="visibility: hidden;"></nz-form-label>
+          <nz-form-control>
+            <nz-radio-group formControlName="adjustmentMode" style="width: 180px;" >
+              <label nz-radio-button nzValue="-">
+                <i nz-icon nzType="minus" nzTheme="outline"></i>
+              </label>
+              <label nz-radio-button nzValue="+">
+                <i nz-icon nzType="plus" nzTheme="outline"></i>
+              </label>
+            </nz-radio-group>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="3" >
+          <nz-form-label nzRequired nzFor="adjustmentQuantity">Adj. Qty</nz-form-label>
+          <nz-form-control>
+            <nz-input-number formControlName="adjustmentQuantity" [nzMin]="0" [nzStep]="1"
+            style="width: 140px;" (nzBlur)="adjustmentQtyChanged()"></nz-input-number>
+          </nz-form-control>
+          <span nz-typography nzType="danger" *ngIf="adjustmentQuantityControl.hasError('required') && adjustmentQuantityControl.dirty">Adjustment quatity is required</span>
+          <span nz-typography nzType="danger" *ngIf="adjustmentQuantityControl.hasError('valueBelowZero') && adjustmentQuantityControl.dirty">Expected value cannot be below zero(0)</span>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="3" >
+          <nz-form-label nzRequired nzFor="expectedValue">Expected Value</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="This field is required">
+            <input type="text" nz-input placeholder="Expected Value" formControlName="expectedValue"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="2">
+          <nz-form-label nzFor="adjustmentMode" style="visibility: hidden;"></nz-form-label>
+          <nz-form-control>
+            <button nz-button nzType="primary"><i nz-icon nzType="plus"></i>Add</button>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </form>
+  </nz-card>
+</div>
+<div nz-row>
+  <nz-card>
+    <div nz-row>
+      <button nz-button nzType="primary">Save</button>
+      <button nz-button nzType="default" nzDanger>Cancel</button>
+    </div>
+    <nz-table #stockAdjustmentTable [nzData]="adjustedStockData">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>UOM</th>
+          <th>Qty. At Hand</th>
+          <th>Unit Cost</th>
+          <th>Adjustment Qty.</th>
+          <th>Expected Value</th>
+          <th>Batch #</th>
+          <th>Expiry Date</th>
+          <th>Reason</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of stockAdjustmentTable.data">
+          <td>{{ data.productName }}</td>
+          <td>{{ data.uom }}</td>
+          <td>{{ data.qtyAtHand }}</td>
+          <td>{{ 'GHS ' + data.unitCost }}</td>
+          <td>{{ data.adjustmentMode + ' ' + data.adjustmentQuantity }}</td>
+          <td>{{ data.expectedValue }}</td>
+          <td>{{ data.batchNo }}</td>
+          <td>{{ data.expiryDate | date }}</td>
+          <td>{{ data.reason }}</td>
+          <td>
+            <a (click)="deleteData(data)">
+              <i nz-icon nzType="close-circle" class="close-button"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>

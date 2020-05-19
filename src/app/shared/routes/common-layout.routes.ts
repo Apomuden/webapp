@@ -33,25 +33,18 @@ export const CommonLayout_ROUTES: Routes = [
   {
     path: 'records',
     loadChildren: () =>
-      import('../../records/records.module').then(
-        m => m.RecordsModule
-      ),
+      import('../../records/records.module').then(m => m.RecordsModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'opd',
-    loadChildren: () =>
-      import('../../opd/opd.module').then(
-        m => m.OpdModule
-      ),
+    loadChildren: () => import('../../opd/opd.module').then(m => m.OpdModule),
     canActivate: [AuthGuard]
   },
   {
     path: 'physician',
     loadChildren: () =>
-      import('../../physician/physician.module').then(
-        m => m.PhysicianModule
-      ),
+      import('../../physician/physician.module').then(m => m.PhysicianModule),
     canActivate: [AuthGuard]
   },
   {
@@ -63,7 +56,15 @@ export const CommonLayout_ROUTES: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'accounts', loadChildren: () => import('../../accounts/accounts.module').then(m => m.AccountsModule),
+    path: 'accounts',
+    loadChildren: () =>
+      import('../../accounts/accounts.module').then(m => m.AccountsModule),
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'stores-management',
+    loadChildren: () =>
+      import('../../stores-management/stores-management.module').then(m => m.StoresManagementModule),
     canActivate: [AuthGuard]
   }
 ];
