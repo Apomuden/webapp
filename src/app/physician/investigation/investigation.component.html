@@ -118,7 +118,7 @@
         </div>
       </div>
     </form>
-    <nz-table #diagnosisTable [nzData]="investigations" [nzFrontPagination]=true [nzShowPagination]=false>
+    <nz-table #diagnosisTable [nzData]="consultationData.investigations" [nzFrontPagination]=true [nzShowPagination]=false>
       <thead>
         <tr>
           <th>Service</th>
@@ -126,7 +126,6 @@
           <th>Unit Fee</th>
           <th>Billed Sponsor</th>
           <th>Actions</th>
-        </tr>
       </thead>
       <tbody>
         <tr *ngFor="let data of diagnosisTable.data">

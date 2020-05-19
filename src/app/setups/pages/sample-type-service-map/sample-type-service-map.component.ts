@@ -122,7 +122,7 @@ export class SampleTypeServiceMapComponent implements OnInit {
   removeSampleType(sampleType: any) {
     this.isLoading = true;
     this.labService.deleteLabSampleType(this.lab.id, [sampleType]).subscribe(success => {
-      this.showNotif(!success);
+      this.showNotification(!success);
       this.isLoading = success;
       if (success) {
         this.getLabSampleTypes(this.lab.id);
@@ -138,18 +138,18 @@ export class SampleTypeServiceMapComponent implements OnInit {
     this.isLoading = true;
     this.labService.createLabSampleType(this.lab.id, this.labSamples).subscribe(success => {
       this.isLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         this.getLabSampleTypes(this.lab.id);
       }
     });
   }
 
-  showNotif(isError = false) {
+  showNotification(isError = false) {
     if (isError) {
       this.notification.error('Error', 'Operation unsuccessful');
       return;
     }
-    this.notification.success('Success', 'Proccessed Successfully');
+    this.notification.success('Success', 'Processed Successfully');
   }
 }

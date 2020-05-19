@@ -9,7 +9,7 @@ const routes: Routes = [
     component: StoresManagementComponent,
     canActivate: [AuthGuard],
     data: {
-      title: 'Stores Management '
+      title: 'Stores Management'
     },
   },
   {

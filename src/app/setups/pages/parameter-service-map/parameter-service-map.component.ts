@@ -123,7 +123,7 @@ export class ParameterServiceMapComponent implements OnInit {
   removeParamter(param: any) {
     this.isLoading = true;
     this.labService.deleteLabParam(this.lab.id, [param]).subscribe(success => {
-      this.showNotif(!success);
+      this.showNotification(!success);
       this.isLoading = success;
       if (success) {
         this.getLabParams(this.lab.id);
@@ -139,18 +139,18 @@ export class ParameterServiceMapComponent implements OnInit {
     this.isLoading = true;
     this.labService.createLabParam(this.lab.id, this.labParams).subscribe(success => {
       this.isLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         this.getLabParams(this.lab.id);
       }
     });
   }
 
-  showNotif(isError = false) {
+  showNotification(isError = false) {
     if (isError) {
       this.notification.error('Error', 'Operation unsuccessful');
       return;
     }
-    this.notification.success('Success', 'Proccessed Successfully');
+    this.notification.success('Success', 'Processed Successfully');
   }
 }

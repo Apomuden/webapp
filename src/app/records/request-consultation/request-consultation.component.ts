@@ -1,14 +1,14 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
-import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { first, retry, debounceTime, take } from 'rxjs/operators';
-import { SetupService } from 'src/app/shared/services/setup.service';
-import { BehaviorSubject } from 'rxjs';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { RecordService } from '../record.service';
-import { NzNotificationService } from 'ng-zorro-antd';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {debounceTime, first} from 'rxjs/operators';
+import {SetupService} from 'src/app/shared/services/setup.service';
+import {BehaviorSubject} from 'rxjs';
+import {untilComponentDestroyed} from '@w11k/ngx-componentdestroyed';
+import {RecordService} from '../record.service';
+import {NzNotificationService} from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
-import { formatDate } from '@angular/common';
 import * as datefns from 'date-fns';
+import {formatDate} from '@angular/common';
 
 @Component({
   selector: 'app-request-consultation',
@@ -29,7 +29,7 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
     fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required, Validators.min(0.1)]),
   });
 
-  clinicsloading = new BehaviorSubject(false);
+  clinicsLoading = new BehaviorSubject(false);
   servicesLoading = new BehaviorSubject(false);
   sponsorLoading = false;
   isLoadingData = false;
@@ -210,13 +210,13 @@ export class RequestConsultationComponent implements OnInit, AfterViewInit, OnDe
   }
 
   getClinics() {
-    this.clinicsloading.next(true);
+    this.clinicsLoading.next(true);
     this.setupService.getClinics().pipe(first())
       .subscribe(data => {
         this.clinics = data.data;
-        this.clinicsloading.next(false);
+        this.clinicsLoading.next(false);
       }, error => {
-        this.clinicsloading.next(false);
+        this.clinicsLoading.next(false);
       });
   }
 

@@ -18,7 +18,7 @@
         class="m-r-5"></i> {{ message }}
     </div>
   </nz-row>
-  
+
   <nz-descriptions *ngIf="patient" nzSize="small" nzBordered [nzColumn]="{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }">
     <nz-descriptions-item nzTitle="Folder #">
       {{patient.folder_no}}
@@ -52,7 +52,7 @@
           <nz-form-label nzRequired nzFor="clinic">Clinic</nz-form-label>
           <nz-form-control nzHasFeedback nzErrorTip="Please select clinic">
             <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Clinic" formControlName="clinic"
-              [nzLoading]="clinicsloading | async">
+              [nzLoading]="clinicsLoading | async">
               <nz-option *ngFor="let clinic of clinics" [nzLabel]="clinic.name" [nzValue]="clinic.id"></nz-option>
             </nz-select>
           </nz-form-control>

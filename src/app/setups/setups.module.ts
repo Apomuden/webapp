@@ -69,6 +69,7 @@ import { MedicineRoutesComponent } from './pages/medicine-routes/medicine-routes
 import { ProductFormAndUnitComponent } from './pages/product-form-and-unit/product-form-and-unit.component';
 import { ProductTypeAndCategoryComponent } from './pages/product-type-and-category/product-type-and-category.component';
 import { StoreSetupComponent } from './categories/store-setup/store-setup.component';
+import {ConsultationQuestionnaireSetupComponent} from "./pages/consultation-questionnaire-setup/consultation-questionnaire-setup.component";
 
 @NgModule({
   declarations: [
@@ -135,7 +136,8 @@ import { StoreSetupComponent } from './categories/store-setup/store-setup.compon
     ProductTypeAndCategoryComponent,
     LabSampleTypesComponent,
     ParameterServiceMapComponent,
-    SampleTypeServiceMapComponent
+    SampleTypeServiceMapComponent,
+    ConsultationQuestionnaireSetupComponent
   ],
   imports: [
     CommonModule,

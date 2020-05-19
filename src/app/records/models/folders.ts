@@ -1,4 +1,4 @@
-import {GetPayload} from '../../shared/models/payload';
+import {GetPayload} from '../../shared/models/payload.model';
 
 export interface FolderDetails {
   id: number;

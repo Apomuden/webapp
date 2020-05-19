@@ -11,18 +11,22 @@ import { OpdModule } from '../opd/opd.module';
 import { PhysicianService } from './services/physician.service';
 import { PatientHistoryComponent } from './patient-history/patient-history.component';
 import { PhysicalExamComponent } from './physical-exam/physical-exam.component';
-import { PrescriptionComponent } from '../prescription/prescription.component';
+import { PrescriptionComponent } from './prescription/prescription.component';
+import {IvfConsultationComponent} from "./ivf-consultation/ivf-consultation.component";
+import {ConsultationQuestionnaireComponent} from "./consultation-questionnaire/consultation-questionnaire.component";
 
 @NgModule({
   declarations: [
     ConsultationComponent,
+    IvfConsultationComponent,
     PatientHistoryComponent,
     PhysicalExamComponent,
     PrescriptionComponent,
     DiagnosisComponent,
     InvestigationComponent,
     ProcedureComponent,
-    ClinicalNotesComponent
+    ClinicalNotesComponent,
+    ConsultationQuestionnaireComponent
   ],
   imports: [
     CommonModule,
