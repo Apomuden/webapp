@@ -10,6 +10,7 @@ import { NzNotificationService } from 'ng-zorro-antd';
 import * as dateFns from 'date-fns';
 import { formatDate } from '@angular/common';
 import * as datefns from 'date-fns';
+import * as numeral from 'numeral';
 
 @Component({
   selector: 'app-receipt',
@@ -18,6 +19,7 @@ import * as datefns from 'date-fns';
 })
 export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
   editName: string | null;
+  numeral = numeral;
   requestForm: FormGroup = this.fb.group({
     folderNumber: this.fb.control(null, [Validators.minLength(11), Validators.maxLength(12)]),
     attendanceDate: this.fb.control(new Date(), [Validators.required]),
@@ -89,9 +91,11 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       newTotalBill = newTotalBill + parseFloat(item.total_amount);
     });
 
-    if (this.totalBillControl.value && this.totalBillControl.valid) {
-      this.totalBillControl.setValue(newTotalBill);
-      this.billDueControl.setValue(newTotalBill - this.transactionDetails.total_discount_amount);
+    if (this.totalBillControl.valid && this.totalBillControl.valid) {
+      this.totalBillControl.setValue(numeral(newTotalBill).format('0.00'));
+      this.billDueControl.setValue(
+        newTotalBill - this.transactionDetails.total_discount_amount - this.transactionDetails.total_deposit_amount
+      );
     }
   }
 
@@ -120,7 +124,7 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       val => {
         const billDueValue = this.billDueControl.value;
         if (val && billDueValue) {
-          const change = billDueValue - val;
+          const change = val - billDueValue;
           if (change > 0) {
             this.changeFormControl.setValue(change);
           } else {
@@ -276,14 +280,21 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
 
 
   done(): void {
-    if (this.amountRecievedFormControl.value && this.amountRecievedFormControl.valid) {
-      this.submitForm();
+    if (this.amountRecievedFormControl.valid && this.amountRecievedFormControl.valid) {
+      if (this.amountRecievedFormControl.value < this.billDueControl.value) {
+        this.notification.error('Error', 'Amount recieved is less that amount due');
+      } else {
+        this.submitForm();
+      }
+
     } else {
       console.log('Invalid data');
+      this.notification.error('Error', 'Please enter amount recieved');
     }
   }
 
   async submitForm() {
+
     this.requesting = true;
     const data = this.processData();
     console.log(data);
@@ -291,11 +302,11 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       const response = await this.accountService.createEreceipt(data);
       console.log(response);
       this.requesting = false;
-      this.notification.success('Success', 'E-receipt creation was successful');
+      this.notification.success('Success', 'Payment was successful');
     } catch (e) {
       console.log(e);
       this.requesting = false;
-      this.notification.error('Error', 'Unable to create E-receipt');
+      this.notification.error('Error', 'Unable to make payment');
     } finally {
       this.requesting = false;
     }
@@ -309,7 +320,7 @@ export class ReceiptComponent implements OnInit, AfterViewInit, OnDestroy {
       outstanding_bill: this.services
         .filter(item => !item.checked)
         .reduce(((accumulator, currentValue) => accumulator + parseFloat(currentValue.total_amount)), 0.00),
-      total_bill: this.billDueControl.value,
+      total_bill: this.totalBillControl.value,
       amount_paid: this.amountRecievedFormControl.value
     };
   }
