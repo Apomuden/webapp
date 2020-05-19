@@ -527,6 +527,8 @@ ng-zorro-antd/time-picker
 
 ng-zorro-antd/tooltip
 
+ng-zorro-antd/typography
+
 ng-zorro-antd/upload
 
 ngx-google-places-autocomplete
@@ -606,6 +608,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
+undefined
+
 regenerator-runtime
 MIT
 MIT License
@@ -655,8 +659,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-
-undefined
 
 rxjs
 Apache-2.0
