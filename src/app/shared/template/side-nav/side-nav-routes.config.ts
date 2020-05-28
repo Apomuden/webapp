@@ -246,6 +246,14 @@ export const ROUTES: SideNavInterface[] = [
         icon: '',
         iconTheme: '',
         submenu: []
+      },
+      {
+        path: '/stores-management/stock-adjustment-approval/search',
+        title: 'Stock Adjustment Search',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
       }
     ]
   }

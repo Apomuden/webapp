@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { StockData } from './stock-adjustment.model';
+import { StockAdjustmentData } from '../stores-management.model';
 
 @Component({
   selector: 'app-stock-adjustment',
@@ -20,7 +19,7 @@ export class StockAdjustmentComponent implements OnInit {
   stockAdjustmentForm: FormGroup;
   stockItemForm: FormGroup;
 
-  adjustedStockData: StockData[] = [];
+  adjustedStockData: StockAdjustmentData[] = [];
 
 
   constructor(private readonly fb: FormBuilder) {}
@@ -36,13 +35,14 @@ export class StockAdjustmentComponent implements OnInit {
         Validators.required
       ],
       totalAdjustedQty: ['', Validators.required],
-      name: ['', Validators.required],
+      requestedBy: ['', Validators.required],
       totalExpectedValue: ['', Validators.required],
       designation: ['', Validators.required]
     });
 
     // disable adjustment ref form field
     this.stockAdjustmentForm.get('adjustmentRef').disable();
+    this.stockAdjustmentForm.get('requestedBy').disable();
 
     this.stockItemForm = this.fb.group({
       productName: ['', Validators.required],
@@ -126,7 +126,8 @@ export class StockAdjustmentComponent implements OnInit {
     }
 
     const formControls = this.stockItemForm.controls;
-    const stockData: StockData = {
+    const stockData: StockAdjustmentData = {
+      id: null,
       productName: formControls.productName.value,
       uom: formControls.uom.value,
       qtyAtHand: this.qtyAtHandControl.value,
@@ -136,13 +137,13 @@ export class StockAdjustmentComponent implements OnInit {
       expectedValue: this.expectedValueControl.value,
       batchNo: formControls.batchNo.value,
       expiryDate: formControls.expiryDate.value,
-      reason: formControls.reason.value
+      reason: formControls.reason.value,
     };
 
     this.adjustedStockData = [...this.adjustedStockData, stockData];
   }
 
-  deleteData(data: StockData) {
+  deleteData(data: StockAdjustmentData) {
     const index = this.adjustedStockData.indexOf(data);
 
     if (index !== -1) {

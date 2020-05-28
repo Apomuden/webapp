@@ -1,0 +1,64 @@
+<div nz-row>
+  <nz-card>
+    <form nz-form [formGroup]="searchForm">
+      <div nz-row>
+        <nz-form-item nz-col [nzSpan]="7">
+          <nz-form-label nzRequired nzFor="adjustmentRef">Adjustment Ref#</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Adjustment Ref# is required">
+            <input type="text" nz-input placeholder="Adjustment Ref#" formControlName="adjustmentRef"/>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-row [nzGutter]="32">
+        <nz-form-item nz-col [nzSpan]="5" >
+          <nz-form-label nzRequired nzFor="storeDept">Store/Dept</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Store/Dept is required">
+            <nz-select formControlName="storeDept" [nzLoading]="isLoadingStoreDept">
+              <nz-option *ngFor="let storeDept of storeDeptsList"
+              [nzValue]="storeDept"
+              nzLabel="{{storeDept}}">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="5">
+          <nz-form-label nzRequired nzFor="adjustmentType">Adjustment Type</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Adjustment Type is required">
+            <nz-select formControlName="adjustmentType">
+              <nz-option *ngFor="let adjustmentType  of adjustmentTypeList"
+              [nzValue]="adjustmentType"
+              nzLabel="{{adjustmentType | titlecase}}">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nz-col [nzSpan]="4">
+          <nz-form-label nzRequired nzFor="adjustmentDate">Adjustment Date</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Adjustment Date is required">
+            <nz-date-picker nzSize="default" formControlName="adjustmentDate"></nz-date-picker>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </form>
+  </nz-card>
+  <nz-card>
+    <nz-table #pendingRequestsTable [nzData]="pendingRequests">
+      <thead>
+        <tr>
+          <th>Reference #</th>
+          <th>Adjustment Date</th>
+          <th>Adjustment Type</th>
+          <th>Store Dept</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of pendingRequestsTable.data" class="table-item" (click)="gotoAdjustmentApproval(data.adjustmentRef)">
+          <td>{{ data.adjustmentRef }}</td>
+          <td>{{ data.adjustmentDate | date: 'medium' }}</td>
+          <td>{{ data.adjustmentType | titlecase}}</td>
+          <td>{{ data.storeDept }}</td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>
