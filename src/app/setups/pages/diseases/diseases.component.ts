@@ -147,22 +147,10 @@ export class DiseasesComponent implements OnInit {
           if (ageGroup.name.toLowerCase().trim() === 'child' || ageGroup.name.toLowerCase().trim() === 'infant') {
             this.isChild = true;
             this.isEveryone = false;
-            this.createForm.get('child_gdrg').setValidators([Validators.required]);
-            this.createForm.get('child_tariff').setValidators([Validators.required]);
-            this.createForm.get('adult_gdrg').setValidators(null);
-            this.createForm.get('adult_tariff').setValidators(null);
           } else if (ageGroup.name.toLowerCase().trim() === 'adult') {
             this.isChild = false;
-            this.createForm.get('child_gdrg').setValidators(null);
-            this.createForm.get('child_tariff').setValidators(null);
-            this.createForm.get('adult_gdrg').setValidators([Validators.required]);
-            this.createForm.get('adult_tariff').setValidators([Validators.required]);
             this.isEveryone = false;
           } else {
-            this.updateForm.get('child_gdrg').setValidators(null);
-            this.updateForm.get('child_tariff').setValidators(null);
-            this.updateForm.get('adult_gdrg').setValidators(null);
-            this.updateForm.get('adult_tariff').setValidators(null);
             this.isEveryone = true;
           }
         }
@@ -174,23 +162,11 @@ export class DiseasesComponent implements OnInit {
           const ageGroup = this.ageGroups.find(ag => ag.id === val);
           if (ageGroup.name.toLowerCase().trim() === 'child' || ageGroup.name.toLowerCase().trim() === 'infant') {
             this.isUpdateChild = true;
-            this.updateForm.get('child_gdrg').setValidators([Validators.required]);
-            this.updateForm.get('child_tariff').setValidators([Validators.required]);
-            this.updateForm.get('adult_gdrg').setValidators(null);
-            this.updateForm.get('adult_tariff').setValidators(null);
             this.isUpdateEveryone = false;
           } else if (ageGroup.name.toLowerCase().trim() === 'adult') {
             this.isUpdateChild = false;
-            this.updateForm.get('child_gdrg').setValidators(null);
-            this.updateForm.get('child_tariff').setValidators(null);
-            this.updateForm.get('adult_gdrg').setValidators([Validators.required]);
-            this.updateForm.get('adult_tariff').setValidators([Validators.required]);
             this.isUpdateEveryone = false;
           } else {
-            this.updateForm.get('child_gdrg').setValidators(null);
-            this.updateForm.get('child_tariff').setValidators(null);
-            this.updateForm.get('adult_gdrg').setValidators(null);
-            this.updateForm.get('adult_tariff').setValidators(null);
             this.isUpdateEveryone = true;
           }
         }

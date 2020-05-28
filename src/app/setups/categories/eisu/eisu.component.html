@@ -1,1 +1,17 @@
-<p>eisu works!</p>
+<nz-tabset nzTabPosition="top" [nzType]="'line'">
+  <nz-tab nzTitle="NHIS Provider Levels">
+    <ng-template nz-tab>
+      <app-nhis-provider-levels-setup></app-nhis-provider-levels-setup>
+    </ng-template>
+  </nz-tab>
+  <nz-tab nzTitle="NHIS MDC">
+    <ng-template nz-tab>
+      <app-nhis-mdc-setup></app-nhis-mdc-setup>
+    </ng-template>
+  </nz-tab>
+  <nz-tab nzTitle="NHIS GST">
+    <ng-template nz-tab>
+      <app-nhis-gdrg-service-tariff-setup></app-nhis-gdrg-service-tariff-setup>
+    </ng-template>
+  </nz-tab>
+</nz-tabset>

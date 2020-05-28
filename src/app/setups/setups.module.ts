@@ -70,6 +70,9 @@ import { ProductFormAndUnitComponent } from './pages/product-form-and-unit/produ
 import { ProductTypeAndCategoryComponent } from './pages/product-type-and-category/product-type-and-category.component';
 import { StoreSetupComponent } from './categories/store-setup/store-setup.component';
 import {ConsultationQuestionnaireSetupComponent} from "./pages/consultation-questionnaire-setup/consultation-questionnaire-setup.component";
+import { NhisProviderLevelsSetupComponent } from './pages/nhis-provider-levels-setup/nhis-provider-levels-setup.component';
+import { NhisMdcSetupComponent } from './pages/nhis-mdc-setup/nhis-mdc-setup.component';
+import { NhisGdrgServiceTariffSetupComponent } from './pages/nhis-gdrg-service-tariff-setup/nhis-gdrg-service-tariff-setup.component';
 
 @NgModule({
   declarations: [
@@ -137,7 +140,10 @@ import {ConsultationQuestionnaireSetupComponent} from "./pages/consultation-ques
     LabSampleTypesComponent,
     ParameterServiceMapComponent,
     SampleTypeServiceMapComponent,
-    ConsultationQuestionnaireSetupComponent
+    ConsultationQuestionnaireSetupComponent,
+    NhisProviderLevelsSetupComponent,
+    NhisMdcSetupComponent,
+    NhisGdrgServiceTariffSetupComponent
   ],
   imports: [
     CommonModule,
