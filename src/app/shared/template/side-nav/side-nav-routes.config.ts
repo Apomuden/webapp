@@ -179,6 +179,14 @@ export const ROUTES: SideNavInterface[] = [
         iconTheme: '',
         submenu: []
       },
+      {
+        path: '/physician/ivf-consultation',
+        title: 'IVF Consultation',
+        iconType: '',
+        icon: '',
+        iconTheme: '',
+        submenu: []
+      },
     ]
   },
   {
@@ -208,7 +216,7 @@ export const ROUTES: SideNavInterface[] = [
     submenu: [
       {
         path: '/accounts/receipt',
-        title: 'E-Receipt',
+        title: 'Payment',
         iconType: '',
         icon: '',
         iconTheme: '',

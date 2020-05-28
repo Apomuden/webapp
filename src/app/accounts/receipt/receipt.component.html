@@ -38,13 +38,13 @@
     </div>
     <nz-divider></nz-divider>
     <div nz-row [nzGutter]="24" *ngIf="searchInitialized && !isLoadingData">
-      <div nz-col [nzSpan]="12">
+      <div nz-col [nzSpan]="18">
         <h3>Quick Transaction Details</h3>
         <div>
           <nz-row *ngIf="transactionDetails" [nzGutter]="16">
             <nz-col [nzSpan]="4">
               <nz-statistic
-                [nzValue]="(billDueControl.value && billDueControl.valid)?billDueControl.value:'' | number: '1.2-2'"
+                [nzValue]="(totalBillControl.value && totalBillControl.valid)?totalBillControl.value:'' | number: '1.2-2'"
                 [nzTitle]="'Total Bill'">
               </nz-statistic>
             </nz-col>
@@ -71,13 +71,13 @@
         </div>
       </div>
 
-      <div nz-col [nzSpan]="12">
+      <div nz-col [nzSpan]="6">
         <nz-descriptions nzSize="small" nzBordered [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }">
           <nz-descriptions-item nzTitle="Receipt Number">
             Feb/02/000
           </nz-descriptions-item>
           <nz-descriptions-item *ngIf="transactionDetails" nzTitle="Bill Due">
-            {{(totalBillControl.value && totalBillControl.valid)?totalBillControl.value:''}}
+            {{(billDueControl.value && billDueControl.valid)?billDueControl.value:''}}
           </nz-descriptions-item>
           <nz-descriptions-item nzTitle="Amount Received">
             <div class="editable-cell" *ngIf="editName !== 'amountRecieved'; else editTpl">

@@ -202,7 +202,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
       : this.labService.editLabParameter(this.editParam.id, this.processParamData());
     observable.subscribe(success => {
       this.isCreatingParam = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         this.resetParam();
         this.getParams();
@@ -217,7 +217,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
       : this.labService.editParamFlag(this.editFlag.id, this.processFlagData());
     observable.subscribe(success => {
       this.isCreatingFlag = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         this.closeFlagModal();
         this.getParamFlags(this.param);
@@ -225,12 +225,12 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     });
   }
 
-  showNotif(isError = false) {
+  showNotification(isError = false) {
     if (isError) {
       this.notification.error('Error', 'Operation unsuccessful');
       return;
     }
-    this.notification.success('Success', 'Proccessed Successfully');
+    this.notification.success('Success', 'Processed Successfully');
   }
 
   processParamData() {
@@ -301,7 +301,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     this.isParametersLoading = true;
     this.labService.deleteParameter(param.id).subscribe(success => {
       this.isParametersLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.parameters.findIndex(p => p.id === param.id);
         this.parameters.splice(index, 1);
@@ -317,7 +317,7 @@ export class LabParametersComponent implements OnInit, AfterViewInit, OnDestroy 
     this.isFlagsLoading = true;
     this.labService.deleteParamFlag(flag.id).subscribe(success => {
       this.isFlagsLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.flags.findIndex(f => f.id === flag.id);
         this.flags.splice(index, 1);

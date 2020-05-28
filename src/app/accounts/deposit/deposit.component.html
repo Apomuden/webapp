@@ -55,10 +55,30 @@
         </div>
 
       </div>
-      <div nz-col nzOffset="18" [nzSpan]="6">
-        <nz-select [formControl]="paymentChannelControl" nzPlaceHolder="Payment Channel">
-          <nz-option nzValue="Cash" nzLabel="Cash"></nz-option>
-        </nz-select>
+      <div nz-col nzOffset="12" [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="paymentChannel">Payment Channel</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Please select payment channel">
+            <nz-select name="paymentChannel" [compareWith]="compareFn" [nzLoading]="isLoadingPaymentChannels"
+              [formControl]="paymentChannelControl" nzPlaceHolder="Payment Channel">
+              <nz-option *ngFor="let channel of paymentChannels" [nzValue]="channel.id" [nzLabel]="channel.name">
+              </nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="6">
+        <nz-form-item>
+          <nz-form-label nzRequired nzFor="billed">Billed Sponsor</nz-form-label>
+          <nz-form-control nzHasFeedback nzErrorTip="Please select billed sponsor">
+            <nz-select nzShowSearch nzAllowClear [compareWith]="compareFn" nzPlaceHolder="Billed sponsor"
+              [formControl]="billedFormControl" [nzLoading]="sponsorsLoading">
+              <nz-option *ngFor="let permit of sponsorPermits" [nzLabel]="permit.billing_sponsor_name"
+                [nzValue]="permit.id"></nz-option>
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
       </div>
     </div>
     <h3 style="margin-top: 20px;" *ngIf="searchInitialized && !isLoadingData">Deposit Details</h3>
@@ -67,7 +87,7 @@
         <input nz-input placeholder="Total Bill" disabled="true" [formControl]="totalBillControl" />
       </div>
       <div nz-col [nzSpan]="5">
-        <input nz-input placeholder="Deposit Amount" [formControl]="depositAmountControl" />
+        <input nz-input placeholder="Deposit Amount" type="number" [formControl]="depositAmountControl" />
       </div>
       <div nz-col [nzSpan]="5">
         <input nz-input placeholder="Balance Due" disabled="true" [formControl]="balanceDueControl" />
@@ -77,17 +97,17 @@
       <div style=" width:300px;display: inline-block;">
         <nz-descriptions nzSize="small" [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }">
           <nz-descriptions-item *ngIf="transactionDetails" nzTitle="Bill Due">
-            {{(totalBillControl.value && totalBillControl.valid)?totalBillControl.value:'N/A'}}
+            {{(totalBillControl.value && totalBillControl.valid)?numeral(totalBillControl.value).format('0.00'):'N/A'}}
           </nz-descriptions-item>
         </nz-descriptions>
         <nz-descriptions nzSize="small" [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }">
           <nz-descriptions-item *ngIf="transactionDetails" nzTitle="Deposit Amount">
-            {{(depositAmountControl.value && depositAmountControl.valid)?depositAmountControl.value:'N/A'}}
+            {{(depositAmountControl.value && depositAmountControl.valid)?numeral(depositAmountControl.value).format('0.00'):'N/A'}}
           </nz-descriptions-item>
         </nz-descriptions>
         <nz-descriptions nzSize="small" [nzColumn]="{ xxl: 1, xl: 1, lg: 1, md: 1, sm: 1, xs: 1 }">
           <nz-descriptions-item *ngIf="transactionDetails" nzTitle="Balance Due">
-            {{(balanceDueControl.value && balanceDueControl.valid)?balanceDueControl.value:'N/A'}}
+            {{((balanceDueControl.value && balanceDueControl.valid)||balanceDueControl.value===0)?numeral(balanceDueControl.value).format('0.00'):'N/A'}}
           </nz-descriptions-item>
         </nz-descriptions>
       </div>

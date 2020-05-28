@@ -1,31 +1,4 @@
 <nz-row nzGutter="16">
-  <nz-card nz-col nzSpan="12" nzTitle="Product Form Units" [nzExtra]="addTypeTemplate">
-    <ng-template #addTypeTemplate>
-      <button nz-button nzType="primary" (click)="showUnitModal()">Add</button>
-    </ng-template>
-    <nz-list style="min-height: 350px;" [nzDataSource]="productUnits" [nzItemLayout]="'horizontal'"
-      [nzLoading]="isUnitsLoading" [nzRenderItem]="type">
-      <ng-template #type let-type>
-        <nz-list-item [nzActions]="[editType,removeType,toggleType]">
-          <ng-template #editType><a (click)="showUnitModal(type)">edit</a></ng-template>
-          <ng-template #removeType>
-            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
-              (nzOnConfirm)="deleteUnit(type)"><i nz-icon nzType="delete" nzTheme="fill"
-                style="color:red;font-size: 16px;"></i></a>
-          </ng-template>
-          <ng-template #toggleType>
-            <nz-switch [(ngModel)]="type.isActivated" (ngModelChange)="toggleItem($event, type, true)"></nz-switch>
-          </ng-template>
-          <nz-list-item-meta [nzTitle]="nzTitle">
-            <ng-template #nzTitle>
-              <a>{{ type.name }}</a>
-            </ng-template>
-          </nz-list-item-meta>
-        </nz-list-item>
-      </ng-template>
-    </nz-list>
-  </nz-card>
-
   <nz-card nz-col nzSpan="12" nzTitle="Product Forms" [nzExtra]="addCatTemplate">
     <ng-template #addCatTemplate>
       <button nz-button nzType="primary" (click)="showFormModal()">Add</button>
@@ -55,6 +28,34 @@
       </ng-template>
     </nz-list>
   </nz-card>
+  <nz-card nz-col nzSpan="12" nzTitle="Product Form Units" [nzExtra]="addTypeTemplate">
+    <ng-template #addTypeTemplate>
+      <button nz-button nzType="primary" (click)="showUnitModal()">Add</button>
+    </ng-template>
+    <nz-list style="min-height: 350px;" [nzDataSource]="productUnits" [nzItemLayout]="'horizontal'"
+      [nzLoading]="isUnitsLoading" [nzRenderItem]="type">
+      <ng-template #type let-type>
+        <nz-list-item [nzActions]="[editType,removeType,toggleType]">
+          <ng-template #editType><a (click)="showUnitModal(type)">edit</a></ng-template>
+          <ng-template #removeType>
+            <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+              (nzOnConfirm)="deleteUnit(type)"><i nz-icon nzType="delete" nzTheme="fill"
+                style="color:red;font-size: 16px;"></i></a>
+          </ng-template>
+          <ng-template #toggleType>
+            <nz-switch [(ngModel)]="type.isActivated" (ngModelChange)="toggleItem($event, type, true)"></nz-switch>
+          </ng-template>
+          <nz-list-item-meta [nzTitle]="nzTitle">
+            <ng-template #nzTitle>
+              <a>{{ type.name }}</a>
+            </ng-template>
+          </nz-list-item-meta>
+        </nz-list-item>
+      </ng-template>
+    </nz-list>
+  </nz-card>
+
+
 </nz-row>
 
 <nz-modal [nzVisible]="isUnitModalVisible" (nzOnCancel)="closeUnitModal()" [nzFooter]="typeFooter"

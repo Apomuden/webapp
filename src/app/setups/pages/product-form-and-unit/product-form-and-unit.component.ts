@@ -95,7 +95,7 @@ export class ProductFormAndUnitComponent implements OnInit, AfterViewInit, OnDes
       : this.storeSetupService.editProductFormUnit(this.editUnit.id, this.unitForm.value);
     const success = await observable.toPromise();
     this.isCreatingUnit = false;
-    this.showNotif(!success);
+    this.showNotification(!success);
     if (success) {
       this.resetUnit();
       this.getUnits();
@@ -109,19 +109,19 @@ export class ProductFormAndUnitComponent implements OnInit, AfterViewInit, OnDes
       : this.storeSetupService.editProductForm(this.editForm.id, this.productFormForm.value);
     const success = await observable.toPromise();
     this.isCreatingForm = false;
-    this.showNotif(!success);
+    this.showNotification(!success);
     if (success) {
       this.resetForm();
       this.getForms();
     }
   }
 
-  showNotif(isError = false) {
+  showNotification(isError = false) {
     if (isError) {
       this.notification.error('Error', 'Operation unsuccessful');
       return;
     }
-    this.notification.success('Success', 'Proccessed Successfully');
+    this.notification.success('Success', 'Processed Successfully');
   }
 
   showUnitModal(unit?: any) {
@@ -169,7 +169,7 @@ export class ProductFormAndUnitComponent implements OnInit, AfterViewInit, OnDes
     this.isUnitsLoading = true;
     this.storeSetupService.deleteProductFormUnit(unit.id).subscribe(success => {
       this.isUnitsLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.productUnits.findIndex(p => p.id === unit.id);
         this.productUnits.splice(index, 1);
@@ -181,7 +181,7 @@ export class ProductFormAndUnitComponent implements OnInit, AfterViewInit, OnDes
     this.isFormsLoading = true;
     this.storeSetupService.deleteProductForm(form.id).subscribe(success => {
       this.isFormsLoading = false;
-      this.showNotif(!success);
+      this.showNotification(!success);
       if (success) {
         const index = this.productForms.findIndex(p => p.id === form.id);
         this.productForms.splice(index, 1);

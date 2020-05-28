@@ -1,29 +1,46 @@
-import { RecordService } from './../../records/record.service';
-import { untilComponentDestroyed } from '@w11k/ngx-componentdestroyed';
-import { BehaviorSubject } from 'rxjs';
-import { PhysicianService } from './../services/physician.service';
-import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild, ElementRef, Input, Output, EventEmitter } from '@angular/core';
-import { NzNotificationService } from 'ng-zorro-antd';
-import { SetupService } from 'src/app/shared/services/setup.service';
-import { FormBuilder, Validators, FormGroup, FormControl } from '@angular/forms';
-import { first, takeUntil } from 'rxjs/operators';
-import { formatDate } from '@angular/common';
-import * as moment from 'moment';
-
-
+import { RecordService } from "./../../records/record.service";
+import { untilComponentDestroyed } from "@w11k/ngx-componentdestroyed";
+import { BehaviorSubject } from "rxjs";
+import { PhysicianService } from "./../services/physician.service";
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  ViewChild,
+  ElementRef,
+  Input,
+  Output,
+  EventEmitter
+} from "@angular/core";
+import { NzNotificationService } from "ng-zorro-antd";
+import { SetupService } from "src/app/shared/services/setup.service";
+import {
+  FormBuilder,
+  Validators,
+  FormGroup,
+  FormControl
+} from "@angular/forms";
+import { first, takeUntil } from "rxjs/operators";
+import { formatDate } from "@angular/common";
+import * as moment from "moment";
+import { ConsultationData } from "../../shared/models/consultation-data.model";
 
 @Component({
-  selector: 'app-investigation',
-  templateUrl: './investigation.component.html',
-  styleUrls: ['./investigation.component.css']
+  selector: "app-investigation",
+  templateUrl: "./investigation.component.html",
+  styleUrls: ["./investigation.component.css"]
 })
 export class InvestigationComponent implements OnInit {
   @Input() consultation: any;
   @Input() patient: any;
   @Input() userId: any;
+  // consultation data for holding child component data states
+  @Input() consultationData: ConsultationData;
+
   @Output() nextClicked: EventEmitter<any> = new EventEmitter();
   @Output() previousClicked: EventEmitter<any> = new EventEmitter();
-  consultationDate = formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss', 'en');
+  consultationDate = formatDate(new Date(), "yyyy-MM-dd HH:mm:ss", "en");
   submiting = false;
   isLoading = true;
   categoriesLoading = new BehaviorSubject(false);
@@ -39,95 +56,126 @@ export class InvestigationComponent implements OnInit {
   requestForm: FormGroup = this.fb.group({
     category: this.fb.control(null, [Validators.required]),
     service_id: this.fb.control(null, [Validators.required]),
-    order_type: this.fb.control('INTERNAL', [Validators.required]),
+    order_type: this.fb.control("INTERNAL", [Validators.required]),
     sponsor_id: this.fb.control(0, [Validators.required]),
-    ccc: this.fb.control(null, [Validators.minLength(5), Validators.maxLength(5)]),
-    qty: this.fb.control({ value: 1, disabled: true }, [Validators.required, Validators.min(1)]),
-    fee: this.fb.control({ value: 0.0, disabled: true }, [Validators.required, Validators.min(0.1)]),
+    ccc: this.fb.control(null, [
+      Validators.minLength(5),
+      Validators.maxLength(5)
+    ]),
+    qty: this.fb.control({ value: 1, disabled: true }, [
+      Validators.required,
+      Validators.min(1)
+    ]),
+    fee: this.fb.control({ value: 0.0, disabled: true }, [
+      Validators.required,
+      Validators.min(0.1)
+    ])
   });
   patientSponsor = {
-    billing_sponsor_name: 'Patient',
+    billing_sponsor_name: "Patient",
     id: 0,
     card_serial_no: null,
     member_id: null,
     staff_id: null,
     billing_sponsor: {
       id: 0,
-      sponsorship_type_name: 'Patient'
+      sponsorship_type_name: "Patient"
     }
   };
   sponsorPermits = [this.patientSponsor];
   servicePrice: any;
   previousInvestigations = null;
-  investigations = [];
   formatFee = (value: number) => `GHC ${value}`;
-  parseFee = (value: string) => value.replace('GHC', '');
+  parseFee = (value: string) => value.replace("GHC", "");
   constructor(
     private physicianService: PhysicianService,
     private fb: FormBuilder,
     private setup: SetupService,
     private recordService: RecordService,
     private notification: NzNotificationService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getHospitalServices();
     this.getPatientSponsorPermits(this.patient.id);
     this.getInvestigations(this.patient.id);
-    this.categoryControl.valueChanges.subscribe(
-      val => {
-        if (val) {
-          this.resetForm();
-          this.getServices(val);
-        }
+    this.categoryControl.valueChanges.subscribe(val => {
+      if (val) {
+        this.resetForm();
+        this.getServices(val);
       }
-    );
-    this.billedControl.valueChanges
-      .subscribe(_ => {
-        this.setPrice();
-      });
+    });
+    this.billedControl.valueChanges.subscribe(_ => {
+      this.setPrice();
+    });
 
-    this.serviceControl.valueChanges
-      .subscribe((service_id: number) => {
-        // display price of the selected service
-        if (service_id) {
-          this.getPrice(service_id);
-        }
-      });
-    this.setup.getFundingTypes().pipe(first()).subscribe(
-      res => {
-        this.prepaidCashFundingTypeId = res.data.find(fundingType => fundingType.name === 'Cash/Prepaid').id;
+    this.serviceControl.valueChanges.subscribe((service_id: number) => {
+      // display price of the selected service
+      if (service_id) {
+        this.getPrice(service_id);
       }
-    );
+    });
+    this.setup
+      .getFundingTypes()
+      .pipe(first())
+      .subscribe(res => {
+        this.prepaidCashFundingTypeId = res.data.find(
+          fundingType => fundingType.name === "Cash/Prepaid"
+        ).id;
+      });
   }
 
   getPatientSponsorPermits(id: number) {
     this.sponsorLoading = true;
-    this.recordService.getPatientSponsors(id)
-      .pipe(first()).subscribe(res => {
-        if (res && res.data) {
-          this.sponsorPermits.push(...res.data);
-        }
-        this.sponsorLoading = false;
-      }, error => {
-      });
+    this.recordService
+      .getPatientSponsors(id)
+      .pipe(first())
+      .subscribe(
+        res => {
+          if (res && res.data) {
+            this.sponsorPermits.push(...res.data);
+          }
+          this.sponsorLoading = false;
+        },
+        error => {}
+      );
   }
 
   getInvestigations(patientId: number) {
-    this.physicianService.getInvestigations(patientId).pipe(first())
-      .subscribe((investigations: any[]) => {
-        this.previousInvestigations = [];
-        investigations = investigations.reverse();
-        investigations.forEach(invstgtn => {
-          if (!this.previousInvestigations.find(pe => moment(pe.consultation_date).isSame(invstgtn.consultation_date, 'day'))) {
-            this.previousInvestigations.push({
-              attendance_date: invstgtn.consultation_date,
-              investigation: investigations.filter(e => moment(e.consultation_date).isSame(invstgtn.consultation_date, 'day'))
-            });
-          }
-        });
-        this.isLoading = false;
-      }, e => { console.log(e); this.isLoading = false; });
+    this.physicianService
+      .getInvestigations(patientId)
+      .pipe(first())
+      .subscribe(
+        (investigations: any[]) => {
+          this.previousInvestigations = [];
+          investigations = investigations.reverse();
+          investigations.forEach(invstgtn => {
+            if (
+              !this.previousInvestigations.find(pe =>
+                moment(pe.consultation_date).isSame(
+                  invstgtn.consultation_date,
+                  "day"
+                )
+              )
+            ) {
+              this.previousInvestigations.push({
+                attendance_date: invstgtn.consultation_date,
+                investigation: investigations.filter(e =>
+                  moment(e.consultation_date).isSame(
+                    invstgtn.consultation_date,
+                    "day"
+                  )
+                )
+              });
+            }
+          });
+          this.isLoading = false;
+        },
+        e => {
+          console.log(e);
+          this.isLoading = false;
+        }
+      );
   }
 
   compareFn(c1: any, c2: any): boolean {
@@ -135,33 +183,54 @@ export class InvestigationComponent implements OnInit {
   }
   addInvestigation() {
     if (this.requestForm.valid) {
-      const serviceId = this.requestForm.get('service_id').value;
-      const serviceValue = this.services.filter(service => service.id === serviceId)[0].description;
-      const sponsorId = this.requestForm.get('sponsor_id').value;
-      const sponsorValue = this.sponsorPermits.filter(sponsor => sponsor.id === sponsorId)[0].billing_sponsor_name;
-      const billingSponsorId = (this.sponsorPermits.filter(sponsor => sponsor.id === sponsorId)[0] as any).billing_sponsor_id;
+      const serviceId = this.requestForm.get("service_id").value;
+      const serviceValue = this.services.filter(
+        service => service.id === serviceId
+      )[0].description;
+      const sponsorId = this.requestForm.get("sponsor_id").value;
+      const sponsorValue = this.sponsorPermits.filter(
+        sponsor => sponsor.id === sponsorId
+      )[0].billing_sponsor_name;
+      const billingSponsorId = (this.sponsorPermits.filter(
+        sponsor => sponsor.id === sponsorId
+      )[0] as any).billing_sponsor_id;
 
       const { fee: unitFee } = this.requestForm.getRawValue();
       if (billingSponsorId) {
-        this.investigations = [...this.investigations, {
-          ...this.requestForm.value, serviceValue, key: this.investigationKey, unitFee, sponsorValue, billing_sponsor_id: billingSponsorId
-        }];
+        this.consultationData.investigations = [
+          ...this.consultationData.investigations,
+          {
+            ...this.requestForm.value,
+            serviceValue,
+            key: this.investigationKey,
+            unitFee,
+            sponsorValue,
+            billing_sponsor_id: billingSponsorId
+          }
+        ];
       } else {
-        this.investigations = [...this.investigations, {
-          ...this.requestForm.value, serviceValue, key: this.investigationKey, unitFee, sponsorValue,
-          funding_type_id: this.prepaidCashFundingTypeId
-        }];
+        this.consultationData.investigations = [
+          ...this.consultationData.investigations,
+          {
+            ...this.requestForm.value,
+            serviceValue,
+            key: this.investigationKey,
+            unitFee,
+            sponsorValue,
+            funding_type_id: this.prepaidCashFundingTypeId
+          }
+        ];
       }
 
       this.investigationKey++;
       this.calculateTotals();
       this.resetForm();
     } else {
-      this.notification.error('Error', 'Fill required fields');
+      this.notification.error("Error", "Fill required fields");
     }
   }
   submit() {
-    const investigationItems = JSON.parse(JSON.stringify(this.investigations));
+    const investigationItems = JSON.parse(JSON.stringify(this.consultationData.investigations));
     investigationItems.forEach(item => {
       delete item.serviceValue;
       delete item.unitFee;
@@ -178,32 +247,37 @@ export class InvestigationComponent implements OnInit {
       investigations: investigationItems
     };
 
-    this.physicianService.saveInvestigations(data).pipe(first())
-      .subscribe(res => {
-        if (res && (res.errorCode === '000')) {
-          this.investigations = [];
-          this.investigationKey = 0;
-          this.nextClicked.emit(res.data);
+    this.physicianService
+      .saveInvestigations(data)
+      .pipe(first())
+      .subscribe(
+        res => {
+          if (res && res.errorCode === "000") {
+            this.consultationData.investigations = [];
+            this.investigationKey = 0;
+            this.nextClicked.emit(res.data);
+          }
+          this.submiting = false;
+        },
+        error => {
+          this.submiting = false;
+          this.notification.error("Error", "Unable to proceed");
         }
-        this.submiting = false;
-      }, error => {
-        this.submiting = false;
-        this.notification.error('Error', 'Unable to proceed');
-      });
+      );
   }
 
   getAge() {
-    return moment().diff(moment(this.patient.dob, 'YYYY-MM-DD'), 'years');
+    return moment().diff(moment(this.patient.dob, "YYYY-MM-DD"), "years");
   }
   deleteItem(item) {
-    this.investigations = this.investigations.filter(d => d.key !== item.key);
+    this.consultationData.investigations = this.consultationData.investigations.filter(d => d.key !== item.key);
   }
 
   calculateTotals() {
     this.totalPostpaid = 0;
     this.totalPrepaid = 0;
-    this.investigations.forEach(investigation => {
-      if (investigation.sponsorValue === 'Patient') {
+    this.consultationData.investigations.forEach(investigation => {
+      if (investigation.sponsorValue === "Patient") {
         this.totalPrepaid += investigation.unitFee;
       } else {
         this.totalPostpaid += investigation.unitFee;
@@ -221,8 +295,12 @@ export class InvestigationComponent implements OnInit {
       return false;
     }
     const sponsorType = sponsorPermit.billing_sponsor.sponsorship_type_name;
-    if (sponsorType.toLocaleLowerCase() === 'government insurance') {
-      this.cccControl.setValidators([Validators.required, Validators.minLength(5), Validators.maxLength(5)]);
+    if (sponsorType.toLocaleLowerCase() === "government insurance") {
+      this.cccControl.setValidators([
+        Validators.required,
+        Validators.minLength(5),
+        Validators.maxLength(5)
+      ]);
       this.cccControl.enable();
       return true;
     } else {
@@ -233,29 +311,28 @@ export class InvestigationComponent implements OnInit {
     }
   }
 
-
   get feeControl(): FormControl {
-    return this.requestForm.get('fee') as FormControl;
+    return this.requestForm.get("fee") as FormControl;
   }
 
   get qtyControl(): FormControl {
-    return this.requestForm.get('qty') as FormControl;
+    return this.requestForm.get("qty") as FormControl;
   }
 
   get categoryControl(): FormControl {
-    return this.requestForm.get('category') as FormControl;
+    return this.requestForm.get("category") as FormControl;
   }
 
   get serviceControl(): FormControl {
-    return this.requestForm.get('service_id') as FormControl;
+    return this.requestForm.get("service_id") as FormControl;
   }
 
   get billedControl(): FormControl {
-    return this.requestForm.get('sponsor_id') as FormControl;
+    return this.requestForm.get("sponsor_id") as FormControl;
   }
 
   get cccControl(): FormControl {
-    return this.requestForm.get('ccc') as FormControl;
+    return this.requestForm.get("ccc") as FormControl;
   }
 
   get isCash(): boolean {
@@ -265,7 +342,7 @@ export class InvestigationComponent implements OnInit {
       return false;
     }
     const sponsorType = sponsorPermit.billing_sponsor.sponsorship_type_name;
-    return sponsorType.toLocaleLowerCase() === 'patient';
+    return sponsorType.toLocaleLowerCase() === "patient";
   }
 
   private getSelectedSponsorPermit(value: number) {
@@ -280,8 +357,8 @@ export class InvestigationComponent implements OnInit {
     if (!this.servicePrice) {
       return;
     }
-    if (this.requestForm.get('sponsor_id').invalid) {
-      this.requestForm.get('fee').setValue(0);
+    if (this.requestForm.get("sponsor_id").invalid) {
+      this.requestForm.get("fee").setValue(0);
       return;
     } else if (this.isCash) {
       this.feeControl.patchValue(this.servicePrice.prepaid_amount);
@@ -290,7 +367,9 @@ export class InvestigationComponent implements OnInit {
     }
   }
   getPrice(service_id: any) {
-    this.setup.getServicePrice(service_id).pipe(first())
+    this.setup
+      .getServicePrice(service_id)
+      .pipe(first())
       .subscribe(servicePrice => {
         this.servicePrice = servicePrice;
         this.setPrice();
@@ -298,38 +377,36 @@ export class InvestigationComponent implements OnInit {
   }
   private getHospitalServices() {
     this.categoriesLoading.next(true);
-    this.setup.getHospitalServices().subscribe(
-      res => {
-        const investigationService = res.data.find(service => service.name === 'Investigation');
-        this.getCategories(investigationService);
-      }
-    );
+    this.setup.getHospitalServices().subscribe(res => {
+      const investigationService = res.data.find(
+        service => service.name === "Investigation"
+      );
+      this.getCategories(investigationService);
+    });
   }
   private getCategories(investigationService) {
-    this.setup.getServiceCategoriesByHospitalService(investigationService.id).subscribe(
-      res => {
+    this.setup
+      .getServiceCategoriesByHospitalService(investigationService.id)
+      .subscribe(res => {
         this.categories = res.data;
         this.categoriesLoading.next(false);
-
-      }
-    );
+      });
   }
   resetForm() {
-    this.requestForm.get('service_id').reset();
-    this.requestForm.get('order_type').reset();
-    this.requestForm.get('sponsor_id').reset();
-    this.requestForm.get('fee').patchValue(0.0);
-
+    this.requestForm.get("service_id").reset();
+    this.requestForm.get("order_type").reset();
+    this.requestForm.get("sponsor_id").reset();
+    this.requestForm.get("fee").patchValue(0.0);
   }
 
   private getServices(categoryId) {
     this.servicesLoading.next(true);
-    this.setup.genericGet(`pricing/services?service_category_id==${categoryId}`).subscribe(
-      res => {
+    this.setup
+      .genericGet(`pricing/services?service_category_id==${categoryId}`)
+      .subscribe(res => {
         this.services = res;
         this.servicesLoading.next(false);
-      }
-    );
+      });
   }
 
   previous() {
