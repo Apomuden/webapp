@@ -1,3 +1,4 @@
+import { EisuComponent } from './categories/eisu/eisu.component';
 import { ClinicsComponent } from './categories/clinics/clinics.component';
 import { AccountComponent } from './categories/account/account.component';
 import { OtherComponent } from './categories/other/other.component';
@@ -86,6 +87,14 @@ const routes: Routes = [
       {
         path: 'clinics',
         component: ClinicsComponent,
+        canActivate: [AuthGuard],
+        data: {
+          title: 'Clinics'
+        }
+      },
+      {
+        path: 'eisu',
+        component: EisuComponent,
         canActivate: [AuthGuard],
         data: {
           title: 'Clinics'

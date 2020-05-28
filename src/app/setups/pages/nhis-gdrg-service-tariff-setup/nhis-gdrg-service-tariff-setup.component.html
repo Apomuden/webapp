@@ -1,0 +1,198 @@
+<div nz-row nzGutter="10">
+  <nz-col nzSpan="12">
+    <nz-card>
+      <nz-list style="min-height: 350px;" [nzDataSource]="list" [nzItemLayout]="'horizontal'" [nzLoading]="initLoading"
+        [nzRenderItem]="item">
+        <ng-template #item let-item>
+          <nz-list-item [nzActions]="item.loading ? [] : [deleteAction,editAction, moreAction]">
+            <nz-skeleton [nzActive]="true" [nzTitle]="false" [nzLoading]="item.loading">
+              <ng-template #editAction><a (click)="showModal(item)">edit</a></ng-template>
+              <ng-template #deleteAction>
+                <a nz-popconfirm nzPopconfirmTitle="Are you sure delete this?" nzPopconfirmPlacement="bottom"
+                  (nzOnConfirm)="deleteItem(item)"><i nz-icon nzType="delete" nzTheme="fill"
+                    style="color:red;font-size: 16px;"></i></a>
+              </ng-template>
+              <ng-template #moreAction>
+                <nz-switch [(ngModel)]="item.isActivated" (ngModelChange)="toggleItem($event, item)"></nz-switch>
+              </ng-template>
+              <nz-list-item-meta [nzTitle]="nzTitle" [nzDescription]="nzDesc">
+                <ng-template #nzTitle>
+                  <a>{{item.description}} </a>
+                </ng-template>
+                <ng-template #nzDesc>
+                  <div>{{item.description?item.description:item.desciption}}</div>
+                  <div>{{item.mdc_code}} </div>
+                  <div>{{item.age_group_name}}</div>
+                  <div>{{item.gender}}</div>
+                </ng-template>
+              </nz-list-item-meta>
+            </nz-skeleton>
+          </nz-list-item>
+        </ng-template>
+      </nz-list>
+    </nz-card>
+    <nz-modal [(nzVisible)]="isVisible" (nzOnCancel)="closeModal()" [nzTitle]="modalTitle" [nzContent]="modalContent"
+      [nzFooter]="modalFooter">
+      <ng-template #modalTitle>
+        Update NHIS GST
+      </ng-template>
+      <!-- gdrg_code: [null, Validators.required],
+        gdrg_service_name: [null, Validators.required],
+        primary_with_catering: [null, Validators.required],
+        primary_no_catering: [null, Validators.required],
+        secondary_with_catering: [null, Validators.required],
+        secondary_no_catering: [null, Validators.required],
+        tertiary_with_catering: [null, Validators.required],
+        tertiary_no_catering: [null, Validators.required],
+        major_diagnostic_category_id: [null, Validators.required] -->
+      <ng-template #modalContent>
+        <form [formGroup]="updateForm">
+          <nz-alert *ngIf="modalError" nzType="error" [nzMessage]="modalError" class="m-b-10" nzShowIcon>
+          </nz-alert>
+          <nz-row>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="gdrg_code">GDRG Code</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="gdrg_code" name="gdrg_code" placeholder="GDRG Code" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="gdrg_service_name">GDRG Service Name</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="gdrg_service_name" name="gdrg_service_name"
+                  placeholder="GDRG Service Name" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="primary_with_catering">Primary with catering</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="primary_with_catering" name="primary_with_catering"
+                  placeholder="Primary with catering" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="primary_no_catering">Primary no catering</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="primary_no_catering" name="primary_no_catering"
+                  placeholder="Primary no catering" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="secondary_with_catering">Secondary with catering
+              </nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="secondary_with_catering" name="secondary_with_catering"
+                  placeholder="Secondary with catering" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="secondary_no_catering">Secondary no catering</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="secondary_no_catering" name="secondary_no_catering"
+                  placeholder="Secondary no catering" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="tertiary_with_catering">Tertiary with catering</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="tertiary_with_catering" name="tertiary_with_catering"
+                  placeholder="Tertiary with catering" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="tertiary_no_catering">Tertiary no catering</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <input type="text" nz-input formControlName="tertiary_no_catering" name="tertiary_no_catering"
+                  placeholder="Tertiary no catering" />
+              </nz-form-control>
+            </nz-form-item>
+            <nz-form-item>
+              <nz-form-label [nzXs]="8" nzRequired nzFor="major_diagnostic_category_id">NHIS MDC</nz-form-label>
+              <nz-form-control [nzSpan]="16">
+                <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="major_diagnostic_category_id"
+                  nzPlaceHolder="Age Group" [nzLoading]="isNhisMdcsLoading | async">
+                  <nz-option *ngFor="let mdc of nhisMdcs" [nzLabel]="mdc.description?mdc.description:mdc.desciption"
+                    [nzValue]="mdc.id">
+                  </nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+          </nz-row>
+        </form>
+      </ng-template>
+
+      <ng-template #modalFooter>
+        <button nz-button (click)="closeModal()">Cancel</button>
+        <button nz-button nzType="primary" (click)="update()" [nzLoading]="isUpdating|async">Save</button>
+      </ng-template>
+    </nz-modal>
+  </nz-col>
+  <nz-col nzSpan="8">
+
+    <nz-card>
+      <h5>Create NHIS GST</h5>
+      <form (ngSubmit)="submitForm()" [formGroup]="nhisGdrgServiceTariffForm">
+        <nz-alert *ngIf="error" nzType="error" nzMessage="Error" [nzDescription]="error">
+        </nz-alert>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="gdrg_code" placeholder="GDRG Code" />
+          </nz-form-control>
+        </nz-row>
+
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="gdrg_service_name" placeholder="GDRG Service Name" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="primary_with_catering" placeholder="Primary with catering" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="primary_no_catering" placeholder="Primary no catering" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="secondary_with_catering"
+              placeholder="Secondary with catering" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="secondary_no_catering" placeholder="Secondary no catering" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="tertiary_with_catering" placeholder="Tertiary with catering" />
+          </nz-form-control>
+        </nz-row>
+        <nz-row class="m-b-10">
+          <nz-form-control [nzSpan]="24">
+            <input type="text" nz-input formControlName="tertiary_no_catering" placeholder="Tertiary no catering" />
+          </nz-form-control>
+        </nz-row>
+
+        <nz-row class="m-b-10">
+          <nz-select nzAllowSearch="false" nzAllowClear="false" formControlName="major_diagnostic_category_id"
+            nzPlaceHolder="NHIS MDC" [nzLoading]="isNhisMdcsLoading | async">
+            <nz-option *ngFor="let nhisMdc of nhisMdcs"
+              [nzLabel]="nhisMdc.description?nhisMdc.description:nhisMdc.desciption" [nzValue]="nhisMdc.id">
+            </nz-option>
+          </nz-select>
+        </nz-row>
+        <nz-row>
+          <nz-form-control nzSpan="24" style="text-align: right;" class="m-t-10">
+            <button nz-button nzType="primary" type="submit" [nzLoading]="isCreating | async">
+              Submit
+            </button>
+          </nz-form-control>
+        </nz-row>
+      </form>
+    </nz-card>
+  </nz-col>
+</div>
