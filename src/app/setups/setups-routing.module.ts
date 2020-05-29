@@ -97,7 +97,7 @@ const routes: Routes = [
         component: EisuComponent,
         canActivate: [AuthGuard],
         data: {
-          title: 'Clinics'
+          title: 'EINSU'
         }
       },
       {

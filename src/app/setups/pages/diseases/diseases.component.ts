@@ -47,10 +47,15 @@ export class DiseasesComponent implements OnInit {
     } else {
       this.error = '';
       this.isCreatingItem.next(true);
+      const adult_gdrg = this.createForm.get('adult_gdrg').value ? this.createForm.get('adult_gdrg').value : 0;
+      const adult_tariff = this.createForm.get('adult_tariff').value ? this.createForm.get('adult_tariff').value : 0;
+      const child_gdrg = this.createForm.get('child_gdrg').value ? this.createForm.get('child_gdrg').value : 0;
+      const child_tariff = this.createForm.get('child_tariff').value ? this.createForm.get('child_tariff').value : 0;
       this.setup
         .genericPost('setups/diseases', {
           ...this.createForm.value, status: 'ACTIVE',
-          gender: this.createForm.get('gender').value.join(',')
+          gender: this.createForm.get('gender').value.join(','),
+          adult_gdrg, adult_tariff, child_gdrg, child_tariff
         })
         .pipe(first())
         .subscribe(
