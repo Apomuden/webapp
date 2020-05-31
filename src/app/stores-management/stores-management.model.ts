@@ -1,4 +1,5 @@
-export interface StockData {
+export interface StockAdjustmentData {
+  id: number;
   productName: string;
   uom: string;
   qtyAtHand: number;
@@ -9,4 +10,10 @@ export interface StockData {
   batchNo: string;
   expiryDate: Date;
   reason: string;
+}
+
+export class StockApprovalData {
+  reqData: StockAdjustmentData;
+  approvalMode ? = '+';
+  approvedQty ? = 0;
 }

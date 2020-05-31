@@ -1,0 +1,122 @@
+<div nz-row>
+  <nz-card *ngIf="isLoadingStockAdjustment">
+    <nz-skeleton [nzActive]="true"></nz-skeleton>
+  </nz-card>
+</div>
+<div nz-row *ngIf="hasError">
+  <nz-card>
+    <nz-empty
+    [nzNotFoundContent]="contentTpl"
+    [nzNotFoundFooter]="footerTpl"
+  >
+    <ng-template #contentTpl>
+      <span>Stock adjustment with Reference #: <strong>{{referenceNo}}</strong> was not found</span>
+    </ng-template>
+    <ng-template #footerTpl>
+      <button nz-button nzType="primary" (click)="goBack()">Go Back</button>
+    </ng-template>
+  </nz-empty>
+  </nz-card>
+</div>
+<div nz-row>
+  <nz-card>
+    <div nz-row>
+      <nz-collapse>
+        <nz-collapse-panel [nzHeader]="headerTpl" [nzActive]="true">
+          <ng-template #headerTpl>
+            <strong>Ref #: {{referenceNo}} </strong>
+            <br><span>Stock Adjustment Details</span>
+          </ng-template>
+          <nz-descriptions nzBordered [nzSize]="'small'">
+            <nz-descriptions-item nzTitle="Store/Dept">
+              Antenatal Store
+            </nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Adjustment Type">Operational</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Request Date">May 3, 2020</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Requested By">Kofi Ansah</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total Adjusted Qty">200</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Total Expected Value">GHC 3000</nz-descriptions-item>
+          </nz-descriptions>
+        </nz-collapse-panel>
+      </nz-collapse>
+    </div>
+    <br><br>
+    <div nz-row>
+      <form nz-form [formGroup]="adjustmentApprovalForm">
+        <div nz-row [nzGutter]="32">
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="totalApprovalQty">Total Approval Qty</nz-form-label>
+            <nz-form-control nzHasFeedback>
+              <input type="text" nz-input placeholder="Total Approval Qty" formControlName="totalApprovalQty"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="totalApprovalValue">Total Approval Value</nz-form-label>
+            <nz-form-control>
+              <input type="text" nz-input placeholder="Total Approval Value" formControlName="totalApprovalValue"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="aprrovedBy">Approved By</nz-form-label>
+            <nz-form-control nzHasFeedback>
+              <input type="text" nz-input placeholder="Approved By" formControlName="approvedBy"/>
+            </nz-form-control>
+          </nz-form-item>
+          <nz-form-item nz-col [nzSpan]="5" >
+            <nz-form-label nzRequired nzFor="approvalDesignation">Approval Designation</nz-form-label>
+            <nz-form-control nzHasFeedback nzErrorTip="Approval Designation is required">
+              <input type="text" nz-input placeholder="Approval Designation" formControlName="approvalDesignation"/>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </form>
+    </div>
+  </nz-card>
+</div>
+<div nz-row>
+  <nz-card>
+    <div nz-row>
+      <button nz-button nzType="default">Approve All</button>
+      <span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
+      <button nz-button nzType="primary">Save</button>
+      <button nz-button nzType="default" nzDanger>Cancel</button>
+    </div>
+    <nz-table #stockAdjustmentTable [nzData]="adjustedStockData">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>UOM</th>
+          <th>Qty. At Hand</th>
+          <th>Requested Qty.</th>
+          <th>Unit Cost</th>
+          <th>Approved Qty.</th>
+          <th>Approved Value</th>
+          <th>Reason</th>
+          <th>Approved</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of stockAdjustmentTable.data">
+          <td>{{ data.reqData.productName }}</td>
+          <td>{{ data.reqData.uom }}</td>
+          <td>{{ data.reqData.qtyAtHand }}</td>
+          <td>{{ data.reqData.adjustmentMode + ' ' + data.reqData.adjustmentQuantity }}</td>
+          <td>{{ 'GHS ' + data.reqData.unitCost }}</td>
+          <td>{{ data.approvalMode + ' ' + data.approvedQty }}</td>
+          <td>{{ data.approvedQty }}</td>
+          <td>{{ data.reqData.expectedValue }}</td>
+          <td>{{ data.reqData.reason }}</td>
+          <td>
+            <a>
+              <ng-template #notApproved>
+                <i nz-icon nzType="check-circle" nzTheme="outline"></i>
+              </ng-template>
+              <i nz-icon nzType="check-circle" nzTheme="outline" *ngIf="data.approvedQty;else notApproved"></i>
+            </a>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </nz-card>
+</div>
+
