@@ -28,7 +28,7 @@
     "@types/chartist": "^0.9.43",
     "@w11k/ngx-componentdestroyed": "^4.1.4",
     "angular2-signaturepad": "^2.9.0",
-    "chart.js": "^2.7.3",
+    "chart.js": "^2.9.4",
     "chartist": "^0.11.0",
     "core-js": "^2.5.7",
     "jquery": "^3.5.0",
